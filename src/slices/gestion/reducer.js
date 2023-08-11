@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getContacts, addNewContact, updateContact, deleteContact, getCollaborateurs, addNewCollaborateur, updateCollaborateur, deleteCollaborateurs } from './thunk';
+import { getContacts, addNewContact, updateContact, deleteContact, getCollaborateurs, addNewCollaborateur, updateCollaborateur, deleteCollaborateurs, getTva, updateTva, deleteTva, addNewTva } from './thunk';
 
 export const initialState = {
   contacts: [],
   collaborateurs: [],
+  tva: null,
   error: {}
 };
 
@@ -90,12 +91,12 @@ const gestionSlice = createSlice({
 
     builder.addCase(addNewCollaborateur.rejected, (state, action) => {
       state.error = action.payload.error || null;
-      state.isContactAdd = false;
-      state.isContactAddFail = true;
+      state.isCollaborateurAdd = false;
+      state.isCollaborateurAddFail = true;
     });
 
     builder.addCase(updateCollaborateur.fulfilled, (state, action) => {
-   
+
       state.collaborateurs = state.collaborateurs.map(collaborateur =>
         collaborateur.ent_id == action.payload.ent_id
           ? action.payload
@@ -113,16 +114,73 @@ const gestionSlice = createSlice({
     });
 
     builder.addCase(deleteCollaborateurs.fulfilled, (state, action) => {
-      state.collaborateurs = (state.contacts || []).filter((contact) => contact.ent_id != action.payload);
+      state.collaborateurs = (state.collaborateurs || []).filter((collab) => collab.ent_id != action.payload);
       state.isCollaborateurDelete = true;
       state.isCollaborateurDeleteFail = false;
     });
 
     builder.addCase(deleteCollaborateurs.rejected, (state, action) => {
       state.error = action.payload.error || null;
-      state.isCollaborateurDelete = false;
-      state.isCollaborateurDeleteFail = true;
+      state.isTvaDelete = false;
+      state.isTvaDeleteFail = true;
     });
+
+    // TVA
+
+    builder.addCase(getTva.fulfilled, (state, action) => {
+      state.tva = action.payload.data;
+      state.isTvaCreated = false;
+      state.isTvaSuccess = true;
+    });
+
+    builder.addCase(getTva.rejected, (state, action) => {
+      state.error = action.payload.error || null;
+      state.isTvaCreated = false;
+      state.isTvaSuccess = false;
+    });
+
+    builder.addCase(addNewTva.fulfilled, (state, action) => {
+      state.tva.push(action.payload);
+      state.isTvaCreated = true;
+      state.isTvaAdd = true;
+      state.isTvaAddFail = false;
+    });
+
+    builder.addCase(addNewTva.rejected, (state, action) => {
+      state.error = action.payload.error || null;
+      state.isTvaAdd = false;
+      state.isTvaAddFail = true;
+    });
+
+    builder.addCase(updateTva.fulfilled, (state, action) => {
+
+      state.tva = state.tva.map(t =>
+        t.tva_id == action.payload.tva_id
+          ? action.payload
+          : t
+      );
+      state.isCollaborateurCreated = true;
+      state.isTvaAdd = true;
+      state.isTvaAddFail = false;
+    });
+
+    builder.addCase(updateTva.rejected, (state, action) => {
+      state.error = action.payload.error || null;
+      state.isTvaUpdate = false;
+      state.isTvaUpdateFail = true;
+    });
+
+    builder.addCase(deleteTva.fulfilled, (state, action) => {
+      state.tva = (state.tva || []).filter((t) => t.tva_id != action.payload);
+      state.isTvaDelete = true;
+      state.isTvaDeleteFail = false;
+    });
+
+    builder.addCase(deleteTva.rejected, (state, action) => {
+      state.error = action.payload.error || null;
+      state.isTvaDelete = false;
+      state.isTvaDeleteFail = true;
+    })
 
   },
 });

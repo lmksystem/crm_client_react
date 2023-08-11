@@ -146,15 +146,15 @@ const Navdata = () => {
           id: "devis",
           label: "Devis",
           link: "/#",
-          isChildItem: true,
+          isChildItem: false,
           parentId: "facturation",
 
         },
         {
-          id: "factures",
+          id: "invoices",
           label: "Factures",
-          link: "/#",
-          isChildItem: true,
+          link: "/liste-factures",
+          isChildItem: false,
           parentId: "facturation",
 
         },
@@ -162,7 +162,7 @@ const Navdata = () => {
           id: "avoirs",
           label: "Avoirs",
           link: "/#",
-          isChildItem: true,
+          isChildItem: false,
           parentId: "facturation",
 
         },
@@ -170,7 +170,7 @@ const Navdata = () => {
           id: "reglements",
           label: "Reglements",
           link: "/#",
-          isChildItem: true,
+          isChildItem: false,
           parentId: "facturation",
 
         },

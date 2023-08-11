@@ -80,13 +80,13 @@ function GlobalFilter({
               <OrderGlobalFilter />
             )}
             {isContactsFilter && (
-              <> 
-              {/* <ContactsGlobalFilter /> */}
+              <>
+                {/* <ContactsGlobalFilter /> */}
               </>
             )}
             {isCompaniesFilter && (
               <>
-              {/* <CompaniesGlobalFilter /> */}
+                {/* <CompaniesGlobalFilter /> */}
               </>
             )}
             {isLeadsFilter && (
@@ -296,6 +296,7 @@ const TableContainer = ({
           </thead>
 
           <tbody {...getTableBodyProps()}>
+
             {page.map((row) => {
               prepareRow(row);
               return (
@@ -312,9 +313,18 @@ const TableContainer = ({
                 </Fragment>
               );
             })}
+
           </tbody>
+          {console.log(page)}
+          {page.length == 0 && (
+            <div style={{ position: "absolute", width: "100%", display: "flex", justifyContent: "center", }}>
+              <p style={{ margin: "15px", fontWeight: 600, fontSize: "15px", color: "gray" }}>
+                <i>Aucune donnée à afficher</i>
+              </p>
+            </div>)
+          }
         </Table>
-      </div>
+      </div >
 
       <Row className="justify-content-md-end justify-content-center align-items-center p-2">
         <Col className="col-md-auto">
@@ -353,7 +363,7 @@ const TableContainer = ({
           </div>
         </Col>
       </Row>
-    </Fragment>
+    </Fragment >
   );
 };
 

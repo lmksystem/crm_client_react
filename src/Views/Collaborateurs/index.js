@@ -18,11 +18,8 @@ import {
   ModalHeader,
   Form,
   ModalFooter,
+  Table,
   Button,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
   FormFeedback,
   Collapse,
 } from "reactstrap";
@@ -78,10 +75,10 @@ const Collaborateurs = () => {
   ];
 
   useEffect(() => {
-    if (collaborateurs && !collaborateurs.length) {
-      dispatch(onGetCollaborateur());
-    }
-  }, [dispatch, collaborateurs]);
+    // if (collaborateurs && !collaborateurs.length) {
+    dispatch(onGetCollaborateur());
+    // }
+  }, [dispatch]);
 
   useEffect(() => {
     setCollaborateur(collaborateurs);
@@ -97,8 +94,6 @@ const Collaborateurs = () => {
 
   const [isEdit, setIsEdit] = useState(false);
   const [collaborateur, setCollaborateur] = useState(null);
-  const [cliCompta, setCliCompta] = useState(null);
-  const [fourCompta, setFourCompta] = useState(null);
 
   //delete Company
   const [deleteModal, setDeleteModal] = useState(false);
@@ -106,20 +101,13 @@ const Collaborateurs = () => {
 
   const [modal, setModal] = useState(false);
 
-  const [isClient, setIsClient] = useState(false);
-  const [isFournisseur, setIsFournisseur] = useState(false);
-  const [toggleType, setToggeType] = useState(0);
+  const [show, setShow] = useState(false);
 
   const toggle = useCallback(() => {
 
     if (modal) {
       setModal(false);
       setCollaborateur(null);
-      setCliCompta(null);
-      setFourCompta(null);
-      setToggeType(0);
-      setIsClient(false);
-      setIsFournisseur(false);
     } else {
       setModal(true);
     }
@@ -166,28 +154,6 @@ const Collaborateurs = () => {
       ent_iban: (collaborateur && collaborateur.ent_iban) || '',
       ent_siren: (collaborateur && collaborateur.ent_siren) || '',
       ent_methode_payment: (collaborateur && collaborateur.ent_methode_payment) || '',
-      // CLIENT
-      eco_id_client: (cliCompta && cliCompta.eco_id) || null,
-      eco_ety_fk_client: 2,
-      eco_code_client: (cliCompta && cliCompta.eco_code) || "",
-      eco_journal_client: (cliCompta && cliCompta.eco_journal) || "",
-      eco_cat_client: (cliCompta && cliCompta.eco_cat) || "",
-      eco_tva_default_client: (cliCompta && cliCompta.eco_tva_default) || "",
-      eco_intra_tva_client: (cliCompta && cliCompta.eco_intra_tva),
-      eco_tva_collect_client: (cliCompta && cliCompta.eco_tva_collect) || "",
-      eco_tva_deduct_client: (cliCompta && cliCompta.eco_tva_deduct) || "",
-      eco_removed_client: (cliCompta && cliCompta.eco_removed) || 0,
-      //FOURNISSEUR
-      eco_id_fournisseur: (fourCompta && fourCompta.eco_id) || null,
-      eco_ety_fk_fournisseur: 3,
-      eco_code_fournisseur: (fourCompta && fourCompta.eco_code) || "",
-      eco_journal_fournisseur: (fourCompta && fourCompta.eco_journal) || "",
-      eco_cat_fournisseur: (fourCompta && fourCompta.eco_cat) || "",
-      eco_tva_default_fournisseur: (fourCompta && fourCompta.eco_tva_default) || "",
-      eco_intra_tva_fournisseur: (fourCompta && fourCompta.eco_intra_tva) || 0,
-      eco_tva_collect_fournisseur: (fourCompta && fourCompta.eco_tva_collect) || "",
-      eco_tva_deduct_fournisseur: (fourCompta && fourCompta.eco_tva_deduct) || "",
-      eco_removed_fournisseur: (fourCompta && fourCompta.eco_removed) || 0,
     },
 
     validationSchema: Yup.object({
@@ -207,6 +173,7 @@ const Collaborateurs = () => {
       ent_siren: Yup.string(),
       ent_methode_payment: Yup.string(),
     }),
+
     onSubmit: (values) => {
       const companyData = {
         ent_lastname: values.ent_lastname,
@@ -227,51 +194,14 @@ const Collaborateurs = () => {
       };
 
 
-      let clientCompta = {
-        eco_ety_fk: 1,
-        eco_code: values.eco_code_client,
-        eco_journal: values.eco_journal_client,
-        eco_cat: values.eco_cat_client,
-        eco_tva_default: values.eco_tva_default_client,
-        eco_intra_tva: values.eco_intra_tva_client.length > 0 ? 1 : 0,
-        eco_tva_collect: values.eco_tva_collect_client,
-        eco_tva_deduct: values.eco_tva_deduct_client,
-        eco_removed: values.eco_removed_client,
-      };
-
-      let FournisseurCompta = {
-        eco_ety_fk: 3,
-        eco_code: values.eco_code_fournisseur,
-        eco_journal: values.eco_journal_fournisseur,
-        eco_cat: values.eco_cat_fournisseur,
-        eco_tva_default: values.eco_tva_default_fournisseur,
-        eco_intra_tva: values.eco_intra_tva_fournisseur.length > 0 ? 1 : 0,
-        eco_tva_collect: values.eco_tva_collect_fournisseur,
-        eco_tva_deduct: values.eco_tva_deduct_fournisseur,
-        eco_removed: values.eco_removed_fournisseur,
-      }
-
       let data = {
         ...companyData,
-        compta: {
-          client: (isClient || cliCompta?.eco_id) ? clientCompta : null,
-          fournisseur: (isFournisseur || fourCompta?.eco_id) ? FournisseurCompta : null
-        }
       }
 
       if (isEdit) {
-        console.log("values ", values);
-        data.ent_id = collaborateur.ent_id || 0;
-
-        if (cliCompta?.eco_id) {
-          data.compta.client.eco_id = cliCompta.eco_id;
-        }
-
-        if (fourCompta?.eco_id) {
-          data.compta.fournisseur.eco_id = fourCompta.eco_id;
-        }
 
         data.ent_id = collaborateur.ent_id || 0;
+
         // update Company
         dispatch(onUpdateCollaborateur(data));
       } else {
@@ -287,18 +217,6 @@ const Collaborateurs = () => {
   // Update Data
   const handleCompanyClick = useCallback((arg) => {
     const collaborateur = arg;
-    const client = arg.compta.client;
-    const fournisseur = arg.compta.fournisseur;
-
-    if (client) {
-      setCliCompta(client);
-      setIsClient(client.eco_removed == 0 ? true : false);
-    }
-
-    if (fournisseur) {
-      setFourCompta(fournisseur);
-      setIsFournisseur(fournisseur.eco_removed == 0 ? true : false);
-    }
 
     setCollaborateur({
       ent_id: collaborateur.ent_id,
@@ -427,14 +345,14 @@ const Collaborateurs = () => {
           let collaborateur = cellProps.row.original;
           return (
             <ul className="list-inline hstack gap-2 mb-0">
-              <li className="list-inline-item edit" title="Call">
+              {/* <li className="list-inline-item edit" title="Call">
                 <a href={`tel:${collaborateur.ent_phone}`} className="text-muted d-inline-block">
                   <i className="ri-phone-line fs-16"></i>
                 </a>
-              </li>
+              </li> */}
               <li className="list-inline-item" title="View">
                 <Link to="#"
-                  onClick={() => { const companyData = cellProps.row.original; setInfo(companyData); }}
+                  onClick={() => { setInfo(collaborateur); setShow(true); }}
                 >
                   <i className="ri-eye-fill align-bottom text-muted"></i>
                 </Link>
@@ -442,9 +360,7 @@ const Collaborateurs = () => {
               <li className="list-inline-item" title="Edit">
                 <Link className="edit-item-btn" to="#"
                   onClick={() => {
-                    const collaborateurData = cellProps.row.original;
-
-                    handleCompanyClick(collaborateurData);
+                    handleCompanyClick(collaborateur);
                   }}
                 >
                   <i className="ri-pencil-fill align-bottom text-muted"></i>
@@ -453,7 +369,7 @@ const Collaborateurs = () => {
               <li className="list-inline-item" title="Delete">
                 <Link
                   className="remove-item-btn"
-                  onClick={() => { const companyData = cellProps.row.original; onClickDelete(companyData); }}
+                  onClick={() => { onClickDelete(collaborateur); }}
                   to="#"
                 >
                   <i className="ri-delete-bin-fill align-bottom text-muted"></i>
@@ -466,6 +382,15 @@ const Collaborateurs = () => {
     ],
     [handleCompanyClick, checkedAll]
   );
+
+
+  useEffect(() => {
+    if (show) {
+      setTimeout(() => {
+        document.getElementById('start-anime').classList.add("show")
+      }, 200);
+    }
+  }, [show])
 
   // SideBar Company Deatail
   const [info, setInfo] = useState([]);
@@ -518,36 +443,14 @@ const Collaborateurs = () => {
                         ><i className="ri-delete-bin-2-line"></i></button>}
 
                         <button className="btn btn-soft-primary" onClick={() => setIsExportCSV(true)}>Export</button>
-                        <UncontrolledDropdown>
-                          <DropdownToggle
-                            href="#"
-                            className="btn btn-soft-info btn-icon"
-                            tag="button"
-                          >
-                            <i className="ri-more-2-fill"></i>
-                          </DropdownToggle>
-                          <DropdownMenu className="dropdown-menu-end">
-                            <DropdownItem className="dropdown-item" href="#">
-                              All
-                            </DropdownItem>
-                            <DropdownItem className="dropdown-item" href="#">
-                              Last Week
-                            </DropdownItem>
-                            <DropdownItem className="dropdown-item" href="#">
-                              Last Month
-                            </DropdownItem>
-                            <DropdownItem className="dropdown-item" href="#">
-                              Last Year
-                            </DropdownItem>
-                          </DropdownMenu>
-                        </UncontrolledDropdown>
+
                       </div>
                     </div>
                   </div>
                 </CardHeader>
               </Card>
             </Col>
-            <Col xxl={9}>
+            <Col className="view-animate" xxl={show ? 9 : 12}>
               <Card id="companyList">
 
                 <CardBody className="pt-0">
@@ -887,14 +790,14 @@ const Collaborateurs = () => {
                           <Col lg={8}>
                             <div>
                               <Label
-                                htmlFor="iban-field"
+                                htmlFor="ent_iban-field"
                                 className="form-label"
                               >
                                 IBAN
                               </Label>
                               <Input
-                                name="iban"
-                                id="iban-field"
+                                name="ent_iban"
+                                id="ent_iban-field"
                                 className="form-control"
                                 placeholder="Entrer un iban"
                                 type="text"
@@ -903,13 +806,13 @@ const Collaborateurs = () => {
                                 }}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
-                                value={validation.values.iban || ""}
+                                value={validation.values.ent_iban || ""}
                                 invalid={
-                                  validation.touched.iban && validation.errors.iban ? true : false
+                                  validation.touched.ent_iban && validation.errors.ent_iban ? true : false
                                 }
                               />
-                              {validation.touched.iban && validation.errors.iban ? (
-                                <FormFeedback type="invalid">{validation.errors.iban}</FormFeedback>
+                              {validation.touched.ent_iban && validation.errors.ent_iban ? (
+                                <FormFeedback type="invalid">{validation.errors.ent_iban}</FormFeedback>
                               ) : null}
                             </div>
                           </Col>
@@ -1001,53 +904,6 @@ const Collaborateurs = () => {
                             </div>
                           </Col>
 
-                          <Col lg={3} className="d-flex justify-content-center align-items-end">
-                            <div>
-                              <Label
-                                htmlFor="isclient-field"
-                                className="form-label"
-                              >
-                                Client
-                              </Label>
-                              <Input
-                                defaultChecked={isClient}
-                                className="form-check-input  ms-2"
-                                type="checkbox"
-                                value={isClient}
-                                onChange={() => {
-                                  if (cliCompta?.eco_id) {
-                                    setCliCompta((cliCompta) => ({ ...cliCompta, eco_removed: !isClient ? 0 : 1 }))
-                                  }
-                                  setIsClient(!isClient)
-
-                                }}
-                                id="isclient-field"
-                              />
-                            </div>
-                          </Col>
-                          <Col lg={3} className="d-flex justify-content-center align-items-end">
-                            <div>
-                              <Label
-                                htmlFor="isfournisseur-field"
-                                className="form-label"
-                              >
-                                Fournisseur
-                              </Label>
-                              <Input
-                                defaultChecked={fourCompta?.eco_removed == 0 ? true : false}
-                                type="checkbox"
-                                className="form-check-input ms-2"
-                                value={fourCompta?.eco_removed == 0 ? true : false}
-                                onChange={() => {
-                                  if (fourCompta?.eco_id) {
-                                    setFourCompta((fourCompta) => ({ ...fourCompta, eco_removed: !isFournisseur ? 0 : 1 }));
-                                  }
-                                  setIsFournisseur(!isFournisseur);
-                                }}
-                                id="isfournisseur-field"
-                              />
-                            </div>
-                          </Col>
                           <Label
                             htmlFor="ent_info-field"
                             className="form-label"
@@ -1076,443 +932,6 @@ const Collaborateurs = () => {
                             <FormFeedback type="invalid">{validation.errors.ent_info}</FormFeedback>
                           ) : null}
 
-                          {/*(isClient || isFournisseur) &&
-                            <>
-                              <h5>Comptabilité</h5>
-                              <div style={{ padding: 0, border: "1px solid #dfdfdf", borderRadius: "3px", }}>
-                                {isClient &&
-                                  <Card style={{ marginBottom: "0" }} className="accordion-item">
-                                    <CardHeader style={{ cursor: "pointer" }} onClick={() => setToggeType((value) => (value == 2 ? 0 : 2))}>
-                                      <span className="font-weight-bold"><b>Client</b></span>
-                                    </CardHeader>
-                                    <Collapse isOpen={toggleType == 2 ? true : false}>
-                                      <CardBody style={{ borderBottom: "1px solid #dfdfdf" }}>
-                                        <Row>
-
-                                          <Col lg={6}>
-                                            <div>
-                                              <Label
-                                                htmlFor="eco_code_client-field"
-                                                className="form-label"
-                                              >
-                                                Code
-                                              </Label>
-                                              <Input
-                                                name="eco_code_client"
-                                                id="eco_code_client-field"
-                                                className="form-control"
-                                                placeholder="Enter since"
-                                                type="text"
-                                                validate={{
-                                                  required: { value: true },
-                                                }}
-                                                onChange={validation.handleChange}
-                                                onBlur={validation.handleBlur}
-                                                value={validation.values.eco_code_client || ""}
-                                                invalid={
-                                                  validation.touched.eco_code_client && validation.errors.eco_code_client ? true : false
-                                                }
-                                              />
-                                              {validation.touched.eco_code_client && validation.errors.eco_code_client ? (
-                                                <FormFeedback type="invalid">{validation.errors.eco_code_client}</FormFeedback>
-                                              ) : null}
-                                            </div>
-                                          </Col>
-                                          <Col lg={6}>
-                                            <div>
-                                              <Label
-                                                htmlFor="since-field"
-                                                className="form-label"
-                                              >
-                                                Journal
-                                              </Label>
-                                              <Input
-                                                name="eco_journal_client"
-                                                id="eco_journal_client-field"
-                                                className="form-control"
-                                                placeholder="Enter since"
-                                                type="text"
-                                                validate={{
-                                                  required: { value: true },
-                                                }}
-                                                onChange={validation.handleChange}
-                                                onBlur={validation.handleBlur}
-                                                value={validation.values.eco_journal_client || ""}
-                                                invalid={
-                                                  validation.touched.eco_journal_client && validation.errors.eco_journal_client ? true : false
-                                                }
-                                              />
-                                              {validation.touched.eco_journal_client && validation.errors.eco_journal_client ? (
-                                                <FormFeedback type="invalid">{validation.errors.eco_journal_client}</FormFeedback>
-                                              ) : null}
-                                            </div>
-                                          </Col>
-                                          <Col lg={12}>
-                                            <div>
-                                              <Label
-                                                htmlFor="since-field"
-                                                className="form-label"
-                                              >
-                                                Catégorie
-                                              </Label>
-                                              <Input
-                                                name="eco_cat_client"
-                                                id="eco_cat_client-field"
-                                                className="form-control"
-                                                placeholder="Enter since"
-                                                type="text"
-                                                validate={{
-                                                  required: { value: true },
-                                                }}
-                                                onChange={validation.handleChange}
-                                                onBlur={validation.handleBlur}
-                                                value={validation.values.eco_cat_client || ""}
-                                                invalid={
-                                                  validation.touched.eco_cat_client && validation.errors.eco_cat_client ? true : false
-                                                }
-                                              />
-                                              {validation.touched.eco_cat_client && validation.errors.eco_cat_client ? (
-                                                <FormFeedback type="invalid">{validation.errors.eco_cat_client}</FormFeedback>
-                                              ) : null}
-                                            </div>
-                                          </Col>
-                                          <Col lg={8}>
-                                            <div>
-                                              <Label
-                                                htmlFor="eco_tva_default_client-field"
-                                                className="form-label"
-                                              >
-                                                Taux de TVA par défaut
-                                              </Label>
-                                              <Input
-                                                name="eco_tva_default_client"
-                                                id="eco_tva_default_client-field"
-                                                className="form-control"
-                                                placeholder="Enter since"
-                                                type="text"
-                                                validate={{
-                                                  required: { value: true },
-                                                }}
-                                                onChange={validation.handleChange}
-                                                onBlur={validation.handleBlur}
-                                                value={validation.values.eco_tva_default_client || ""}
-                                                invalid={
-                                                  validation.touched.eco_tva_default_client && validation.errors.eco_tva_default_client ? true : false
-                                                }
-                                              />
-                                              {validation.touched.eco_tva_default_client && validation.errors.eco_tva_default_client ? (
-                                                <FormFeedback type="invalid">{validation.errors.eco_tva_default_client}</FormFeedback>
-                                              ) : null}
-                                            </div>
-                                          </Col>
-                                          <Col lg={4}>
-                                            <div>
-                                              {console.log(validation.values.eco_intra_tva_client)}
-                                              <Label
-                                                htmlFor="since-field"
-                                                className="form-label"
-                                              >
-                                                TVA intracommunautaire
-                                              </Label>
-                                              <Input
-                                                name="eco_intra_tva_client"
-                                                id="eco_intra_tva_client-field"
-                                                className="form-control"
-                                                type="checkbox"
-                                                onChange={validation.handleChange}
-
-                                                defaultChecked={validation.values.eco_intra_tva_client == 1 ? true : false}
-                                              />
-
-                                            </div>
-                                          </Col>
-                                          <Col lg={6}>
-                                            <div>
-                                              <Label
-                                                htmlFor="eco_tva_collect_client-field"
-                                                className="form-label"
-                                              >
-                                                TVA collectée
-                                              </Label>
-                                              <Input
-                                                name="eco_tva_collect_client"
-                                                id="eco_tva_collect_client-field"
-                                                className="form-control"
-                                                placeholder="Enter since"
-                                                type="text"
-                                                validate={{
-                                                  required: { value: true },
-                                                }}
-                                                onChange={validation.handleChange}
-                                                onBlur={validation.handleBlur}
-                                                value={validation.values.eco_tva_collect_client || ""}
-                                                invalid={
-                                                  validation.touched.eco_tva_collect_client && validation.errors.eco_tva_collect_client ? true : false
-                                                }
-                                              />
-                                              {validation.touched.eco_tva_collect_client && validation.errors.eco_tva_collect_client ? (
-                                                <FormFeedback type="invalid">{validation.errors.eco_tva_collect_client}</FormFeedback>
-                                              ) : null}
-                                            </div>
-                                          </Col>
-                                          <Col lg={6}>
-                                            <div>
-                                              <Label
-                                                htmlFor="eco_tva_deduct_client-field"
-                                                className="form-label"
-                                              >
-                                                TVA déductible
-                                              </Label>
-                                              <Input
-                                                name="eco_tva_deduct_client"
-                                                id="eco_tva_deduct_client-field"
-                                                className="form-control"
-                                                placeholder="Enter since"
-                                                type="text"
-                                                validate={{
-                                                  required: { value: true },
-                                                }}
-                                                onChange={validation.handleChange}
-                                                onBlur={validation.handleBlur}
-                                                value={validation.values.eco_tva_deduct_client || ""}
-                                                invalid={
-                                                  validation.touched.eco_tva_deduct_client && validation.errors.eco_tva_deduct_client ? true : false
-                                                }
-                                              />
-                                              {validation.touched.eco_tva_deduct_client && validation.errors.eco_tva_deduct_client ? (
-                                                <FormFeedback type="invalid">{validation.errors.eco_tva_deduct_client}</FormFeedback>
-                                              ) : null}
-                                            </div>
-                                          </Col>
-                                        </Row>
-                                      </CardBody>
-                                    </Collapse>
-                                  </Card>
-                                }
-                                {isFournisseur &&
-                                  <Card style={{ marginBottom: "0" }} className="accordion-item">
-                                    <CardHeader style={{ cursor: "pointer" }} onClick={() => setToggeType((value) => (value == 1 ? 0 : 1))}>
-                                      <span className="font-weight-bold"><b>Fournisseur</b></span>
-                                    </CardHeader>
-                                    <Collapse isOpen={toggleType == 1 ? true : false}>
-                                      <CardBody style={{ borderBottom: "1px solid #dfdfdf" }}>
-                                        <Row>
-                                          <Col lg={6}>
-                                            <div>
-                                              <Label
-                                                htmlFor="eco_code_fournisseur-field"
-                                                className="form-label"
-                                              >
-                                                Code
-                                              </Label>
-                                              <Input
-                                                name="eco_code_fournisseur"
-                                                id="eco_code_fournisseur-field"
-                                                className="form-control"
-                                                placeholder="Enter since"
-                                                type="text"
-                                                validate={{
-                                                  required: { value: true },
-                                                }}
-                                                onChange={validation.handleChange}
-                                                onBlur={validation.handleBlur}
-                                                value={validation.values.eco_code_fournisseur || ""}
-                                                invalid={
-                                                  validation.touched.eco_code_fournisseur && validation.errors.eco_code_fournisseur ? true : false
-                                                }
-                                              />
-                                              {validation.touched.eco_code_fournisseur && validation.errors.eco_code_fournisseur ? (
-                                                <FormFeedback type="invalid">{validation.errors.eco_code_fournisseur}</FormFeedback>
-                                              ) : null}
-                                            </div>
-                                          </Col>
-                                          <Col lg={6}>
-                                            <div>
-                                              <Label
-                                                htmlFor="since-field"
-                                                className="form-label"
-                                              >
-                                                Journal
-                                              </Label>
-                                              <Input
-                                                name="eco_journal_fournisseur"
-                                                id="eco_journal_fournisseur-field"
-                                                className="form-control"
-                                                placeholder="Enter since"
-                                                type="text"
-                                                validate={{
-                                                  required: { value: true },
-                                                }}
-                                                onChange={validation.handleChange}
-                                                onBlur={validation.handleBlur}
-                                                value={validation.values.eco_journal_fournisseur || ""}
-                                                invalid={
-                                                  validation.touched.eco_journal_fournisseur && validation.errors.eco_journal_fournisseur ? true : false
-                                                }
-                                              />
-                                              {validation.touched.eco_journal_fournisseur && validation.errors.eco_journal_fournisseur ? (
-                                                <FormFeedback type="invalid">{validation.errors.eco_journal_fournisseur}</FormFeedback>
-                                              ) : null}
-                                            </div>
-                                          </Col>
-                                          <Col lg={12}>
-                                            <div>
-                                              <Label
-                                                htmlFor="since-field"
-                                                className="form-label"
-                                              >
-                                                Catégorie
-                                              </Label>
-                                              <Input
-                                                name="eco_cat_fournisseur"
-                                                id="eco_cat_fournisseur-field"
-                                                className="form-control"
-                                                placeholder="Enter since"
-                                                type="text"
-                                                validate={{
-                                                  required: { value: true },
-                                                }}
-                                                onChange={validation.handleChange}
-                                                onBlur={validation.handleBlur}
-                                                value={validation.values.eco_cat_fournisseur || ""}
-                                                invalid={
-                                                  validation.touched.eco_cat_fournisseur && validation.errors.eco_cat_fournisseur ? true : false
-                                                }
-                                              />
-                                              {validation.touched.eco_cat_fournisseur && validation.errors.eco_cat_fournisseur ? (
-                                                <FormFeedback type="invalid">{validation.errors.eco_cat_fournisseur}</FormFeedback>
-                                              ) : null}
-                                            </div>
-                                          </Col>
-                                          <Col lg={8}>
-                                            <div>
-                                              <Label
-                                                htmlFor="eco_tva_default_fournisseur-field"
-                                                className="form-label"
-                                              >
-                                                Taux de TVA par défaut
-                                              </Label>
-                                              <Input
-                                                name="eco_tva_default_fournisseur"
-                                                id="eco_tva_default_fournisseur-field"
-                                                className="form-control"
-                                                placeholder="Enter since"
-                                                type="text"
-                                                validate={{
-                                                  required: { value: true },
-                                                }}
-                                                onChange={validation.handleChange}
-                                                onBlur={validation.handleBlur}
-                                                value={validation.values.eco_tva_default_fournisseur || ""}
-                                                invalid={
-                                                  validation.touched.eco_tva_default_fournisseur && validation.errors.eco_tva_default_fournisseur ? true : false
-                                                }
-                                              />
-                                              {validation.touched.eco_tva_default_fournisseur && validation.errors.eco_tva_default_fournisseur ? (
-                                                <FormFeedback type="invalid">{validation.errors.eco_tva_default_fournisseur}</FormFeedback>
-                                              ) : null}
-                                            </div>
-                                          </Col>
-                                          <Col lg={4}>
-                                            <div>
-                                              <Label
-                                                htmlFor="since-field"
-                                                className="form-label"
-                                              >
-                                                TVA intracommunautaire
-                                              </Label>
-                                              <Input
-                                                name="eco_intra_tva_fournisseur"
-                                                id="eco_intra_tva_fournisseur-field"
-                                                className="form-control"
-                                                placeholder="Enter since"
-                                                type="checkbox"
-                                                validate={{
-                                                  required: { value: true },
-                                                }}
-                                                onChange={validation.handleChange}
-                                                onBlur={validation.handleBlur}
-                                                value={validation.values.eco_intra_tva_fournisseur || 0}
-                                                invalid={
-                                                  validation.touched.eco_intra_tva_fournisseur && validation.errors.eco_intra_tva_fournisseur ? true : false
-                                                }
-                                              />
-                                              {validation.touched.since && validation.errors.eco_intra_tva_fournisseur ? (
-                                                <FormFeedback type="invalid">{validation.errors.eco_intra_tva_fournisseur}</FormFeedback>
-                                              ) : null}
-                                            </div>
-                                          </Col>
-                                          <Col lg={6}>
-                                            <div>
-                                              <Label
-                                                htmlFor="eco_tva_collect_fournisseur-field"
-                                                className="form-label"
-                                              >
-                                                TVA collectée
-                                              </Label>
-                                              <Input
-                                                name="eco_tva_collect_fournisseur"
-                                                id="eco_tva_collect_fournisseur-field"
-                                                className="form-control"
-                                                placeholder="Enter since"
-                                                type="text"
-                                                validate={{
-                                                  required: { value: true },
-                                                }}
-                                                onChange={validation.handleChange}
-                                                onBlur={validation.handleBlur}
-                                                value={validation.values.eco_tva_collect_fournisseur || ""}
-                                                invalid={
-                                                  validation.touched.eco_tva_collect_fournisseur && validation.errors.eco_tva_collect_fournisseur ? true : false
-                                                }
-                                              />
-                                              {validation.touched.eco_tva_collect_fournisseur && validation.errors.eco_tva_collect_fournisseur ? (
-                                                <FormFeedback type="invalid">{validation.errors.eco_tva_collect_fournisseur}</FormFeedback>
-                                              ) : null}
-                                            </div>
-                                          </Col>
-                                          <Col lg={6}>
-                                            <div>
-                                              <Label
-                                                htmlFor="eco_tva_deduct_fournisseur-field"
-                                                className="form-label"
-                                              >
-                                                TVA déductible
-                                              </Label>
-                                              <Input
-                                                name="eco_tva_deduct_fournisseur"
-                                                id="eco_tva_deduct_fournisseur-field"
-                                                className="form-control"
-                                                placeholder="Enter since"
-                                                type="text"
-                                                validate={{
-                                                  required: { value: true },
-                                                }}
-                                                onChange={validation.handleChange}
-                                                onBlur={validation.handleBlur}
-                                                value={validation.values.eco_tva_deduct_fournisseur || ""}
-                                                invalid={
-                                                  validation.touched.eco_tva_deduct_fournisseur && validation.errors.eco_tva_deduct_fournisseur ? true : false
-                                                }
-                                              />
-                                              {validation.touched.eco_tva_deduct_fournisseur && validation.errors.eco_tva_deduct_fournisseur ? (
-                                                <FormFeedback type="invalid">{validation.errors.eco_tva_deduct_fournisseur}</FormFeedback>
-                                              ) : null}
-                                            </div>
-                                          </Col>
-                                        </Row>
-                                      </CardBody>
-                                    </Collapse>
-                                  </Card>
-                                }
-
-
-                              </div>
-                            </>
-                              */}
-
-
-
                         </Row>
                       </ModalBody>
                       <ModalFooter>
@@ -1529,115 +948,100 @@ const Collaborateurs = () => {
               </Card>
             </Col>
             <Col xxl={3}>
-              <Card id="company-view-detail">
-                <CardBody className="text-center">
-                  <div className="position-relative d-inline-block">
-                    <div className="avatar-md">
-                      <div className="avatar-title bg-light rounded-circle">
-                        <img src={process.env.REACT_APP_API_URL + "/images/" + (info.image_src || "brands/mail_chimp.png")} alt="" className="avatar-sm rounded-circle object-cover" />
-                      </div>
+              <div id="start-anime">
+                <Card id="contact-view-detail">
+                  <CardBody className="text-center">
+                    <div className="position-relative d-inline-block">
+                      <img
+                        src={process.env.REACT_APP_API_URL + "v1/images/user-dummy-img.jpg"}
+                        alt=""
+                        className="avatar-lg rounded-circle img-thumbnail"
+                      />
+                      <span className="contact-active position-absolute rounded-circle bg-success">
+                        <span className="visually-hidden"></span>
+                      </span>
                     </div>
-                  </div>
-                  <h5 className="mt-3 mb-1">{info.name || "Syntyce Solution"}</h5>
-                  <p className="text-muted">{info.owner || "Michael Morris"}</p>
+                    <h5 className="mt-4 mb-1">{info.ent_name}</h5>
+                    <h7 className="text-muted">{info.ent_lastname + " " + info.ent_firstname}</h7>
 
-                  <ul className="list-inline mb-0">
-                    <li className="list-inline-item avatar-xs">
-                      <Link
-                        to="#"
-                        className="avatar-title bg-soft-success text-success fs-15 rounded"
-                      >
-                        <i className="ri-global-line"></i>
-                      </Link>
-                    </li>
-                    <li className="list-inline-item avatar-xs">
-                      <Link
-                        to="#"
-                        className="avatar-title bg-soft-danger text-danger fs-15 rounded"
-                      >
-                        <i className="ri-mail-line"></i>
-                      </Link>
-                    </li>
-                    <li className="list-inline-item avatar-xs">
-                      <Link
-                        to="#"
-                        className="avatar-title bg-soft-warning text-warning fs-15 rounded"
-                      >
-                        <i className="ri-question-answer-line"></i>
-                      </Link>
-                    </li>
-                  </ul>
-                </CardBody>
-                <div className="card-body">
-                  <h6 className="text-muted text-uppercase fw-semibold mb-3">
-                    Information
-                  </h6>
-                  <p className="text-muted mb-4">
-                    A company incurs fixed and variable costs such as the
-                    purchase of raw materials, salaries and overhead, as
-                    explained by AccountingTools, Inc. Business owners have the
-                    discretion to determine the actions.
-                  </p>
-                  <div className="table-responsive table-card">
-                    <table className="table table-borderless mb-0">
-                      <tbody>
-                        <tr>
-                          <td className="fw-medium">
-                            Industry Type
-                          </td>
-                          <td>{info.industry_type || "Chemical Industries"}</td>
-                        </tr>
-                        <tr>
-                          <td className="fw-medium">
-                            Location
-                          </td>
-                          <td>{info.location || "Damascus, Syria"}</td>
-                        </tr>
-                        <tr>
-                          <td className="fw-medium">
-                            Employee
-                          </td>
-                          <td>{info.employee || "10-50"}</td>
-                        </tr>
-                        <tr>
-                          <td className="fw-medium">
-                            Rating
-                          </td>
-                          <td>
-                            {info.star_value || "4.0"}{" "}
-                            <i className="ri-star-fill text-warning align-bottom"></i>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td className="fw-medium">
-                            Website
-                          </td>
-                          <td>
-                            <Link
-                              to="#"
-                              className="link-primary text-decoration-underline"
-                            >
-                              {info.website || "www.syntycesolution.com"}
-                            </Link>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td className="fw-medium">
-                            Contact Email
-                          </td>
-                          <td>{info.contact_email || "info@syntycesolution.com"}</td>
-                        </tr>
-                        <tr>
-                          <td className="fw-medium">
-                            Since
-                          </td>
-                          <td>{info.since || "1995"}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </Card>
+                    <ul className="list-inline mb-0">
+                      <li className="list-inline-item avatar-xs">
+                        <Link
+                          to={`tel:${info.ent_phone}`}
+                          className="avatar-title bg-soft-success text-success fs-15 rounded"
+                        >
+                          <i className="ri-phone-line"></i>
+                        </Link>
+                      </li>
+                      <li className="list-inline-item avatar-xs">
+                        <Link
+                          to={`mailto:${info.ent_email}`}
+                          className="avatar-title bg-soft-danger text-danger fs-15 rounded"
+                        >
+                          <i className="ri-mail-line"></i>
+                        </Link>
+                      </li>
+                    </ul>
+                  </CardBody>
+                  <CardBody>
+                    <h6 className="text-muted text-uppercase fw-semibold mb-3">
+                      Information complémentaire
+                    </h6>
+                    <p className="text-muted mb-4">
+                      {(info.ent_info) || "non reseigner"}
+                    </p>
+                    <div className="table-responsive table-card">
+                      <Table className="table table-borderless mb-0">
+                        <tbody>
+                          <tr>
+                            <td className="fw-medium">
+                              Entreprise
+                            </td>
+                            <td>{info.ent_name}</td>
+                          </tr>
+                          <tr>
+                            <td className="fw-medium">
+                              Adresse
+                            </td>
+                            <td>{info.ent_adresse}, {info.ent_cp} {info.ent_ville}</td>
+                          </tr>
+                          <tr>
+                            <td className="fw-medium">
+                              Email
+                            </td>
+                            <td>{info.ent_email}</td>
+                          </tr>
+                          <tr>
+                            <td className="fw-medium">
+                              Téléphone
+                            </td>
+                            <td>{info.ent_phone}</td>
+                          </tr>
+                          <tr>
+                            <td className="fw-medium">
+                              Siren
+                            </td>
+                            <td>{info.ent_siren}</td>
+                          </tr>
+                          <tr>
+                            <td className="fw-medium">
+                              Iban
+                            </td>
+                            <td>{info.ent_iban}</td>
+                          </tr>
+                          <tr>
+                            <td className="fw-medium">
+                              Bic
+                            </td>
+                            <td>{info.ent_bic}</td>
+                          </tr>
+
+                        </tbody>
+                      </Table>
+                    </div>
+                  </CardBody>
+                </Card>
+              </div>
             </Col>
           </Row>
         </Container>

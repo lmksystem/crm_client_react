@@ -12,6 +12,10 @@ import {
   addNewCollaborateur as addNewCollaborateurApi,
   updateCollaborateur as updateCollaborateurApi,
   deleteCollaborateur as deleteCollaborateurApi,
+  getTva as getTvaApi,
+  addNewTva as addNewTvaApi,
+  updateTva as updateTvaApi,
+  deleteTva as deleteTvaApi,
 } from "../../helpers/backend_helper";
 
 
@@ -112,6 +116,52 @@ export const onAddNewClientCompta = createAsyncThunk("gestion/onAddNewClientComp
     return collabo;
   }catch (error) {
     toast.error("Collaborateur Deleted Failed", { autoClose: 3000 });
+    return error;
+  }
+})
+
+// parametre
+
+export const getTva = createAsyncThunk("gestion/getTva" , async () => {
+  try{
+    const response = getTvaApi()
+    return response;
+  }catch (error) {
+    return error;
+  }
+})
+
+export const addNewTva = createAsyncThunk("gestion/addNewTva" , async (tva) => {
+  try{
+    console.log(tva);
+    const response = await addNewTvaApi(tva)
+  
+    toast.success("tva Added Successfully", { autoClose: 3000 });
+    return response.data;
+  }catch (error) {
+    toast.error("tva Added Failed", { autoClose: 3000 });
+    return error;
+  }
+})
+
+export const updateTva = createAsyncThunk("gestion/updateTva" , async (tva) => {
+  try{
+    const response = await updateTvaApi(tva)
+    toast.success("tva Updated Successfully", { autoClose: 3000 });
+    return response.data;
+  }catch (error) {
+    toast.error("tva Updated Failed", { autoClose: 3000 });
+    return error;
+  }
+})
+
+export const deleteTva = createAsyncThunk("gestion/deleteTva" , async (tva) => {
+  try{
+    const response = deleteTvaApi(tva)
+    toast.success("tva Deleted Successfully", { autoClose: 3000 });
+    return tva;
+  }catch (error) {
+    toast.error("tva Deleted Failed", { autoClose: 3000 });
     return error;
   }
 })

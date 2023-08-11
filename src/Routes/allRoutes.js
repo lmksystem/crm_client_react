@@ -37,7 +37,7 @@ import CrmDeals from "../pages/Crm/CrmDeals/index";
 import CrmLeads from "../pages/Crm/CrmLeads/index";
 
 //Invoices
-import InvoiceList from "../pages/Invoices/InvoiceList";
+// import InvoiceList from "../pages/Invoices/InvoiceList";
 import InvoiceCreate from "../pages/Invoices/InvoiceCreate";
 import InvoiceDetails from "../pages/Invoices/InvoiceDetails";
 
@@ -238,6 +238,10 @@ import Contacts from "../Views/Contacts/index";
 import Collaborateurs from "../Views/Collaborateurs";
 import DashboardEcommerce from "../Views/DashboardEcommerce";
 import GestionParameter from "../Views/GestionParameter";
+//Invoices
+import InvoiceList from "../Views/Invoices/InvoiceList";
+// import InvoiceCreate from "../pages/Invoices/InvoiceCreate";
+// import InvoiceDetails from "../pages/Invoices/InvoiceDetails";
 
 const authProtectedRoutes = [
   // MES ROUTE QUE JE GARDE
@@ -246,12 +250,17 @@ const authProtectedRoutes = [
   { path: "/gestion/parametre", component: <GestionParameter /> },
   { path: "/dashboard", component: <DashboardEcommerce /> },
   { path: "/index", component: <DashboardEcommerce /> },
+
+  // //Invoices
+  { path: "/liste-factures", component: <InvoiceList /> },
+  { path: "/apps-invoices-details", component: <InvoiceDetails /> },
+  { path: "/apps-invoices-create", component: <InvoiceCreate /> },
+
   {
     path: "/",
     exact: true,
     component: <Navigate to="/dashboard" />,
   },
-
   // { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
   // { path: "/dashboard-crm", component: <DashboardCrm /> },
   // { path: "/dashboard-crypto", component: <DashboardCrypto /> },
@@ -296,11 +305,6 @@ const authProtectedRoutes = [
   // { path: "/apps-crm-companies", component: <CrmCompanies /> },
   // { path: "/apps-crm-deals", component: <CrmDeals /> },
   // { path: "/apps-crm-leads", component: <CrmLeads /> },
-
-  // //Invoices
-  // { path: "/apps-invoices-list", component: <InvoiceList /> },
-  // { path: "/apps-invoices-details", component: <InvoiceDetails /> },
-  // { path: "/apps-invoices-create", component: <InvoiceCreate /> },
 
   // //Supports Tickets
   // { path: "/apps-tickets-list", component: <ListView /> },

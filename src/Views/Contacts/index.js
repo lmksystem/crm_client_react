@@ -369,7 +369,6 @@ const Contacts = () => {
   }, [collaborateurs])
 
   function handlestag(collaborateur) {
-    console.log(collaborateur);
     setCollaborateur(collaborateur);
   }
 

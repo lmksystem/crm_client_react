@@ -34,11 +34,10 @@ import DeleteModal from "../../Components/Common/DeleteModal";
 
 //Import actions
 import {
-  getContacts as onGetContacts,
-  addNewContact as onAddNewContact,
-  updateContact as onUpdateContact,
-  deleteContact as onDeleteContact,
-  getCollaborateurs as onGetCollaborateurs,
+  getTva as onGetTva,
+  addNewTva as onAddNewTva,
+  updateTva as onUpdateTva,
+  deleteTva as onDeleteTva,
 } from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
@@ -57,75 +56,59 @@ import ExportCSVModal from "../../Components/Common/ExportCSVModal";
 
 const GestionParameter = () => {
   const dispatch = useDispatch();
-  const { contacts, collaborateurs, isContactSuccess, error } = useSelector((state) => ({
-    contacts: state.Gestion.contacts,
-    collaborateurs: state.Gestion.collaborateurs,
-    isContactSuccess: state.Gestion.isContactSuccess,
-    isCollaborateurSuccess: state.Gestion.isCollaborateurSuccess,
+  const { tva, isTvaSuccess, error } = useSelector((state) => ({
+    tva: state.Gestion.tva,
+    isTvaSuccess: state.Gestion.isTvaSuccess,
     error: state.Gestion.error,
   }));
 
   useEffect(() => {
-    if (contacts && !contacts.length) {
-      dispatch(onGetContacts());
-      dispatch(onGetCollaborateurs());
-    }
-  }, [dispatch, contacts]);
+    console.log(tva);
+    // if (tva && !tva?.length) {
+    dispatch(onGetTva());
+    // }
+  }, [dispatch]);
 
   useEffect(() => {
-    setContact(contacts);
-  }, [contacts]);
+    setTvaState(tva);
+  }, [tva]);
 
   useEffect(() => {
-    if (!isEmpty(contacts)) {
-      setContact(contacts);
+    if (!isEmpty(tva)) {
       setIsEdit(false);
     }
-  }, [contacts]);
+  }, [tva]);
 
 
   const [isEdit, setIsEdit] = useState(false);
-  const [contact, setContact] = useState([]);
-
-  const [collaborateurList, setCollaborateurList] = useState([]);
-  const [collaborateur, setCollaborateur] = useState(null);
+  const [tvaState, setTvaState] = useState([]);
 
   //delete Conatct
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteModalMulti, setDeleteModalMulti] = useState(false);
-
-  const [show, setShow] = useState(false);
 
   const [modal, setModal] = useState(false);
 
   const toggle = useCallback(() => {
     if (modal) {
       setModal(false);
-      setContact(null);
-      setCollaborateur(null)
+      setTvaState(null);
     } else {
       setModal(true);
     }
   }, [modal]);
 
   // Delete Data
-  const handleDeleteContact = () => {
-    if (contact) {
-      dispatch(onDeleteContact(contact.epe_id));
+  const handleDeleteTva = () => {
+    if (tvaState) {
+      dispatch(onDeleteTva(tvaState.tva_id));
       setDeleteModal(false);
     }
   };
 
-  const onClickDelete = (contact) => {
-    setContact(contact);
+  const onClickDelete = (tva) => {
+    setTvaState(tva);
     setDeleteModal(true);
-  };
-
-  // Add Data
-  const handleContactClicks = () => {
-    setContact("");
-    setIsEdit(false);
-    toggle();
   };
 
   // validation
@@ -134,60 +117,37 @@ const GestionParameter = () => {
     enableReinitialize: true,
 
     initialValues: {
-      // contactId: (contact && contact.contactId) || '',
-      // img: (contact && contact.img) || '',
-      lastname: (contact && contact.lastname) || '',
-      firstname: (contact && contact.firstname) || '',
-      email: (contact && contact.email) || '',
-      phone: (contact && contact.phone) || '',
-      job: (contact && contact.job) || '',
-      info: (contact && contact.info) || '',
-      // phone: (contact && contact.phone) || '',
-      // lead_score: (contact && contact.lead_score) || '',
-      // tags: (contact && contact.tags) || [],
+      tva_id: (tvaState && tvaState.tva_id) || 0,
+      tva_com_id: (tvaState && tvaState.tva_id) || "",
+      tva_libelle: (tvaState && tvaState.tva_libelle) || "",
+      tva_value: (tvaState && tvaState.tva_value) || 0,
     },
     validationSchema: Yup.object({
-      // contactId: Yup.string().required("Please Enter Contact Id"),
-      lastname: Yup.string().required("Veuillez entrer un nom"),
-      firstname: Yup.string().required("Veuillez entrer un prénom"),
-      email: Yup.string().required("Veuillez entrer un email"),
-      phone: Yup.string().required("Veuillez entrer un téléphone"),
-      job: Yup.string(),
-      info: Yup.string(),
+      tva_libelle: Yup.string().required("Veuillez entrer un libelle"),
+      tva_value: Yup.number().required("Veuillez entrer une valeur"),
     }),
     onSubmit: (values) => {
+      console.log(values);
       if (isEdit) {
 
-        const updateContact = {
-          epe_id: contact ? contact.id : 0,
-          epe_lastname: values.lastname,
-          epe_firstname: values.firstname,
-          epe_email: values.email,
-          epe_phone: values.phone,
-          epe_job: values.job,
-          epe_info: values.info,
-          epe_ent_fk: collaborateur.value,
-          ent_name: collaborateur.label,
+        const updateTva = {
+          tva_id: tvaState ? tvaState.tva_id : 0,
+          tva_libelle: values.tva_libelle,
+          tva_value: values.tva_value,
         };
-        
-        // update Contact
-        dispatch(onUpdateContact(updateContact));
+
+        // update tva
+        dispatch(onUpdateTva(updateTva));
         validation.resetForm();
 
       } else {
-        const newContact = {
-          epe_lastname: values["lastname"],
-          epe_firstname: values["firstname"],
-          epe_email: values["email"],
-          epe_phone: values["phone"],
-          epe_job: values["job"],
-          epe_info: values["info"],
-          epe_ent_fk: collaborateur.value,
-          ent_name: collaborateur.label,
+        const newTva = {
+          tva_libelle: values.tva_libelle,
+          tva_value: values.tva_value,
         };
-
-        // save new Contact
-        dispatch(onAddNewContact(newContact));
+        console.log(newTva);
+        // save new tva
+        dispatch(onAddNewTva(newTva));
         validation.resetForm();
       }
       toggle();
@@ -195,17 +155,13 @@ const GestionParameter = () => {
   });
 
   // Update Data
-  const handleContactClick = useCallback((arg) => {
-    const contact = arg;
+  const handleTvaClick = useCallback((arg) => {
+    const tva = arg;
 
-    setContact({
-      id: contact.epe_id,
-      lastname: contact.epe_lastname,
-      firstname: contact.epe_firstname,
-      email: contact.epe_email,
-      phone: contact.epe_phone,
-      job: contact.epe_job,
-      info: contact.epe_info,
+    setTvaState({
+      tva_id: tva.tva_id,
+      tva_libelle: tva.tva_libelle,
+      tva_value: tva.tva_value,
     });
 
     setIsEdit(true);
@@ -215,7 +171,7 @@ const GestionParameter = () => {
   // Checked All
   const checkedAll = useCallback(() => {
     const checkall = document.getElementById("checkBoxAll");
-    const ele = document.querySelectorAll(".contactCheckBox");
+    const ele = document.querySelectorAll(".tvaCheckBox");
 
     if (checkall.checked) {
       ele.forEach((ele) => {
@@ -235,8 +191,10 @@ const GestionParameter = () => {
 
   const deleteMultiple = () => {
     const checkall = document.getElementById("checkBoxAll");
+    console.log(selectedCheckBoxDelete);
     selectedCheckBoxDelete.forEach((element) => {
-      dispatch(onDeleteContact(element.value));
+      console.log(element.value);
+      dispatch(onDeleteTva(element.value));
       setTimeout(() => { toast.clearWaitingQueue(); }, 3000);
     });
     setIsMultiDeleteButton(false);
@@ -244,7 +202,7 @@ const GestionParameter = () => {
   };
 
   const deleteCheckbox = () => {
-    const ele = document.querySelectorAll(".contactCheckBox:checked");
+    const ele = document.querySelectorAll(".tvaCheckBox:checked");
     ele.length > 0 ? setIsMultiDeleteButton(true) : setIsMultiDeleteButton(false);
     setSelectedCheckBoxDelete(ele);
   };
@@ -255,152 +213,76 @@ const GestionParameter = () => {
       {
         Header: <input type="checkbox" id="checkBoxAll" className="form-check-input" onClick={() => checkedAll()} />,
         Cell: (cellProps) => {
-          return <input type="checkbox" className="contactCheckBox form-check-input" value={cellProps.row.original.epe_id} onChange={() => deleteCheckbox()} />;
+          return <input type="checkbox" className="tvaCheckBox form-check-input" value={cellProps.row.original.tva_id} onChange={() => deleteCheckbox()} />;
         },
         id: '#',
       },
       {
-        Header: '',
-        accessor: 'epe_id',
+        id: "hidden-id",
+        accessor: 'tva_id',
         hiddenColumns: true,
         Cell: (cell) => {
           return <input type="hidden" value={cell.value} />;
         }
       },
       {
-        Header: "Entreprise",
-        accessor: "ent_name",
+        Header: "Libellé",
+        accessor: "tva_libelle",
         filterable: false,
       },
       {
-        Header: "Nom",
-        accessor: "epe_lastname",
+        Header: "Taux",
+        accessor: "tva_value",
         filterable: false,
-      },
-      {
-        Header: "Prénom",
-        accessor: "epe_firstname",
-        filterable: false,
-      },
-      {
-        Header: "Email",
-        accessor: "epe_email",
-        filterable: false,
-      },
-      {
-        Header: "Téléphone",
-        accessor: "epe_phone",
-        filterable: false,
-        // Cell: (cell) => (
-        //   <>
-        //     {handleValidDate(cell.value)}
-        //   </>
-        // ),
-      },
-      {
-        Header: "Poste",
-        accessor: "epe_job",
-        Cell: (cell) => {
-          return <span className="badge text-uppercase badge-soft-success"> {cell.value} </span>;
-        }
       },
       {
         Header: "Action",
         Cell: (cellProps) => {
+          let tva = cellProps.row.original;
           return (
             <ul className="list-inline hstack gap-2 mb-0">
               <li className="list-inline-item edit" title="Call">
-                <Link to="#" className="text-muted d-inline-block">
-                  <i className="ri-phone-line fs-16"></i>
+                <Link to="#" onClick={() => { handleTvaClick(tva) }} className="text-primary d-inline-block edit-item-btn">
+                  <i className="ri-pencil-fill fs-16"></i>
                 </Link>
               </li>
-              <li className="list-inline-item">
-                <UncontrolledDropdown>
-                  <DropdownToggle
-                    href="#"
-                    className="btn btn-soft-secondary btn-sm dropdown"
-                    tag="button"
-                  >
-                    <i className="ri-more-fill align-middle"></i>
-                  </DropdownToggle>
-                  <DropdownMenu className="dropdown-menu-end">
-                    <DropdownItem className="dropdown-item" href="#"
-                      onClick={() => { const contactData = cellProps.row.original; setInfo(contactData); setShow(true); }}
-                    >
-                      <i className="ri-eye-fill align-bottom me-2 text-muted"></i>{" "}
-                      Voir
-                    </DropdownItem>
-                    <DropdownItem
-                      className="dropdown-item edit-item-btn"
-                      href="#"
-                      onClick={() => {
-                        const contactData = cellProps.row.original;
-
-                        setCollaborateur(collaborateurList.filter((c) => c.value == contactData.epe_ent_fk)[0]);
-                        handleContactClick(contactData);
-                      }}
-                    >
-                      <i className="ri-pencil-fill align-bottom me-2 text-muted"></i>{" "}
-                      Modifier
-                    </DropdownItem>
-                    <DropdownItem
-                      className="dropdown-item remove-item-btn"
-                      href="#"
-                      onClick={() => { const contactData = cellProps.row.original; onClickDelete(contactData); }}
-                    >
-                      <i className="ri-delete-bin-fill align-bottom me-2 text-muted"></i>{" "}
-                      Supprimer
-                    </DropdownItem>
-                  </DropdownMenu>
-                </UncontrolledDropdown>
+              <li className="list-inline-item edit" title="Call">
+                <Link to="#" onClick={() => { onClickDelete(tva) }} className="text-danger d-inline-block remove-item-btn">
+                  <i className="ri-delete-bin-5-fill fs-16"></i>
+                </Link>
               </li>
+
             </ul>
           );
         },
       },
     ],
-    [handleContactClick, checkedAll, collaborateurList]
+    [handleTvaClick, checkedAll]
   );
 
-  useEffect(() => {
-    if (collaborateurs) {
-      setCollaborateurList(collaborateurs.map((c) => ({ label: c.ent_name, value: c.ent_id })))
-    }
-  }, [collaborateurs])
-
-  function handlestag(collaborateur) {
-    console.log(collaborateur);
-    setCollaborateur(collaborateur);
-  }
-
-  useEffect(() => {
-    if (show) {
-      setTimeout(() => {
-        document.getElementById('start-anime').classList.add("show")
-      }, 200);
-    }
-  }, [show])
-
-
-  // SideBar Contact Deatail
-  const [info, setInfo] = useState([]);
+  // Add Data
+  const handleCompanyClicks = () => {
+    setCollaborateur("");
+    setIsEdit(false);
+    toggle();
+  };
 
   // Export Modal
   const [isExportCSV, setIsExportCSV] = useState(false);
 
-  document.title = "Contacts | Countano";
+  document.title = "Paramètre | Countano";
   return (
     <React.Fragment>
       <div className="page-content">
         <ExportCSVModal
           show={isExportCSV}
           onCloseClick={() => setIsExportCSV(false)}
-          data={contacts}
+          data={tva}
         />
 
         <DeleteModal
           show={deleteModal}
-          onDeleteClick={handleDeleteContact}
+          onDeleteClick={handleDeleteTva}
           onCloseClick={() => setDeleteModal(false)}
         />
 
@@ -413,7 +295,7 @@ const GestionParameter = () => {
           onCloseClick={() => setDeleteModalMulti(false)}
         />
         <Container fluid>
-          <BreadCrumb title="Contacts" pageTitle="Gestion" />
+          <BreadCrumb title="tva" pageTitle="Gestion" />
           <Row>
             <Col lg={12}>
               <Card>
@@ -426,8 +308,8 @@ const GestionParameter = () => {
                           setModal(true);
                         }}
                       >
-                        <i className="ri-add-fill me-1 align-bottom"></i> Ajouter
-                        Contact
+                        <i className="ri-add-fill me-1 align-bottom"></i>
+                        Ajouter règle
                       </button>
                     </div>
                     <div className="flex-shrink-0">
@@ -442,9 +324,121 @@ const GestionParameter = () => {
                     </div>
                   </div>
                 </CardHeader>
+
+
+                <CardBody className="pt-0">
+                  <div>
+
+                    {isTvaSuccess ? (
+
+                      <TableContainer
+                        columns={columns}
+                        data={(tva || [])}
+                        isGlobalFilter={false}
+                        isAddUserList={false}
+                        customPageSize={7}
+                        className="custom-header-css"
+                        divClass="table-responsive table-card mb-2"
+                        tableClass="align-middle table-nowrap"
+                        theadClass="table-light"
+                        handleCompanyClick={handleCompanyClicks}
+                        isCompaniesFilter={true}
+
+                      />
+
+                    ) : (<Loader error={error} />)
+                    }
+                  </div>
+                  <Modal id="showModal" isOpen={modal} toggle={toggle} centered size="lg">
+                    <ModalHeader className="bg-soft-info p-3" toggle={toggle}>
+                      {!!isEdit ? "Modifier règle" : "Ajouter règle"}
+                    </ModalHeader>
+                    <Form className="tablelist-form" onSubmit={(e) => {
+
+                      e.preventDefault();
+                      validation.handleSubmit();
+                      return false;
+                    }}>
+                      <ModalBody>
+                        <input type="hidden" id="id-field" />
+                        <Row className="g-3">
+                          <Col lg={12}>
+
+                            <div>
+                              <Label
+                                htmlFor="tva_libelle-field"
+                                className="form-label"
+                              >
+                                Tva libellé
+                              </Label>
+                              <Input
+                                name="tva_libelle"
+                                id="tva_libelle-field"
+                                className="form-control"
+                                placeholder="Entrer un libellé"
+                                type="text"
+                                validate={{
+                                  required: { value: true },
+                                }}
+                                onChange={validation.handleChange}
+                                onBlur={validation.handleBlur}
+                                value={validation.values.tva_libelle || ""}
+                                invalid={
+                                  validation.touched.tva_libelle && validation.errors.tva_libelle ? true : false
+                                }
+                              />
+                              {validation.touched.tva_libelle && validation.errors.tva_libelle ? (
+                                <FormFeedback type="invalid">{validation.errors.tva_libelle}</FormFeedback>
+                              ) : null}
+                            </div>
+
+                          </Col>
+                          <Col lg={12}>
+
+                            <div>
+                              <Label
+                                htmlFor="tva_value-field"
+                                className="form-label"
+                              >
+                                Tva valeur
+                              </Label>
+                              <Input
+                                name="tva_value"
+                                id="tva_value-field"
+                                className="form-control"
+                                placeholder="Entrer une valeur"
+                                type="number"
+                                validate={{
+                                  required: { value: true },
+                                }}
+                                onChange={validation.handleChange}
+                                onBlur={validation.handleBlur}
+                                value={validation.values.tva_value || ""}
+                                invalid={
+                                  validation.touched.tva_value && validation.errors.tva_value ? true : false
+                                }
+                              />
+                              {validation.touched.tva_value && validation.errors.tva_value ? (
+                                <FormFeedback type="invalid">{validation.errors.tva_value}</FormFeedback>
+                              ) : null}
+                            </div>
+
+                          </Col>
+                        </Row>
+                      </ModalBody>
+                      <ModalFooter>
+                        <div className="hstack gap-2 justify-content-end">
+                          <button type="button" className="btn btn-light" onClick={() => { setModal(false); }} > Fermer </button>
+                          <button type="submit" className="btn btn-success" id="add-btn" >  {!!isEdit ? "Modifier" : "Ajouter la règle"} </button>
+                        </div>
+                      </ModalFooter>
+                    </Form>
+                  </Modal>
+                  <ToastContainer closeButton={false} limit={1} />
+                </CardBody>
+
               </Card>
             </Col>
-           
           </Row>
         </Container>
       </div>

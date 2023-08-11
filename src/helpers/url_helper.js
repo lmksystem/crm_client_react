@@ -81,11 +81,7 @@ export const GET_DEALS = "/deals";
 export const GET_TRANSACTION_LIST = "/transaction-list";
 export const GET_ORDRER_LIST = "/order-list";
 
-// Invoice
-export const GET_INVOICES = "/apps/invoice";
-export const ADD_NEW_INVOICE = "/apps/invoice";
-export const UPDATE_INVOICE = "/apps/invoice";
-export const DELETE_INVOICE = "/apps/invoice";
+
 
 // TicketsList
 export const GET_TICKETS_LIST = "/apps/ticket";
@@ -236,6 +232,22 @@ export const GET_COLLABORATEUR = "/v1/entity";
 export const ADD_NEW_COLLABORATEUR = "/v1/entity";
 export const UPDATE_COLLABORATEUR = "/v1/entity";
 export const DELETE_COLLABORATEUR = "/v1/entity";
+
+// TVA
+export const GET_TVA = "/v1/tva";
+export const ADD_NEW_TVA = "/v1/tva";
+export const UPDATE_TVA = "/v1/tva";
+export const DELETE_TVA = "/v1/tva";
+
+/**
+ * Facturation
+ */
+
+// Invoice
+export const GET_INVOICES = "/v1/invoice";
+export const ADD_NEW_INVOICE = "/v1/invoice";
+export const UPDATE_INVOICE = "/v1/invoice";
+export const DELETE_INVOICE = "/v1/invoice";
 
 //LOGIN
 export const POST_LOGIN = "/v1/user/login";
