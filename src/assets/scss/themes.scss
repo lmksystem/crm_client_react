@@ -236,3 +236,8 @@ $value in $theme-colors {
 .select-style {
   background-color: white;
 }
+
+.title-client {
+  display: flex;
+  justify-content: space-between;
+}

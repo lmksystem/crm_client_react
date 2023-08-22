@@ -249,5 +249,15 @@ export const ADD_NEW_INVOICE = "/v1/invoice";
 export const UPDATE_INVOICE = "/v1/invoice";
 export const DELETE_INVOICE = "/v1/invoice";
 
+/**
+ * Company
+ */
+
+// Company
+export const GET_COMPANY = "/v1/user/company";
+export const ADD_NEW_COMPANY = "/v1/company";
+export const UPDATE_COMPANY = "/v1/company";
+export const DELETE_COMPANY = "/v1/company";
+
 //LOGIN
 export const POST_LOGIN = "/v1/user/login";

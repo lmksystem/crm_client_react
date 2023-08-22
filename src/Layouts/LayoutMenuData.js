@@ -153,7 +153,7 @@ const Navdata = () => {
         {
           id: "invoices",
           label: "Factures",
-          link: "/liste-factures",
+          link: "/factures/liste",
           isChildItem: false,
           parentId: "facturation",
 

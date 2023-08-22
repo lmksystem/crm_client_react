@@ -8,7 +8,7 @@ import {
   addNewInvoice as addNewInvoiceApi,
   updateInvoice as updateInvoiceApi,
   deleteInvoice as deleteInvoiceApi
-} from "../../helpers/fakebackend_helper";
+} from "../../helpers/backend_helper";
 
 export const getInvoices = createAsyncThunk("invoice/getInvoices", async () => {
   try {

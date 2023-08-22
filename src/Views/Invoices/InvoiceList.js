@@ -35,6 +35,10 @@ import Loader from "../../Components/Common/Loader";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import 'moment/locale/fr'  // without this line it didn't work
+import { InvoiceListGlobalSearch } from "../../Components/Common/GlobalSearchFilter";
+moment.locale('fr')
+
 const InvoiceList = () => {
   document.title = "Liste facture  | Countano";
 
@@ -50,15 +54,60 @@ const InvoiceList = () => {
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteModalMulti, setDeleteModalMulti] = useState(false);
 
+  const [customFiltered, setCustomFiltered] = useState(null);
+  const [isDateFiltered, setIsDateFiltered] = useState(false);
+  const [isEtatFiltered, setIsEtatFiltered] = useState(false);
+
   const [invoice, setInvoice] = useState(null);
 
   useEffect(() => {
     if (invoices && !invoices.length) {
       dispatch(onGetInvoices());
     }
-  }, [dispatch, invoices]);
+  }, [dispatch]);
+
+  const filterByDate = () => {
+    let input = document.getElementById('invoice-date-picker');
+    if (input) {
+      input.addEventListener('change', (e) => {
+        if ((invoices || customFiltered) && e.target.value != "") {
+          let dates = e.target.value.split(', ');
+          let data = customFiltered || invoices;
+          let filterInvoices = data.filter((i) => dates.includes(i.fen_date_create));
+
+          setCustomFiltered(filterInvoices);
+        } else {
+          setCustomFiltered(null);
+        }
+      })
+    }
+
+  }
+
+  const filterByEtat = () => {
+
+    let input = document.getElementById('idStatus');
+
+    if (input) {
+      input.addEventListener('change', (e) => {
+
+        if ((invoices || customFiltered) && e.target.value != "") {
+          let etat = e.target.value;
+          let data = customFiltered || invoices;
+          let filterInvoices = data.filter((i) => i.fen_etat == etat);
+
+          setCustomFiltered(filterInvoices);
+        } else {
+          setCustomFiltered(null);
+        }
+      })
+    }
+
+  }
 
   useEffect(() => {
+    // filterByDate();
+    // filterByEtat();
     setInvoice(invoices);
   }, [invoices]);
 
@@ -73,26 +122,6 @@ const InvoiceList = () => {
       dispatch(onDeleteInvoice(invoice._id));
       setDeleteModal(false);
     }
-  };
-
-  const handleValidDate = date => {
-    const date1 = moment(new Date(date)).format("DD MMM Y");
-    return date1;
-  };
-
-  const handleValidTime = (time) => {
-    const time1 = new Date(time);
-    const getHour = time1.getUTCHours();
-    const getMin = time1.getUTCMinutes();
-    const getTime = `${getHour}:${getMin}`;
-    var meridiem = "";
-    if (getHour >= 12) {
-      meridiem = "PM";
-    } else {
-      meridiem = "AM";
-    }
-    const updateTime = moment(getTime, 'hh:mm').format('hh:mm') + " " + meridiem;
-    return updateTime;
   };
 
 
@@ -112,6 +141,8 @@ const InvoiceList = () => {
     }
     deleteCheckbox();
   }, []);
+
+
 
   // Delete Multiple
   const [selectedCheckBoxDelete, setSelectedCheckBoxDelete] = useState([]);
@@ -139,76 +170,79 @@ const InvoiceList = () => {
       {
         Header: <input type="checkbox" id="checkBoxAll" className="form-check-input" onClick={() => checkedAll()} />,
         Cell: (cellProps) => {
-          return <input type="checkbox" className="invoiceCheckBox form-check-input" value={cellProps.row.original._id} onChange={() => deleteCheckbox()} />;
+          return <input type="checkbox" className="invoiceCheckBox form-check-input" value={cellProps.row.original.fen_id} onChange={() => {/*deleteCheckbox()*/ }} />;
         },
         id: '#',
       },
       {
         Header: "ID",
-        accessor: "invoiceId",
+        accessor: "fen_id",
         filterable: false,
         Cell: (cell) => {
-          return <Link to="/apps-invoices-details" className="fw-medium link-primary">{cell.value}</Link>;
+          return <Link to="/apps-invoices-details" className="fw-medium link-primary">{cell.row.original.fen_id}</Link>;
         },
       },
       {
-        Header: "Customer",
-        Cell: (invoice) => (
-          <>
-            <div className="d-flex align-items-center">
-              {invoice.row.original.img ? <img
-                src={process.env.REACT_APP_API_URL + "/images/users/" + invoice.row.original.img}
-                alt=""
-                className="avatar-xs rounded-circle me-2"
-              /> :
-                <div className="flex-shrink-0 avatar-xs me-2">
-                  <div className="avatar-title bg-soft-success text-success rounded-circle fs-13">
-                    {invoice.row.original.name.charAt(0) + invoice.row.original.name.split(" ").slice(-1).toString().charAt(0)}
+        Header: "Client",
+        accessor: "fco_cus_name",
+        Cell: (invoice) => {
+          return (
+            <>
+              <div className="d-flex align-items-center">
+                {invoice.row.original.img
+                  ? <img
+                    src={process.env.REACT_APP_API_URL + "/images/users/" + invoice.row.original.img}
+                    alt=""
+                    className="avatar-xs rounded-circle me-2"
+                  />
+                  : <div className="flex-shrink-0 avatar-xs me-2">
+                    <div className="avatar-title bg-soft-success text-success rounded-circle fs-13">
+                      {invoice.row.original?.fco_cus_name && invoice.row.original?.fco_cus_name.charAt(0) || ""}
+                    </div>
                   </div>
-                </div>}
-              {invoice.row.original.name}
-            </div>
-          </>
-        ),
+                }
+                {invoice.row.original.fco_cus_name}
+              </div>
+            </>
+          )
+        },
       },
+
       {
         Header: "EMAIL",
-        accessor: "email",
+        accessor: "fco_cus_email",
         filterable: false,
       },
       {
-        Header: "COUNTRY",
-        accessor: "country",
-        filterable: false,
+        Header: "Sujet",
+        accessor: "fen_sujet",
       },
+
       {
         Header: "DATE",
+        accessor: "fen_date_create",
         Cell: (invoice) => (
           <>
-            {handleValidDate(invoice.row.original.date)},{" "}
-            <small className="text-muted">{handleValidTime(invoice.row.original.date)}</small>
+            {moment(new Date(invoice.row.original.fen_date_create)).format("DD MMMM Y")}
+            {/* <small className="text-muted">{handleValidTime(invoice.row.original.fen_date_create)}</small> */}
           </>
         ),
       },
       {
-        Header: "AMOUNT",
-        accessor: "amount",
+        Header: "Montant",
+        accessor: "fen_total_ttc",
         filterable: false,
+        Cell: (invoice) => (
+          <>
+            <div className="fw-semibold ff-secondary">{invoice.row.original.fen_total_ttc}€</div>
+          </>
+        ),
       },
       {
-        Header: "PAYMENT STATUS",
-        accessor: "status",
+        Header: "État",
+        accessor: "fen_etat",
         Cell: (cell) => {
-          switch (cell.value) {
-            case "Paid":
-              return <span className="badge text-uppercase badge-soft-success"> {cell.value} </span>;
-            case "Unpaid":
-              return <span className="badge text-uppercase badge-soft-success"> {cell.value} </span>;
-            case "Cancel":
-              return <span className="badge text-uppercase badge-soft-danger"> {cell.value} </span>;
-            default:
-              return <span className="badge text-uppercase badge-soft-info"> {cell.value} </span>;
-          }
+          return <span className="badge text-uppercase badge-soft-success"> {cell.row.original.fen_etat} </span>
         }
       },
       {
@@ -229,10 +263,10 @@ const InvoiceList = () => {
                   View
                 </DropdownItem>
 
-                <DropdownItem href="/apps-invoices-create">
+                {/* <DropdownItem href="/apps-invoices-create">
                   <i className="ri-pencil-fill align-bottom me-2 text-muted"></i>{" "}
                   Edit
-                </DropdownItem>
+                </DropdownItem> */}
 
                 <DropdownItem href="/#">
                   <i className="ri-download-2-line align-bottom me-2 text-muted"></i>{" "}
@@ -275,7 +309,7 @@ const InvoiceList = () => {
         />
 
         <Container fluid>
-          <BreadCrumb title="Invoice List" pageTitle="Invoices" />
+          <BreadCrumb title="Factures" pageTitle="Liste" />
           <Row>
             {invoiceWidgets.map((invoicewidget, key) => (
               <React.Fragment key={key}>
@@ -341,15 +375,14 @@ const InvoiceList = () => {
               <Card id="invoiceList">
                 <CardHeader className="border-0">
                   <div className="d-flex align-items-center">
-                    <h5 className="card-title mb-0 flex-grow-1">Invoices</h5>
+                    <h5 className="card-title mb-0 flex-grow-1">Factures</h5>
                     <div className="flex-shrink-0">
                       <div className='d-flex gap-2 flex-wrap'>
                         <Link
-                          to={"/apps-invoices-create"}
+                          to={"/factures/creation"}
                           className="btn btn-secondary me-1"
                         >
-                          <i className="ri-add-line align-bottom me-1"></i> Create
-                          Invoice
+                          <i className="ri-add-line align-bottom me-1"></i> Créer une facture
                         </Link>
                         {isMultiDeleteButton && <button className="btn btn-danger"
                           onClick={() => setDeleteModalMulti(true)}
@@ -361,17 +394,19 @@ const InvoiceList = () => {
 
                 <CardBody className="pt-0">
                   <div>
-                    {isInvoiceSuccess && invoices.length ? (
+                    <InvoiceListGlobalSearch origneData={invoices} data={customFiltered} setData={setCustomFiltered} />
+                    {isInvoiceSuccess ? (
                       <TableContainer
                         columns={columns}
-                        data={(invoices || [])}
-                        isGlobalFilter={true}
+                        data={(customFiltered || invoice || [])}
+                        isGlobalFilter={false}
                         isAddUserList={false}
                         customPageSize={10}
+                        divClass="table-responsive table-card mb-2"
                         className="custom-header-css"
                         theadClass="text-muted text-uppercase"
                         isInvoiceListFilter={true}
-                        SearchPlaceholder='Search for customer, email, country, status or something...'
+                        SearchPlaceholder=''
                       />
                     ) : (<Loader error={error} />)
                     }

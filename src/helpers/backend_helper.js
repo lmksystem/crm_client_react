@@ -44,6 +44,39 @@ export const updateTva = tva => api.create(url.UPDATE_TVA + '/' + tva.tva_id, tv
 // delete tva
 export const deleteTva = tva => api.delete(url.DELETE_TVA + '/' + tva);
 
+
+/**
+ * Invoice
+ */
+
+//get Invoice
+export const getInvoices = () => api.get(url.GET_INVOICES);
+
+// add Invoice
+export const addNewInvoice = invoice => api.create(url.ADD_NEW_INVOICE, invoice);
+
+// update Invoice
+export const updateInvoice = invoice => api.update(url.UPDATE_INVOICE + '/' + invoice._id, invoice);
+
+// delete Invoice
+export const deleteInvoice = invoice => api.delete(url.DELETE_INVOICE + '/' + invoice);
+
+/**
+ * Company
+ */
+
+//get Company
+export const getCompany = () => api.get(url.GET_COMPANY);
+
+// // add Company
+// export const addNewInvoice = invoice => api.create(url.ADD_NEW_INVOICE, invoice);
+
+// // update Company
+// export const updateInvoice = invoice => api.update(url.UPDATE_INVOICE + '/' + invoice._id, invoice);
+
+// // delete Company
+// export const deleteInvoice = invoice => api.delete(url.DELETE_INVOICE + '/' + invoice);
+
 /**
  * Login
  */

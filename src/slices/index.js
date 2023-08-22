@@ -74,6 +74,9 @@ import APIKeyReducer from "./apiKey/reducer";
 // Gestion 
 import GestionReducer from "./gestion/reducer";
 
+// Company 
+import CompanyReducer from "./company/reducer";
+
 const rootReducer = combineReducers({
   Layout: LayoutReducer,
   Login: LoginReducer,
@@ -102,6 +105,7 @@ const rootReducer = combineReducers({
   Jobs: JobReducer,
   APIKey: APIKeyReducer,
   Gestion: GestionReducer,
+  Company: CompanyReducer,
 });
 
 export default rootReducer;

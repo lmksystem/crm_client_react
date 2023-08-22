@@ -149,16 +149,19 @@ const BasicElements = () => {
 
                                             <Col xxl={3} md={6}>
                                                 <Label htmlFor="exampleDataList" className="form-label">Datalist example</Label>
-                                                <Input className="form-control" list="datalistOptions" id="exampleDataList" placeholder="Search your country..." />
-                                                <datalist id="datalistOptions">
-                                                    <option defaultValue="Switzerland"> </option>
-                                                    <option defaultValue="New York"> </option>
-                                                    <option defaultValue="France"> </option>
-                                                    <option defaultValue="Spain"> </option>
-                                                    <option defaultValue="Chicago"> </option>
-                                                    <option defaultValue="Bulgaria"> </option>
-                                                    <option defaultValue="Hong Kong"> </option>
-                                                </datalist>
+                                                <div style={{position:'relative'}}>
+                                                  <Input className="form-control" id="exampleDataList" placeholder="Search your country..." />
+                                                  
+                                                  <datalist style={{display:"block", position: 'absolute', backgroundColor: 'white', width: "100%", border: "0.5px solid #dddddd", zIndex: 5000, height: "auto"}} >
+                                                      <option defaultValue="Switzerland">trezgf</option>
+                                                      <option defaultValue="New York"> fef</option>
+                                                      <option defaultValue="France">fezfe</option>
+                                                      <option defaultValue="Spain">groeifj</option>
+                                                      <option defaultValue="Chicago">FEFZP</option>
+                                                      <option defaultValue="Bulgaria">fezkfopzke</option>
+                                                      <option defaultValue="Hong Kong">eogkeokg</option>
+                                                  </datalist>
+                                                </div>
                                             </Col>
 
                                             <Col xxl={3} md={6}>

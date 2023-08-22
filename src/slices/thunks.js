@@ -27,9 +27,6 @@ export * from "./tickets/thunk";
 //Crm
 export * from "./crm/thunk";
 
-//Invoice
-export * from "./invoice/thunk";
-
 //Mailbox
 export * from "./mailbox/thunk";
 
@@ -66,5 +63,16 @@ export * from "./jobs/thunk";
 // API Key
 export * from "./apiKey/thunk"; 
 
-// API Key
+
+
+
+// MES THUNK
+
+// Gestion
 export * from "./gestion/thunk"; 
+
+//Invoice
+export * from "./invoice/thunk";
+
+// Company
+export * from "./company/thunk";

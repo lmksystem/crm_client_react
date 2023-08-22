@@ -36,10 +36,10 @@ import CrmContacts from "../pages/Crm/CrmContacts";
 import CrmDeals from "../pages/Crm/CrmDeals/index";
 import CrmLeads from "../pages/Crm/CrmLeads/index";
 
-//Invoices
-// import InvoiceList from "../pages/Invoices/InvoiceList";
-import InvoiceCreate from "../pages/Invoices/InvoiceCreate";
-import InvoiceDetails from "../pages/Invoices/InvoiceDetails";
+// //Invoices
+// // import InvoiceList from "../pages/Invoices/InvoiceList";
+// import InvoiceCreate from "../pages/Invoices/InvoiceCreate";
+// import InvoiceDetails from "../pages/Invoices/InvoiceDetails";
 
 // Support Tickets
 import ListView from '../pages/SupportTickets/ListView';
@@ -240,8 +240,8 @@ import DashboardEcommerce from "../Views/DashboardEcommerce";
 import GestionParameter from "../Views/GestionParameter";
 //Invoices
 import InvoiceList from "../Views/Invoices/InvoiceList";
-// import InvoiceCreate from "../pages/Invoices/InvoiceCreate";
-// import InvoiceDetails from "../pages/Invoices/InvoiceDetails";
+import InvoiceCreate from "../Views/Invoices/InvoiceCreate";
+import InvoiceDetails from "../Views/Invoices/InvoiceDetails";
 
 const authProtectedRoutes = [
   // MES ROUTE QUE JE GARDE
@@ -252,9 +252,9 @@ const authProtectedRoutes = [
   { path: "/index", component: <DashboardEcommerce /> },
 
   // //Invoices
-  { path: "/liste-factures", component: <InvoiceList /> },
-  { path: "/apps-invoices-details", component: <InvoiceDetails /> },
-  { path: "/apps-invoices-create", component: <InvoiceCreate /> },
+  { path: "/factures/liste", component: <InvoiceList /> },
+  { path: "/factures/detail", component: <InvoiceDetails /> },
+  { path: "/factures/creation", component: <InvoiceCreate /> },
 
   {
     path: "/",
@@ -378,7 +378,7 @@ const authProtectedRoutes = [
 
   // // Advance Ui
   // { path: "/advance-ui-nestable", component: <UiNestableList /> },
-  // { path: "/advance-ui-scrollbar", component: <UiScrollbar /> },
+  { path: "/advance-ui-scrollbar", component: <UiScrollbar /> },
   // { path: "/advance-ui-animation", component: <UiAnimation /> },
   // { path: "/advance-ui-tour", component: <UiTour /> },
   // { path: "/advance-ui-swiper", component: <UiSwiperSlider /> },
@@ -389,19 +389,19 @@ const authProtectedRoutes = [
   // { path: "/widgets", component: <Widgets /> },
 
   // // Forms
-  // { path: "/forms-elements", component: <BasicElements /> },
+  { path: "/forms-elements", component: <BasicElements /> },
   { path: "/forms-select", component: <FormSelect /> },
-  // { path: "/forms-editors", component: <FormEditor /> },
-  // { path: "/forms-checkboxes-radios", component: <CheckBoxAndRadio /> },
-  // { path: "/forms-masks", component: <Masks /> },
-  // { path: "/forms-file-uploads", component: <FileUpload /> },
-  // { path: "/forms-pickers", component: <FormPickers /> },
-  // { path: "/forms-range-sliders", component: <FormRangeSlider /> },
-  // { path: "/forms-layouts", component: <Formlayouts /> },
-  // { path: "/forms-validation", component: <FormValidation /> },
-  // { path: "/forms-wizard", component: <FormWizard /> },
-  // { path: "/forms-advanced", component: <FormAdvanced /> },
-  // { path: "/forms-select2", component: <Select2 /> },
+  { path: "/forms-editors", component: <FormEditor /> },
+  { path: "/forms-checkboxes-radios", component: <CheckBoxAndRadio /> },
+  { path: "/forms-masks", component: <Masks /> },
+  { path: "/forms-file-uploads", component: <FileUpload /> },
+  { path: "/forms-pickers", component: <FormPickers /> },
+  { path: "/forms-range-sliders", component: <FormRangeSlider /> },
+  { path: "/forms-layouts", component: <Formlayouts /> },
+  { path: "/forms-validation", component: <FormValidation /> },
+  { path: "/forms-wizard", component: <FormWizard /> },
+  { path: "/forms-advanced", component: <FormAdvanced /> },
+  { path: "/forms-select2", component: <Select2 /> },
 
   // //Tables
   // { path: "/tables-basic", component: <BasicTables /> },

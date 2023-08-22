@@ -27,7 +27,7 @@ import {
 } from "../../Components/Common/GlobalSearchFilter";
 
 // Define a default UI for filtering
-function GlobalFilter({
+export function GlobalFilter({
   preGlobalFilteredRows,
   globalFilter,
   setGlobalFilter,
@@ -58,8 +58,8 @@ function GlobalFilter({
               <div className={(isProductsFilter || isContactsFilter || isCompaniesFilter || isNFTRankingFilter) ? "search-box me-2 mb-2 d-inline-block" : "search-box me-2 mb-2 d-inline-block col-12"}>
                 <input
                   onChange={(e) => {
-                    setValue(e.target.value);
-                    onChange(e.target.value);
+                    // setValue(e.target.value);
+                    // onChange(e.target.value);
                   }}
                   id="search-bar-0"
                   type="text"
@@ -96,7 +96,9 @@ function GlobalFilter({
               <CryptoOrdersGlobalFilter />
             )}
             {isInvoiceListFilter && (
-              <InvoiceListGlobalSearch />
+              <InvoiceListGlobalSearch onChange={(e) => {
+                // onChange(e.target.value);
+              }}/>
             )}
             {isTicketsListFilter && (
               <TicketsListGlobalFilter />
@@ -315,15 +317,15 @@ const TableContainer = ({
             })}
 
           </tbody>
-          {console.log(page)}
-          {page.length == 0 && (
-            <div style={{ position: "absolute", width: "100%", display: "flex", justifyContent: "center", }}>
-              <p style={{ margin: "15px", fontWeight: 600, fontSize: "15px", color: "gray" }}>
-                <i>Aucune donnée à afficher</i>
-              </p>
-            </div>)
-          }
+
         </Table>
+        {page.length == 0 && (
+          <div style={{ position: "absolute", width: "100%", display: "flex", justifyContent: "center", }}>
+            <p style={{ margin: "15px", fontWeight: 600, fontSize: "15px", color: "gray" }}>
+              <i>Aucune donnée à afficher</i>
+            </p>
+          </div>)
+        }
       </div >
 
       <Row className="justify-content-md-end justify-content-center align-items-center p-2">
