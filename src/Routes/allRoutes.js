@@ -7,7 +7,7 @@ import { Navigate } from "react-router-dom";
 // Email box
 import MailInbox from "../pages/EmailInbox";
 import BasicAction from "../pages/Email/EmailTemplates/BasicAction";
-import EcommerceAction from "../pages/Email/EmailTemplates/EcommerceAction";
+// import EcommerceAction from "../pages/Email/EmailTemplates/EcommerceAction";
 
 //Chat
 import Chat from "../pages/Chat";
@@ -45,18 +45,18 @@ import CrmLeads from "../pages/Crm/CrmLeads/index";
 import ListView from '../pages/SupportTickets/ListView';
 import TicketsDetails from '../pages/SupportTickets/TicketsDetails';
 
-// //Ecommerce Pages
-import EcommerceProducts from "../pages/Ecommerce/EcommerceProducts/index";
-import EcommerceProductDetail from "../pages/Ecommerce/EcommerceProducts/EcommerceProductDetail";
-import EcommerceAddProduct from "../pages/Ecommerce/EcommerceProducts/EcommerceAddProduct";
-import EcommerceOrders from "../pages/Ecommerce/EcommerceOrders/index";
-import EcommerceOrderDetail from "../pages/Ecommerce/EcommerceOrders/EcommerceOrderDetail";
-import EcommerceCustomers from "../pages/Ecommerce/EcommerceCustomers/index";
+// Ecommerce Pages
+// import EcommerceProducts from "../pages/Ecommerce/EcommerceProducts/index";
+// import EcommerceProductDetail from "../pages/Ecommerce/EcommerceProducts/EcommerceProductDetail";
+// import EcommerceAddProduct from "../pages/Ecommerce/EcommerceProducts/EcommerceAddProduct";
+// import EcommerceOrders from "../pages/Ecommerce/EcommerceOrders/index";
+// import EcommerceOrderDetail from "../pages/Ecommerce/EcommerceOrders/EcommerceOrderDetail";
+// import EcommerceCustomers from "../pages/Ecommerce/EcommerceCustomers/index";
 
-import EcommerceCart from "../pages/Ecommerce/EcommerceCart";
-import EcommerceCheckout from "../pages/Ecommerce/EcommerceCheckout";
-import EcommerceSellers from "../pages/Ecommerce/EcommerceSellers/index";
-import EcommerceSellerDetail from "../pages/Ecommerce/EcommerceSellers/EcommerceSellerDetail";
+// import EcommerceCart from "../pages/Ecommerce/EcommerceCart";
+// import EcommerceCheckout from "../pages/Ecommerce/EcommerceCheckout";
+// import EcommerceSellers from "../pages/Ecommerce/EcommerceSellers/index";
+// import EcommerceSellerDetail from "../pages/Ecommerce/EcommerceSellers/EcommerceSellerDetail";
 
 // NFT Marketplace Pages
 import Marketplace from "../pages/NFTMarketplace/Marketplace";
@@ -238,16 +238,19 @@ import Contacts from "../Views/Contacts/index";
 import Collaborateurs from "../Views/Collaborateurs";
 import DashboardEcommerce from "../Views/DashboardEcommerce";
 import GestionParameter from "../Views/GestionParameter";
+import Products from "../Views/Product";
 //Invoices
 import InvoiceList from "../Views/Invoices/InvoiceList";
 import InvoiceCreate from "../Views/Invoices/InvoiceCreate";
 import InvoiceDetails from "../Views/Invoices/InvoiceDetails";
+
 
 const authProtectedRoutes = [
   // MES ROUTE QUE JE GARDE
   { path: "/contacts", component: <Contacts /> },
   { path: "/collaborateurs", component: <Collaborateurs /> },
   { path: "/gestion/parametre", component: <GestionParameter /> },
+  { path: "/produits", component: <Products /> },
   { path: "/dashboard", component: <DashboardEcommerce /> },
   { path: "/index", component: <DashboardEcommerce /> },
 

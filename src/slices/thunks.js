@@ -11,8 +11,6 @@ export * from "./auth/profile/thunk";
 export * from "./calendar/thunk";
 //Chat
 export * from "./chat/thunk";
-//Ecommerce
-export * from "./ecommerce/thunk";
 
 //Project
 export * from "./projects/thunk";
@@ -76,3 +74,6 @@ export * from "./invoice/thunk";
 
 // Company
 export * from "./company/thunk";
+
+// products
+export * from "./product/thunk";

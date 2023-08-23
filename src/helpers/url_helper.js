@@ -32,11 +32,11 @@ export const GET_MAIL_DETAILS = "/mail";
 export const DELETE_MAIL = "/delete/mail";
 
 // Ecommerce
-// Product
-export const GET_PRODUCTS = "/apps/product";
-export const DELETE_PRODUCT = "/apps/product";
-export const ADD_NEW_PRODUCT = "/apps/product";
-export const UPDATE_PRODUCT = "/apps/product";
+// // Product
+// export const GET_PRODUCTS = "/apps/product";
+// export const DELETE_PRODUCT = "/apps/product";
+// export const ADD_NEW_PRODUCT = "/apps/product";
+// export const UPDATE_PRODUCT = "/apps/product";
 
 // Orders
 export const GET_ORDERS = "/apps/order";
@@ -215,6 +215,10 @@ export const GET_APPLICATION_LIST = "/application-list";
 //JOB APPLICATION
 export const GET_API_KEY = "/api-key";
 
+
+
+
+
 // MES URL 
 
 /**
@@ -261,3 +265,9 @@ export const DELETE_COMPANY = "/v1/company";
 
 //LOGIN
 export const POST_LOGIN = "/v1/user/login";
+
+// Product
+export const GET_PRODUCTS = "/v1/product";
+export const DELETE_PRODUCT = "/v1/product";
+export const ADD_NEW_PRODUCT = "/v1/product";
+export const UPDATE_PRODUCT = "/v1/product";

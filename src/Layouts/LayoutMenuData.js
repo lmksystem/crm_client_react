@@ -121,6 +121,12 @@ const Navdata = () => {
           parentId: "gestion",
         },
         {
+          id: "produits",
+          label: "Produits",
+          link: "/produits",
+          parentId: "gestion",
+        },
+        {
           id: "getion-parameter",
           label: "Paramètre",
           link: "/gestion/parametre",

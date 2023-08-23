@@ -16,13 +16,13 @@ const gestionSlice = createSlice({
 
     // GESTION
     builder.addCase(getContacts.fulfilled, (state, action) => {
-      state.contacts = action.payload.data;
+      state.contacts = action.payload?.data;
       state.isContactCreated = false;
       state.isContactSuccess = true;
     });
 
     builder.addCase(getContacts.rejected, (state, action) => {
-      state.error = action.payload.error || null;
+      state.error = action.payload?.data || null;
       state.isContactCreated = false;
       state.isContactSuccess = false;
     });
@@ -35,7 +35,7 @@ const gestionSlice = createSlice({
     });
 
     builder.addCase(addNewContact.rejected, (state, action) => {
-      state.error = action.payload.error || null;
+      state.error = action.payload?.data || null;
       state.isContactAdd = false;
       state.isContactAddFail = true;
     });
@@ -52,7 +52,7 @@ const gestionSlice = createSlice({
     });
 
     builder.addCase(updateContact.rejected, (state, action) => {
-      state.error = action.payload.error || null;
+      state.error = action.payload?.data || null;
       state.isContactUpdate = false;
       state.isContactUpdateFail = true;
     });
@@ -64,20 +64,20 @@ const gestionSlice = createSlice({
     });
 
     builder.addCase(deleteContact.rejected, (state, action) => {
-      state.error = action.payload.error || null;
+      state.error = action.payload?.data || null;
       state.isContactDelete = false;
       state.isContactDeleteFail = true;
     });
 
     // COLLABORATEUR
     builder.addCase(getCollaborateurs.fulfilled, (state, action) => {
-      state.collaborateurs = action.payload.data;
+      state.collaborateurs = action.payload?.data;
       state.isCollaborateurCreated = false;
       state.isCollaborateurSuccess = true;
     });
 
     builder.addCase(getCollaborateurs.rejected, (state, action) => {
-      state.error = action.payload.error || null;
+      state.error = action.payload?.data || null;
       state.isCollaborateurCreated = false;
       state.isCollaborateurSuccess = false;
     });
@@ -90,7 +90,7 @@ const gestionSlice = createSlice({
     });
 
     builder.addCase(addNewCollaborateur.rejected, (state, action) => {
-      state.error = action.payload.error || null;
+      state.error = action.payload?.data || null;
       state.isCollaborateurAdd = false;
       state.isCollaborateurAddFail = true;
     });
@@ -108,7 +108,7 @@ const gestionSlice = createSlice({
     });
 
     builder.addCase(updateCollaborateur.rejected, (state, action) => {
-      state.error = action.payload.error || null;
+      state.error = action.payload?.data || null;
       state.isCollaborateurUpdate = false;
       state.isCollaborateurUpdateFail = true;
     });
@@ -120,7 +120,7 @@ const gestionSlice = createSlice({
     });
 
     builder.addCase(deleteCollaborateurs.rejected, (state, action) => {
-      state.error = action.payload.error || null;
+      state.error = action.payload?.data || null;
       state.isTvaDelete = false;
       state.isTvaDeleteFail = true;
     });
@@ -128,13 +128,13 @@ const gestionSlice = createSlice({
     // TVA
 
     builder.addCase(getTva.fulfilled, (state, action) => {
-      state.tva = action.payload.data;
+      state.tva = action.payload?.data;
       state.isTvaCreated = false;
       state.isTvaSuccess = true;
     });
 
     builder.addCase(getTva.rejected, (state, action) => {
-      state.error = action.payload.error || null;
+      state.error = action.payload?.data || null;
       state.isTvaCreated = false;
       state.isTvaSuccess = false;
     });
@@ -147,7 +147,7 @@ const gestionSlice = createSlice({
     });
 
     builder.addCase(addNewTva.rejected, (state, action) => {
-      state.error = action.payload.error || null;
+      state.error = action.payload?.data || null;
       state.isTvaAdd = false;
       state.isTvaAddFail = true;
     });
@@ -165,7 +165,7 @@ const gestionSlice = createSlice({
     });
 
     builder.addCase(updateTva.rejected, (state, action) => {
-      state.error = action.payload.error || null;
+      state.error = action.payload?.data || null;
       state.isTvaUpdate = false;
       state.isTvaUpdateFail = true;
     });
@@ -177,7 +177,7 @@ const gestionSlice = createSlice({
     });
 
     builder.addCase(deleteTva.rejected, (state, action) => {
-      state.error = action.payload.error || null;
+      state.error = action.payload?.data || null;
       state.isTvaDelete = false;
       state.isTvaDeleteFail = true;
     })

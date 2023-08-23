@@ -13,8 +13,6 @@ import ProfileReducer from "./auth/profile/reducer";
 import CalendarReducer from "./calendar/reducer";
 //Chat
 import chatReducer from "./chat/reducer";
-//Ecommerce
-import EcommerceReducer from "./ecommerce/reducer";
 
 //Project
 import ProjectsReducer from "./projects/reducer";
@@ -77,6 +75,9 @@ import GestionReducer from "./gestion/reducer";
 // Company 
 import CompanyReducer from "./company/reducer";
 
+// Company 
+import ProductReducer from "./product/reducer";
+
 const rootReducer = combineReducers({
   Layout: LayoutReducer,
   Login: LoginReducer,
@@ -86,7 +87,6 @@ const rootReducer = combineReducers({
   Calendar: CalendarReducer,
   Chat: chatReducer,
   Projects: ProjectsReducer,
-  Ecommerce: EcommerceReducer,
   Tasks: TasksReducer,
   Crypto: CryptoReducer,
   Tickets: TicketsReducer,
@@ -104,8 +104,10 @@ const rootReducer = combineReducers({
   Todos: TodosReducer,
   Jobs: JobReducer,
   APIKey: APIKeyReducer,
+  
   Gestion: GestionReducer,
   Company: CompanyReducer,
+  Product: ProductReducer,
 });
 
 export default rootReducer;

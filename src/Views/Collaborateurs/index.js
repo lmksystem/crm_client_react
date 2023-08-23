@@ -962,7 +962,7 @@ const Collaborateurs = () => {
                       </span>
                     </div>
                     <h5 className="mt-4 mb-1">{info.ent_name}</h5>
-                    <h7 className="text-muted">{info.ent_lastname + " " + info.ent_firstname}</h7>
+                    <h6 className="text-muted">{info.ent_lastname + " " + info.ent_firstname}</h6>
 
                     <ul className="list-inline mb-0">
                       <li className="list-inline-item avatar-xs">

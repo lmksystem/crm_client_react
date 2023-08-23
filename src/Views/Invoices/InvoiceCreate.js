@@ -52,35 +52,16 @@ const InvoiceCreate = () => {
   const dispatch = useDispatch();
   const history = useNavigate();
 
-  const [ispaymentDetails, setispaymentDetails] = useState(null);
-  const [isCurrency, setisCurrency] = useState("$");
   const [isTva, setisTva] = useState(0);
 
   const [collaborateur, setCollaborateur] = useState(null);
-  const [showCollabDiv, setShowCollabDiv] = useState(false);
 
   const [modal, setModal] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
-  function handleispaymentDetails(ispaymentDetails) {
-    setispaymentDetails(ispaymentDetails);
-  }
-
   const tvaList = [
     {
       options: tva?.map((e) => ({ label: e.tva_value + "%", value: e.tva_value })),
-    },
-  ];
-
-  const paymentdetails = [
-    {
-      options: [
-        { label: "Payment Method", value: "Payment Method" },
-        { label: "Mastercard", value: "Mastercard" },
-        { label: "Credit Card", value: "Credit Card" },
-        { label: "Visa", value: "Visa" },
-        { label: "Paypal", value: "Paypal" },
-      ],
     },
   ];
 
@@ -92,17 +73,6 @@ const InvoiceCreate = () => {
         { label: "Payé", value: "Payé" },
         { label: "Annulé", value: "Annulé" },
         { label: "Remboursé", value: "Remboursé" },
-      ],
-    },
-  ];
-
-  const allcurrency = [
-    {
-      options: [
-        { label: "$", value: "($)" },
-        { label: "£", value: "(£)" },
-        { label: "₹", value: "(₹)" },
-        { label: "€", value: "(€)" },
       ],
     },
   ];
@@ -178,7 +148,7 @@ const InvoiceCreate = () => {
         fen_com_fk: "",
         fen_ent_fk: "",
         fen_sujet: "",
-        fen_date_create: "",
+        fen_date_expired: "",
         fen_etat: "",
         fen_total_ht: 0,
         fen_total_ttc: 0,
@@ -208,7 +178,7 @@ const InvoiceCreate = () => {
       }),
       header: Yup.object({
         fen_sujet: Yup.string().required("Champs obligatoire"),
-        fen_date_create: Yup.string().required("Champs obligatoire"),
+        fen_date_expired: Yup.string().required("Champs obligatoire"),
         fen_etat: Yup.string().required("Champs obligatoire"),
         fen_total_ht: Yup.number().required("Champs obligatoire"),
         fen_total_ttc: Yup.number().required("Champs obligatoire"),
@@ -230,6 +200,10 @@ const InvoiceCreate = () => {
     return parseFloat(parseFloat(number).toFixed(length));
   }
 
+  /**
+   * Fonction de recherche d'un client lors de la séléction
+   * @returns 
+   */
   const handleListClient = () => {
     let data = [...collaborateurs];
 
@@ -299,6 +273,11 @@ const InvoiceCreate = () => {
     return ligne;
   }
 
+  /**
+   * Fonction de calcule des prix de l'entete de la facture (total de la facture)
+   * @param {*} lignes 
+   * @returns 
+   */
   const handleHeaderValue = (lignes) => {
 
     let total_ht = 0;
@@ -325,6 +304,11 @@ const InvoiceCreate = () => {
     return header
   }
 
+  /**
+   * Fonction d'actualisation des prix en fonction des champs de prix modifiable pour les ligne (calcule ttc, ht, ect...)
+   * @param {*} e 
+   * @param {*} i 
+   */
   const handleChangeValue = (e, i) => {
 
     let value = parseFloat(e.target.value) || 0;
@@ -369,7 +353,7 @@ const InvoiceCreate = () => {
   return (
     <div className="page-content">
       <Container fluid>
-        <BreadCrumb title="Create Invoice" pageTitle="Invoices" />
+        <BreadCrumb title="Création facture" pageTitle="Factures" />
         <Row className="justify-content-center">
           <Col xxl={9}>
             <Card>
@@ -732,18 +716,18 @@ const InvoiceCreate = () => {
                         <Label for="date-field">Date</Label>
                         <Input
                           type="date"
-                          name="header.fen_date_create"
+                          name="header.fen_date_expired"
                           id="date-field"
                           className="form-control"
                           placeholder="Select a date"
                           onBlur={validation.handleBlur}
                           onChange={validation.handleChange}
-                          value={validation.values.header.fen_date_create || ""}
-                          invalid={validation.errors?.header?.fen_date_create && validation.touched?.header?.fen_date_create ? true : false}
+                          value={validation.values.header.fen_date_expired || ""}
+                          invalid={validation.errors?.header?.fen_date_expired && validation.touched?.header?.fen_date_expired ? true : false}
                           required
                         />
-                        {validation.touched?.header?.fen_date_create && validation.errors?.header?.fen_date_create ? (
-                          <FormFeedback type="invalid">{validation.errors?.header?.fen_date_create}</FormFeedback>
+                        {validation.touched?.header?.fen_date_expired && validation.errors?.header?.fen_date_expired ? (
+                          <FormFeedback type="invalid">{validation.errors?.header?.fen_date_expired}</FormFeedback>
                         ) : null}
                       </div>
                     </Col>
@@ -857,7 +841,6 @@ const InvoiceCreate = () => {
                               </td>
                               <td>
                                 <Select
-                                  defaultValue={isTva}
                                   onChange={(option) => {
                                     let event = { target: { value: option.value, name: `ligne[${i}].fli_tva` }, };
                                     handleChangeValue(event, i);
