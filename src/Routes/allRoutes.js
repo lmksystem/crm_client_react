@@ -256,7 +256,7 @@ const authProtectedRoutes = [
 
   // //Invoices
   { path: "/factures/liste", component: <InvoiceList /> },
-  { path: "/factures/detail", component: <InvoiceDetails /> },
+  { path: "/factures/detail/:id", component: <InvoiceDetails /> },
   { path: "/factures/creation", component: <InvoiceCreate /> },
 
   {

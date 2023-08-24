@@ -39,6 +39,10 @@
     color: var(--#{$prefix}body-color);
 }
 
+@media print {
+  .pagebreak { page-break-inside: avoid; } /* page-break-after works, as well */
+}
+
 .shepherd-button{
     &.btn-success:not(:disabled):hover{
         background: darken($success, 2.5%);

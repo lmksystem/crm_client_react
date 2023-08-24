@@ -45,7 +45,7 @@ import {
   otherWidgets2
 } from "./widgets";
 import { taskWidgets, allTask, kanbanBoardData } from "./taskList";
-import { invoiceWidgets, invoiceTable } from "./invoiceList";
+import { invoiceWidgets } from "./invoiceList";
 import {
   projectList,
 } from "./projectList";
@@ -127,7 +127,7 @@ export {
   allTask,
   kanbanBoardData,
   invoiceWidgets,
-  invoiceTable,
+
   projectList,
   direactContact,
   channelsList,
@@ -176,5 +176,5 @@ export {
   popularCreatorsNFT, marketPlacewidget,
   connectData, discoverItemsData, featuresData, productData, topCreatorData, allData, monthData, halfyearData, allaudiencesMetricsData, monthaudiencesMetricsData, halfyearaudiencesMetricsData, yaeraudiencesMetricsData, todayDeviceData, lastWeekDeviceData, lastMonthDeviceData, currentYearDeviceData, todayBalanceData, lastWeekBalanceData, lastMonthBalanceData, currentYearBalanceData, todayDealData, weeklyDealData, monthlyDealData, yealyDealData, octData, novData, decData, janData, allRevenueData, monthRevenueData, halfYearRevenueData, yearRevenueData, btcPortfolioData, usdPortfolioData, euroPortfolioData, MarketGraphAll, MarketGraphYear, MarketGraphMonth, MarketGraphWeek, MarketGraphHour, allProjectData, monthProjectData, halfyearProjectData, yearProjectData, allTimeData, lastWeekData, lastMonthData, lastquarterData, allMarketplaceData, monthMarketplaceData, halfyearMarketplaceData, yearMarketplaceData, todayaudiencesCountryData, lastWeekaudiencesCountryData, lastMonthaudiencesCountryData, currentyearaudiencesCountryData, dashboardChat, gallery, pricing1, pricing2, pricing3, projects, document, SearchGallery, news, video, swiper, team,
   recentFile, folderList, todoTaskList, chatContactData, todoCollapse,
-  jobApplication,apiKey
+  jobApplication, apiKey
 };

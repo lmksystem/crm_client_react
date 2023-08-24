@@ -138,7 +138,7 @@ const InvoiceList = () => {
         accessor: "fen_id",
         filterable: false,
         Cell: (cell) => {
-          return <Link to={`/factures/detail/${cell.value}`} className="fw-medium link-primary">{cell.row.original.fen_id}</Link>;
+          return <Link to="/apps-invoices-details" className="fw-medium link-primary">{cell.row.original.fen_id}</Link>;
         },
       },
       {

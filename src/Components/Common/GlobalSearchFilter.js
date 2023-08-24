@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import Flatpickr from "react-flatpickr";
 import Select from "react-select";
 import { French } from "flatpickr/dist/l10n/fr.js"
+import { allstatus } from '../../common/data/invoiceList';
 
 const ProductsGlobalFilter = () => {
   return (
@@ -320,6 +321,7 @@ const InvoiceListGlobalSearch = ({ origneData, data, setData, value }) => {
    * Fonction de trier des factures
    */
   const filteredData = () => {
+  
     let newData = [...origneData];
 
     if (isText) {
@@ -338,16 +340,8 @@ const InvoiceListGlobalSearch = ({ origneData, data, setData, value }) => {
     setData(() => newData);
   }
 
-  const allstatus = [
-    { label: "Tous", value: "" },
-    { label: "Impayé", value: "Impayé" },
-    { label: "Payé", value: "Payé" },
-    { label: "Annulé", value: "Annulé" },
-    { label: "Remboursé", value: "Remboursé" },
-  ];
-
   useEffect(() => {
-    if (origneData) {
+    if (origneData.length) {
       if (isEtat || isText || isDate) {
         filteredData();
       } else {

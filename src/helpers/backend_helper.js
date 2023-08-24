@@ -49,8 +49,11 @@ export const deleteTva = tva => api.delete(url.DELETE_TVA + '/' + tva);
  * Invoice
  */
 
-//get Invoice
+//get Invoices
 export const getInvoices = () => api.get(url.GET_INVOICES);
+
+//get Invoice by id 
+export const getInvoiceById = (id) => api.get(url.GET_INVOICES + "/" + id);
 
 // add Invoice
 export const addNewInvoice = invoice => api.create(url.ADD_NEW_INVOICE, invoice);
