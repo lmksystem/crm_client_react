@@ -151,7 +151,7 @@ const Navdata = () => {
         {
           id: "devis",
           label: "Devis",
-          link: "/#",
+          link: "/devis/liste",
           isChildItem: false,
           parentId: "facturation",
 

@@ -169,7 +169,7 @@ const Contacts = () => {
           epe_ent_fk: collaborateur.value,
           ent_name: collaborateur.label,
         };
-        
+
         // update Contact
         dispatch(onUpdateContact(updateContact));
         validation.resetForm();
@@ -310,7 +310,7 @@ const Contacts = () => {
           return (
             <ul className="list-inline hstack gap-2 mb-0">
               <li className="list-inline-item edit" title="Call">
-                <Link to="#" className="text-muted d-inline-block">
+                <Link to={`tel:${info.epe_phone}`} className="text-muted d-inline-block">
                   <i className="ri-phone-line fs-16"></i>
                 </Link>
               </li>
@@ -750,7 +750,7 @@ const Contacts = () => {
                     <ul className="list-inline mb-0">
                       <li className="list-inline-item avatar-xs">
                         <Link
-                          to="#"
+                          to={`tel:${info.epe_phone}`}
                           className="avatar-title bg-soft-success text-success fs-15 rounded"
                         >
                           <i className="ri-phone-line"></i>
@@ -758,7 +758,7 @@ const Contacts = () => {
                       </li>
                       <li className="list-inline-item avatar-xs">
                         <Link
-                          to="#"
+                          to={`mailto:${info.epe_email}`}
                           className="avatar-title bg-soft-danger text-danger fs-15 rounded"
                         >
                           <i className="ri-mail-line"></i>

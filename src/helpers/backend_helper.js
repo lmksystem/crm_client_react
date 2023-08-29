@@ -64,6 +64,9 @@ export const updateInvoice = invoice => api.update(url.UPDATE_INVOICE + '/' + in
 // delete Invoice
 export const deleteInvoice = invoice => api.delete(url.DELETE_INVOICE + '/' + invoice);
 
+// delete Invoice
+export const createPdf = invoice => api.get(url.CREATE_PDF + '/' + invoice);
+
 /**
  * Company
  */

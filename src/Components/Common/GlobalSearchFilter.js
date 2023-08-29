@@ -377,7 +377,7 @@ const InvoiceListGlobalSearch = ({ origneData, data, setData, value }) => {
             }}
             className="form-control bg-light border-light"
             id="invoice-date-picker"
-            placeholder="Selectionné une date"
+            placeholder="Selectionnez une date"
             options={{
               locale: French,
               altInput: true,

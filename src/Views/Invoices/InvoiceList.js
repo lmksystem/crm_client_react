@@ -26,6 +26,7 @@ import { invoiceWidgets } from "../../common/data/invoiceList";
 import {
   getInvoices as onGetInvoices,
   deleteInvoice as onDeleteInvoice,
+  getCompany as onGetCompany
 } from "../../slices/thunks";
 
 //redux
@@ -37,17 +38,21 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import 'moment/locale/fr'  // without this line it didn't work
 import { InvoiceListGlobalSearch } from "../../Components/Common/GlobalSearchFilter";
+
 moment.locale('fr')
+
+
 
 const InvoiceList = () => {
   document.title = "Liste facture  | Countano";
-  console.log(window.location.href)
+
   const dispatch = useDispatch();
 
   const { invoices, isInvoiceSuccess, error } = useSelector((state) => ({
     invoices: state.Invoice.invoices,
     isInvoiceSuccess: state.Invoice.isInvoiceSuccess,
     error: state.Invoice.error,
+
   }));
 
   //delete invoice
@@ -217,29 +222,16 @@ const InvoiceList = () => {
                 <i className="ri-more-fill align-middle"></i>
               </DropdownToggle>
               <DropdownMenu className="dropdown-menu-end">
-                <DropdownItem href="/apps-invoices-details">
-                  <i className="ri-eye-fill align-bottom me-2 text-muted"></i>{" "}
-                  View
-                </DropdownItem>
-
-                {/* <DropdownItem href="/apps-invoices-create">
-                  <i className="ri-pencil-fill align-bottom me-2 text-muted"></i>{" "}
-                  Edit
-                </DropdownItem> */}
-
-                <DropdownItem href="/#">
-                  <i className="ri-download-2-line align-bottom me-2 text-muted"></i>{" "}
-                  Download
-                </DropdownItem>
-
+                <Link to={`/factures/detail/${cellProps.row.original.fen_id}`}>
+                  <DropdownItem >
+                    <i className="ri-eye-fill align-bottom me-2 text-muted"></i>{" "}
+                    Voir
+                  </DropdownItem>
+                </Link>
                 <DropdownItem divider />
-
-                <DropdownItem
-                  href="#"
-                  onClick={() => { const invoiceData = cellProps.row.original; onClickDelete(invoiceData); }}
-                >
-                  <i className="ri-delete-bin-fill align-bottom me-2 text-muted"></i>{" "}
-                  Delete
+                <DropdownItem href="/#" onClick={() => window.open(`http://localhost:3030/v1/pdf/download/${cellProps.row.original.fdo_file_name}`, 'download')}>
+                  <i className="ri-download-2-line align-bottom me-2 text-muted"></i>{" "}
+                  Télécharger
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
@@ -298,7 +290,7 @@ const InvoiceList = () => {
                             <CountUp
                               start={0}
                               prefix={invoicewidget.prefix}
-           
+
                               decimals="2"
                               end={invoicewidget.counter}
                               duration={4}

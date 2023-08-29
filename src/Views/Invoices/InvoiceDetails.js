@@ -1,50 +1,79 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { CardBody, Row, Col, Card, Table, CardHeader, Container } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { Link, useParams } from "react-router-dom";
 
 import logoDark from "../../assets/images/logo-dark.png";
-import logoLight from "../../assets/images/logo-light.png";
 import { useDispatch, useSelector } from "react-redux";
-import { getInvoiceById } from "../../slices/thunks";
+import { getInvoiceById, createPdf, getCompany } from "../../slices/thunks";
 import moment from "moment";
+import { api } from "../../config";
+import { APIClient } from "../../helpers/api_helper";
+import { saveAs } from 'file-saver'
+
+const axios = new APIClient();
 
 const InvoiceDetails = () => {
   document.title = "Détail facture | Countano";
 
   let { id } = useParams();
 
-  const { invoice, isInvoiceSuccess, error } = useSelector((state) => ({
+  const { invoice } = useSelector((state) => ({
     invoice: state.Invoice.invoice,
     isInvoiceSuccess: state.Invoice.isInvoiceSuccess,
     error: state.Invoice.error,
+    company: state.Company.company
   }));
 
   const dispatch = useDispatch();
-
-  console.log(invoice);
 
   //Print the Invoice
   const printInvoice = () => {
     window.print();
   };
 
+  const handleGeneratePdf = () => {
+    if (invoice.fdo_file_name) {
+      downloadPdf()
+    } else {
+      
+    }
+  };
+
+  const downloadPdf = () => {
+    window.open(`http://localhost:3030/v1/pdf/download/${invoice.fdo_file_name}`, 'download');
+  }
+
   useEffect(() => {
     if (id) {
       dispatch(getInvoiceById(id))
+      dispatch(getCompany())
     }
 
   }, [dispatch, id])
 
+  useEffect(() => {
+    if (Object.keys(invoice).length > 0 && !invoice.fdo_file_name) {
+      dispatch(createPdf(id))
+    }
+  }, [invoice])
+  
+
+  if (!invoice) {
+    return null;
+  }
 
   return (
     <div className="page-content">
       <Container fluid>
-        <BreadCrumb title="Invoice Details" pageTitle="Invoices" />
+        <BreadCrumb className="d-print-none" title="Invoice Details" pageTitle="Invoices" />
+
         <Row className="justify-content-center">
           <Col xxl={9}>
+            {/* <Preview id={'jsx-template'}> */}
             <Card id="demo">
               <Row>
+
                 <Col lg={12}>
                   <CardHeader className="border-bottom border-bottom-dashed">
                     <div className="d-flex">
@@ -67,7 +96,7 @@ const InvoiceDetails = () => {
                 <Col lg={12}>
                   <CardBody className="p-4 border-bottom border-bottom-dashed">
                     <Row className="g-3">
-                      <Col className="col-6">
+                      <Col className="col-12 d-flex flex-column align-items-end">
                         <h6 className="text-muted text-uppercase fw-semibold mb-3">Information Client</h6>
                         <p className="fw-medium mb-2" id="billing-name">{invoice.fco_cus_name}</p>
                         <p className="text-muted mb-1" id="billing-address-line-1">{invoice.fco_cus_address}</p>
@@ -118,20 +147,20 @@ const InvoiceDetails = () => {
                         </thead>
                         <tbody id="products-list">
                           {invoice?.ligne?.map((ligne, i) => (
-                            <>
-                              <tr>
-                                <th scope="row">{i + 1}</th>
-                                <td className="text-start">
-                                  <span className="fw-medium">{ligne.fli_name}</span>
-                                  <p className="text-muted mb-0">{ligne.fli_detail}</p>
-                                </td>
-                                <td className="text-end">{ligne.fli_qty}</td>
-                                <td className="text-end">{ligne.fli_unit_ht}€</td>
-                                <td className="text-end">{ligne.fli_pourcent_remise}%</td>
-                                <td className="text-end">{ligne.fli_tva}%</td>
-                                <td className="text-end">{ligne.fli_total_ttc}€</td>
-                              </tr>
-                            </>))}
+
+                            <tr key={i}>
+                              <th scope="row">{i + 1}</th>
+                              <td className="text-start">
+                                <span className="fw-medium">{ligne.fli_name}</span>
+                                <p className="text-muted mb-0">{ligne.fli_detail}</p>
+                              </td>
+                              <td className="text-end">{ligne.fli_qty}</td>
+                              <td className="text-end">{ligne.fli_unit_ht}€</td>
+                              <td className="text-end">{ligne.fli_pourcent_remise}%</td>
+                              <td className="text-end">{ligne.fli_tva}%</td>
+                              <td className="text-end">{ligne.fli_total_ttc}€</td>
+                            </tr>
+                          ))}
                         </tbody>
                       </Table>
                     </div>
@@ -164,16 +193,19 @@ const InvoiceDetails = () => {
 
                     <div className="hstack gap-2 justify-content-end d-print-none mt-4">
                       <Link to="#" onClick={printInvoice} className="btn btn-success"><i className="ri-printer-line align-bottom me-1"></i> Print</Link>
-                      <Link to="#" className="btn btn-primary"><i className="ri-download-2-line align-bottom me-1"></i> Download</Link>
+                      <Link   /*to={url} target="_blank" download */ onClick={() => handleGeneratePdf()} className="btn btn-primary"><i className="ri-download-2-line align-bottom me-1"></i> Download</Link>
                     </div>
                   </CardBody>
                 </Col>
+
               </Row>
             </Card>
+            {/* </Preview> */}
           </Col>
         </Row>
+
       </Container>
-    </div>
+    </div >
   );
 };
 

@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getInvoices, addNewInvoice, updateInvoice, deleteInvoice, getInvoiceById } from './thunk';
+import { getInvoices, addNewInvoice, updateInvoice, deleteInvoice, getInvoiceById, createPdf } from './thunk';
 export const initialState = {
   invoices: [],
   invoice: {},
@@ -61,6 +61,15 @@ const InvoiceSlice = createSlice({
     });
 
     builder.addCase(getInvoiceById.rejected, (state, action) => {
+      state.error = action.payload.data || null;
+    });
+
+    builder.addCase(createPdf.fulfilled, (state, action) => {
+
+      state.invoice = { ...state.invoice, ...action.payload.data };
+    });
+
+    builder.addCase(createPdf.rejected, (state, action) => {
       state.error = action.payload.data || null;
     });
   }

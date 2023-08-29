@@ -239,10 +239,17 @@ import Collaborateurs from "../Views/Collaborateurs";
 import DashboardEcommerce from "../Views/DashboardEcommerce";
 import GestionParameter from "../Views/GestionParameter";
 import Products from "../Views/Product";
+
 //Invoices
 import InvoiceList from "../Views/Invoices/InvoiceList";
 import InvoiceCreate from "../Views/Invoices/InvoiceCreate";
 import InvoiceDetails from "../Views/Invoices/InvoiceDetails";
+
+//Devis
+import DevisList from "../Views/Devis/DevisList";
+import DevisCreate from "../Views/Devis/DevisCreate";
+import DevisDetails from "../Views/Devis/DevisDetails";
+// import PdfPreview from "../Views/Pdf";
 
 
 const authProtectedRoutes = [
@@ -258,6 +265,11 @@ const authProtectedRoutes = [
   { path: "/factures/liste", component: <InvoiceList /> },
   { path: "/factures/detail/:id", component: <InvoiceDetails /> },
   { path: "/factures/creation", component: <InvoiceCreate /> },
+ 
+  // Devis
+  { path: "/devis/liste", component: <DevisList /> },
+  { path: "/devis/detail/:id", component: <DevisDetails /> },
+  { path: "/devis/creation", component: <DevisCreate /> },
 
   {
     path: "/",
@@ -502,7 +514,8 @@ const publicRoutes = [
   { path: "/auth-pass-change-basic", component: <BasicPasswCreate /> },
   { path: "/auth-pass-change-cover", component: <CoverPasswCreate /> },
   { path: "/auth-offline", component: <Offlinepage /> },
-
+  // Invoices
+  // { path: "/pdf/factures/:id", component: <PdfPreview /> },
 ];
 
 export { authProtectedRoutes, publicRoutes };

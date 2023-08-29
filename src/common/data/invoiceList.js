@@ -1,6 +1,6 @@
 
 const allstatus = [
-  { label: "Select Payment Status", value: "" },
+  { label: "Séléctionnez un état", value: "" },
   { label: "Impayé", value: "Impayé" },
   { label: "Payé", value: "Payé" },
   { label: "Annulé", value: "Annulé" },
