@@ -1,10 +1,10 @@
 
 const allstatus = [
   { label: "Séléctionnez un état", value: "" },
-  { label: "Impayé", value: "Impayé" },
-  { label: "Payé", value: "Payé" },
-  { label: "Annulé", value: "Annulé" },
-  { label: "Remboursé", value: "Remboursé" },
+  { value: "1", label: "Payé" },
+  { value: "2", label: "Impayé" },
+  { value: "3", label: "Remboursé" },
+  { value: "4", label: "Annulé" },
 ];
 
 const invoiceWidgets = [

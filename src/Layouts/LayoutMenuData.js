@@ -109,15 +109,15 @@ const Navdata = () => {
       stateVariables: isGestion,
       subItems: [
         {
-          id: "contacts",
-          label: "Contacts",
-          link: "/contacts",
+          id: "clients-fournisseurs",
+          label: "Client / Fournisseur",
+          link: "/client-fournisseur",
           parentId: "gestion",
         },
         {
-          id: "collaborateurs",
-          label: "Collaborateurs",
-          link: "/collaborateurs",
+          id: "contacts",
+          label: "Contacts",
+          link: "/contacts",
           parentId: "gestion",
         },
         {
@@ -164,17 +164,18 @@ const Navdata = () => {
           parentId: "facturation",
 
         },
+
         {
-          id: "avoirs",
-          label: "Avoirs",
+          id: "reglements",
+          label: "Règlements",
           link: "/#",
           isChildItem: false,
           parentId: "facturation",
 
         },
         {
-          id: "reglements",
-          label: "Reglements",
+          id: "recurrence",
+          label: "Recurrence",
           link: "/#",
           isChildItem: false,
           parentId: "facturation",
@@ -197,41 +198,15 @@ const Navdata = () => {
       stateVariables: isComptability,
       subItems: [
         {
-          id: "plan-comptable",
-          label: "Plan Comptable",
-          link: "/#",
-          isChildItem: true,
-          click: function (e) {
-          },
-          parentId: "comptability",
-        },
-        {
           id: "export",
           label: "Export",
           link: "/#",
-          isChildItem: true,
+          isChildItem: false,
           click: function (e) {
           },
           parentId: "comptability",
         },
-        {
-          id: "journaux",
-          label: "Journaux",
-          link: "/#",
-          isChildItem: true,
-          click: function (e) {
-          },
-          parentId: "comptability",
-        },
-        {
-          id: "parameter",
-          label: "Paramètres",
-          link: "/#",
-          isChildItem: true,
-          click: function (e) {
-          },
-          parentId: "comptability",
-        },
+
 
       ],
     },
@@ -252,7 +227,7 @@ const Navdata = () => {
           id: "transactions",
           label: "Transactions",
           link: "/#",
-          isChildItem: true,
+          isChildItem: false,
           click: function (e) {
             e.preventDefault();
 
@@ -263,7 +238,7 @@ const Navdata = () => {
           id: "association",
           label: "Règles d'Association",
           link: "/#",
-          isChildItem: true,
+          isChildItem: false,
           click: function (e) {
             e.preventDefault();
 
@@ -274,7 +249,7 @@ const Navdata = () => {
           id: "factures-achats",
           label: "Factures Achats",
           link: "/#",
-          isChildItem: true,
+          isChildItem: false,
           click: function (e) {
             e.preventDefault();
 

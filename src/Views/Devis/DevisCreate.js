@@ -17,14 +17,13 @@ import {
   ModalFooter
 } from "reactstrap";
 
-import { Link, useNavigate } from "react-router-dom";
-import Flatpickr from "react-flatpickr";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import Select from "react-select";
 
-import logoDark from "../../assets/images/logo-dark.png";
-import logoLight from "../../assets/images/logo-light.png";
+import logoDark from "../../assets/images/logo_countano.png";
+import logoLight from "../../assets/images/logo_countano.png";
 
 //formik
 import { useFormik } from "formik";
@@ -33,7 +32,7 @@ import * as Yup from "yup";
 //redux
 import { useDispatch, useSelector } from "react-redux";
 import {
-  addNewInvoice as onAddNewInvoice,
+  addNewDevis as onAddNewDevis,
   getCollaborateurs as onGetCollaborateurs,
   getCompany as onGetCompany,
   getTva as onGetTva,
@@ -42,6 +41,10 @@ import {
 import SimpleBar from "simplebar-react";
 import { parseInt } from "lodash";
 import { allstatus } from "../../common/data/invoiceList";
+import { rounded } from "../../utils/function";
+import { api } from "../../config";
+import moment from "moment";
+import { allstatusDevis } from "../../common/data/devisList";
 
 
 const InvoiceCreate = () => {
@@ -52,10 +55,10 @@ const InvoiceCreate = () => {
     products: state.Product.products,
   }));
 
+  let { state } = useLocation();
   const dispatch = useDispatch();
-  const history = useNavigate();
+  const navigate = useNavigate();
 
-  const [isTva, setisTva] = useState(0);
 
   const [collaborateur, setCollaborateur] = useState(null);
 
@@ -67,24 +70,21 @@ const InvoiceCreate = () => {
 
   const [modalProduct, setModalProduct] = useState(false);
 
-
   const tvaList = tva?.map((e) => ({ id: e.tva_id, label: e.tva_value + "%", value: e.tva_value }));
 
-
-
   const initialValueLigne = {
-    fli_name: "",
-    fli_detail: "",
-    fli_unit_ht: 0,
-    fli_unit_ttc: 0,
-    fli_total_ht: 0,
-    fli_total_ttc: 0,
-    fli_qty: 0,
-    fli_tva: 0,
-    fli_total_tva: 0,
-    fli_pourcent_remise: 0,
-    fli_total_remise: 0,
-    fli_unit_remise: 0,
+    dli_name: "",
+    dli_detail: "",
+    dli_unit_ht: 0,
+    dli_unit_ttc: 0,
+    dli_total_ht: 0,
+    dli_total_ttc: 0,
+    dli_qty: 0,
+    dli_tva: 0,
+    dli_total_tva: 0,
+    dli_pourcent_remise: 0,
+    dli_total_remise: 0,
+    dli_unit_remise: 0,
   }
 
   const toggle = useCallback(() => {
@@ -103,105 +103,88 @@ const InvoiceCreate = () => {
     }
   }, [modalProduct]);
 
-  const dateFormat = () => {
-    let d = new Date(),
-      months = ['Jan', 'Feb', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aou', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return ((d.getDate() + ' ' + months[d.getMonth()] + ', ' + d.getFullYear()).toString());
-  };
-
-  const [date, setDate] = useState(dateFormat());
-
-  const dateformate = (e) => {
-    const date = e.toString().split(" ");
-    const joinDate = (date[2] + " " + date[1] + ", " + date[3]).toString();
-    setDate(joinDate);
-  };
-
   useEffect(() => {
-    if (collaborateurs && !collaborateurs.length) {
-      dispatch(onGetCollaborateurs());
-      dispatch(onGetCompany());
-      dispatch(onGetTva());
-      dispatch(onGetProducts());
-    }
-  }, [dispatch, collaborateurs]);
 
-  document.title = "Création facture | Countano";
+    dispatch(onGetCollaborateurs());
+    dispatch(onGetCompany());
+    dispatch(onGetTva());
+    dispatch(onGetProducts());
 
+  }, [dispatch]);
+
+  document.title = "Création devis | Countano";
+  console.log(company);
   const validation = useFormik({
     enableReinitialize: true,
 
     initialValues: {
       contact: {
         // Champs avec "cus" correspond au client
-        fco_cus_email: "",
-        fco_cus_phone: "",
-        fco_cus_address: "",
-        fco_cus_city: "",
-        fco_cus_cp: "",
-        fco_cus_name: "",
+        dco_cus_email: "",
+        dco_cus_phone: "",
+        dco_cus_address: "",
+        dco_cus_city: "",
+        dco_cus_cp: "",
+        dco_cus_name: "",
 
-        fco_email: (company && company.com_email) || "",
-        fco_phone: (company && company.com_phone) || "",
-        fco_address: (company && company.com_adresse) || "",
-        fco_city: (company && company.com_ville) || "",
-        fco_cp: (company && company.com_cp) || "",
-        fco_name: (company && company.com_name) || "",
+        dco_email: (company && company.com_email) || "",
+        dco_phone: (company && company.com_phone) || "",
+        dco_address: (company && company.com_adresse) || "",
+        dco_city: (company && company.com_ville) || "",
+        dco_cp: (company && company.com_cp) || "",
+        dco_name: (company && company.com_name) || "",
       },
       header: {
-        fen_den_fk: "",
-        fen_com_fk: "",
-        fen_ent_fk: "",
-        fen_sujet: "",
-        fen_date_expired: "",
-        fen_etat: "",
-        fen_total_ht: 0,
-        fen_total_ttc: 0,
-        fen_total_tva: 0,
-        fen_total_remise: 0,
-        fen_num_fac: company?.com_nb_fac,
+        den_com_fk: "",
+        den_ent_fk: "",
+        den_sujet: "",
+        den_date_valid: moment().format('YYYY-MM-DD'),
+        den_etat: "",
+        den_total_ht: 0,
+        den_total_ttc: 0,
+        den_total_tva: 0,
+        den_total_remise: 0,
+        den_num: company?.com_nb_dev,
+        den_note: ""
       },
       ligne: []
     },
     validationSchema: Yup.object({
       contact: Yup.object({
-        fco_cus_name: Yup.string().required("Champs obligatoire"),
-        fco_cus_email: Yup.string().required("Champs obligatoire"),
-        fco_cus_phone: Yup.string().required("Champs obligatoire"),
-        fco_cus_address: Yup.string().required("Champs obligatoire"),
-        fco_cus_city: Yup.string().required("Champs obligatoire"),
-        fco_cus_cp: Yup.string().required("Champs obligatoire"),
-        fco_name: Yup.string().required("Champs obligatoire"),
-        fco_email: Yup.string().required("Champs obligatoire"),
-        fco_phone: Yup.string().required("Champs obligatoire"),
-        fco_address: Yup.string().required("Champs obligatoire"),
-        fco_city: Yup.string().required("Champs obligatoire"),
-        fco_cp: Yup.string().required("Champs obligatoire"),
+        dco_cus_name: Yup.string().required("Champs obligatoire"),
+        dco_cus_email: Yup.string().required("Champs obligatoire"),
+        dco_cus_phone: Yup.string().required("Champs obligatoire"),
+        dco_cus_address: Yup.string().required("Champs obligatoire"),
+        dco_cus_city: Yup.string().required("Champs obligatoire"),
+        dco_cus_cp: Yup.string().required("Champs obligatoire"),
+        dco_name: Yup.string().required("Champs obligatoire"),
+        dco_email: Yup.string().required("Champs obligatoire"),
+        dco_phone: Yup.string().required("Champs obligatoire"),
+        dco_address: Yup.string().required("Champs obligatoire"),
+        dco_city: Yup.string().required("Champs obligatoire"),
+        dco_cp: Yup.string().required("Champs obligatoire"),
 
       }),
       header: Yup.object({
-        fen_sujet: Yup.string().required("Champs obligatoire"),
-        fen_date_expired: Yup.string().required("Champs obligatoire"),
-        fen_etat: Yup.string().required("Champs obligatoire"),
-        fen_total_ht: Yup.number().required("Champs obligatoire"),
-        fen_total_ttc: Yup.number().required("Champs obligatoire"),
-        fen_total_tva: Yup.number().required("Champs obligatoire"),
-        fen_total_remise: Yup.number().required("Champs obligatoire"),
+        den_sujet: Yup.string().required("Champs obligatoire"),
+        den_date_valid: Yup.string().required("Champs obligatoire"),
+        den_etat: Yup.string().required("Champs obligatoire"),
+        den_total_ht: Yup.number().required("Champs obligatoire"),
+        den_total_ttc: Yup.number().required("Champs obligatoire"),
+        den_total_tva: Yup.number().required("Champs obligatoire"),
+        den_total_remise: Yup.number().required("Champs obligatoire"),
 
       }),
 
     }),
     onSubmit: (values) => {
-      console.log(values);
-      dispatch(onAddNewInvoice(values));
-      history("/factures/liste");
-      validation.resetForm();
+      dispatch(onAddNewDevis(values)).then(() => {
+        navigate("/devis/liste");
+        validation.resetForm();
+
+      });
     },
   });
-
-  const rounded = (number, length = 3) => {
-    return parseFloat(parseFloat(number).toFixed(length));
-  }
 
   /**
    * Fonction de recherche d'un client lors de la séléction
@@ -227,16 +210,16 @@ const InvoiceCreate = () => {
         ...validation.values,
         header: {
           ...validation.values.header,
-          fen_ent_fk: (collaborateur && collaborateur.ent_id) || "",
+          den_ent_fk: (collaborateur && collaborateur.ent_id) || "",
         },
         contact: {
           ...validation.values.contact,
-          fco_cus_email: (collaborateur && collaborateur.ent_email) || "",
-          fco_cus_phone: (collaborateur && collaborateur.ent_phone) || "",
-          fco_cus_address: (collaborateur && collaborateur.ent_adresse) || "",
-          fco_cus_city: (collaborateur && collaborateur.ent_ville) || "",
-          fco_cus_cp: (collaborateur && collaborateur.ent_cp) || "",
-          fco_cus_name: (collaborateur && collaborateur.ent_name) || "",
+          dco_cus_email: (collaborateur && collaborateur.ent_email) || "",
+          dco_cus_phone: (collaborateur && collaborateur.ent_phone) || "",
+          dco_cus_address: (collaborateur && collaborateur.ent_adresse) || "",
+          dco_cus_city: (collaborateur && collaborateur.ent_ville) || "",
+          dco_cus_cp: (collaborateur && collaborateur.ent_cp) || "",
+          dco_cus_name: (collaborateur && collaborateur.ent_name) || "",
 
         }
       })
@@ -244,40 +227,40 @@ const InvoiceCreate = () => {
   }, [collaborateur]);
 
   const recalculateLigneData = (ligne) => {
-    let { fli_unit_ht, fli_qty, fli_tva, fli_pourcent_remise } = ligne;
+    let { dli_unit_ht, dli_qty, dli_tva, dli_pourcent_remise } = ligne;
 
     // montant de la remise pour un produit
-    let montant_unit_remise = fli_unit_ht * (fli_pourcent_remise / 100);
+    let montant_unit_remise = dli_unit_ht * (dli_pourcent_remise / 100);
 
     // montant de la remise pour la totalité de la ligne 
-    let total_remise = montant_unit_remise * fli_qty
+    let total_remise = montant_unit_remise * dli_qty
 
     // montant ht d'un produit après application de la remise
-    let total_unit_remise_ht = fli_unit_ht - montant_unit_remise;
+    let total_unit_remise_ht = dli_unit_ht - montant_unit_remise;
 
     // Total de la tva pour un produit remisé
-    let total_unit_remise_tva = total_unit_remise_ht * (fli_tva / 100);
+    let total_unit_remise_tva = total_unit_remise_ht * (dli_tva / 100);
 
     // Montant unitaire d'un produit avant remise
-    let total_unit_tva = fli_unit_ht * (fli_tva / 100);
+    let total_unit_tva = dli_unit_ht * (dli_tva / 100);
 
     // Montant total d'un produit ttc
     let total_unit_remise_ttc = total_unit_remise_ht + total_unit_remise_tva;
 
     // Montant ttc d'un produit avant remise
-    let total_unit_ttc = fli_unit_ht + total_unit_tva;
+    let total_unit_ttc = dli_unit_ht + total_unit_tva;
 
-    ligne.fli_total_ht = rounded(fli_qty * total_unit_remise_ht);
-    ligne.fli_total_ttc = rounded(fli_qty * total_unit_remise_ttc);
-    ligne.fli_unit_remise = rounded(montant_unit_remise);
-    ligne.fli_total_remise = rounded(total_remise);
-    ligne.fli_total_tva = rounded(fli_qty * total_unit_remise_tva);
-    ligne.fli_unit_ttc = rounded(total_unit_ttc);
+    ligne.dli_total_ht = rounded(dli_qty * total_unit_remise_ht);
+    ligne.dli_total_ttc = rounded(dli_qty * total_unit_remise_ttc);
+    ligne.dli_unit_remise = rounded(montant_unit_remise);
+    ligne.dli_total_remise = rounded(total_remise);
+    ligne.dli_total_tva = rounded(dli_qty * total_unit_remise_tva);
+    ligne.dli_unit_ttc = rounded(total_unit_ttc);
     return ligne;
   }
 
   /**
-   * Fonction de calcule des prix de l'entete de la facture (total de la facture)
+   * Fonction de calcule des prix de l'entete de la devis (total de la devis)
    * @param {*} lignes 
    * @returns 
    */
@@ -291,18 +274,18 @@ const InvoiceCreate = () => {
     for (let index = 0; index < lignes.length; index++) {
       const ligne = lignes[index];
 
-      total_ht += ligne.fli_total_ht;
-      total_remise += ligne.fli_total_remise;
-      total_tva += ligne.fli_total_tva;
-      total_ttc += ligne.fli_total_ttc;
+      total_ht += ligne.dli_total_ht;
+      total_remise += ligne.dli_total_remise;
+      total_tva += ligne.dli_total_tva;
+      total_ttc += ligne.dli_total_ttc;
     }
 
     let header = { ...validation.values.header };
 
-    header.fen_total_ht = total_ht;
-    header.fen_total_remise = total_remise;
-    header.fen_total_tva = total_tva;
-    header.fen_total_ttc = total_ttc;
+    header.den_total_ht = total_ht;
+    header.den_total_remise = total_remise;
+    header.den_total_tva = total_tva;
+    header.den_total_ttc = total_ttc;
 
     return header
   }
@@ -340,23 +323,31 @@ const InvoiceCreate = () => {
     validation.setValues({ ...validation.values, header: header, ligne: lignesData })
   }
 
+  // useEffect(() => {
+  //   if (validation.values.ligne.length < 1) {
+  //     validation.setValues({
+  //       ...validation.values,
+  //       ligne: [
+  //         initialValueLigne
+  //       ]
+  //     })
+  //   }
+
+  // }, [validation.values.ligne])
+
   useEffect(() => {
-    if (validation.values.ligne.length < 1) {
-      validation.setValues({
-        ...validation.values,
-        ligne: [
-          initialValueLigne
-        ]
-      })
+    if (validation && state && Object.keys(state).length > 0) {
+      console.log("state", state);
+      validation.setValues(state);
     }
 
-  }, [validation.values.ligne])
+  }, [])
 
 
   return (
     <div className="page-content">
       <Container fluid>
-        <BreadCrumb title="Création facture" pageTitle="Factures" />
+        <BreadCrumb title="Création devis" pageTitle="Devis" />
         <Row className="justify-content-center">
           <Col xxl={9}>
             <Card>
@@ -408,7 +399,7 @@ const InvoiceCreate = () => {
                         <Col lg={8}>
                           <div>
                             <Label
-                              for="fco_name"
+                              for="dco_name"
                               className="text-muted text-uppercase fw-semibold"
                             >
                               Sujet
@@ -418,16 +409,16 @@ const InvoiceCreate = () => {
                             <Input
                               type="text"
                               className="form-control border-1"
-                              id="fen_sujet"
-                              name="header.fen_sujet"
-                              value={validation.values.header?.fen_sujet || ""}
+                              id="den_sujet"
+                              name="header.den_sujet"
+                              value={validation.values.header?.den_sujet || ""}
                               onBlur={validation.handleBlur}
                               onChange={validation.handleChange}
                               placeholder="Sujet complet"
-                              invalid={validation.errors?.header?.fen_sujet && validation.touched?.header?.fen_sujet ? true : false}
+                              invalid={validation.errors?.header?.den_sujet && validation.touched?.header?.den_sujet ? true : false}
                             />
-                            {validation.errors?.header?.fen_sujet && validation.touched?.header?.fen_sujet ? (
-                              <FormFeedback type="invalid">{validation.errors?.header?.fen_sujet}</FormFeedback>
+                            {validation.errors?.header?.den_sujet && validation.touched?.header?.den_sujet ? (
+                              <FormFeedback type="invalid">{validation.errors?.header?.den_sujet}</FormFeedback>
                             ) : null}
 
                           </div>
@@ -446,7 +437,7 @@ const InvoiceCreate = () => {
                       <Row>
                         <div>
                           <Label
-                            for="fco_name"
+                            for="dco_name"
                             className="text-muted text-uppercase fw-semibold"
                           >
                             Mes informations
@@ -456,16 +447,16 @@ const InvoiceCreate = () => {
                           <Input
                             type="text"
                             className="form-control border-1"
-                            id="fco_name"
-                            name="contact.fco_name"
-                            value={validation.values.contact.fco_name || ""}
+                            id="dco_name"
+                            name="contact.dco_name"
+                            value={validation.values.contact.dco_name || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
                             placeholder="Nom complet"
-                            invalid={validation.errors?.contact?.fco_name && validation.touched?.contact?.fco_name ? true : false}
+                            invalid={validation.errors?.contact?.dco_name && validation.touched?.contact?.dco_name ? true : false}
                           />
-                          {validation.errors?.contact?.fco_name && validation.touched?.contact?.fco_name ? (
-                            <FormFeedback type="invalid">{validation.errors?.contact?.fco_name}</FormFeedback>
+                          {validation.errors?.contact?.dco_name && validation.touched?.contact?.dco_name ? (
+                            <FormFeedback type="invalid">{validation.errors?.contact?.dco_name}</FormFeedback>
                           ) : null}
 
                         </div>
@@ -474,16 +465,16 @@ const InvoiceCreate = () => {
                             type="textarea"
                             className="form-control border-1"
                             id="billingAddress"
-                            name="contact.fco_address"
-                            value={validation.values.contact.fco_address || ""}
+                            name="contact.dco_address"
+                            value={validation.values.contact.dco_address || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
                             rows="3"
                             placeholder="Adresse"
-                            invalid={validation.errors?.contact?.fco_address && validation.touched?.contact?.fco_address ? true : false}
+                            invalid={validation.errors?.contact?.dco_address && validation.touched?.contact?.dco_address ? true : false}
                           />
-                          {validation.errors?.contact?.fco_address && validation.touched?.contact?.fco_address ? (
-                            <FormFeedback type="invalid">{validation.errors?.contact?.fco_address}</FormFeedback>
+                          {validation.errors?.contact?.dco_address && validation.touched?.contact?.dco_address ? (
+                            <FormFeedback type="invalid">{validation.errors?.contact?.dco_address}</FormFeedback>
                           ) : null}
 
                         </div>
@@ -491,16 +482,16 @@ const InvoiceCreate = () => {
                           <Input
                             type="text"
                             className="form-control border-1"
-                            id="fco_cp"
-                            name="contact.fco_cp"
-                            value={validation.values.contact.fco_cp || ""}
+                            id="dco_cp"
+                            name="contact.dco_cp"
+                            value={validation.values.contact.dco_cp || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
                             placeholder="Code postal"
-                            invalid={validation.errors?.contact?.fco_cp && validation.touched?.contact?.fco_cp ? true : false}
+                            invalid={validation.errors?.contact?.dco_cp && validation.touched?.contact?.dco_cp ? true : false}
                           />
-                          {validation.errors?.contact?.fco_cp && validation.touched?.contact?.fco_cp ? (
-                            <FormFeedback type="invalid">{validation.errors?.contact?.fco_cp}</FormFeedback>
+                          {validation.errors?.contact?.dco_cp && validation.touched?.contact?.dco_cp ? (
+                            <FormFeedback type="invalid">{validation.errors?.contact?.dco_cp}</FormFeedback>
                           ) : null}
 
                         </div>
@@ -508,16 +499,16 @@ const InvoiceCreate = () => {
                           <Input
                             type="text"
                             className="form-control border-1"
-                            id="fco_city"
-                            name="contact.fco_city"
-                            value={validation.values.contact.fco_city || ""}
+                            id="dco_city"
+                            name="contact.dco_city"
+                            value={validation.values.contact.dco_city || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
                             placeholder="Ville"
-                            invalid={validation.errors?.contact?.fco_city && validation.touched?.contact?.fco_city ? true : false}
+                            invalid={validation.errors?.contact?.dco_city && validation.touched?.contact?.dco_city ? true : false}
                           />
-                          {validation.errors?.contact?.fco_city && validation.touched?.contact?.fco_city ? (
-                            <FormFeedback type="invalid">{validation.errors?.contact?.fco_city}</FormFeedback>
+                          {validation.errors?.contact?.dco_city && validation.touched?.contact?.dco_city ? (
+                            <FormFeedback type="invalid">{validation.errors?.contact?.dco_city}</FormFeedback>
                           ) : null}
 
                         </div>
@@ -526,16 +517,16 @@ const InvoiceCreate = () => {
                             type="text"
                             className="form-control border-1"
                             data-plugin="cleave-phone"
-                            id="fco_phone"
-                            name="contact.fco_phone"
-                            value={validation.values.contact.fco_phone || ""}
+                            id="dco_phone"
+                            name="contact.dco_phone"
+                            value={validation.values.contact.dco_phone || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
                             placeholder="Téléphone"
-                            invalid={validation.errors?.contact?.fco_phone && validation.touched?.contact?.fco_phone ? true : false}
+                            invalid={validation.errors?.contact?.dco_phone && validation.touched?.contact?.dco_phone ? true : false}
                           />
-                          {validation.errors?.contact?.fco_phone && validation.touched?.contact?.fco_phone ? (
-                            <FormFeedback type="invalid">{validation.errors?.contact?.fco_phone}</FormFeedback>
+                          {validation.errors?.contact?.dco_phone && validation.touched?.contact?.dco_phone ? (
+                            <FormFeedback type="invalid">{validation.errors?.contact?.dco_phone}</FormFeedback>
                           ) : null}
 
                         </div>
@@ -543,16 +534,16 @@ const InvoiceCreate = () => {
                           <Input
                             type="text"
                             className="form-control border-1"
-                            id="fco_email"
-                            name="contact.fco_email"
-                            value={validation.values.contact.fco_email || ""}
+                            id="dco_email"
+                            name="contact.dco_email"
+                            value={validation.values.contact.dco_email || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
                             placeholder="Email"
-                            invalid={validation.errors?.contact?.fco_email && validation.touched?.contact?.fco_email ? true : false}
+                            invalid={validation.errors?.contact?.dco_email && validation.touched?.contact?.dco_email ? true : false}
                           />
-                          {validation.errors?.contact?.fco_email && validation.touched?.contact?.fco_email ? (
-                            <FormFeedback type="invalid">{validation.errors?.contact?.fco_email}</FormFeedback>
+                          {validation.errors?.contact?.dco_email && validation.touched?.contact?.dco_email ? (
+                            <FormFeedback type="invalid">{validation.errors?.contact?.dco_email}</FormFeedback>
                           ) : null}
 
                         </div>
@@ -563,7 +554,7 @@ const InvoiceCreate = () => {
                         <Col>
                           <div className="title-client">
                             <Label
-                              for="fco_cus_name"
+                              for="dco_cus_name"
                               className="text-muted text-uppercase fw-semibold"
                             >
                               Client information
@@ -577,18 +568,18 @@ const InvoiceCreate = () => {
                                 autoComplete="off"
                                 type="text"
                                 className="form-control border-1"
-                                id="fco_cus_name"
-                                name="contact.fco_cus_name"
-                                value={validation.values.contact.fco_cus_name || ""}
+                                id="dco_cus_name"
+                                name="contact.dco_cus_name"
+                                value={validation.values.contact.dco_cus_name || ""}
                                 onBlur={validation.handleBlur}
                                 onChange={validation.handleChange}
                                 placeholder="Nom complet"
-                                invalid={validation.errors?.contact?.fco_cus_name && validation.touched?.contact?.fco_cus_name ? true : false}
+                                invalid={validation.errors?.contact?.dco_cus_name && validation.touched?.contact?.dco_cus_name ? true : false}
                               />
                               <button onClick={toggle} className="btn btn-primary" type="button" id="button-addon2">+</button>
                               {/* {showCollabDiv &&
                                 <datalist id="list-company" style={{ display: "block", position: 'absolute', backgroundColor: 'white', width: "100%", border: "0.5px solid #dddddd", zIndex: 5000, height: "auto", maxHeight: "400px", overflowY: "scroll" }} >
-                                  {collaborateurs.filter(e => e.ent_name.includes(validation.values.contact.fco_cus_name)).map((c, i) => {
+                                  {collaborateurs.filter(e => e.ent_name.includes(validation.values.contact.dco_cus_name)).map((c, i) => {
                                     return (
                                       <option style={{ cursor: "pointer", padding: 8, borderBottom: "0.5px solid #dddddd" }} onClick={() => { setShowCollabDiv(() => false); setCollaborateur(c) }} key={i}>{c.ent_name}</option>
                                     )
@@ -597,8 +588,8 @@ const InvoiceCreate = () => {
                               } */}
 
                             </div>
-                            {validation.errors?.contact?.fco_cus_name && validation.touched?.contact?.fco_cus_name ? (
-                              <FormFeedback type="invalid">{validation.errors?.contact?.fco_cus_name}</FormFeedback>
+                            {validation.errors?.contact?.dco_cus_name && validation.touched?.contact?.dco_cus_name ? (
+                              <FormFeedback type="invalid">{validation.errors?.contact?.dco_cus_name}</FormFeedback>
                             ) : null}
 
                           </div>
@@ -606,17 +597,17 @@ const InvoiceCreate = () => {
                             <Input
                               type="textarea"
                               className="form-control border-1"
-                              id="fco_cus_address"
-                              name="contact.fco_cus_address"
-                              value={validation.values.contact.fco_cus_address || ""}
+                              id="dco_cus_address"
+                              name="contact.dco_cus_address"
+                              value={validation.values.contact.dco_cus_address || ""}
                               onBlur={validation.handleBlur}
                               onChange={validation.handleChange}
                               rows="3"
                               placeholder="Adresse"
-                              invalid={validation.errors?.contact?.fco_cus_address && validation.touched?.contact?.fco_cus_address ? true : false}
+                              invalid={validation.errors?.contact?.dco_cus_address && validation.touched?.contact?.dco_cus_address ? true : false}
                             />
-                            {validation.errors?.contact?.fco_cus_address && validation.touched?.contact?.fco_cus_address ? (
-                              <FormFeedback type="invalid">{validation.errors?.contact?.fco_cus_address}</FormFeedback>
+                            {validation.errors?.contact?.dco_cus_address && validation.touched?.contact?.dco_cus_address ? (
+                              <FormFeedback type="invalid">{validation.errors?.contact?.dco_cus_address}</FormFeedback>
                             ) : null}
 
                           </div>
@@ -624,16 +615,16 @@ const InvoiceCreate = () => {
                             <Input
                               type="text"
                               className="form-control border-1"
-                              id="fco_cp"
-                              name="contact.fco_cus_cp"
-                              value={validation.values.contact.fco_cus_cp || ""}
+                              id="dco_cp"
+                              name="contact.dco_cus_cp"
+                              value={validation.values.contact.dco_cus_cp || ""}
                               onBlur={validation.handleBlur}
                               onChange={validation.handleChange}
                               placeholder="Code postal"
-                              invalid={validation.errors?.contact?.fco_cus_cp && validation.touched?.contact?.fco_cus_cp ? true : false}
+                              invalid={validation.errors?.contact?.dco_cus_cp && validation.touched?.contact?.dco_cus_cp ? true : false}
                             />
-                            {validation.errors?.contact?.fco_cus_cp && validation.touched?.contact?.fco_cus_cp ? (
-                              <FormFeedback type="invalid">{validation.errors?.contact?.fco_cus_cp}</FormFeedback>
+                            {validation.errors?.contact?.dco_cus_cp && validation.touched?.contact?.dco_cus_cp ? (
+                              <FormFeedback type="invalid">{validation.errors?.contact?.dco_cus_cp}</FormFeedback>
                             ) : null}
 
                           </div>
@@ -641,16 +632,16 @@ const InvoiceCreate = () => {
                             <Input
                               type="text"
                               className="form-control border-1"
-                              id="fco_cus_city"
-                              name="contact.fco_cus_city"
-                              value={validation.values.contact.fco_cus_city || ""}
+                              id="dco_cus_city"
+                              name="contact.dco_cus_city"
+                              value={validation.values.contact.dco_cus_city || ""}
                               onBlur={validation.handleBlur}
                               onChange={validation.handleChange}
                               placeholder="Ville"
-                              invalid={validation.errors?.contact?.fco_cus_city && validation.touched?.contact?.fco_cus_city ? true : false}
+                              invalid={validation.errors?.contact?.dco_cus_city && validation.touched?.contact?.dco_cus_city ? true : false}
                             />
-                            {validation.errors?.contact?.fco_cus_city && validation.touched?.contact?.fco_cus_city ? (
-                              <FormFeedback type="invalid">{validation.errors?.contact?.fco_cus_city}</FormFeedback>
+                            {validation.errors?.contact?.dco_cus_city && validation.touched?.contact?.dco_cus_city ? (
+                              <FormFeedback type="invalid">{validation.errors?.contact?.dco_cus_city}</FormFeedback>
                             ) : null}
 
                           </div>
@@ -659,16 +650,16 @@ const InvoiceCreate = () => {
                               type="text"
                               className="form-control border-1"
                               data-plugin="cleave-phone"
-                              id="fco_cus_phone"
-                              name="contact.fco_cus_phone"
-                              value={validation.values.contact.fco_cus_phone || ""}
+                              id="dco_cus_phone"
+                              name="contact.dco_cus_phone"
+                              value={validation.values.contact.dco_cus_phone || ""}
                               onBlur={validation.handleBlur}
                               onChange={validation.handleChange}
                               placeholder="Téléphone"
-                              invalid={validation.errors?.contact?.fco_cus_phone && validation.touched?.contact?.fco_cus_phone ? true : false}
+                              invalid={validation.errors?.contact?.dco_cus_phone && validation.touched?.contact?.dco_cus_phone ? true : false}
                             />
-                            {validation.errors?.contact?.fco_cus_phone && validation.touched?.contact?.fco_cus_phone ? (
-                              <FormFeedback type="invalid">{validation.errors?.contact?.fco_cus_phone}</FormFeedback>
+                            {validation.errors?.contact?.dco_cus_phone && validation.touched?.contact?.dco_cus_phone ? (
+                              <FormFeedback type="invalid">{validation.errors?.contact?.dco_cus_phone}</FormFeedback>
                             ) : null}
 
                           </div>
@@ -676,16 +667,16 @@ const InvoiceCreate = () => {
                             <Input
                               type="text"
                               className="form-control border-1"
-                              id="fco_cus_email"
-                              name="contact.fco_cus_email"
-                              value={validation.values.contact.fco_cus_email || ""}
+                              id="dco_cus_email"
+                              name="contact.dco_cus_email"
+                              value={validation.values.contact.dco_cus_email || ""}
                               onBlur={validation.handleBlur}
                               onChange={validation.handleChange}
                               placeholder="Email"
-                              invalid={validation.errors?.contact?.fco_cus_email && validation.touched?.contact?.fco_cus_email ? true : false}
+                              invalid={validation.errors?.contact?.dco_cus_email && validation.touched?.contact?.dco_cus_email ? true : false}
                             />
-                            {validation.errors?.contact?.fco_cus_email && validation.touched?.contact?.fco_cus_email ? (
-                              <FormFeedback type="invalid">{validation.errors?.contact?.fco_cus_email}</FormFeedback>
+                            {validation.errors?.contact?.dco_cus_email && validation.touched?.contact?.dco_cus_email ? (
+                              <FormFeedback type="invalid">{validation.errors?.contact?.dco_cus_email}</FormFeedback>
                             ) : null}
 
                           </div>
@@ -697,40 +688,41 @@ const InvoiceCreate = () => {
                 <CardBody className="p-4 border-top border-bottom border-bottom-dashed border-top-dashed">
                   <Row className="g-3">
                     <Col lg={3} sm={6}>
-                      <Label for="invoicenoInput">Facture N°</Label>
+                      <Label for="invoicenoInput">Devis N°</Label>
                       <Input
                         type="text"
                         className="form-control bg-light border-0"
-                        id="fen_num_fac"
-                        name="header.fen_num_fac"
-                        value={`${validation.values.header.fen_num_fac}` || ""}
+                        id="den_num"
+                        name="header.den_num"
+                        value={`${validation.values.header.den_num}` || ""}
                         onBlur={validation.handleBlur}
                         onChange={validation.handleChange}
-                        placeholder="Numéro de facture"
-                        invalid={validation.errors?.header?.fen_num_fac && validation.touched?.header?.fen_num_fac ? true : false}
+                        placeholder="Numéro de devis"
+                        invalid={validation.errors?.header?.den_num && validation.touched?.header?.den_num ? true : false}
                         readOnly
                       />
-                      {validation.errors?.header?.fen_num_fac && validation.touched?.header?.fen_num_fac ? (
-                        <FormFeedback type="invalid">{validation.errors?.header?.fen_num_fac}</FormFeedback>
+                      {validation.errors?.header?.den_num && validation.touched?.header?.den_num ? (
+                        <FormFeedback type="invalid">{validation.errors?.header?.den_num}</FormFeedback>
                       ) : null}
                     </Col>
                     <Col lg={3} sm={6}>
                       <div>
-                        <Label for="date-field">Date d'échéance</Label>
+
+                        <Label for="date-field">Date de validité</Label>
                         <Input
                           type="date"
-                          name="header.fen_date_expired"
+                          name="header.den_date_valid"
                           id="date-field"
                           className="form-control"
                           placeholder="Select a date"
                           onBlur={validation.handleBlur}
                           onChange={validation.handleChange}
-                          value={validation.values.header.fen_date_expired || ""}
-                          invalid={validation.errors?.header?.fen_date_expired && validation.touched?.header?.fen_date_expired ? true : false}
+                          value={validation.values.header.den_date_valid || ""}
+                          invalid={validation.errors?.header?.den_date_valid && validation.touched?.header?.den_date_valid ? true : false}
                           required
                         />
-                        {validation.touched?.header?.fen_date_expired && validation.errors?.header?.fen_date_expired ? (
-                          <FormFeedback type="invalid">{validation.errors?.header?.fen_date_expired}</FormFeedback>
+                        {validation.touched?.header?.den_date_valid && validation.errors?.header?.den_date_valid ? (
+                          <FormFeedback type="invalid">{validation.errors?.header?.den_date_valid}</FormFeedback>
                         ) : null}
                       </div>
                     </Col>
@@ -739,7 +731,7 @@ const InvoiceCreate = () => {
                       <div className="input-light">
 
                         <Input
-                          name="header.fen_etat"
+                          name="header.den_etat"
                           type="select"
                           className="border-1"
                           id="choices-payment-status"
@@ -747,10 +739,10 @@ const InvoiceCreate = () => {
                           onBlur={validation.handleBlur}
                           required
                           value={
-                            validation.values.header.fen_etat || ""
+                            validation.values.header.den_etat || ""
                           }
                         >
-                          {allstatus.map((item, key) => (<option value={item.value} key={key}>{item.label}</option>))}
+                          {allstatusDevis.map((item, key) => (<option value={item.value} key={key}>{item.label}</option>))}
                         </Input>
                         {validation.touched.status && validation.errors.status ? (
                           <FormFeedback type="invalid">{validation.errors.status}</FormFeedback>
@@ -767,7 +759,7 @@ const InvoiceCreate = () => {
                           id="totalamountInput"
                           placeholder="€0.00"
                           readOnly
-                          value={"€" + rounded(validation.values.header.fen_total_ttc, 2)}
+                          value={"€" + rounded(validation.values.header.den_total_ttc, 2)}
                         />
                       </div>
                     </Col>
@@ -818,8 +810,8 @@ const InvoiceCreate = () => {
                                     className="form-control border-1"
                                     id={`productName-${i}`}
                                     placeholder="Nom du produit"
-                                    name={`ligne[${i}].fli_name`}
-                                    value={validation.values?.ligne[i]?.fli_name || ""}
+                                    name={`ligne[${i}].dli_name`}
+                                    value={validation.values?.ligne[i]?.dli_name || ""}
                                     onBlur={validation.handleBlur}
                                     onChange={validation.handleChange}
                                     required
@@ -828,7 +820,7 @@ const InvoiceCreate = () => {
 
                                 </div>
                                 <Input
-                                  name={`ligne[${i}].fli_detail`}
+                                  name={`ligne[${i}].dli_detail`}
                                   type="textarea"
                                   className="form-control  border-1"
                                   id="productDetails-1"
@@ -836,17 +828,17 @@ const InvoiceCreate = () => {
                                   placeholder="Details du produit"
                                   onBlur={validation.handleBlur}
                                   onChange={validation.handleChange}
-                                  value={validation.values?.ligne[i]?.fli_detail || ""}
+                                  value={validation.values?.ligne[i]?.dli_detail || ""}
                                 ></Input>
                               </td>
                               <td>
                                 <Select
                                   onChange={(option) => {
-                                    let event = { target: { value: option.value, name: `ligne[${i}].fli_tva` }, };
+                                    let event = { target: { value: option.value, name: `ligne[${i}].dli_tva` }, };
                                     handleChangeValue(event, i);
                                   }}
                                   options={tvaList || []}
-                                  value={tvaList && tvaList.find((tva) => tva.value == validation.values.ligne[i].fli_tva)}
+                                  value={tvaList && tvaList.find((tva) => tva.value == validation.values.ligne[i].dli_tva)}
                                   id="choices-payment-currency"
                                   className="form-selectborder-0 bg-light"
                                 />
@@ -857,10 +849,10 @@ const InvoiceCreate = () => {
                                     type="number"
                                     className="form-control product-price border-1"
                                     placeholder="0.00"
-                                    // id="fli_unit_ht" 
+                                    // id="dli_unit_ht" 
                                     step="0.01"
-                                    name={`ligne[${i}].fli_unit_ht`}
-                                    value={validation.values?.ligne[i]?.fli_unit_ht || ""}
+                                    name={`ligne[${i}].dli_unit_ht`}
+                                    value={validation.values?.ligne[i]?.dli_unit_ht || ""}
                                     onChange={(e) => { handleChangeValue(e, i); }}
                                     onBlur={validation.handleBlur}
                                   />
@@ -871,10 +863,10 @@ const InvoiceCreate = () => {
                                     type="number"
                                     className="form-control product-price bg-light border-0"
                                     placeholder="0.00"
-                                    // id="fli_unit_ht" 
+                                    // id="dli_unit_ht" 
                                     step="0.01"
-                                    name={`ligne[${i}].fli_unit_ht`}
-                                    value={validation.values?.ligne[i]?.fli_unit_ttc || ""}
+                                    name={`ligne[${i}].dli_unit_ht`}
+                                    value={validation.values?.ligne[i]?.dli_unit_ttc || ""}
                                     onBlur={validation.handleBlur}
                                     readOnly
                                   />
@@ -888,8 +880,8 @@ const InvoiceCreate = () => {
                                     className="form-control product-price border-1"
                                     placeholder="0.00"
                                     step="0.01"
-                                    name={`ligne[${i}].fli_pourcent_remise`}
-                                    value={validation.values?.ligne[i]?.fli_pourcent_remise || ""}
+                                    name={`ligne[${i}].dli_pourcent_remise`}
+                                    value={validation.values?.ligne[i]?.dli_pourcent_remise || ""}
                                     onChange={(e) => handleChangeValue(e, i)}
                                     onBlur={validation.handleBlur} />
                                   <Label className="btn btn-primary btn-input-group">%</Label>
@@ -899,19 +891,19 @@ const InvoiceCreate = () => {
 
 
                                 <div className="input-step">
-                                  <button type="button" name={`ligne[${i}].fli_qty`} className="minus" value={parseInt(validation.values?.ligne[i]?.fli_qty) - 1} onClick={(e) => { handleChangeValue(e, i) }}>
+                                  <button type="button" name={`ligne[${i}].dli_qty`} className="minus" value={parseInt(validation.values?.ligne[i]?.dli_qty) - 1} onClick={(e) => { handleChangeValue(e, i) }}>
                                     –
                                   </button>
                                   <Input
                                     type="number"
                                     className="product-quantity"
                                     id="product-qty-1"
-                                    value={validation.values?.ligne[i]?.fli_qty || 0}
-                                    name={`ligne[${i}].fli_qty`}
+                                    value={validation.values?.ligne[i]?.dli_qty || 0}
+                                    name={`ligne[${i}].dli_qty`}
                                     onChange={(e) => { handleChangeValue(e, i) }}
                                     onBlur={validation.handleBlur}
                                   />
-                                  <button type="button" name={`ligne[${i}].fli_qty`} value={parseInt(validation.values?.ligne[i]?.fli_qty) + 1} className="plus" onClick={(e) => { handleChangeValue(e, i) }}>
+                                  <button type="button" name={`ligne[${i}].dli_qty`} value={parseInt(validation.values?.ligne[i]?.dli_qty) + 1} className="plus" onClick={(e) => { handleChangeValue(e, i) }}>
                                     +
                                   </button>
                                 </div>
@@ -925,7 +917,7 @@ const InvoiceCreate = () => {
                                     className="form-control bg-light border-0 product-line-price"
                                     id="productPrice-1"
                                     placeholder="€0.00"
-                                    value={"€" + rounded(validation.values?.ligne[i]?.fli_total_ht, 2)}
+                                    value={"€" + rounded(validation.values?.ligne[i]?.dli_total_ht, 2)}
                                     readOnly
                                   />
                                   <Label className="btn btn-primary btn-input-group">ht</Label>
@@ -935,7 +927,7 @@ const InvoiceCreate = () => {
                                     type="text"
                                     className="form-control bg-light border-0 product-line-price"
                                     placeholder="€0.00"
-                                    value={"€" + rounded(validation.values?.ligne[i]?.fli_total_ttc, 2)}
+                                    value={"€" + rounded(validation.values?.ligne[i]?.dli_total_ttc, 2)}
                                     readOnly
                                   />
                                   <Label className="btn btn-primary btn-input-group">ttc</Label>
@@ -996,7 +988,7 @@ const InvoiceCreate = () => {
                                       id="cart-subtotal"
                                       placeholder="€0.00"
                                       readOnly
-                                      value={"€" + rounded(validation.values.header.fen_total_ht, 2)}
+                                      value={"€" + rounded(validation.values.header.den_total_ht, 2)}
                                     />
                                   </td>
                                 </tr>
@@ -1009,7 +1001,7 @@ const InvoiceCreate = () => {
                                       id="cart-tax"
                                       placeholder="$0.00"
                                       readOnly
-                                      value={"€" + rounded(validation.values.header.fen_total_remise, 2)}
+                                      value={"€" + rounded(validation.values.header.den_total_remise, 2)}
                                     />
                                   </td>
                                 </tr>
@@ -1040,7 +1032,7 @@ const InvoiceCreate = () => {
                                       id="cart-shipping"
                                       placeholder="$0.00"
                                       readOnly
-                                      value={"€" + rounded(validation.values.header.fen_total_tva, 2)}
+                                      value={"€" + rounded(validation.values.header.den_total_tva, 2)}
                                     />
                                   </td>
                                 </tr>
@@ -1053,7 +1045,7 @@ const InvoiceCreate = () => {
                                       id="cart-total"
                                       placeholder="$0.00"
                                       readOnly
-                                      value={"€" + rounded(validation.values.header.fen_total_ttc, 2)}
+                                      value={"€" + rounded(validation.values.header.den_total_ttc, 2)}
                                     />
                                   </td>
                                 </tr>
@@ -1064,57 +1056,9 @@ const InvoiceCreate = () => {
                       </tbody>
                     </Table>
                   </div>
-                  {/* <Row className="mt-3">
-                    <Col lg={4}>
-                      <div className="mb-2">
-                        <Label
-                          for="choices-payment-type"
-                          className="form-label text-muted text-uppercase fw-semibold"
-                        >
-                          Payment Details
-                        </Label>
-                        <div className="input-light">
-                          <Select
-                            value={ispaymentDetails}
-                            onChange={() => {
-                              handleispaymentDetails();
-                            }}
-                            options={paymentdetails}
-                            name="choices-single-default"
-                            id="idStatus"
-                            className="bg-light border-0"
-                          ></Select>
-                        </div>
-                      </div>
-                      <div className="mb-2">
-                        <Input
-                          className="form-control bg-light border-0"
-                          type="text"
-                          id="cardholderName"
-                          placeholder="Card Holder Name"
-                        />
-                      </div>
-                      <div className="mb-2">
-                        <Input
-                          className="form-control bg-light border-0"
-                          type="text"
-                          id="cardNumber"
-                          placeholder="xxxx xxxx xxxx xxxx"
-                        />
-                      </div>
-                      <div>
-                        <Input
-                          className="form-control  bg-light border-0"
-                          type="text"
-                          id="amountTotalPay"
-                          placeholder="$0.00"
-                          readOnly
-                        />
-                      </div>
-                    </Col>
-                  </Row> */}
+
                   <div className="mt-4">
-                    {/* <Label
+                    <Label
                       for="exampleFormControlTextarea1"
                       className="form-label text-muted text-uppercase fw-semibold"
                     >
@@ -1123,29 +1067,27 @@ const InvoiceCreate = () => {
                     <Input
                       type="textarea"
                       className="form-control alert alert-info"
+                      name="header.den_note"
                       id="exampleFormControlTextarea1"
                       placeholder="Notes"
                       rows="2"
-                      defaultValue="All accounts are to be paid within 7 days from receipt of
-                      invoice. To be paid by cheque or credit card or direct
-                      payment online. If account is not paid within 7 days the
-                      credits details supplied as confirmation of work
-                      undertaken will be charged the agreed quoted fee noted
-                      above."
-                    /> */}
+                      value={validation.values?.header?.den_note || ""}
+                      onBlur={validation.handleBlur}
+                      onChange={validation.handleChange}
+                    />
                   </div>
                   <div className="hstack gap-2 justify-content-end d-print-none mt-4">
                     <button type="submit" className="btn btn-success">
                       <i className="ri-printer-line align-bottom me-1"></i> Enregister
                     </button>
-                    <Link to="#" className="btn btn-primary">
+                    {/* <Link to="#" className="btn btn-primary">
                       <i className="ri-download-2-line align-bottom me-1"></i>{" "}
                       Télécharger
                     </Link>
                     <Link to="#" className="btn btn-danger">
                       <i className="ri-send-plane-fill align-bottom me-1"></i>{" "}
                       Envoyer
-                    </Link>
+                    </Link> */}
                   </div>
                 </CardBody>
               </Form>
@@ -1175,7 +1117,7 @@ const InvoiceCreate = () => {
                     <div key={i} style={{ display: "flex", alignItems: "center", width: "100%", borderBottom: "0.5px solid #dddddd", margin: 3 }}>
                       <div className="flex-shrink-0">
                         {c.ent_img_url ? <img
-                          src={process.env.REACT_APP_API_URL + "/images/" + c.ent_img_url}
+                          src={api.API_URL + "/images/" + c.ent_img_url}
                           alt=""
                           className="avatar-xxs rounded-circle"
                         /> :
@@ -1239,10 +1181,10 @@ const InvoiceCreate = () => {
                         onClick={() => {
                           let newData = {
                             ...initialValueLigne,
-                            fli_tva: p.pro_tva,
-                            fli_name: p.pro_name,
-                            fli_detail: p.pro_detail,
-                            fli_unit_ht: p.pro_prix,
+                            dli_tva: p.pro_tva,
+                            dli_name: p.pro_name,
+                            dli_detail: p.pro_detail,
+                            dli_unit_ht: p.pro_prix,
                           }
 
 

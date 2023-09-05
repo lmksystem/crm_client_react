@@ -4,8 +4,8 @@ import { Dropdown, DropdownMenu, DropdownToggle, Form } from 'reactstrap';
 
 //import images
 import logoSm from "../assets/images/logo-sm.png";
-import logoDark from "../assets/images/logo-dark.png";
-import logoLight from "../assets/images/logo-light.png";
+import logoDark from "../assets/images/logo_countano.png";
+import logoLight from "../assets/images/logo_countano.png";
 
 //import Components
 import SearchOption from '../Components/Common/SearchOption';
@@ -129,13 +129,13 @@ const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
                             </Dropdown>
 
                             {/* LanguageDropdown */}
-                            <LanguageDropdown />
+                            {/* <LanguageDropdown /> */}
 
                             {/* WebAppsDropdown */}
-                            <WebAppsDropdown />
+                            {/* <WebAppsDropdown /> */}
 
                             {/* MyCartDropdwon */}
-                            <MyCartDropdown />
+                            {/* <MyCartDropdown /> */}
 
                             {/* FullScreenDropdown */}
                             <FullScreenDropdown />

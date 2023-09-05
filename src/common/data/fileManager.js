@@ -3,7 +3,7 @@ const recentFile = [
     id: 1,
     icon: "ri-gallery-fill",
     iconClass: "success",
-    fileName: "logo-dark.png",
+    fileName: "logo_countano.png",
     fileType: "Media",
     fileItem: "01",
     size: "1.3 MB",

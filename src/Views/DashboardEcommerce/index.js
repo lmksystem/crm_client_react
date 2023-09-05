@@ -12,7 +12,7 @@ import StoreVisits from "./StoreVisits";
 import TopSellers from "./TopSellers";
 
 const DashboardEcommerce = () => {
-  document.title = "Dashboard | Velzon - React Admin & Dashboard Template";
+  document.title = "Accueil | Countano";
 
   const [rightColumn, setRightColumn] = useState(true);
   const toggleRightColumn = () => {
@@ -23,7 +23,7 @@ const DashboardEcommerce = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb title="Dashboard" pageTitle="Dashboards" />
+          <BreadCrumb title="Tableau de bord" pageTitle="Coutano" />
           <Row>
             <Col>
               <div className="h-100">
@@ -37,17 +37,17 @@ const DashboardEcommerce = () => {
                   </Col>
                   <SalesByLocations />
                 </Row>
-                <Row>
+                {/* <Row>
                   <BestSellingProducts />
                   <TopSellers />
                 </Row>
                 <Row>
                   <StoreVisits />
                   <RecentOrders />
-                </Row>
+                </Row> */}
               </div>
             </Col>
-            <RecentActivity rightColumn={rightColumn} hideRightColumn={toggleRightColumn} />
+            {/* <RecentActivity rightColumn={rightColumn} hideRightColumn={toggleRightColumn} /> */}
           </Row>
         </Container>
       </div>

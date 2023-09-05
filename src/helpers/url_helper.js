@@ -212,8 +212,17 @@ export const ADD_NEW_TODO_PROJECT = "/add/project";
 //JOB APPLICATION
 export const GET_APPLICATION_LIST = "/application-list";
 
-//JOB APPLICATION
 export const GET_API_KEY = "/api-key";
+
+export const GET_PRODUCTS = "";
+export const ADD_NEW_PRODUCT = "";
+export const DELETE_PRODUCT = "";
+
+// JOB APPLICATION
+export const UPDATE_PRODUCT = "";
+
+// JOB APPLICATION
+// export const DELETE_PRODUCT = "";
 
 
 
@@ -269,7 +278,9 @@ export const DELETE_COMPANY = "/v1/company";
 export const POST_LOGIN = "/v1/user/login";
 
 // Product
-export const GET_PRODUCTS = "/v1/product";
-export const DELETE_PRODUCT = "/v1/product";
-export const ADD_NEW_PRODUCT = "/v1/product";
-export const UPDATE_PRODUCT = "/v1/product";
+export const PRODUCTS = "/v1/product";
+// DEVIS
+export const DEVIS = "/v1/devis";
+
+// TRANSACTION
+export const TRANSACTION = "/v1/transaction";

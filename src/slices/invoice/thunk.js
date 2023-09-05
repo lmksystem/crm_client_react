@@ -7,9 +7,8 @@ import {
   getInvoices as getInvoicesApi,
   addNewInvoice as addNewInvoiceApi,
   updateInvoice as updateInvoiceApi,
-  deleteInvoice as deleteInvoiceApi,
-  getInvoiceById as getInvoiceByIdApi,
-  createPdf as createPdfApi
+  createPdf as createPdfApi,
+  getWidgetInvoices as getWidgetInvoicesApi
 } from "../../helpers/backend_helper";
 
 export const getInvoices = createAsyncThunk("invoice/getInvoices", async () => {
@@ -44,30 +43,6 @@ export const updateInvoice = createAsyncThunk("invoice/updateInvoice", async (in
   }
 });
 
-export const deleteInvoice = createAsyncThunk("invoice/deleteInvoice", async (invoice) => {
-  try {
-    const response = deleteInvoiceApi(invoice);
-    toast.success("Invoice Delete Successfully", { autoClose: 3000 });
-    return { invoice, ...response };
-  }
-  catch (error) {
-    toast.error("Invoice Delete Failed", { autoClose: 3000 });
-    return error;
-  }
-});
-
-export const getInvoiceById = createAsyncThunk("invoice/getInvoiceById", async (invoice) => {
-  try {
-    const response = await getInvoiceByIdApi(invoice);
-
-    return response;
-  }
-  catch (error) {
-    toast.error("Invoice Delete Failed", { autoClose: 3000 });
-    return error;
-  }
-});
-
 export const createPdf = createAsyncThunk("invoice/createPdf", async (invoice) => {
   try {
     const response = await createPdfApi(invoice);
@@ -76,6 +51,18 @@ export const createPdf = createAsyncThunk("invoice/createPdf", async (invoice) =
   }
   catch (error) {
     toast.error("Invoice Delete Failed", { autoClose: 3000 });
+    return error;
+  }
+});
+
+export const getWidgetInvoices = createAsyncThunk("invoice/getWidgetInvoices", async (invoice) => {
+  try {
+    const response = await getWidgetInvoicesApi(invoice);
+
+    return response;
+  }
+  catch (error) {
+    toast.error("Erreur des widgets", { autoClose: 3000 });
     return error;
   }
 });

@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getInvoices, addNewInvoice, updateInvoice, deleteInvoice, getInvoiceById, createPdf } from './thunk';
+import { getInvoices, addNewInvoice, updateInvoice, createPdf, getWidgetInvoices } from './thunk';
 export const initialState = {
   invoices: [],
-  invoice: {},
+  widgets: [],
   error: {},
 };
 
@@ -10,7 +10,16 @@ export const initialState = {
 const InvoiceSlice = createSlice({
   name: 'InvoiceSlice',
   initialState,
-  reducer: {},
+  reducers: {
+    addTransactionInvoice(state, action) {
+      console.log("add", action.payload);
+      state.invoices = state.invoices.map((invoice) =>
+        invoice.header.fen_id == action.payload.tra_fen_fk
+          ? { ...invoice, transaction: [...invoice.transaction, action.payload] }
+          : invoice
+      )
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(getInvoices.fulfilled, (state, action) => {
       state.invoices = action.payload.data;
@@ -25,7 +34,7 @@ const InvoiceSlice = createSlice({
     });
 
     builder.addCase(addNewInvoice.fulfilled, (state, action) => {
-      state.invoices.push(action.payload);
+      state.invoices.push(action.payload.data);
       state.isInvoiceCreated = true;
     });
 
@@ -33,46 +42,35 @@ const InvoiceSlice = createSlice({
       state.error = action.payload.error || null;
     });
 
-    builder.addCase(updateInvoice.fulfilled, (state, action) => {
-      state.invoices = state.invoices.map(invoice =>
-        invoice._id.toString() === action.payload.data._id.toString()
-          ? { ...invoice, ...action.payload.data }
-          : invoice
-      );
-    });
+
 
     builder.addCase(updateInvoice.rejected, (state, action) => {
       state.error = action.payload.error || null;
     });
 
-    builder.addCase(deleteInvoice.fulfilled, (state, action) => {
-      state.invoices = state.invoices.filter(
-        invoice => invoice._id.toString() !== action.payload.invoice.toString()
-      );
-    });
-
-    builder.addCase(deleteInvoice.rejected, (state, action) => {
-      state.error = action.payload.error || null;
-    });
-
-    builder.addCase(getInvoiceById.fulfilled, (state, action) => {
-
-      state.invoice = action.payload.data;
-    });
-
-    builder.addCase(getInvoiceById.rejected, (state, action) => {
-      state.error = action.payload.data || null;
-    });
-
     builder.addCase(createPdf.fulfilled, (state, action) => {
-
-      state.invoice = { ...state.invoice, ...action.payload.data };
+      console.log("created");
+      state.invoices = state.invoices.map(invoice =>
+        invoice.header.fen_id == action.payload.data.fdo_fen_fk
+          ? { ...invoice, doc: action.payload.data }
+          : invoice
+      );
     });
 
     builder.addCase(createPdf.rejected, (state, action) => {
       state.error = action.payload.data || null;
     });
+    
+    builder.addCase(getWidgetInvoices.fulfilled, (state, action) => {
+      state.widgets = action.payload.data
+    });
+
+    builder.addCase(getWidgetInvoices.rejected, (state, action) => {
+      state.error = action.payload || null;
+    });
   }
 });
+
+export const { addTransactionInvoice } = InvoiceSlice.actions
 
 export default InvoiceSlice.reducer;

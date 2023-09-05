@@ -54,6 +54,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 // Export Modal
 import ExportCSVModal from "../../Components/Common/ExportCSVModal";
+import { api } from "../../config";
 
 const Contacts = () => {
   const dispatch = useDispatch();
@@ -66,11 +67,9 @@ const Contacts = () => {
   }));
 
   useEffect(() => {
-    if (contacts && !contacts.length) {
       dispatch(onGetContacts());
       dispatch(onGetCollaborateurs());
-    }
-  }, [dispatch, contacts]);
+  }, [dispatch]);
 
   useEffect(() => {
     setContact(contacts);
@@ -458,7 +457,7 @@ const Contacts = () => {
                 <Card id="contactList">
                   <CardBody className="pt-0">
                     <div>
-                      {isContactSuccess && contacts.length ? (
+                      {isContactSuccess ? (
                         <TableContainer
                           columns={columns}
                           data={(contacts || [])}
@@ -498,7 +497,7 @@ const Contacts = () => {
                                   </div>
                                   <div className="avatar-lg p-1">
                                     <div className="avatar-title bg-light rounded-circle">
-                                      <img src={process.env.REACT_APP_API_URL + "v1/images/" + (info.image_src ? ("company/" + info.image_src) : "user-dummy-img.jpg")} alt="dummyImg" id="customer-img" className="avatar-md rounded-circle object-cover" />
+                                      <img src={api.API_URL + "v1/images/" + (info.image_src ? ("company/" + info.image_src) : "user-dummy-img.jpg")} alt="dummyImg" id="customer-img" className="avatar-md rounded-circle object-cover" />
                                     </div>
                                   </div>
                                 </div>
@@ -736,7 +735,7 @@ const Contacts = () => {
                   <CardBody className="text-center">
                     <div className="position-relative d-inline-block">
                       <img
-                        src={process.env.REACT_APP_API_URL + "v1/images/" + (info.image_src ? ("company/" + info.image_src) : "user-dummy-img.jpg")}
+                        src={api.API_URL + "v1/images/" + (info.image_src ? ("company/" + info.image_src) : "user-dummy-img.jpg")}
                         alt=""
                         className="avatar-lg rounded-circle img-thumbnail"
                       />

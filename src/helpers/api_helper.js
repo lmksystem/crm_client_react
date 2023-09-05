@@ -13,7 +13,7 @@ const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessio
 if(token)
 axios.defaults.headers.common["Authorization"] = "Bearer " + token;
 
-console.log(token);
+console.log("token ",token);
 // intercepting to capture errors
 axios.interceptors.response.use(
   function (response) {

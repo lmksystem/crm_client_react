@@ -5,9 +5,11 @@ import * as url from "./url_helper";
 
 const api = new APIClient();
 
-/**
- *  GESTION
- */
+let item_value = JSON.parse(sessionStorage.getItem("authUser"));
+console.log();
+/*************************/
+/*        Gestion        */
+/*************************/
 
 // get Contacts
 export const getContacts = () => api.get(url.GET_CONTACTS);
@@ -18,9 +20,10 @@ export const updateContact = contact => api.update(url.UPDATE_CONTACT + '/' + co
 // delete Contact
 export const deleteContact = contact => api.delete(url.DELETE_CONTACT + '/' + contact);
 
-/**
- * Collaborateurs
- */
+
+/*************************/
+/*        Collabo        */
+/*************************/
 
 // get Collaborateurs
 export const getCollaborateurs = () => api.get(url.GET_COLLABORATEUR);
@@ -31,9 +34,10 @@ export const updateCollaborateur = collabo => api.update(url.UPDATE_COLLABORATEU
 // delete Collaborateurs
 export const deleteCollaborateur = collabo => api.delete(url.DELETE_COLLABORATEUR + '/' + collabo);
 
-/**
- * Collaborateurs
- */
+
+/*************************/
+/*          Tva          */
+/*************************/
 
 // get tva
 export const getTva = () => api.get(url.GET_TVA);
@@ -45,15 +49,15 @@ export const updateTva = tva => api.update(url.UPDATE_TVA + '/' + tva.tva_id, tv
 export const deleteTva = tva => api.delete(url.DELETE_TVA + '/' + tva);
 
 
-/**
- * Invoice
- */
+/*************************/
+/*        Invoice        */
+/*************************/
 
 //get Invoices
 export const getInvoices = () => api.get(url.GET_INVOICES);
 
-//get Invoice by id 
-export const getInvoiceById = (id) => api.get(url.GET_INVOICES + "/" + id);
+//get widgets data
+export const getWidgetInvoices = () => api.get(url.GET_INVOICES+ "/widgets");
 
 // add Invoice
 export const addNewInvoice = invoice => api.create(url.ADD_NEW_INVOICE, invoice);
@@ -61,15 +65,22 @@ export const addNewInvoice = invoice => api.create(url.ADD_NEW_INVOICE, invoice)
 // update Invoice
 export const updateInvoice = invoice => api.update(url.UPDATE_INVOICE + '/' + invoice._id, invoice);
 
-// delete Invoice
-export const deleteInvoice = invoice => api.delete(url.DELETE_INVOICE + '/' + invoice);
+// create pdf Invoice
+export const createPdf = invoice => api.get(url.CREATE_PDF + '/facture/' + invoice);
 
-// delete Invoice
-export const createPdf = invoice => api.get(url.CREATE_PDF + '/' + invoice);
+/*************************/
+/*      transaction      */
+/*************************/
 
-/**
- * Company
- */
+// Add transaction
+export const addNewTransaction = invoice => api.create(url.TRANSACTION, invoice);
+// Add transaction
+export const getTransaction = () => api.get(url.TRANSACTION);
+
+
+/*************************/
+/*        Company        */
+/*************************/
 
 //get Company
 export const getCompany = () => api.get(url.GET_COMPANY);
@@ -80,23 +91,47 @@ export const getCompany = () => api.get(url.GET_COMPANY);
 // // update Company
 // export const updateInvoice = invoice => api.update(url.UPDATE_INVOICE + '/' + invoice._id, invoice);
 
-// // delete Company
-// export const deleteInvoice = invoice => api.delete(url.DELETE_INVOICE + '/' + invoice);
 
-/**
- * Login
- */
+/*************************/
+/*         Auth          */
+/*************************/
 
 //  Method
 export const postLogin = data => api.create(url.POST_LOGIN, data);
 
-/**
- * product
- */
+
+/*************************/
+/*        Product        */
+/*************************/
 
 //  Method
-export const addProduct = data => api.create(url.ADD_NEW_PRODUCT, data);
+export const addProduct = data => api.create(url.PRODUCTS, data);
 
-export const getProducts = () => api.get(url.GET_PRODUCTS);
+export const getProducts = () => api.get(url.PRODUCTS);
 
-export const updateProduct = product => api.update(url.UPDATE_PRODUCT + "/" + product.pro_id, product);
+export const updateProduct = product => api.update(url.PRODUCTS + "/" + product.pro_id, product);
+
+
+/*************************/
+/*         Devis         */
+/*************************/
+
+export const addNewDevis = data => api.create(url.DEVIS, data);
+
+export const getDevis = () => api.get(url.DEVIS);
+
+export const updateDevis = devis => api.update(url.DEVIS + "/" + devis.den_id, devis);
+
+export const deleteDevis = devis => api.delete(url.DEVIS + "/" + devis);
+
+export const getDevisById = devis => api.get(url.DEVIS + "/" + devis);
+
+export const getDevisForEdit = id => api.get(url.DEVIS + "/edit/" + id);
+
+export const getDevisWidgets = () => api.get(url.DEVIS + "/widgets");
+
+export const createPdfDevis = devis => api.get(url.CREATE_PDF + "/devis/" + devis);
+
+
+
+

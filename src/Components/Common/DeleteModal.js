@@ -6,6 +6,7 @@ const DeleteModal = ({ show, onDeleteClick, onCloseClick }) => {
   return (
     <Modal isOpen={show} toggle={onCloseClick} centered={true}>
       <ModalBody className="py-3 px-5">
+      <script src="https://cdn.lordicon.com/bhenfmcm.js"></script>
         <div className="mt-2 text-center">
           <lord-icon
             src="https://cdn.lordicon.com/gsqxdxog.json"
@@ -16,7 +17,7 @@ const DeleteModal = ({ show, onDeleteClick, onCloseClick }) => {
           <div className="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
             <h4>Are you sure ?</h4>
             <p className="text-muted mx-4 mb-0">
-              Are you sure you want to remove this record ?
+              êtes-vous sûr de vouloir supprimer cet enregistrement ?
             </p>
           </div>
         </div>
@@ -27,7 +28,7 @@ const DeleteModal = ({ show, onDeleteClick, onCloseClick }) => {
             data-bs-dismiss="modal"
             onClick={onCloseClick}
           >
-            Close
+            Fermer
           </button>
           <button
             type="button"
@@ -35,7 +36,7 @@ const DeleteModal = ({ show, onDeleteClick, onCloseClick }) => {
             id="delete-record"
             onClick={onDeleteClick}
           >
-            Yes, Delete It!
+            Oui, supprimer !
           </button>
         </div>
       </ModalBody>

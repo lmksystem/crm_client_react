@@ -7,27 +7,6 @@ export * from "./auth/register/thunk";
 export * from "./auth/forgetpwd/thunk";
 export * from "./auth/profile/thunk";
 
-//Calendar
-export * from "./calendar/thunk";
-//Chat
-export * from "./chat/thunk";
-
-//Project
-export * from "./projects/thunk";
-
-// Tasks
-export * from "./tasks/thunk";
-//Crypto
-export * from "./crypto/thunk";
-
-//TicketsList
-export * from "./tickets/thunk";
-//Crm
-export * from "./crm/thunk";
-
-//Mailbox
-export * from "./mailbox/thunk";
-
 // Dashboard Analytics
 export * from "./dashboardAnalytics/thunk";
 
@@ -45,18 +24,6 @@ export * from "./dashboardProject/thunk";
 
 // Dashboard NFT
 export * from "./dashboardNFT/thunk";
-
-// Pages > Team
-export * from "./team/thunk";
-
-// File Manager
-export * from "./fileManager/thunk"
-
-// To do
-export * from "./todos/thunk"
-
-// Jobs
-export * from "./jobs/thunk";
 
 // API Key
 export * from "./apiKey/thunk"; 
@@ -77,3 +44,9 @@ export * from "./company/thunk";
 
 // products
 export * from "./product/thunk";
+
+// devis
+export * from "./devis/thunk";
+
+// transaction
+export * from "./transaction/thunk";

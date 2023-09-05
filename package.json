@@ -1,5 +1,6 @@
 {
-  "name": "velzon-modern-thunk",
+  "name": "countano",
+  "homepage": "https://countano.lmkapp.fr",
   "version": "2.4.0",
   "private": true,
   "dependencies": {
@@ -91,6 +92,7 @@
     "react-toastify": "^9.1.1",
     "reactstrap": "^9.1.5",
     "redux": "^4.2.0",
+    "redux-persist": "^6.0.0",
     "redux-thunk": "^2.4.2",
     "remixicon-react": "^1.0.0",
     "save": "^2.9.0",

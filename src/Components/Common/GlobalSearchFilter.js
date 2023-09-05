@@ -14,6 +14,7 @@ import Flatpickr from "react-flatpickr";
 import Select from "react-select";
 import { French } from "flatpickr/dist/l10n/fr.js"
 import { allstatus } from '../../common/data/invoiceList';
+import { allstatusDevis } from '../../common/data/devisList';
 
 const ProductsGlobalFilter = () => {
   return (
@@ -325,18 +326,17 @@ const InvoiceListGlobalSearch = ({ origneData, data, setData, value }) => {
     let newData = [...origneData];
 
     if (isText) {
-      newData = newData.filter((e) => e.fco_cus_email.toLowerCase().includes(isText) || e.fco_cus_name.toLowerCase().includes(isText) || e.fen_sujet.toLowerCase().includes(isText) || e.fen_total_ttc.toString().includes(isText))
+      newData = newData.filter((e) => e.contact.fco_cus_email.toLowerCase().includes(isText) || e.contact.fco_cus_name.toLowerCase().includes(isText) || e.header.fen_sujet.toLowerCase().includes(isText) || e.header.fen_total_ttc.toString().includes(isText))
     }
 
     if (isDate) {
-      newData = newData.filter((e) => isDate.includes(e.fen_date_create))
+      newData = newData.filter((e) => isDate.includes(e.header.fen_date_create))
     }
 
     if (isEtat) {
-      newData = newData.filter((e) => e.fen_etat.toLowerCase() == isEtat.toLowerCase())
+      newData = newData.filter((e) => e.header.fen_etat.toLowerCase() == isEtat.toLowerCase())
     }
 
-    console.log(data, isText);
     setData(() => newData);
   }
 
@@ -402,6 +402,114 @@ const InvoiceListGlobalSearch = ({ origneData, data, setData, value }) => {
               id="idStatus"
             >
               {allstatus?.map((e, i) => (<option key={i} value={e.value}>{e.label}</option>))}
+            </Input>
+          </div>
+        </Col>
+
+
+      </Row>
+
+
+      {/* <Col sm={4} xxl={1}>
+        <Button color="primary" className="w-100">
+          <i className="ri-equalizer-fill me-1 align-bottom"></i>{" "}
+          Filters
+        </Button>
+      </Col> */}
+
+    </React.Fragment>
+  );
+};
+
+const DevisListGlobalSearch = ({ origneData, data, setData, value }) => {
+  const [isEtat, setisEtat] = useState(null);
+  const [isText, setisText] = useState(null);
+  const [isDate, setisDate] = useState(null);
+
+  /**
+   * Fonction de trier des devis
+   */
+  const filteredData = () => {
+  
+    let newData = [...origneData];
+
+    if (isText) {
+      newData = newData.filter((e) => e.contact.dco_cus_email.toLowerCase().includes(isText) || e.contact.dco_cus_name.toLowerCase().includes(isText) || e.header.den_sujet.toLowerCase().includes(isText) || e.header.den_total_ttc.toString().includes(isText))
+    }
+
+    if (isDate) {
+      newData = newData.filter((e) => isDate.includes(e.header.den_date_create))
+    }
+
+    if (isEtat) {
+      newData = newData.filter((e) => e.header.den_etat.toLowerCase() == isEtat.toLowerCase())
+    }
+
+    setData(() => newData);
+  }
+
+  useEffect(() => {
+    if (origneData.length) {
+      if (isEtat || isText || isDate) {
+        filteredData();
+      } else {
+        setData(origneData)
+      }
+    }
+  }, [isText, isDate, isEtat])
+
+  return (
+    <React.Fragment>
+      <Row>
+
+        <Col sm={4} xxl={5} >
+          <div className={"search-box me-2 mb-2 d-flex col-12"}>
+            <input
+              onChange={(e) => {
+                setisText(e.target.value != "" ? e.target.value : null)
+              }}
+              id="search-bar-0"
+              type="text"
+              className="form-control search /"
+              placeholder={`Recherche...`}
+              value={isText || ""}
+            />
+            <i className="bx bx-search-alt search-icon"></i>
+          </div>
+        </Col>
+
+        <Col sm={4} xxl={3} className=' mb-2'>
+          <Flatpickr
+            onChange={(date, dateStr) => {
+              setisDate(dateStr ? dateStr.split(', ') : null);
+            }}
+            className="form-control bg-light border-light"
+            id="invoice-date-picker"
+            placeholder="Selectionnez une date"
+            options={{
+              locale: French,
+              altInput: true,
+              enableTime: false,
+              altFormat: "F j, Y",
+              mode: "multiple",
+              dateFormat: "Y-m-d",
+            }}
+
+          />
+        </Col>
+
+        <Col sm={4} xxl={3}>
+          <div className="input-light">
+            <Input
+              type='select'
+              onChange={(e) => {
+                setisEtat(e.target.value)
+              }}
+              // options={allstatus}
+              name="choices-single-default"
+              id="idStatus"
+            >
+              {allstatusDevis?.map((e, i) => (<option key={i} value={e.value}>{e.label}</option>))}
             </Input>
           </div>
         </Col>
@@ -588,5 +696,6 @@ export {
   TicketsListGlobalFilter,
   NFTRankingGlobalFilter,
   TaskListGlobalFilter,
-  LeadsGlobalFilter
+  LeadsGlobalFilter,
+  DevisListGlobalSearch
 };

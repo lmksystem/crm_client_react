@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 // Import Images
 import multiUser from '../../assets/images/users/multi-user.jpg';
@@ -48,15 +48,16 @@ import 'react-toastify/dist/ReactToastify.css';
 
 // Export Modal
 import ExportCSVModal from "../../Components/Common/ExportCSVModal";
+import { api } from "../../config";
 
 const Collaborateurs = () => {
   const dispatch = useDispatch();
+
   const { collaborateurs, isCollaborateurSuccess, error } = useSelector((state) => ({
     collaborateurs: state.Gestion.collaborateurs,
     isCollaborateurSuccess: state.Gestion.isCollaborateurSuccess,
     error: state.Gestion.error,
   }));
-
 
   const country = [
     { label: "Argentina", value: "Argentina" },
@@ -75,18 +76,16 @@ const Collaborateurs = () => {
   ];
 
   useEffect(() => {
-    // if (collaborateurs && !collaborateurs.length) {
     dispatch(onGetCollaborateur());
-    // }
   }, [dispatch]);
 
-  useEffect(() => {
-    setCollaborateur(collaborateurs);
-  }, [collaborateurs]);
+  // useEffect(() => {
+  //   setCollaborateur(collaborateurs);
+  // }, [collaborateurs]);
 
   useEffect(() => {
-    if (!isEmpty(collaborateurs)) {
-      setCollaborateur(collaborateurs);
+    if (!isEmpty(collaborateur)) {
+      // setCollaborateur(collaborateurs);
       setIsEdit(false);
     }
   }, [collaborateurs]);
@@ -132,8 +131,7 @@ const Collaborateurs = () => {
     setIsEdit(false);
     toggle();
   };
-
-
+  console.log("state ",collaborateur);
   // validation
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
@@ -154,6 +152,12 @@ const Collaborateurs = () => {
       ent_iban: (collaborateur && collaborateur.ent_iban) || '',
       ent_siren: (collaborateur && collaborateur.ent_siren) || '',
       ent_methode_payment: (collaborateur && collaborateur.ent_methode_payment) || '',
+      type: {
+        // { eti_removed: 1 } permet au backend de savoir si il doit l'inserrer ou non  (1 : non / 0: oui)
+        client: (collaborateur && collaborateur.type?.client) || { eti_removed: 1 },
+        prospect: (collaborateur && collaborateur.type?.prospect) || { eti_removed: 1 },
+        fournisseur: (collaborateur && collaborateur.type?.fournisseur) || { eti_removed: 1 },
+      }
     },
 
     validationSchema: Yup.object({
@@ -193,9 +197,15 @@ const Collaborateurs = () => {
         ent_methode_payment: values.ent_methode_payment,
       };
 
+      const company_type = {
+        fournisseur: values.type.fournisseur,
+        client: values.type.client,
+        prospect: values.type.prospect
+      }
 
       let data = {
-        ...companyData,
+        company: { ...companyData },
+        company_type: { ...company_type }
       }
 
       if (isEdit) {
@@ -217,7 +227,6 @@ const Collaborateurs = () => {
   // Update Data
   const handleCompanyClick = useCallback((arg) => {
     const collaborateur = arg;
-
     setCollaborateur({
       ent_id: collaborateur.ent_id,
       ent_lastname: collaborateur.ent_lastname,
@@ -235,6 +244,11 @@ const Collaborateurs = () => {
       ent_iban: collaborateur.ent_iban,
       ent_siren: collaborateur.ent_siren,
       ent_methode_payment: collaborateur.ent_methode_payment,
+      type: {
+        client: collaborateur.type.client,
+        prospect: collaborateur.type.prospect,
+        fournisseur: collaborateur.type.fournisseur,
+      }
     });
 
     setIsEdit(true);
@@ -298,13 +312,13 @@ const Collaborateurs = () => {
           <>
             <div className="flex-shrink-0">
               {company.row.original.ent_img_url ? <img
-                src={process.env.REACT_APP_API_URL + "/images/" + company.row.original.ent_img_url}
+                src={api.API_URL + "/images/" + company.row.original.ent_img_url}
                 alt=""
                 className="avatar-xxs rounded-circle"
               /> :
                 <div className="flex-shrink-0 avatar-xs me-2">
                   <div className="avatar-title bg-soft-success text-success rounded-circle fs-13">
-                    {company.row.original.ent_name.charAt(0)}
+                    {company.row.original.ent_name?.charAt(0)}
                   </div>
                 </div>
                 // <img src={multiUser} alt="" className="avatar-xxs rounded-circle" />
@@ -342,7 +356,9 @@ const Collaborateurs = () => {
       {
         Header: "Action",
         Cell: (cellProps) => {
+     
           let collaborateur = cellProps.row.original;
+          console.log(collaborateur);
           return (
             <ul className="list-inline hstack gap-2 mb-0">
               {/* <li className="list-inline-item edit" title="Call">
@@ -383,6 +399,21 @@ const Collaborateurs = () => {
     [handleCompanyClick, checkedAll]
   );
 
+  const handleTypeEntity = (e) => {
+    let value = e.target.checked;
+
+    validation.setValues({
+      ...validation.values,
+      type: {
+        ...validation.values.type,
+        [e.target.name]: {
+          ...validation.values.type[e.target.name],
+          eti_removed: value ? 0 : 1
+        }
+      }
+    })
+  }
+
 
   useEffect(() => {
     if (show) {
@@ -398,7 +429,7 @@ const Collaborateurs = () => {
   // Export Modal
   const [isExportCSV, setIsExportCSV] = useState(false);
 
-  document.title = "Companies | Countano";
+  document.title = "Clients - Fournisseur | Countano";
   return (
     <React.Fragment>
       <div className="page-content">
@@ -424,7 +455,7 @@ const Collaborateurs = () => {
         />
 
         <Container fluid>
-          <BreadCrumb title="Companies" pageTitle="CRM" />
+          <BreadCrumb title="Clients / Fournisseurs" pageTitle="Gestion" />
 
           <Row>
             <Col lg={12}>
@@ -433,7 +464,7 @@ const Collaborateurs = () => {
                   <div className="d-flex align-items-center flex-wrap gap-2">
                     <div className="flex-grow-1">
                       <button className="btn btn-info add-btn" onClick={() => { setIsEdit(false); toggle(); }}>
-                        <i className="ri-add-fill me-1 align-bottom"></i> Ajouter un collaborateur
+                        <i className="ri-add-fill me-1 align-bottom"></i> Ajouter un client / fournisseur
                       </button>
                     </div>
                     <div className="flex-shrink-0">
@@ -455,7 +486,7 @@ const Collaborateurs = () => {
 
                 <CardBody className="pt-0">
                   <div>
-                    {isCollaborateurSuccess && collaborateurs.length ? (
+                    {isCollaborateurSuccess ? (
                       <TableContainer
                         columns={columns}
                         data={(collaborateurs || [])}
@@ -475,7 +506,7 @@ const Collaborateurs = () => {
                   </div>
                   <Modal id="showModal" isOpen={modal} toggle={toggle} centered size="lg">
                     <ModalHeader className="bg-soft-info p-3" toggle={toggle}>
-                      {!!isEdit ? "Modifier collaborateur" : "Ajouter collaborateur"}
+                      {!!isEdit ? "Modifier" : "Ajouter"}
                     </ModalHeader>
                     <Form className="tablelist-form" onSubmit={(e) => {
 
@@ -486,7 +517,7 @@ const Collaborateurs = () => {
                       <ModalBody>
                         <input type="hidden" id="id-field" />
                         <Row className="g-3">
-
+                   
                           {/* <Col lg={12}>
                             <div className="text-center">
                               <div className="position-relative d-inline-block">
@@ -518,6 +549,61 @@ const Collaborateurs = () => {
                             </div>
                           </Col> */}
                           <h5>Informations Générales</h5>
+                          <Col lg={4} className="d-flex justify-content-center align-items-end">
+                            <div>
+                              <Label
+                                htmlFor="isclient-field"
+                                className="form-label"
+                              >
+                                Client
+                              </Label>
+                          
+                              <Input
+                                className="form-check-input  ms-2"
+                                type="checkbox"
+                                checked={validation.values.type.client.eti_removed == 0 ? true : false}
+                                onChange={(e) => handleTypeEntity(e)}
+                                name="client"
+                                id="isclient-field"
+                              />
+                            </div>
+                          </Col>
+                          <Col lg={4} className="d-flex justify-content-center align-items-end">
+                            <div>
+                              <Label
+                                htmlFor="isfournisseur-field"
+                                className="form-label"
+                              >
+                                Fournisseur
+                              </Label>
+                              <Input
+                                type="checkbox"
+                                className="form-check-input ms-2"
+                                checked={validation.values.type.fournisseur.eti_removed == 0 ? true : false} 
+                                onChange={(e) => handleTypeEntity(e)}
+                                name="fournisseur"
+                                id="isfournisseur-field"
+                              />
+                            </div>
+                          </Col>
+                          <Col lg={4} className="d-flex justify-content-center align-items-end">
+                            <div>
+                              <Label
+                                htmlFor="isfournisseur-field"
+                                className="form-label"
+                              >
+                                Prospect
+                              </Label>
+                              <Input
+                                type="checkbox"
+                                className="form-check-input ms-2"
+                                checked={validation.values.type.prospect.eti_removed == 0 ? true : false}
+                                onChange={(e) => handleTypeEntity(e)}
+                                name="prospect"
+                                id="isfournisseur-field"
+                              />
+                            </div>
+                          </Col>
                           <Col lg={6}>
                             <div>
                               <Label
@@ -886,7 +972,7 @@ const Collaborateurs = () => {
                                 name="ent_methode_payment"
                                 id="ent_methode_payment-field"
                                 className="form-control"
-                                placeholder="Enter ent_methode_payment"
+                                placeholder="Entrer methode de paiement"
                                 type="text"
                                 validate={{
                                   required: { value: true },
@@ -953,7 +1039,7 @@ const Collaborateurs = () => {
                   <CardBody className="text-center">
                     <div className="position-relative d-inline-block">
                       <img
-                        src={process.env.REACT_APP_API_URL + "v1/images/user-dummy-img.jpg"}
+                        src={api.API_URL + "v1/images/user-dummy-img.jpg"}
                         alt=""
                         className="avatar-lg rounded-circle img-thumbnail"
                       />

@@ -17,12 +17,12 @@ export const loginUser = (user, history) => async (dispatch) => {
       email: user.email,
       password: user.password,
     });;
-    
+
     if (data.user) {
       sessionStorage.setItem("authUser", JSON.stringify(data.user));
       dispatch(loginSuccess(data.user));
       history('/dashboard')
-    }  else {
+    } else {
       dispatch(apiError(data.error));
     }
 
@@ -33,14 +33,8 @@ export const loginUser = (user, history) => async (dispatch) => {
 
 export const logoutUser = () => async (dispatch) => {
   try {
-    sessionStorage.removeItem("authUser");
-
-    if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
-      const response = fireBaseBackend.logout;
-      dispatch(logoutUserSuccess(response));
-    } else {
-      dispatch(logoutUserSuccess(true));
-    }
+    sessionStorage.removeItem('authUser')
+    dispatch(logoutUserSuccess(true));
 
   } catch (error) {
     dispatch(apiError(error));

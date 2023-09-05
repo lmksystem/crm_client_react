@@ -16,7 +16,6 @@ import * as moment from "moment";
 import CountUp from "react-countup";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import TableContainer from "../../Components/Common/TableContainer";
-import DeleteModal from "../../Components/Common/DeleteModal";
 
 //Import Icons
 import FeatherIcon from "feather-icons-react";
@@ -25,69 +24,45 @@ import { invoiceWidgets } from "../../common/data/invoiceList";
 //Import actions
 import {
   getInvoices as onGetInvoices,
-  deleteInvoice as onDeleteInvoice,
-  getCompany as onGetCompany
+  getWidgetInvoices as onGetInvoiceWidgets,
+
 } from "../../slices/thunks";
 
 //redux
 import { useSelector, useDispatch } from "react-redux";
 
 import Loader from "../../Components/Common/Loader";
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import 'moment/locale/fr'  // without this line it didn't work
 import { InvoiceListGlobalSearch } from "../../Components/Common/GlobalSearchFilter";
+import { rounded } from "../../utils/function";
+import { api } from "../../config";
+import WidgetCountUp from "../../Components/Common/WidgetCountUp";
 
 moment.locale('fr')
-
-
 
 const InvoiceList = () => {
   document.title = "Liste facture  | Countano";
 
   const dispatch = useDispatch();
 
-  const { invoices, isInvoiceSuccess, error } = useSelector((state) => ({
+  const { invoiceWidgets, invoices, transactions, isInvoiceSuccess, error } = useSelector((state) => ({
     invoices: state.Invoice.invoices,
     isInvoiceSuccess: state.Invoice.isInvoiceSuccess,
+    invoiceWidgets: state.Invoice.widgets,
     error: state.Invoice.error,
+    transactions: state.Transaction.transactions
 
   }));
 
-  //delete invoice
-  const [deleteModal, setDeleteModal] = useState(false);
-  const [deleteModalMulti, setDeleteModalMulti] = useState(false);
-
   const [customFiltered, setCustomFiltered] = useState(null);
 
-  const [invoice, setInvoice] = useState(null);
-
   useEffect(() => {
-    if (invoices && !invoices.length) {
-      dispatch(onGetInvoices());
-    }
+    dispatch(onGetInvoiceWidgets());
+    dispatch(onGetInvoices());
   }, [dispatch]);
-
-  useEffect(() => {
-    // filterByDate();
-    // filterByEtat();
-    setInvoice(invoices);
-  }, [invoices]);
-
-  // Delete Data
-  const onClickDelete = (invoice) => {
-    setInvoice(invoice);
-    setDeleteModal(true);
-  };
-
-  const handleDeleteInvoice = () => {
-    if (invoice) {
-      dispatch(onDeleteInvoice(invoice._id));
-      setDeleteModal(false);
-    }
-  };
-
 
   // Checked All
   const checkedAll = useCallback(() => {
@@ -112,15 +87,7 @@ const InvoiceList = () => {
   const [selectedCheckBoxDelete, setSelectedCheckBoxDelete] = useState([]);
   const [isMultiDeleteButton, setIsMultiDeleteButton] = useState(false);
 
-  const deleteMultiple = () => {
-    const checkall = document.getElementById("checkBoxAll");
-    selectedCheckBoxDelete.forEach((element) => {
-      dispatch(onDeleteInvoice(element.value));
-      setTimeout(() => { toast.clearWaitingQueue(); }, 3000);
-    });
-    setIsMultiDeleteButton(false);
-    checkall.checked = false;
-  };
+
 
   const deleteCheckbox = () => {
     const ele = document.querySelectorAll(".invoiceCheckBox:checked");
@@ -134,38 +101,38 @@ const InvoiceList = () => {
       {
         Header: <input type="checkbox" id="checkBoxAll" className="form-check-input" onClick={() => checkedAll()} />,
         Cell: (cellProps) => {
-          return <input type="checkbox" className="invoiceCheckBox form-check-input" value={cellProps.row.original.fen_id} onChange={() => {/*deleteCheckbox()*/ }} />;
+          return <input type="checkbox" className="invoiceCheckBox form-check-input" value={cellProps.row.original.header.fen_id} onChange={() => {/*deleteCheckbox()*/ }} />;
         },
         id: '#',
       },
       {
         Header: "ID",
-        accessor: "fen_id",
+        accessor: "header.fen_id",
         filterable: false,
         Cell: (cell) => {
-          return <Link to={`/factures/detail/${cell.value}`} className="fw-medium link-primary">{cell.row.original.fen_id}</Link>;
+          return <Link to={`/factures/detail/${cell.value}`} className="fw-medium link-primary">{cell.row.original.header.fen_id}</Link>;
         },
       },
       {
         Header: "Client",
-        accessor: "fco_cus_name",
+        accessor: "header.fco_cus_name",
         Cell: (invoice) => {
           return (
             <>
               <div className="d-flex align-items-center">
                 {invoice.row.original.img
                   ? <img
-                    src={process.env.REACT_APP_API_URL + "/images/users/" + invoice.row.original.img}
+                    src={api.API_URL + "/images/users/" + invoice.row.original.img}
                     alt=""
                     className="avatar-xs rounded-circle me-2"
                   />
                   : <div className="flex-shrink-0 avatar-xs me-2">
                     <div className="avatar-title bg-soft-success text-success rounded-circle fs-13">
-                      {invoice.row.original?.fco_cus_name && invoice.row.original?.fco_cus_name.charAt(0) || ""}
+                      {invoice.row.original?.contact?.fco_cus_name && invoice.row.original?.contact?.fco_cus_name.charAt(0) || ""}
                     </div>
                   </div>
                 }
-                {invoice.row.original.fco_cus_name}
+                {invoice.row.original.contact.fco_cus_name}
               </div>
             </>
           )
@@ -174,151 +141,74 @@ const InvoiceList = () => {
 
       {
         Header: "EMAIL",
-        accessor: "fco_cus_email",
+        accessor: "contact.fco_cus_email",
         filterable: false,
       },
       {
         Header: "Sujet",
-        accessor: "fen_sujet",
+        accessor: "header.fen_sujet",
       },
 
       {
         Header: "DATE",
-        accessor: "fen_date_create",
+        accessor: "header.fen_date_create",
         Cell: (invoice) => (
           <>
-            {moment(new Date(invoice.row.original.fen_date_create)).format("DD MMMM Y")}
+            {moment(new Date(invoice.row.original.header.fen_date_create)).format("DD MMMM Y")}
             {/* <small className="text-muted">{handleValidTime(invoice.row.original.fen_date_create)}</small> */}
           </>
         ),
       },
       {
         Header: "Montant",
-        accessor: "fen_total_ttc",
+        accessor: "header.fen_total_ttc",
         filterable: false,
         Cell: (invoice) => (
           <>
-            <div className="fw-semibold ff-secondary">{invoice.row.original.fen_total_ttc}€</div>
+            <div className="fw-semibold ff-secondary">{rounded(invoice.row.original.header.fen_total_ttc, 2)}€</div>
           </>
         ),
       },
       {
-        Header: "État",
-        accessor: "fen_etat",
-        Cell: (cell) => {
-          return <span className="badge text-uppercase badge-soft-success"> {cell.row.original.fen_etat} </span>
-        }
-      },
-      {
-        Header: "Action",
-        Cell: (cellProps) => {
+        Header: "Reste à payer",
+        accessor: "",
+        filterable: false,
+        Cell: (invoice) => {
+          let transactionOfFac = transactions.filter((t) => t.tra_fen_fk == invoice.row.original.header.fen_id)
           return (
-            <UncontrolledDropdown >
-              <DropdownToggle
-                href="#"
-                className="btn btn-soft-secondary btn-sm dropdown"
-                tag="button"
-              >
-                <i className="ri-more-fill align-middle"></i>
-              </DropdownToggle>
-              <DropdownMenu className="dropdown-menu-end">
-                <Link to={`/factures/detail/${cellProps.row.original.fen_id}`}>
-                  <DropdownItem >
-                    <i className="ri-eye-fill align-bottom me-2 text-muted"></i>{" "}
-                    Voir
-                  </DropdownItem>
-                </Link>
-                <DropdownItem divider />
-                <DropdownItem href="/#" onClick={() => window.open(`http://localhost:3030/v1/pdf/download/${cellProps.row.original.fdo_file_name}`, 'download')}>
-                  <i className="ri-download-2-line align-bottom me-2 text-muted"></i>{" "}
-                  Télécharger
-                </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledDropdown>
-          );
+            <>
+              <div className="fw-semibold ff-secondary">
+                {rounded(transactionOfFac.reduce((previousValue, currentValue) => parseFloat(previousValue) - parseFloat(currentValue.tra_value), parseFloat(invoice.row.original.header.fen_total_ttc)), 2)}€
+              </div>
+            </>
+          )
         },
       },
+      {
+        Header: "État",
+        accessor: "header.fet_name",
+        Cell: (cell) => {
+          return <span className="badge text-uppercase badge-soft-success"> {cell.row.original.header.fet_name} </span>
+        }
+      },
+
     ],
-    [checkedAll]
+    [checkedAll, invoices]
   );
+
+
 
   return (
     <React.Fragment>
       <div className="page-content">
-        <DeleteModal
-          show={deleteModal}
-          onDeleteClick={() => handleDeleteInvoice()}
-          onCloseClick={() => setDeleteModal(false)}
-        />
-        <DeleteModal
-          show={deleteModalMulti}
-          onDeleteClick={() => {
-            deleteMultiple();
-            setDeleteModalMulti(false);
-          }}
-          onCloseClick={() => setDeleteModalMulti(false)}
-        />
 
         <Container fluid>
           <BreadCrumb title="Factures" pageTitle="Liste" />
+          <h3>Statistique de l'année</h3>
           <Row>
-            {invoiceWidgets.map((invoicewidget, key) => (
-              <React.Fragment key={key}>
-                <Col xl={3} md={6}>
-                  <Card className="card-animate">
-                    <CardBody>
-                      <div className="d-flex align-items-center">
-                        <div className="flex-grow-1">
-                          <p className="text-uppercase fw-medium text-muted mb-0">
-                            {invoicewidget.label}
-                          </p>
-                        </div>
-                        <div className="flex-shrink-0">
-                          <h5
-                            className={
-                              "fs-14 mb-0 text-" + invoicewidget.percentageClass
-                            }
-                          >
-                            <i className="ri-arrow-right-up-line fs-13 align-middle"></i>{" "}
-                            {invoicewidget.percentage}
-                          </h5>
-                        </div>
-                      </div>
-                      <div className="d-flex align-items-end justify-content-between mt-4">
-                        <div>
-                          <h4 className="fs-22 fw-semibold ff-secondary mb-4">
-                            <CountUp
-                              start={0}
-                              prefix={invoicewidget.prefix}
-
-                              decimals="2"
-                              end={invoicewidget.counter}
-                              duration={4}
-                              className="counter-value"
-                            />
-                          </h4>
-                          <span className="badge bg-warning me-1">
-                            {invoicewidget.badge}
-                          </span>{" "}
-                          <span className="text-muted">
-                            {" "}
-                            {invoicewidget.caption}
-                          </span>
-                        </div>
-                        <div className="avatar-sm flex-shrink-0">
-                          <span className="avatar-title bg-light rounded fs-3">
-                            <FeatherIcon
-                              icon={invoicewidget.feaIcon}
-                              className="text-success icon-dual-success"
-                            />
-                          </span>
-                        </div>
-                      </div>
-                    </CardBody>
-                  </Card>
-                </Col>
-              </React.Fragment>
-            ))}
+            {invoiceWidgets.map((widget) => {
+              return <WidgetCountUp data={widget} type={"Factures"} />
+            })}
           </Row>
 
           <Row>
@@ -335,9 +225,7 @@ const InvoiceList = () => {
                         >
                           <i className="ri-add-line align-bottom me-1"></i> Créer une facture
                         </Link>
-                        {isMultiDeleteButton && <button className="btn btn-danger"
-                          onClick={() => setDeleteModalMulti(true)}
-                        ><i className="ri-delete-bin-2-line"></i></button>}
+
                       </div>
                     </div>
                   </div>
@@ -349,7 +237,7 @@ const InvoiceList = () => {
                     {isInvoiceSuccess ? (
                       <TableContainer
                         columns={columns}
-                        data={(customFiltered || invoice || [])}
+                        data={(customFiltered || invoices || [])}
                         isGlobalFilter={false}
                         isAddUserList={false}
                         customPageSize={10}
@@ -358,6 +246,7 @@ const InvoiceList = () => {
                         theadClass="text-muted text-uppercase"
                         isInvoiceListFilter={true}
                         SearchPlaceholder=''
+                        pathToDetail={`/factures/detail/`}
                       />
                     ) : (<Loader error={error} />)
                     }

@@ -23,8 +23,8 @@ import Flatpickr from "react-flatpickr";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import Select from "react-select";
 
-import logoDark from "../../assets/images/logo-dark.png";
-import logoLight from "../../assets/images/logo-light.png";
+import logoDark from "../../assets/images/logo_countano.png";
+import logoLight from "../../assets/images/logo_countano.png";
 
 //formik
 import { useFormik } from "formik";
@@ -42,6 +42,9 @@ import {
 import SimpleBar from "simplebar-react";
 import { parseInt } from "lodash";
 import { allstatus } from "../../common/data/invoiceList";
+import { rounded } from "../../utils/function";
+import { api } from "../../config";
+import moment from "moment";
 
 
 const InvoiceCreate = () => {
@@ -103,20 +106,6 @@ const InvoiceCreate = () => {
     }
   }, [modalProduct]);
 
-  const dateFormat = () => {
-    let d = new Date(),
-      months = ['Jan', 'Feb', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aou', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return ((d.getDate() + ' ' + months[d.getMonth()] + ', ' + d.getFullYear()).toString());
-  };
-
-  const [date, setDate] = useState(dateFormat());
-
-  const dateformate = (e) => {
-    const date = e.toString().split(" ");
-    const joinDate = (date[2] + " " + date[1] + ", " + date[3]).toString();
-    setDate(joinDate);
-  };
-
   useEffect(() => {
     if (collaborateurs && !collaborateurs.length) {
       dispatch(onGetCollaborateurs());
@@ -153,7 +142,7 @@ const InvoiceCreate = () => {
         fen_com_fk: "",
         fen_ent_fk: "",
         fen_sujet: "",
-        fen_date_expired: "",
+        fen_date_expired: moment().format('YYYY-MM-DD'),
         fen_etat: "",
         fen_total_ht: 0,
         fen_total_ttc: 0,
@@ -193,15 +182,13 @@ const InvoiceCreate = () => {
     }),
     onSubmit: (values) => {
       console.log(values);
-      dispatch(onAddNewInvoice(values));
-      history("/factures/liste");
-      validation.resetForm();
+      dispatch(onAddNewInvoice(values)).then(() => {
+        history("/factures/liste");
+        validation.resetForm();
+      });
+
     },
   });
-
-  const rounded = (number, length = 3) => {
-    return parseFloat(parseFloat(number).toFixed(length));
-  }
 
   /**
    * Fonction de recherche d'un client lors de la séléction
@@ -1013,24 +1000,7 @@ const InvoiceCreate = () => {
                                     />
                                   </td>
                                 </tr>
-                                {/* <tr>
-                                  <th scope="row">
-                                    Discount{" "}
-                                    <small className="text-muted">
-                                      (VELZON15)
-                                    </small>
-                                  </th>
-                                  <td>
-                                    <Input
-                                      type="text"
-                                      className="form-control bg-light border-0"
-                                      id="cart-discount"
-                                      placeholder="$0.00"
-                                      readOnly
-                                      value={"€" + dis}
-                                    />
-                                  </td>
-                                </tr> */}
+
                                 <tr>
                                   <th scope="row">Total TVA</th>
                                   <td>
@@ -1064,88 +1034,12 @@ const InvoiceCreate = () => {
                       </tbody>
                     </Table>
                   </div>
-                  {/* <Row className="mt-3">
-                    <Col lg={4}>
-                      <div className="mb-2">
-                        <Label
-                          for="choices-payment-type"
-                          className="form-label text-muted text-uppercase fw-semibold"
-                        >
-                          Payment Details
-                        </Label>
-                        <div className="input-light">
-                          <Select
-                            value={ispaymentDetails}
-                            onChange={() => {
-                              handleispaymentDetails();
-                            }}
-                            options={paymentdetails}
-                            name="choices-single-default"
-                            id="idStatus"
-                            className="bg-light border-0"
-                          ></Select>
-                        </div>
-                      </div>
-                      <div className="mb-2">
-                        <Input
-                          className="form-control bg-light border-0"
-                          type="text"
-                          id="cardholderName"
-                          placeholder="Card Holder Name"
-                        />
-                      </div>
-                      <div className="mb-2">
-                        <Input
-                          className="form-control bg-light border-0"
-                          type="text"
-                          id="cardNumber"
-                          placeholder="xxxx xxxx xxxx xxxx"
-                        />
-                      </div>
-                      <div>
-                        <Input
-                          className="form-control  bg-light border-0"
-                          type="text"
-                          id="amountTotalPay"
-                          placeholder="$0.00"
-                          readOnly
-                        />
-                      </div>
-                    </Col>
-                  </Row> */}
-                  <div className="mt-4">
-                    {/* <Label
-                      for="exampleFormControlTextarea1"
-                      className="form-label text-muted text-uppercase fw-semibold"
-                    >
-                      NOTES
-                    </Label>
-                    <Input
-                      type="textarea"
-                      className="form-control alert alert-info"
-                      id="exampleFormControlTextarea1"
-                      placeholder="Notes"
-                      rows="2"
-                      defaultValue="All accounts are to be paid within 7 days from receipt of
-                      invoice. To be paid by cheque or credit card or direct
-                      payment online. If account is not paid within 7 days the
-                      credits details supplied as confirmation of work
-                      undertaken will be charged the agreed quoted fee noted
-                      above."
-                    /> */}
-                  </div>
+
                   <div className="hstack gap-2 justify-content-end d-print-none mt-4">
                     <button type="submit" className="btn btn-success">
                       <i className="ri-printer-line align-bottom me-1"></i> Enregister
                     </button>
-                    <Link to="#" className="btn btn-primary">
-                      <i className="ri-download-2-line align-bottom me-1"></i>{" "}
-                      Télécharger
-                    </Link>
-                    <Link to="#" className="btn btn-danger">
-                      <i className="ri-send-plane-fill align-bottom me-1"></i>{" "}
-                      Envoyer
-                    </Link>
+
                   </div>
                 </CardBody>
               </Form>
@@ -1175,7 +1069,7 @@ const InvoiceCreate = () => {
                     <div key={i} style={{ display: "flex", alignItems: "center", width: "100%", borderBottom: "0.5px solid #dddddd", margin: 3 }}>
                       <div className="flex-shrink-0">
                         {c.ent_img_url ? <img
-                          src={process.env.REACT_APP_API_URL + "/images/" + c.ent_img_url}
+                          src={api.API_URL + "/images/" + c.ent_img_url}
                           alt=""
                           className="avatar-xxs rounded-circle"
                         /> :

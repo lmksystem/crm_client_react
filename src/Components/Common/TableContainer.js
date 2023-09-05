@@ -25,6 +25,7 @@ import {
   NFTRankingGlobalFilter,
   TaskListGlobalFilter
 } from "../../Components/Common/GlobalSearchFilter";
+import { Navigate, useNavigate } from "react-router-dom";
 
 // Define a default UI for filtering
 export function GlobalFilter({
@@ -98,7 +99,7 @@ export function GlobalFilter({
             {isInvoiceListFilter && (
               <InvoiceListGlobalSearch onChange={(e) => {
                 // onChange(e.target.value);
-              }}/>
+              }} />
             )}
             {isTicketsListFilter && (
               <TicketsListGlobalFilter />
@@ -146,6 +147,7 @@ const TableContainer = ({
   trClass,
   thClass,
   divClass,
+  pathToDetail,
 }) => {
   const {
     getTableProps,
@@ -184,6 +186,8 @@ const TableContainer = ({
     usePagination,
     useRowSelect
   );
+
+  let navigate = useNavigate();
 
   const generateSortingIndicator = (column) => {
     return column.isSorted ? (column.isSortedDesc ? " " : "") : "";
@@ -299,11 +303,15 @@ const TableContainer = ({
 
           <tbody {...getTableBodyProps()}>
 
-            {page.map((row) => {
+            {page.map((row, i) => {
               prepareRow(row);
+              let key = "";
+              if (pathToDetail) {
+                key = Object.keys(row.original.header).find((e) => e.includes('id') );
+              }
               return (
                 <Fragment key={row.getRowProps().key}>
-                  <tr>
+                  <tr style={{ cursor: "pointer" }} onClick={() => pathToDetail ? navigate(pathToDetail + row.original.header[key]) : null}>
                     {row.cells.map((cell) => {
                       return (
                         <td key={cell.id} {...cell.getCellProps()}>
