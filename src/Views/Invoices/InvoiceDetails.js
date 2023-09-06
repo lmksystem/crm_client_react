@@ -9,12 +9,13 @@ import { APIClient } from "../../helpers/api_helper";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
-  addNewTransaction as onAddNewTransaction
+  addNewTransaction as onAddNewTransaction,
+  sendInvocieByEmail as onSendInvocieByEmail,
+  getTransaction as onGetTransaction
 } from '../../slices/thunks'
-import { addTransactionInvoice } from "../../slices/invoice/reducer";
 import { api } from "../../config";
-import { getTransaction } from "../../slices/transaction/thunk";
 import { rounded } from "../../utils/function";
+import ConfirmModal from "../../Components/Common/ConfirmModal";
 
 const axios = new APIClient();
 
@@ -24,6 +25,8 @@ const InvoiceDetails = () => {
   let { id } = useParams();
 
   const [addActifView, setAddActifView] = useState(false);
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const { invoice, isTransactionsSuccess, transactions } = useSelector((state) => ({
     invoice: state.Invoice.invoices.find((f) => f.header.fen_id == id),
@@ -71,7 +74,8 @@ const InvoiceDetails = () => {
   })
 
   const sendInvoiceByEmail = () => {
-    // dispatch(onSendInvocieByEmail())
+    dispatch(onSendInvocieByEmail(id))
+    setShowConfirmModal(false)
   }
 
   useEffect(() => {
@@ -81,13 +85,6 @@ const InvoiceDetails = () => {
     }
   }, [invoice])
 
-  useEffect(() => {
-    if (!isTransactionsSuccess) {
-      dispatch(getTransaction());
-    }
-  }, [dispatch])
-
-
   if (!invoice) {
     return null;
   }
@@ -96,7 +93,7 @@ const InvoiceDetails = () => {
     <div className="page-content">
       <Container fluid>
         <BreadCrumb className="d-print-none" title="Facture détails" pageTitle="Factures" />
-
+        <ConfirmModal title={'Êtes-vous sûr ?'} text={"Êtes-vous sûr de vouloir envoyer la facture ?"} show={showConfirmModal} onCloseClick={() => setShowConfirmModal(false)} onActionClick={() => sendInvoiceByEmail()} />
         <Row className="justify-content-center">
           <Col xxl={9}>
             {/* <Preview id={'jsx-template'}> */}
@@ -351,7 +348,7 @@ const InvoiceDetails = () => {
 
                     <div className="hstack gap-2 justify-content-end d-print-none mt-4">
                       <Link to="#" onClick={printInvoice} className="btn btn-success"><i className="ri-printer-line align-bottom me-1"></i> Imprimer</Link>
-                      <Link to="#" onClick={sendInvoiceByEmail} className="btn btn-success"><i className="ri-send-plane-fill align-bottom me-1"></i> Envoyer</Link>
+                      <Link to="#" onClick={() => setShowConfirmModal(true)} className="btn btn-success"><i className="ri-send-plane-fill align-bottom me-1"></i> Envoyer</Link>
                       <Link onClick={() => handleGeneratePdf()} className="btn btn-primary"><i className="ri-download-2-line align-bottom me-1"></i> Télécharger</Link>
                     </div>
                   </CardBody>
