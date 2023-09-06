@@ -66,7 +66,10 @@ export const addNewInvoice = invoice => api.create(url.ADD_NEW_INVOICE, invoice)
 export const updateInvoice = invoice => api.update(url.UPDATE_INVOICE + '/' + invoice._id, invoice);
 
 // create pdf Invoice
-export const createPdf = invoice => api.get(url.CREATE_PDF + '/facture/' + invoice);
+export const createPdf = invoice => api.get(url.PDF + '/facture/' + invoice);
+
+// send pdf Invoice
+export const sendInvocieByEmail = id => api.create(url.PDF + '/facture/' + id);
 
 /*************************/
 /*      transaction      */
@@ -130,7 +133,9 @@ export const getDevisForEdit = id => api.get(url.DEVIS + "/edit/" + id);
 
 export const getDevisWidgets = () => api.get(url.DEVIS + "/widgets");
 
-export const createPdfDevis = devis => api.get(url.CREATE_PDF + "/devis/" + devis);
+export const SendDevisByEmail = id => api.create(url.PDF + '/devis/' + id);
+
+export const createPdfDevis = devis => api.get(url.PDF + "/devis/" + devis);
 
 
 

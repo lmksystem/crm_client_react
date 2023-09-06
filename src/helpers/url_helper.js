@@ -262,7 +262,7 @@ export const ADD_NEW_INVOICE = "/v1/invoice";
 export const UPDATE_INVOICE = "/v1/invoice";
 export const DELETE_INVOICE = "/v1/invoice";
 
-export const CREATE_PDF = "/v1/pdf";
+export const PDF = "/v1/pdf";
 
 /**
  * Company

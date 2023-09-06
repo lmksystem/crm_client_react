@@ -25,7 +25,7 @@ import { invoiceWidgets } from "../../common/data/invoiceList";
 import {
   getInvoices as onGetInvoices,
   getWidgetInvoices as onGetInvoiceWidgets,
-
+  getTransaction as onGetTransaction
 } from "../../slices/thunks";
 
 //redux
@@ -62,6 +62,7 @@ const InvoiceList = () => {
   useEffect(() => {
     dispatch(onGetInvoiceWidgets());
     dispatch(onGetInvoices());
+    dispatch(onGetTransaction());
   }, [dispatch]);
 
   // Checked All

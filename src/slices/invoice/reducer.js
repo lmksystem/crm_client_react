@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getInvoices, addNewInvoice, updateInvoice, createPdf, getWidgetInvoices } from './thunk';
+import { sendInvocieByEmail } from "../thunks";
 export const initialState = {
   invoices: [],
   widgets: [],
@@ -66,6 +67,14 @@ const InvoiceSlice = createSlice({
     });
 
     builder.addCase(getWidgetInvoices.rejected, (state, action) => {
+      state.error = action.payload || null;
+    });
+    
+    builder.addCase(sendInvocieByEmail.fulfilled, (state, action) => {
+      state.widgets = action.payload.data
+    });
+
+    builder.addCase(sendInvocieByEmail.rejected, (state, action) => {
       state.error = action.payload || null;
     });
   }

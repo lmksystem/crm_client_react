@@ -11,7 +11,8 @@ import {
   getDevisById as getDevisByIdApi,
   createPdfDevis as createPdfDevisApi,
   getDevisForEdit as getDevisForEditApi,
-  getDevisWidgets as getDevisWidgetsApi
+  getDevisWidgets as getDevisWidgetsApi,
+  SendDevisByEmail as SendDevisByEmailApi
 } from "../../helpers/backend_helper";
 
 export const getDevis = createAsyncThunk("devis/getDevis", async () => {
@@ -99,6 +100,18 @@ export const getDevisForEdit = createAsyncThunk("devis/getDevisForEdit", async (
 export const getDevisWidgets = createAsyncThunk("devis/getDevisWidgets", async () => {
   try {
     const response = getDevisWidgetsApi();
+
+    return response;
+  } catch (error) {
+    console.log("thunk catch", error);
+    toast.error("Une erreur ses produite sur ", { autoClose: 3000 });
+    return error;
+  }
+});
+
+export const SendDevisByEmail = createAsyncThunk("devis/SendDevisByEmail", async (id) => {
+  try {
+    const response = SendDevisByEmailApi(id);
 
     return response;
   } catch (error) {

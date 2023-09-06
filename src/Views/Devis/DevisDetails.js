@@ -13,8 +13,10 @@ import { saveAs } from 'file-saver'
 import { rounded } from "../../utils/function";
 import DeleteModal from "../../Components/Common/DeleteModal";
 import {
-  deleteDevis as onDeleteDevis
+  deleteDevis as onDeleteDevis,
+  SendDevisByEmail as onSendDevisByEmail
 } from "../../slices/thunks";
+import ConfirmModal from "../../Components/Common/ConfirmModal";
 
 const DevisDetails = () => {
   document.title = "Détail facture | Countano";
@@ -28,6 +30,8 @@ const DevisDetails = () => {
   const navigate = useNavigate();
 
   const [deleteModal, setDeleteModal] = useState(false);
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   //Print the state
   const printInvoice = () => {
@@ -59,6 +63,11 @@ const DevisDetails = () => {
     }
   };
 
+  const sendDevisByEmail = () => {
+    console.log(id);
+    dispatch(onSendDevisByEmail(id))
+    setShowConfirmModal(false);
+  }
 
   if (!devis) {
     return null;
@@ -68,6 +77,7 @@ const DevisDetails = () => {
     <div className="page-content">
       <Container fluid>
         <BreadCrumb className="d-print-none" title="Dévis détails" pageTitle="Dévis" />
+        <ConfirmModal title={'Êtes-vous sûr ?'} text={"Êtes-vous sûr de vouloir envoyer le devis ?"} show={showConfirmModal} onCloseClick={() => setShowConfirmModal(false)} onActionClick={() => sendDevisByEmail()} />
         <DeleteModal
           show={deleteModal}
           onDeleteClick={() => { handleDeleteDevis(devis.header.den_id) }}
@@ -203,7 +213,8 @@ const DevisDetails = () => {
                     <div className="hstack gap-2 justify-content-end d-print-none mt-4">
 
                       <Link to={`/devis/edition/${devis.header.den_id}`} state={devis} className="btn btn-success"><i className="ri-ball-pen-line align-bottom me-1"></i> Editer</Link>
-                      <Link to="#" onClick={printInvoice} className="btn btn-primary"><i className="ri-printer-line align-bottom me-1"></i> Imprimer</Link>
+                      <Link onClick={() => setShowConfirmModal(true)} className="btn btn-success"><i className="ri-send-plane-fill align-bottom me-1"></i> Envoyer</Link>
+                      <Link to="#" onClick={printInvoice} className="btn btn-success"><i className="ri-printer-line align-bottom me-1"></i> Imprimer</Link>
                       <Link onClick={() => handleGeneratePdf()} className="btn btn-primary"><i className="ri-download-2-line align-bottom me-1"></i> Télécharger</Link>
                       <Link onClick={() => setDeleteModal(true)} state={devis} className="btn btn-danger"><i className="ri-ball-pen-line align-bottom me-1"></i> Supprimer</Link>
                     </div>
