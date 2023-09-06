@@ -50,6 +50,7 @@ const InvoiceSlice = createSlice({
 
     builder.addCase(createPdf.fulfilled, (state, action) => {
       console.log("created");
+      // console.log(action.payload);
       state.invoices = state.invoices.map(invoice =>
         invoice.header.fen_id == action.payload.data.fdo_fen_fk
           ? { ...invoice, doc: action.payload.data }
