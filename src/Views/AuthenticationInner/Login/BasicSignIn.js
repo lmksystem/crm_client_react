@@ -8,7 +8,7 @@ import ParticlesAuth from "../ParticlesAuth";
 import logoLight from "../../../assets/images/logo-light.png";
 
 const BasicSignIn = () => {
-    document.title="Basic SignIn | Velzon - React Admin & Dashboard Template";
+    document.title="Basic SignIn | Coutanto - React Admin & Dashboard Template";
     return (
         <React.Fragment>
             <ParticlesAuth>
@@ -33,7 +33,7 @@ const BasicSignIn = () => {
                                     <CardBody className="p-4">
                                         <div className="text-center mt-2">
                                             <h5 className="text-primary">Welcome Back !</h5>
-                                            <p className="text-muted">Sign in to continue to Velzon.</p>
+                                            <p className="text-muted">Sign in to continue to Coutanto.</p>
                                         </div>
                                         <div className="p-2 mt-4">
                                             <form action="#">

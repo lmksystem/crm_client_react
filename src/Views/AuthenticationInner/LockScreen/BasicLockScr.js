@@ -7,7 +7,7 @@ import logoLight from "../../../assets/images/logo-light.png";
 import avatar1 from "../../../assets/images/users/avatar-1.jpg";
 
 const BasicLockScreen = () => {
-    document.title="500 Error | Velzon - React Admin & Dashboard Template";
+    document.title="500 Error | Coutanto - React Admin & Dashboard Template";
     return (
         <React.Fragment>
             <div className="auth-page-content">

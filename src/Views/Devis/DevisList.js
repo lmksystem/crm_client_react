@@ -234,8 +234,8 @@ const DevisList = () => {
           <BreadCrumb title="Devis" pageTitle="Liste" />
           <h3>Statistique de l'année</h3>
           <Row>
-            {devisWidgets.map((widget) => {
-              return (<WidgetCountUp data={widget} type={"Devis"}/>)
+            {devisWidgets.map((widget,i) => {
+              return (<WidgetCountUp key={i} data={widget} type={"Devis"}/>)
             })}
           </Row>
 

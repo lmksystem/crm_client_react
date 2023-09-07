@@ -34,11 +34,12 @@ const transactionSlice = createSlice({
     });
     builder.addCase(deleteTransaction.fulfilled, (state, action) => {
       toast.success('Transaction supprimer', { autoClose: 3000 })
-
+      state.isTransactionsSuccess = true;
       state.transactions = state.transactions.filter((t) => t.tra_id != action.payload.data)
     })
     builder.addCase(deleteTransaction.rejected, (state, action) => {
       toast.error('Erreur de suppression !', { autoClose: 3000 })
+      state.isTransactionsSuccess = false;
       state.error = action.payload || "Erreur de suppression !"
     });
 

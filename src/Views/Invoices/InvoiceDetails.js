@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CardBody, Row, Col, Card, Table, CardHeader, Container, Input, Button, FormFeedback } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { Link, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { createPdf } from "../../slices/thunks";
 import moment from "moment";
 import { APIClient } from "../../helpers/api_helper";
@@ -26,6 +26,13 @@ const InvoiceDetails = () => {
   document.title = "Détail facture | Countano";
 
   let { id } = useParams();
+  
+  const { invoice, invoices, isTransactionsSuccess, transactions } = useSelector((state) => ({
+    invoice: state.Invoice.invoices.find((f) => f.header.fen_id == id),
+    invoices: state.Invoice.invoices,
+    isTransactionsSuccess: state.Transaction.isTransactionsSuccess,
+    transactions: state.Transaction.transactions.filter((t) => t.tra_fen_fk == id)
+  }));
 
   const [addActifView, setAddActifView] = useState(false);
 
@@ -33,14 +40,11 @@ const InvoiceDetails = () => {
 
   const [showModalDelete, setShowModalDelete] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
-
-  const { invoice, isTransactionsSuccess, transactions } = useSelector((state) => ({
-    invoice: state.Invoice.invoices.find((f) => f.header.fen_id == id),
-    isTransactionsSuccess: state.Transaction.isTransactionsSuccess,
-    transactions: state.Transaction.transactions.filter((t) => t.tra_fen_fk == id)
-  }));
+  const [nbTransaction, setNbTransaction] = useState(transactions.length);
 
   const dispatch = useDispatch();
+
+
 
   //Print the Invoice
   const printInvoice = () => {
@@ -71,13 +75,10 @@ const InvoiceDetails = () => {
       tra_date: Yup.string().required("Champs obligatoire"),
     }),
     onSubmit: (values) => {
+      dispatch(onAddNewTransaction(values))
+      setAddActifView(false);
+      validation.resetForm();
 
-      dispatch(onAddNewTransaction(values)).then(() => {
-        let dataInvoiceUpdate = rounded(transactions.reduce((previousValue, currentValue) => parseFloat(previousValue) - parseFloat(currentValue.tra_value), parseFloat(invoice.header.fen_total_ttc)), 2)
-        dispatch(onUpdateInvoice({ fen_id: invoice.header.fen_id, fen_solde_du: dataInvoiceUpdate }));
-        setAddActifView(false);
-        validation.resetForm();
-      })
     }
   })
 
@@ -87,7 +88,7 @@ const InvoiceDetails = () => {
   }
 
   const deletetransaction = () => {
-    dispatch(onDeleteTransaction(selectedId));
+    dispatch(onDeleteTransaction(selectedId))
     setShowModalDelete(false);
   }
 
@@ -97,10 +98,19 @@ const InvoiceDetails = () => {
     }
   }, [invoice])
 
+  useEffect(() => {
+    if (nbTransaction != transactions.length) {
+      setNbTransaction(transactions.length);
+      let dataInvoiceUpdate = rounded(transactions.reduce((previousValue, currentValue) => parseFloat(previousValue) - parseFloat(currentValue.tra_value), parseFloat(invoice.header.fen_total_ttc)), 2);
+      dispatch(onUpdateInvoice({ fen_id: invoice.header.fen_id, fen_solde_du: dataInvoiceUpdate }));
+    }
+  }, [transactions])
+  
+
   if (!invoice) {
     return null;
   }
-console.log(invoice.header.fen_solde_du);
+
   return (
     <div className="page-content">
       <Container fluid>

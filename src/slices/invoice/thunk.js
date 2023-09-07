@@ -33,7 +33,7 @@ export const addNewInvoice = createAsyncThunk("invoice/addNewInvoice", async (in
 
 export const updateInvoice = createAsyncThunk("invoice/updateInvoice", async (data) => {
   try {
-   
+    console.log("update invoice");
     const response = updateInvoiceApi(data.fen_id, data.fen_solde_du);
 
     return response;

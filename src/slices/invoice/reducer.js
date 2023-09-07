@@ -44,15 +44,14 @@ const InvoiceSlice = createSlice({
       state.error = action.payload.error || null;
     });
 
-
-
     builder.addCase(updateInvoice.fulfilled, (state, action) => {
       toast.success("Solde mis à jour", { autoClose: 3000 });
-      state.invoices = state.invoices.map((i) => {
-        return i.fen_id == action.payload.data.fen_id
+     
+      state.invoices = state.invoices.map((i) =>
+        i.header.fen_id == action.payload.data.fen_id
           ? { ...i, header: { ...i.header, fen_solde_du: action.payload.data.fen_solde_du } }
           : i
-      })
+      )
     });
 
     builder.addCase(updateInvoice.rejected, (state, action) => {

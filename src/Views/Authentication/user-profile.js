@@ -78,7 +78,7 @@ const UserProfile = () => {
     }
   });
 
-  document.title = "Profile | Velzon - React Admin & Dashboard Template";
+  document.title = "Profile | Coutanto - React Admin & Dashboard Template";
   return (
     <React.Fragment>
       <div className="page-content">

@@ -1009,7 +1009,7 @@ const InvoiceCreate = () => {
                                   <th scope="row">
                                     Discount{" "}
                                     <small className="text-muted">
-                                      (VELZON15)
+                                      (Coutanto15)
                                     </small>
                                   </th>
                                   <td>

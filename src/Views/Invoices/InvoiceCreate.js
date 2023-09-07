@@ -181,7 +181,7 @@ const InvoiceCreate = () => {
 
     }),
     onSubmit: (values) => {
-      console.log(values);
+      values.header.fen_solde_du = values.header.fen_total_ttc;
       dispatch(onAddNewInvoice(values)).then(() => {
         history("/factures/liste");
         validation.resetForm();
