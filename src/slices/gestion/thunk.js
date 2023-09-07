@@ -17,7 +17,7 @@ import {
   updateTva as updateTvaApi,
   deleteTva as deleteTvaApi,
   getConstantes as getConstantesApi,
-  handleConstantes  as handleConstantesApi,
+  handleConstantes as handleConstantesApi,
 } from "../../helpers/backend_helper";
 
 // Gestion
@@ -43,7 +43,7 @@ export const addNewContact = createAsyncThunk("gestion/addNewContact", async (co
     toast.error("Contact Added Failed", { autoClose: 3000 });
     return error;
   }
-})
+});
 
 export const updateContact = createAsyncThunk("gestion/updateContact", async (contact) => {
   try {
@@ -54,7 +54,7 @@ export const updateContact = createAsyncThunk("gestion/updateContact", async (co
     toast.error("Contact Updated Failed", { autoClose: 3000 });
     return error;
   }
-);
+});
 
 export const deleteContact = createAsyncThunk("gestion/deleteContact", async (contact) => {
   try {
@@ -65,7 +65,8 @@ export const deleteContact = createAsyncThunk("gestion/deleteContact", async (co
     toast.error("Contact Deleted Failed", { autoClose: 3000 });
     return error;
   }
-);
+
+});
 // Collaborateurs
 
 export const getCollaborateurs = createAsyncThunk("gestion/getCollaborateurs", async () => {
@@ -75,7 +76,7 @@ export const getCollaborateurs = createAsyncThunk("gestion/getCollaborateurs", a
   } catch (error) {
     return error;
   }
-);
+});
 
 export const addNewCollaborateur = createAsyncThunk("gestion/addNewCollaborateur", async (collabo) => {
   try {
@@ -87,7 +88,7 @@ export const addNewCollaborateur = createAsyncThunk("gestion/addNewCollaborateur
     toast.error("Contact Added Failed", { autoClose: 3000 });
     return error;
   }
-})
+});
 
 export const updateCollaborateur = createAsyncThunk("gestion/updateCollaborateur", async (collabo) => {
   try {
@@ -98,7 +99,7 @@ export const updateCollaborateur = createAsyncThunk("gestion/updateCollaborateur
     toast.error("Collaborateur Updated Failed", { autoClose: 3000 });
     return error;
   }
-);
+});
 
 export const deleteCollaborateurs = createAsyncThunk("gestion/deleteCollaborateur", async (collabo) => {
   try {
@@ -109,7 +110,7 @@ export const deleteCollaborateurs = createAsyncThunk("gestion/deleteCollaborateu
     toast.error("Collaborateur Deleted Failed", { autoClose: 3000 });
     return error;
   }
-);
+});
 
 export const onAddNewClientCompta = createAsyncThunk("gestion/onAddNewClientCompta", async (collabo) => {
   try {
@@ -120,7 +121,7 @@ export const onAddNewClientCompta = createAsyncThunk("gestion/onAddNewClientComp
     toast.error("Collaborateur Deleted Failed", { autoClose: 3000 });
     return error;
   }
-);
+});
 
 
 // parametre
