@@ -48,8 +48,8 @@ export const createPdf = createAsyncThunk("invoice/createPdf", async (invoice) =
     const response = await createPdfApi(invoice);
 
     return response;
-  }
-  catch (error) {
+  } catch (error) {
+    console.log('erreur', error);
     toast.error("Invoice Delete Failed", { autoClose: 3000 });
     return error;
   }

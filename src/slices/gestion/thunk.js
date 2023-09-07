@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 //Include Both Helper File with needed methods
 import {
@@ -16,8 +16,11 @@ import {
   addNewTva as addNewTvaApi,
   updateTva as updateTvaApi,
   deleteTva as deleteTvaApi,
+  getConstantes as getConstantesApi,
+  handleConstantes  as handleConstantesApi,
 } from "../../helpers/backend_helper";
 
+// Gestion
 
 // Gestion 
 
@@ -28,7 +31,7 @@ export const getContacts = createAsyncThunk("gestion/getContacts", async () => {
   } catch (error) {
     return error;
   }
-})
+});
 
 export const addNewContact = createAsyncThunk("gestion/addNewContact", async (contact) => {
   try {
@@ -51,7 +54,7 @@ export const updateContact = createAsyncThunk("gestion/updateContact", async (co
     toast.error("Contact Updated Failed", { autoClose: 3000 });
     return error;
   }
-})
+);
 
 export const deleteContact = createAsyncThunk("gestion/deleteContact", async (contact) => {
   try {
@@ -62,8 +65,7 @@ export const deleteContact = createAsyncThunk("gestion/deleteContact", async (co
     toast.error("Contact Deleted Failed", { autoClose: 3000 });
     return error;
   }
-})
-
+);
 // Collaborateurs
 
 export const getCollaborateurs = createAsyncThunk("gestion/getCollaborateurs", async () => {
@@ -73,7 +75,7 @@ export const getCollaborateurs = createAsyncThunk("gestion/getCollaborateurs", a
   } catch (error) {
     return error;
   }
-})
+);
 
 export const addNewCollaborateur = createAsyncThunk("gestion/addNewCollaborateur", async (collabo) => {
   try {
@@ -96,7 +98,7 @@ export const updateCollaborateur = createAsyncThunk("gestion/updateCollaborateur
     toast.error("Collaborateur Updated Failed", { autoClose: 3000 });
     return error;
   }
-})
+);
 
 export const deleteCollaborateurs = createAsyncThunk("gestion/deleteCollaborateur", async (collabo) => {
   try {
@@ -107,7 +109,7 @@ export const deleteCollaborateurs = createAsyncThunk("gestion/deleteCollaborateu
     toast.error("Collaborateur Deleted Failed", { autoClose: 3000 });
     return error;
   }
-})
+);
 
 export const onAddNewClientCompta = createAsyncThunk("gestion/onAddNewClientCompta", async (collabo) => {
   try {
@@ -118,7 +120,8 @@ export const onAddNewClientCompta = createAsyncThunk("gestion/onAddNewClientComp
     toast.error("Collaborateur Deleted Failed", { autoClose: 3000 });
     return error;
   }
-})
+);
+
 
 // parametre
 
@@ -129,7 +132,7 @@ export const getTva = createAsyncThunk("gestion/getTva", async () => {
   } catch (error) {
     return error;
   }
-})
+});
 
 export const addNewTva = createAsyncThunk("gestion/addNewTva", async (tva) => {
   try {
@@ -142,7 +145,7 @@ export const addNewTva = createAsyncThunk("gestion/addNewTva", async (tva) => {
     toast.error("tva Added Failed", { autoClose: 3000 });
     return error;
   }
-})
+});
 
 export const updateTva = createAsyncThunk("gestion/updateTva", async (tva) => {
   try {
@@ -153,7 +156,7 @@ export const updateTva = createAsyncThunk("gestion/updateTva", async (tva) => {
     toast.error("tva Updated Failed", { autoClose: 3000 });
     return error;
   }
-})
+});
 
 export const deleteTva = createAsyncThunk("gestion/deleteTva", async (tva) => {
   try {
@@ -164,4 +167,31 @@ export const deleteTva = createAsyncThunk("gestion/deleteTva", async (tva) => {
     toast.error("tva Deleted Failed", { autoClose: 3000 });
     return error;
   }
-})
+});
+
+//Constantes
+
+export const getConstantes = createAsyncThunk(
+  "gestion/getConstantes",
+  async () => {
+    try {
+      const response = getConstantesApi();
+      return response;
+    } catch (error) {
+      return error;
+    }
+  }
+);
+
+export const handleConstantes = createAsyncThunk("gestion/handleConstantes", async (constantes) => {
+  try {
+    console.log(constantes);
+    const response = await handleConstantesApi(constantes);
+    return response.data;
+  } catch (error) {
+    toast.error("tva Added Failed", { autoClose: 3000 });
+    return error;
+  }
+});
+
+

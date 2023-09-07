@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getContacts, addNewContact, updateContact, deleteContact, getCollaborateurs, addNewCollaborateur, updateCollaborateur, deleteCollaborateurs, getTva, updateTva, deleteTva, addNewTva } from './thunk';
+import { getContacts, addNewContact, updateContact, deleteContact, getCollaborateurs, addNewCollaborateur, updateCollaborateur, deleteCollaborateurs, getTva, updateTva, deleteTva, addNewTva, getConstantes, handleConstantes } from './thunk';
 
 export const initialState = {
   contacts: [],
   collaborateurs: [],
   tva: null,
+  constantes:null,
   error: {}
 };
 
@@ -180,7 +181,54 @@ const gestionSlice = createSlice({
       state.error = action.payload?.data || null;
       state.isTvaDelete = false;
       state.isTvaDeleteFail = true;
-    })
+    });
+
+    
+    // Constantes
+
+    builder.addCase(getConstantes.fulfilled, (state, action) => {
+      state.constantes = action.payload?.data;
+      state.isTvaCreated = false;
+      state.isTvaSuccess = true;
+    });
+
+    builder.addCase(getConstantes.rejected, (state, action) => {
+      state.error = action.payload?.data || null;
+      state.isTvaCreated = false;
+      state.isTvaSuccess = false;
+    });
+
+    builder.addCase(handleConstantes.fulfilled, (state, action) => {
+      state.constantes = state.constantes.map(c =>
+            c.con_id == action.payload.con_id
+              ? action.payload
+              : c
+           
+               
+          );
+    });
+
+    builder.addCase(handleConstantes.rejected, (state, action) => {
+      state.error = action.payload?.data || null;
+    });
+
+    // builder.addCase(updateTva.fulfilled, (state, action) => {
+
+    //   state.tva = state.tva.map(t =>
+    //     t.tva_id == action.payload.tva_id
+    //       ? action.payload
+    //       : t
+    //   );
+    //   state.isCollaborateurCreated = true;
+    //   state.isTvaAdd = true;
+    //   state.isTvaAddFail = false;
+    // });
+
+    // builder.addCase(updateTva.rejected, (state, action) => {
+    //   state.error = action.payload?.data || null;
+    //   state.isTvaUpdate = false;
+    //   state.isTvaUpdateFail = true;
+    // });
 
   },
 });

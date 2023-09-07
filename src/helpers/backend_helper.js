@@ -6,7 +6,7 @@ import * as url from "./url_helper";
 const api = new APIClient();
 
 let item_value = JSON.parse(sessionStorage.getItem("authUser"));
-console.log();
+// console.log();
 /*************************/
 /*        Gestion        */
 /*************************/
@@ -47,6 +47,22 @@ export const addNewTva = tva => api.create(url.ADD_NEW_TVA, tva);
 export const updateTva = tva => api.update(url.UPDATE_TVA + '/' + tva.tva_id, tva);
 // delete tva
 export const deleteTva = tva => api.delete(url.DELETE_TVA + '/' + tva);
+
+
+
+/*************************/
+/*      Constantes       */
+/*************************/
+
+// get tva
+export const getConstantes = () => api.get(url.CONSTANTES);
+// add and update constantes
+export const handleConstantes = constantes => api.create(url.CONSTANTES, constantes);
+// export const addNewTva = tva => api.create(url.ADD_NEW_TVA, tva);
+// // update tva
+// export const updateTva = tva => api.update(url.UPDATE_TVA + '/' + tva.tva_id, tva);
+// // delete tva
+// export const deleteTva = tva => api.delete(url.DELETE_TVA + '/' + tva);
 
 
 /*************************/

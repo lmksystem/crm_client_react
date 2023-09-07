@@ -252,6 +252,10 @@ export const ADD_NEW_TVA = "/v1/tva";
 export const UPDATE_TVA = "/v1/tva";
 export const DELETE_TVA = "/v1/tva";
 
+
+// Constantes
+export const CONSTANTES = "/v1/constantes";
+
 /**
  * Facturation
  */

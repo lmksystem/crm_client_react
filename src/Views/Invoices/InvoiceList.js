@@ -207,7 +207,7 @@ const InvoiceList = () => {
           <BreadCrumb title="Factures" pageTitle="Liste" />
           <h3>Statistique de l'année</h3>
           <Row>
-            {invoiceWidgets.map((widget) => {
+            {invoiceWidgets?.map((widget) => {
               return <WidgetCountUp data={widget} type={"Factures"} />
             })}
           </Row>

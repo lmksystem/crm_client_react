@@ -5,11 +5,11 @@ import { toast } from "react-toastify";
 export const initialState = {
   transactions: [],
   error: {},
-  isTransactionsSuccess: false
+  isTransactionsSuccess: false,
 };
 
 const transactionSlice = createSlice({
-  name: 'Transaction',
+  name: "Transaction",
   initialState,
   reducer: {},
   extraReducers: (builder) => {
