@@ -28,4 +28,4 @@ yarn.lock
 yarn.lock
 
 .env
-./config.js
+/src/config.js
