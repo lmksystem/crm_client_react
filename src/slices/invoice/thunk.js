@@ -31,12 +31,12 @@ export const addNewInvoice = createAsyncThunk("invoice/addNewInvoice", async (in
   }
 });
 
-export const updateInvoice = createAsyncThunk("invoice/updateInvoice", async (invoice) => {
+export const updateInvoice = createAsyncThunk("invoice/updateInvoice", async (data) => {
   try {
-    const response = updateInvoiceApi(invoice);
-    toast.success("Invoice Updated Successfully", { autoClose: 3000 });
-    const data = await response;
-    return data;
+   
+    const response = updateInvoiceApi(data.fen_id, data.fen_solde_du);
+
+    return response;
   } catch (error) {
     toast.error("Invoice Updated Failed", { autoClose: 3000 });
     return error;

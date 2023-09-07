@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getInvoices, addNewInvoice, updateInvoice, createPdf, getWidgetInvoices } from './thunk';
 import { sendInvocieByEmail } from "../thunks";
+import { toast } from "react-toastify";
 export const initialState = {
   invoices: [],
   widgets: [],
@@ -45,12 +46,21 @@ const InvoiceSlice = createSlice({
 
 
 
+    builder.addCase(updateInvoice.fulfilled, (state, action) => {
+      toast.success("Solde mis à jour", { autoClose: 3000 });
+      state.invoices = state.invoices.map((i) => {
+        return i.fen_id == action.payload.data.fen_id
+          ? { ...i, header: { ...i.header, fen_solde_du: action.payload.data.fen_solde_du } }
+          : i
+      })
+    });
+
     builder.addCase(updateInvoice.rejected, (state, action) => {
+      toast.error("Erreur de mise à jour solde", { autoClose: 3000 });
       state.error = action.payload.error || null;
     });
 
     builder.addCase(createPdf.fulfilled, (state, action) => {
-      console.log("created");
       state.invoices = state.invoices.map(invoice =>
         invoice.header.fen_id == action.payload.data.fdo_fen_fk
           ? { ...invoice, doc: action.payload.data }
@@ -61,7 +71,7 @@ const InvoiceSlice = createSlice({
     builder.addCase(createPdf.rejected, (state, action) => {
       state.error = action.payload.data || null;
     });
-    
+
     builder.addCase(getWidgetInvoices.fulfilled, (state, action) => {
       state.widgets = action.payload.data
     });
@@ -69,7 +79,7 @@ const InvoiceSlice = createSlice({
     builder.addCase(getWidgetInvoices.rejected, (state, action) => {
       state.error = action.payload || null;
     });
-    
+
     builder.addCase(sendInvocieByEmail.fulfilled, (state, action) => {
       state.widgets = action.payload.data
     });

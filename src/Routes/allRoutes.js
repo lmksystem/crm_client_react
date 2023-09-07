@@ -23,6 +23,7 @@ import Login from "../Views/Authentication/Login";
 import Logout from "../Views/Authentication/Logout";
 import ForgetPasswordPage from "../Views/Authentication/ForgetPassword";
 import Register from "../Views/Authentication/Register";
+import TransactionList from "../Views/Reglements/TransactionList";
 // import PdfPreview from "../Views/Pdf";
 
 
@@ -45,6 +46,10 @@ const authProtectedRoutes = [
   { path: "/devis/detail/:id", component: <DevisDetails /> },
   { path: "/devis/creation", component: <DevisCreate /> },
   { path: "/devis/edition/:id", component: <DevisCreate /> },
+
+  // Devis
+  { path: "/transaction/liste", component: <TransactionList /> },
+
 
   {
     path: "/",

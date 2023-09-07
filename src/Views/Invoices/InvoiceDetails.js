@@ -11,11 +11,14 @@ import * as Yup from "yup";
 import {
   addNewTransaction as onAddNewTransaction,
   sendInvocieByEmail as onSendInvocieByEmail,
-  getTransaction as onGetTransaction
+  deleteTransaction as onDeleteTransaction,
+  updateInvoice as onUpdateInvoice
 } from '../../slices/thunks'
 import { api } from "../../config";
 import { rounded } from "../../utils/function";
 import ConfirmModal from "../../Components/Common/ConfirmModal";
+import DeleteModal from "../../Components/Common/DeleteModal";
+import { ToastContainer } from "react-toastify";
 
 const axios = new APIClient();
 
@@ -27,6 +30,9 @@ const InvoiceDetails = () => {
   const [addActifView, setAddActifView] = useState(false);
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+  const [showModalDelete, setShowModalDelete] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
 
   const { invoice, isTransactionsSuccess, transactions } = useSelector((state) => ({
     invoice: state.Invoice.invoices.find((f) => f.header.fen_id == id),
@@ -67,6 +73,8 @@ const InvoiceDetails = () => {
     onSubmit: (values) => {
 
       dispatch(onAddNewTransaction(values)).then(() => {
+        let dataInvoiceUpdate = rounded(transactions.reduce((previousValue, currentValue) => parseFloat(previousValue) - parseFloat(currentValue.tra_value), parseFloat(invoice.header.fen_total_ttc)), 2)
+        dispatch(onUpdateInvoice({ fen_id: invoice.header.fen_id, fen_solde_du: dataInvoiceUpdate }));
         setAddActifView(false);
         validation.resetForm();
       })
@@ -78,9 +86,13 @@ const InvoiceDetails = () => {
     setShowConfirmModal(false)
   }
 
+  const deletetransaction = () => {
+    dispatch(onDeleteTransaction(selectedId));
+    setShowModalDelete(false);
+  }
+
   useEffect(() => {
     if (!invoice.doc) {
-      console.log("create");
       dispatch(createPdf(invoice.header.fen_id))
     }
   }, [invoice])
@@ -88,12 +100,13 @@ const InvoiceDetails = () => {
   if (!invoice) {
     return null;
   }
-
+console.log(invoice.header.fen_solde_du);
   return (
     <div className="page-content">
       <Container fluid>
         <BreadCrumb className="d-print-none" title="Facture détails" pageTitle="Factures" />
         <ConfirmModal title={'Êtes-vous sûr ?'} text={"Êtes-vous sûr de vouloir envoyer la facture ?"} show={showConfirmModal} onCloseClick={() => setShowConfirmModal(false)} onActionClick={() => sendInvoiceByEmail()} />
+        <DeleteModal show={showModalDelete} onCloseClick={() => setShowModalDelete(false)} onDeleteClick={() => { deletetransaction() }} />
         <Row className="justify-content-center">
           <Col xxl={9}>
             {/* <Preview id={'jsx-template'}> */}
@@ -227,7 +240,9 @@ const InvoiceDetails = () => {
                             <th scope="col">Date</th>
                             <th scope="col">Description</th>
                             <th scope="col" className="text-end">Montant</th>
-                            <th className="text-end d-print-none"><button onClick={() => setAddActifView(() => true)} className="btn btn-primary btn-icon " style={{ width: "25px", height: "25px" }} >+</button></th>
+                            <th className="text-end">
+                              <button onClick={() => setAddActifView(() => true)} className="d-print-none btn btn-primary btn-icon " style={{ width: "25px", height: "25px" }} >+</button>
+                            </th>
                           </tr>
                         </thead>
                         <tbody className="border-bottom border-bottom-dashed fs-15">
@@ -248,7 +263,11 @@ const InvoiceDetails = () => {
                                 <td className="text-end">
                                   {element.tra_value}€
                                 </td>
-                                <td width={40}></td>
+                                <td width={40}>
+                                  <button onClick={() => { setShowModalDelete(() => true); setSelectedId(element.tra_id); }} className="btn btn-danger btn-icon " style={{ width: "25px", height: "25px" }} >
+                                    <div style={{ position: "absolute", transform: "rotate(45deg)" }}>+</div>
+                                  </button>
+                                </td>
                               </tr>
                             )
                           })}
@@ -264,7 +283,7 @@ const InvoiceDetails = () => {
                                 Solde
                               </td>
                               <td className="text-end">
-                                {rounded(transactions.reduce((previousValue, currentValue) => parseFloat(previousValue) - parseFloat(currentValue.tra_value), parseFloat(invoice.header.fen_total_ttc)), 2)}
+                                {invoice.header.fen_solde_du}
                               </td>
                               <td width={40}></td>
                             </tr>
@@ -347,9 +366,9 @@ const InvoiceDetails = () => {
                     </div>
 
                     <div className="hstack gap-2 justify-content-end d-print-none mt-4">
-                      <Link to="#" onClick={printInvoice} className="btn btn-success"><i className="ri-printer-line align-bottom me-1"></i> Imprimer</Link>
-                      <Link to="#" onClick={() => setShowConfirmModal(true)} className="btn btn-success"><i className="ri-send-plane-fill align-bottom me-1"></i> Envoyer</Link>
-                      <Link onClick={() => handleGeneratePdf()} className="btn btn-primary"><i className="ri-download-2-line align-bottom me-1"></i> Télécharger</Link>
+                      <button to="#" onClick={printInvoice} className="btn btn-success"><i className="ri-printer-line align-bottom me-1"></i> Imprimer</button>
+                      <button disabled={!invoice.doc ? true : false} onClick={() => setShowConfirmModal(true)} className="btn btn-success"><i className="ri-send-plane-fill align-bottom me-1"></i> Envoyer</button>
+                      <button disabled={!invoice.doc ? true : false} onClick={() => handleGeneratePdf()} className="btn btn-primary"><i className="ri-download-2-line align-bottom me-1"></i> Télécharger</button>
                     </div>
                   </CardBody>
                 </Col>
@@ -359,7 +378,7 @@ const InvoiceDetails = () => {
             {/* </Preview> */}
           </Col>
         </Row>
-
+        <ToastContainer closeButton={false} limit={1} />
       </Container>
     </div >
   );

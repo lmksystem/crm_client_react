@@ -57,13 +57,13 @@ export const deleteTva = tva => api.delete(url.DELETE_TVA + '/' + tva);
 export const getInvoices = () => api.get(url.GET_INVOICES);
 
 //get widgets data
-export const getWidgetInvoices = () => api.get(url.GET_INVOICES+ "/widgets");
+export const getWidgetInvoices = () => api.get(url.GET_INVOICES + "/widgets");
 
 // add Invoice
 export const addNewInvoice = invoice => api.create(url.ADD_NEW_INVOICE, invoice);
 
 // update Invoice
-export const updateInvoice = invoice => api.update(url.UPDATE_INVOICE + '/' + invoice._id, invoice);
+export const updateInvoice = (fen_id, data) => api.update(url.UPDATE_INVOICE + '/' + fen_id, { fen_solde_du: data });
 
 // create pdf Invoice
 export const createPdf = invoice => api.get(url.PDF + '/facture/' + invoice);
@@ -77,8 +77,10 @@ export const sendInvocieByEmail = id => api.create(url.PDF + '/facture/' + id);
 
 // Add transaction
 export const addNewTransaction = invoice => api.create(url.TRANSACTION, invoice);
-// Add transaction
+// get transaction
 export const getTransaction = () => api.get(url.TRANSACTION);
+// delete Transaction
+export const deleteTransaction = (id) => api.delete(url.TRANSACTION + '/' + id);
 
 
 /*************************/

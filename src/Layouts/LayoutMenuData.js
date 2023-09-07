@@ -168,7 +168,7 @@ const Navdata = () => {
         {
           id: "reglements",
           label: "Règlements",
-          link: "/#",
+          link: "/transaction/liste",
           isChildItem: false,
           parentId: "facturation",
 
