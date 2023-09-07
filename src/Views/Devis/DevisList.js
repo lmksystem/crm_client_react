@@ -6,30 +6,20 @@ import {
   Card,
   Container,
   CardHeader,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import * as moment from "moment";
-import CountUp from "react-countup";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import TableContainer from "../../Components/Common/TableContainer";
 import DeleteModal from "../../Components/Common/DeleteModal";
 
-//Import Icons
-import FeatherIcon from "feather-icons-react";
-
-import { invoiceWidgets } from "../../common/data/invoiceList";
 //Import actions
 import {
   getDevis as onGetDevis,
   deleteDevis as onDeleteDevis,
-  getDevisWidgets as onGetDevisWidgets
+  getDevisWidgets as onGetDevisWidgets,
+  getEtatDevis as onGetEtatDevis
 } from "../../slices/thunks";
-
-
 
 //redux
 import { useSelector, useDispatch } from "react-redux";
@@ -50,11 +40,12 @@ const DevisList = () => {
 
   const dispatch = useDispatch();
 
-  const { devisWidgets, devis, isDevisSuccess, error } = useSelector((state) => ({
+  const { devisWidgets, devis, isDevisSuccess, error, etatDevis } = useSelector((state) => ({
     devis: state.Devis.devisList,
     isDevisSuccess: state.Devis.isDevisSuccess,
     error: state.Devis.error,
-    devisWidgets: state.Devis.widgets
+    devisWidgets: state.Devis.widgets,
+    etatDevis: state.Devis.etatDevis
   }));
 
   //delete devis
@@ -66,7 +57,6 @@ const DevisList = () => {
   const [devisList, setDevisList] = useState([]);
 
   useEffect(() => {
-    console.log(devis);
     if (devis) {
       setDevisList(devis)
     }
@@ -76,6 +66,7 @@ const DevisList = () => {
   useEffect(() => {
     dispatch(onGetDevisWidgets())
     dispatch(onGetDevis());
+    dispatch(onGetEtatDevis());
   }, [dispatch]);
 
 
@@ -206,7 +197,7 @@ const DevisList = () => {
         Header: "État",
         accessor: "header.det_name",
         Cell: (cell) => {
-          return <span className="badge text-uppercase badge-soft-success"> {cell.row.original.header.det_name} </span>
+          return <span className="badge text-uppercase badge-soft-success"> {etatDevis?.find((d) => d.det_id == cell.row.original.header.den_etat).det_name} </span>
         }
       },
     ],
@@ -234,8 +225,8 @@ const DevisList = () => {
           <BreadCrumb title="Devis" pageTitle="Liste" />
           <h3>Statistique de l'année</h3>
           <Row>
-            {devisWidgets.map((widget,i) => {
-              return (<WidgetCountUp key={i} data={widget} type={"Devis"}/>)
+            {devisWidgets.map((widget, i) => {
+              return (<WidgetCountUp key={i} data={widget} type={"Devis"} />)
             })}
           </Row>
 

@@ -17,7 +17,7 @@ import {
   ModalFooter
 } from "reactstrap";
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Flatpickr from "react-flatpickr";
 
 import BreadCrumb from "../../Components/Common/BreadCrumb";
@@ -45,7 +45,9 @@ import { allstatus } from "../../common/data/invoiceList";
 import { rounded } from "../../utils/function";
 import { api } from "../../config";
 import moment from "moment";
+import { APIClient } from "../../helpers/api_helper";
 
+let axios = new APIClient()
 
 const InvoiceCreate = () => {
   const { collaborateurs, company, tva, products } = useSelector((state) => ({
@@ -54,6 +56,8 @@ const InvoiceCreate = () => {
     tva: state.Gestion.tva,
     products: state.Product.products,
   }));
+
+  let { state } = useLocation();
 
   const dispatch = useDispatch();
   const history = useNavigate();
@@ -315,7 +319,7 @@ const InvoiceCreate = () => {
     });
 
     let header = handleHeaderValue(lignesData);
-    validation.setValues({ ...validation.values, header: header })
+    validation.setValues({ ...validation.values, header: header });
   }
 
   const deleteLigne = (index) => {
@@ -339,6 +343,30 @@ const InvoiceCreate = () => {
 
   }, [validation.values.ligne])
 
+  useEffect(() => {
+
+    if (state.den_id) {
+      axios.get('/v1/invoiceFromDevis/' + state.den_id).then((response) => {
+        let data = response.data;
+
+        let header = handleHeaderValue(data.ligne);
+
+        validation.setValues({
+          ...data,
+          header: {
+            ...header,
+            fen_den_fk: data.header.fen_den_fk,
+            fen_sujet: data.header.fen_sujet,
+            fen_num_fac: company?.com_nb_fac
+          },
+          contact: {
+            ...response.data.contact
+          }
+        });
+
+      })
+    }
+  }, [])
 
   return (
     <div className="page-content">

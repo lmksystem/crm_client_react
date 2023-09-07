@@ -307,7 +307,7 @@ const TableContainer = ({
               prepareRow(row);
               let key = "";
               if (pathToDetail) {
-                key = Object.keys(row.original.header).find((e) => e.includes('id') );
+                key = Object.keys(row.original.header).find((e) => e.includes('en_id') );
               }
               return (
                 <Fragment key={row.getRowProps().key}>

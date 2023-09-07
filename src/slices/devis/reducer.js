@@ -1,11 +1,11 @@
 import { createSlice, current } from "@reduxjs/toolkit";
-import { getDevis, addNewDevis, updateDevis, deleteDevis, getDevisById, createPdfDevis, getDevisForEdit } from './thunk';
+import { getDevis, addNewDevis, updateDevis, deleteDevis, getDevisById, createPdfDevis, getDevisForEdit, getEtatDevis } from './thunk';
 import { getDevisWidgets } from "../../slices/thunks";
 export const initialState = {
   devisList: [],
   widgets: [],
   error: {},
-  test: "",
+  etatDevis: [],
 };
 
 
@@ -42,6 +42,7 @@ const devisSlice = createSlice({
         state.devisList[index] = action.payload.data;
         state.isDevisCreated = true;
       } else {
+        action.payload.data.doc = null;
         state.devisList.push(action.payload.data);
         state.isDevisCreated = true;
       }
@@ -80,6 +81,15 @@ const devisSlice = createSlice({
     });
 
     builder.addCase(getDevisWidgets.rejected, (state, action) => {
+      console.log("errors");
+      state.error = action.payload || null;
+    });
+ 
+    builder.addCase(getEtatDevis.fulfilled, (state, action) => {
+      state.etatDevis = action.payload.data;
+    });
+
+    builder.addCase(getEtatDevis.rejected, (state, action) => {
       console.log("errors");
       state.error = action.payload || null;
     });

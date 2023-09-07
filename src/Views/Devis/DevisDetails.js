@@ -23,7 +23,11 @@ const DevisDetails = () => {
 
   let { id } = useParams();
 
-  const { devis } = useSelector((state) => ({ devis: state.Devis.devisList.find((d) => d.header.den_id == id) }));
+  const { devis, etatDevis,devisList } = useSelector((state) => ({
+    devis: state.Devis.devisList.find((d) => d.header.den_id == id),
+    devisList: state.Devis.devisList,
+    etatDevis: state.Devis.etatDevis
+  }));
 
   const dispatch = useDispatch();
 
@@ -64,7 +68,6 @@ const DevisDetails = () => {
   };
 
   const sendDevisByEmail = () => {
-    console.log(id);
     dispatch(onSendDevisByEmail(id))
     setShowConfirmModal(false);
   }
@@ -139,7 +142,7 @@ const DevisDetails = () => {
                       </Col>
                       <Col lg={3} className="col-6">
                         <p className="text-muted mb-2 text-uppercase fw-semibold">état</p>
-                        <span className="badge badge-soft-success fs-11" id="payment-status">{devis.header.det_name}</span>
+                        <span className="badge badge-soft-success fs-11" id="payment-status">{etatDevis?.find((d) => d.det_id == devis.header.den_etat)?.det_name}</span>
                       </Col>
                       <Col lg={3} className="col-6">
                         <p className="text-muted mb-2 text-uppercase fw-semibold">Total</p>
@@ -216,6 +219,7 @@ const DevisDetails = () => {
                       <Link onClick={() => setShowConfirmModal(true)} className="btn btn-success"><i className="ri-send-plane-fill align-bottom me-1"></i> Envoyer</Link>
                       <Link to="#" onClick={printInvoice} className="btn btn-success"><i className="ri-printer-line align-bottom me-1"></i> Imprimer</Link>
                       <Link onClick={() => handleGeneratePdf()} className="btn btn-primary"><i className="ri-download-2-line align-bottom me-1"></i> Télécharger</Link>
+                      <Link to={'/factures/creation'} state={{ den_id: devis.header.den_id }} className="btn btn-primary"><i className="ri-file-copy-2-fill align-bottom me-1"></i> Facture</Link>
                       <Link onClick={() => setDeleteModal(true)} state={devis} className="btn btn-danger"><i className="ri-ball-pen-line align-bottom me-1"></i> Supprimer</Link>
                     </div>
                   </CardBody>

@@ -293,7 +293,7 @@ const InvoiceDetails = () => {
                                 Solde
                               </td>
                               <td className="text-end">
-                                {invoice.header.fen_solde_du}
+                                {invoice.header.fen_solde_du}€
                               </td>
                               <td width={40}></td>
                             </tr>

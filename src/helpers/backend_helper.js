@@ -87,6 +87,7 @@ export const createPdf = invoice => api.get(url.PDF + '/facture/' + invoice);
 // send pdf Invoice
 export const sendInvocieByEmail = id => api.create(url.PDF + '/facture/' + id);
 
+
 /*************************/
 /*      transaction      */
 /*************************/
@@ -150,6 +151,8 @@ export const getDevisById = devis => api.get(url.DEVIS + "/" + devis);
 export const getDevisForEdit = id => api.get(url.DEVIS + "/edit/" + id);
 
 export const getDevisWidgets = () => api.get(url.DEVIS + "/widgets");
+
+export const getEtatDevis = () => api.get(url.DEVIS + "/etat");
 
 export const SendDevisByEmail = id => api.create(url.PDF + '/devis/' + id);
 
