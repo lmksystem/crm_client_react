@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from "react";
 import { VectorMap } from "react-jvectormap";
-import "../DashboardAnalytics/jquery-jvectormap.scss";
+import "../../assets/scss/jquery-jvectormap.scss";
 
 const map = React.createRef(null);
 const Vectormap = props => {
@@ -9,7 +9,7 @@ const Vectormap = props => {
         <div style={{ width: props.width, height: 350 }}>
             <VectorMap
                 map={props.value}
-                zoomOnScroll={false}
+                zoomOnScroll={true}
                 zoomButtons={false}
                 markersSelectable={true}
                 markerStyle={{
@@ -37,7 +37,7 @@ const Vectormap = props => {
                     initial: {
                         stroke: "#9599ad",
                         strokeWidth: 0.25,
-                        fill: "#f3f6f9",
+                        fill: "#5EA3CB",
                         fillOpacity: 1,
                     },
                 }}

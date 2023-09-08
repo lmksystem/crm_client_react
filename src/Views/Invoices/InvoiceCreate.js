@@ -345,7 +345,7 @@ const InvoiceCreate = () => {
 
   useEffect(() => {
 
-    if (state.den_id) {
+    if (state && state.den_id) {
       axios.get('/v1/invoiceFromDevis/' + state.den_id).then((response) => {
         let data = response.data;
 
@@ -356,6 +356,7 @@ const InvoiceCreate = () => {
           header: {
             ...header,
             fen_den_fk: data.header.fen_den_fk,
+            fen_ent_fk: data.header.den_ent_fk,
             fen_sujet: data.header.fen_sujet,
             fen_num_fac: company?.com_nb_fac
           },

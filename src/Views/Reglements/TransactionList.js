@@ -49,11 +49,12 @@ const TransactionList = () => {
 
   const dispatch = useDispatch();
 
-  const { invoices, transactions, isTransactionsSuccess, error } = useSelector((state) => ({
+  const { invoices, transactions, isTransactionsSuccess, error, collaborateurs } = useSelector((state) => ({
     invoices: state.Invoice.invoices,
     transactions: state.Transaction.transactions,
     isTransactionsSuccess: state.Transaction.isTransactionsSuccess,
-    error: state.Transaction.error
+    error: state.Transaction.error,
+    collaborateurs: state.Gestion.collaborateurs
 
   }));
 
@@ -98,90 +99,119 @@ const TransactionList = () => {
 
   // Invoice Column
   const columns = useMemo(
-    () => [
-      {
-        Header: <input type="checkbox" id="checkBoxAll" className="form-check-input" onClick={() => checkedAll()} />,
-        Cell: (cellProps) => {
-          return <input type="checkbox" className="invoiceCheckBox form-check-input" value={cellProps.row.original.tra_id} onChange={() => {/*deleteCheckbox()*/ }} />;
+    (data) => {
+      const getData = (id) => {
+        return invoices.find((i) => i.header.fen_id == id);
+      }
+
+      return [
+        {
+          Header: <input type="checkbox" id="checkBoxAll" className="form-check-input" onClick={() => checkedAll()} />,
+          Cell: (cellProps) => {
+            return <input type="checkbox" className="invoiceCheckBox form-check-input" value={cellProps.row.original.tra_id} onChange={() => {/*deleteCheckbox()*/ }} />;
+          },
+          id: '#',
         },
-        id: '#',
-      },
-      {
-        Header: "ID",
-        accessor: "tra_id",
-        filterable: false,
-        Cell: (cell) => {
-          return <Link to={`/factures/detail/${cell.value}`} className="fw-medium link-primary">{cell.row.original.tra_id}</Link>;
+        {
+          Header: "ID",
+          accessor: "tra_id",
+          filterable: false,
+          Cell: (cell) => {
+            return <Link to={`/factures/detail/${cell.value}`} className="fw-medium link-primary">{cell.row.original.tra_id}</Link>;
+          },
         },
-      },
-      {
-        Header: "Client",
-        accessor: "",
-        Cell: (invoice) => {
-          return (
-            <>
-              <div className="flex-shrink-0 avatar-xs me-2">
-                <div className="avatar-title bg-soft-success text-success rounded-circle fs-13">
-                  {"a".charAt(0) || ""}
+        {
+          Header: "Client",
+          accessor: "",
+          Cell: (cell) => {
+            let transaction = cell.row.original;
+            let invoice = getData(transaction.tra_id)
+            console.log(invoice);
+            return (
+              <div className="d-flex align-items-center">
+                <div className="flex-shrink-0 avatar-xs me-2">
+                  <div className="avatar-title bg-soft-success text-success rounded-circle fs-13">
+                    {invoice.contact.fco_cus_name?.charAt(0) || ""}
+                  </div>
+                </div>
+                <div>
+                  {invoice.contact.fco_cus_name}
                 </div>
               </div>
-            </>
-          )
+            )
+          },
         },
-      },
 
-      {
-        Header: "EMAIL",
-        accessor: "fco_cus_email",
-        filterable: false,
-      },
-      {
-        Header: "Sujet",
-        accessor: "fen_sujet",
-      },
-      {
-        Header: "DATE",
-        accessor: "fen_date_create",
-        Cell: (invoice) => (
-          <>
-            {moment(new Date()).format("DD MMMM Y")}
-            {/* <small className="text-muted">{handleValidTime(invoice.row.original.fen_date_create)}</small> */}
-          </>
-        ),
-      },
-      {
-        Header: "Montant",
-        accessor: "header.fen_total_ttc",
-        filterable: false,
-        Cell: (invoice) => (
-          <>
-            <div className="fw-semibold ff-secondary">{}€</div>
-          </>
-        ),
-      },
-      {
-        Header: "Reste à payer",
-        accessor: "",
-        filterable: false,
-        Cell: (invoice) => {
-          return (
-            <>
-              <div className="fw-semibold ff-secondary">
-                {rounded()}€
+        {
+          Header: "EMAIL",
+          accessor: "fco_cus_email",
+          filterable: false,
+          Cell: (cell) => {
+            let transaction = cell.row.original;
+            let invoice = getData(transaction.tra_id)
+            console.log(invoice);
+            return (
+              <div className="d-flex align-items-center">
+                <div className="flex-shrink-0 avatar-xs me-2">
+                  <div className="avatar-title bg-soft-success text-success rounded-circle fs-13">
+                    {invoice.contact.fco_cus_name?.charAt(0) || ""}
+                  </div>
+                </div>
+                <div>
+                  {invoice.contact.fco_cus_name}
+                </div>
               </div>
-            </>
-          )
+            )
+          },
         },
-      },
-      {
-        Header: "État",
-        accessor: "header.fet_name",
-        Cell: (cell) => {
-          return <span className="badge text-uppercase badge-soft-success"> {} </span>
-        }
-      },
+        {
+          Header: "Sujet",
+          accessor: "fen_sujet",
+        },
+        {
+          Header: "DATE",
+          accessor: "fen_date_create",
+          Cell: (invoice) => (
+            <>
+              {moment(new Date()).format("DD MMMM Y")}
+              {/* <small className="text-muted">{handleValidTime(invoice.row.original.fen_date_create)}</small> */}
+            </>
+          ),
+        },
+        {
+          Header: "Montant",
+          accessor: "header.fen_total_ttc",
+          filterable: false,
+          Cell: (invoice) => (
+            <>
+              <div className="fw-semibold ff-secondary">{ }€</div>
+            </>
+          ),
+        },
+        {
+          Header: "Reste à payer",
+          accessor: "",
+          filterable: false,
+          Cell: (invoice) => {
+            return (
+              <>
+                <div className="fw-semibold ff-secondary">
+                  {rounded()}€
+                </div>
+              </>
+            )
+          },
+        },
+        {
+          Header: "État",
+          accessor: "header.fet_name",
+          Cell: (cell) => {
+            return <span className="badge text-uppercase badge-soft-success"> { } </span>
+          }
+        },
 
-    ],
+      ]
+    },
     [checkedAll]
   );
 
