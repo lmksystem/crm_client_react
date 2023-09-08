@@ -224,19 +224,8 @@ const Navdata = () => {
       stateVariables: isBanque,
       subItems: [
         {
-          id: "transactions",
-          label: "Transactions",
-          link: "/#",
-          isChildItem: false,
-          click: function (e) {
-            e.preventDefault();
-
-          },
-          parentId: "banque",
-        },
-        {
-          id: "association",
-          label: "Règles d'Association",
+          id: "transactions-bancaires",
+          label: "Transactions bancaires",
           link: "/#",
           isChildItem: false,
           click: function (e) {
