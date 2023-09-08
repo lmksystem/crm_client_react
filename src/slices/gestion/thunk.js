@@ -137,7 +137,6 @@ export const getTva = createAsyncThunk("gestion/getTva", async () => {
 
 export const addNewTva = createAsyncThunk("gestion/addNewTva", async (tva) => {
   try {
-    console.log(tva);
     const response = await addNewTvaApi(tva)
 
     toast.success("tva Added Successfully", { autoClose: 3000 });
@@ -186,11 +185,16 @@ export const getConstantes = createAsyncThunk(
 
 export const handleConstantes = createAsyncThunk("gestion/handleConstantes", async (constantes) => {
   try {
-    console.log(constantes);
-    const response = await handleConstantesApi(constantes);
-    return response.data;
+    let arrayResponse = [];
+    for (let index = 0; index < constantes.length; index++) {
+      const newConst = constantes[index];
+      let reponse = await handleConstantesApi(newConst);
+      arrayResponse.push(reponse.data) 
+    }
+    toast.success("Updated Successfully", { autoClose: 3000 });
+    return arrayResponse;
   } catch (error) {
-    toast.error("tva Added Failed", { autoClose: 3000 });
+    toast.error("Updated Failed", { autoClose: 3000 });
     return error;
   }
 });

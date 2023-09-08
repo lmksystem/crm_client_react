@@ -58,11 +58,14 @@ import ExportCSVModal from "../../Components/Common/ExportCSVModal";
 
 const GestionParameter = () => {
   const dispatch = useDispatch();
-  const { tva, isTvaSuccess, constanteComp, error, prefix } = useSelector(
+  const { tva, isTvaSuccess, error, prefix_facture ,prefix_devis} = useSelector(
     (state) => ({
-      prefix: state.Gestion.constantes?.find(
-        (cst) => cst.con_title === "Prefixe"
-      ),
+      prefix_facture: state.Gestion.constantes?.find(
+        (cst) => cst?.con_title === "Prefixe facture"
+      )|| {con_title:"Prefixe facture",con_value:""},
+      prefix_devis: state.Gestion.constantes?.find(
+        (cst) => cst?.con_title === "Prefixe devis"
+      ) || {con_title:"Prefixe devis",con_value:""},
       tva: state.Gestion.tva,
       constanteComp: state.Gestion.constantes,
       isTvaSuccess: state.Gestion.isTvaSuccess,
@@ -173,17 +176,15 @@ const GestionParameter = () => {
     enableReinitialize: true,
 
     initialValues: {
-      prefixe_libelle: prefix?.con_value || "",
+      prefixe_libelle_fac: prefix_facture?.con_value || "",
+      prefixe_libelle_dev: prefix_devis?.con_value || "",
+
     },
     onSubmit: (values) => {
-      let newPrefixe = {...prefix,con_value:values.prefixe_libelle}
-      // const newConstanteComp = {
-      //   con_title: values.prefix_libelle,
-      // };
-      // setConstanteCompState
-      // save new tva
-      // console.log(newPrefixe);
-      dispatch(onHandleConstantes(newPrefixe));
+      let newPrefixeFacture = {...prefix_facture,con_value:values.prefixe_libelle_fac};
+      let newPrefixeDevis = {...prefix_devis,con_value:values.prefixe_libelle_dev};
+      let newPrefixes = [newPrefixeFacture,newPrefixeDevis];
+      dispatch(onHandleConstantes(newPrefixes));
       return;
 
       // constanteForm.resetForm();
@@ -377,16 +378,16 @@ const GestionParameter = () => {
                 >
                   <CardBody>
                     <Col lg={12}>
-                      <div>
+                      <div className="m-2">
                         <Label
-                          htmlFor="prefixe_libelle-field"
+                          htmlFor="prefixe_libelle_fac-field"
                           className="form-label"
                         >
                           Préfixe de facture
                         </Label>
                         <Input
-                          name="prefixe_libelle"
-                          id="prefixe_libelle-field"
+                          name="prefixe_libelle_fac"
+                          id="prefixe_libelle_fac-field"
                           className="form-control"
                           placeholder="Entrer un préfixe"
                           type="text"
@@ -395,7 +396,28 @@ const GestionParameter = () => {
                           //}}
                           onChange={constanteForm.handleChange}
                           onBlur={constanteForm.handleBlur}
-                          value={constanteForm.values.prefixe_libelle || ""}
+                          value={constanteForm.values.prefixe_libelle_fac || ""}
+                        />
+                      </div>
+                      <div className="m-2">
+                        <Label
+                          htmlFor="prefixe_libelle_dev-field"
+                          className="form-label"
+                        >
+                          Préfixe de devis
+                        </Label>
+                        <Input
+                          name="prefixe_libelle_dev"
+                          id="prefixe_libelle_dev-field"
+                          className="form-control"
+                          placeholder="Entrer un préfixe"
+                          type="text"
+                          //validate={{
+                          //required: { value: true },
+                          //}}
+                          onChange={constanteForm.handleChange}
+                          onBlur={constanteForm.handleBlur}
+                          value={constanteForm.values.prefixe_libelle_dev || ""}
                         />
                       </div>
                       <div className="m-2">

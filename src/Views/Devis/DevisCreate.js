@@ -37,6 +37,7 @@ import {
   getCompany as onGetCompany,
   getTva as onGetTva,
   getProducts as onGetProducts,
+  getConstantes as onGetConstantes,
 } from "../../slices/thunks";
 import SimpleBar from "simplebar-react";
 import { parseInt } from "lodash";
@@ -48,11 +49,14 @@ import { allstatusDevis } from "../../common/data/devisList";
 
 
 const InvoiceCreate = () => {
-  const { collaborateurs, company, tva, products } = useSelector((state) => ({
+  const { collaborateurs, company, tva, products, prefix_devis } = useSelector((state) => ({
     collaborateurs: state.Gestion.collaborateurs,
     company: state.Company.company[0],
     tva: state.Gestion.tva,
     products: state.Product.products,
+    prefix_devis: state.Gestion.constantes?.find(
+      (cst) => cst.con_title === "Prefixe devis"
+    ),
   }));
 
   let { state } = useLocation();
@@ -109,6 +113,8 @@ const InvoiceCreate = () => {
     dispatch(onGetCompany());
     dispatch(onGetTva());
     dispatch(onGetProducts());
+    dispatch(onGetConstantes());
+
 
   }, [dispatch]);
 
@@ -144,7 +150,7 @@ const InvoiceCreate = () => {
         den_total_ttc: 0,
         den_total_tva: 0,
         den_total_remise: 0,
-        den_num: company?.com_nb_dev,
+        den_num:(prefix_devis?.con_value ?prefix_devis?.con_value:"")+company?.com_nb_dev,
         den_note: ""
       },
       ligne: []

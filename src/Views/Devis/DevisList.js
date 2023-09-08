@@ -67,7 +67,7 @@ const DevisList = () => {
     dispatch(onGetDevisWidgets())
     dispatch(onGetDevis());
     dispatch(onGetEtatDevis());
-  }, [dispatch]);
+  }, []);
 
 
   const handleDeleteDevis = (id) => {
