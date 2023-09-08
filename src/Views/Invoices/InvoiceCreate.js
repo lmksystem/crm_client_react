@@ -348,7 +348,7 @@ const InvoiceCreate = () => {
 
   useEffect(() => {
 
-    if (state && state.den_id) {
+    if (state && state.den_id && company && prefix_facture) {
       axios.get('/v1/invoiceFromDevis/' + state.den_id).then((response) => {
         let data = response.data;
 
@@ -370,7 +370,7 @@ const InvoiceCreate = () => {
 
       })
     }
-  }, [])
+  }, [company, prefix_facture])
 
   return (
     <div className="page-content">
