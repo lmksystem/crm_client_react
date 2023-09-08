@@ -175,7 +175,7 @@ export const getConstantes = createAsyncThunk(
   "gestion/getConstantes",
   async () => {
     try {
-      const response = getConstantesApi();
+      const response = await getConstantesApi();
       return response;
     } catch (error) {
       return error;
