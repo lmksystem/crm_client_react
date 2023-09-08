@@ -16,17 +16,11 @@ import * as moment from "moment";
 import CountUp from "react-countup";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import TableContainer from "../../Components/Common/TableContainer";
-
-//Import Icons
-import FeatherIcon from "feather-icons-react";
-
-import { invoiceWidgets } from "../../common/data/invoiceList";
 //Import actions
 import {
   getCollaborateurs as onGetCollaborateurs,
   getInvoices as onGetInvoices,
-  getWidgetInvoices as onGetInvoiceWidgets,
-  getTransaction as onGetTransaction
+  getTransactionList as onGetTransactionList
 } from "../../slices/thunks";
 
 //redux
@@ -37,7 +31,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import 'moment/locale/fr'  // without this line it didn't work
-import { InvoiceListGlobalSearch } from "../../Components/Common/GlobalSearchFilter";
+import { TransactionListGlobalSearch } from "../../Components/Common/GlobalSearchFilter";
 import { rounded } from "../../utils/function";
 import { api } from "../../config";
 
@@ -51,18 +45,18 @@ const TransactionList = () => {
 
   const { invoices, transactions, isTransactionsSuccess, error, collaborateurs } = useSelector((state) => ({
     invoices: state.Invoice.invoices,
-    transactions: state.Transaction.transactions,
+    transactions: state.Transaction.transactionsList,
     isTransactionsSuccess: state.Transaction.isTransactionsSuccess,
     error: state.Transaction.error,
     collaborateurs: state.Gestion.collaborateurs
 
   }));
-
+  console.log(transactions);
   const [customFiltered, setCustomFiltered] = useState(null);
 
   useEffect(() => {
     dispatch(onGetInvoices());
-    dispatch(onGetTransaction());
+    dispatch(onGetTransactionList());
     dispatch(onGetCollaborateurs());
   }, [dispatch]);
 
@@ -108,7 +102,7 @@ const TransactionList = () => {
         {
           Header: <input type="checkbox" id="checkBoxAll" className="form-check-input" onClick={() => checkedAll()} />,
           Cell: (cellProps) => {
-            return <input type="checkbox" className="invoiceCheckBox form-check-input" value={cellProps.row.original.tra_id} onChange={() => {/*deleteCheckbox()*/ }} />;
+            return <input type="checkbox" className="invoiceCheckBox form-check-input" value={rounded(cellProps.row.original.tra_id)} onChange={() => {/*deleteCheckbox()*/ }} />;
           },
           id: '#',
         },
@@ -116,26 +110,23 @@ const TransactionList = () => {
           Header: "ID",
           accessor: "tra_id",
           filterable: false,
-          Cell: (cell) => {
-            return <Link to={`/factures/detail/${cell.value}`} className="fw-medium link-primary">{cell.row.original.tra_id}</Link>;
-          },
+          // Cell: (cell) => {
+          //   return <Link to={``} className="fw-medium link-primary">{cell.row.original.tra_id}</Link>;
+          // },
         },
         {
           Header: "Client",
-          accessor: "",
+          accessor: "ent_name",
           Cell: (cell) => {
-            let transaction = cell.row.original;
-            let invoice = getData(transaction.tra_id)
-            console.log(invoice);
             return (
               <div className="d-flex align-items-center">
                 <div className="flex-shrink-0 avatar-xs me-2">
                   <div className="avatar-title bg-soft-success text-success rounded-circle fs-13">
-                    {invoice.contact.fco_cus_name?.charAt(0) || ""}
+                    {cell.row.original.ent_name?.charAt(0) || ""}
                   </div>
                 </div>
                 <div>
-                  {invoice.contact.fco_cus_name}
+                  {cell.row.original.ent_name}
                 </div>
               </div>
             )
@@ -144,70 +135,35 @@ const TransactionList = () => {
 
         {
           Header: "EMAIL",
-          accessor: "fco_cus_email",
+          accessor: "ent_email",
           filterable: false,
-          Cell: (cell) => {
-            let transaction = cell.row.original;
-            let invoice = getData(transaction.tra_id)
-            console.log(invoice);
-            return (
-              <div className="d-flex align-items-center">
-                <div className="flex-shrink-0 avatar-xs me-2">
-                  <div className="avatar-title bg-soft-success text-success rounded-circle fs-13">
-                    {invoice.contact.fco_cus_name?.charAt(0) || ""}
-                  </div>
-                </div>
-                <div>
-                  {invoice.contact.fco_cus_name}
-                </div>
-              </div>
-            )
-          },
-        },
-        {
-          Header: "Sujet",
-          accessor: "fen_sujet",
         },
         {
           Header: "DATE",
-          accessor: "fen_date_create",
-          Cell: (invoice) => (
+          accessor: "tra_date",
+          Cell: (cell) => (
             <>
-              {moment(new Date()).format("DD MMMM Y")}
+              {moment(new Date(cell.row.original.tra_date)).format("DD MMMM Y")}
               {/* <small className="text-muted">{handleValidTime(invoice.row.original.fen_date_create)}</small> */}
             </>
           ),
         },
         {
           Header: "Montant",
-          accessor: "header.fen_total_ttc",
+          accessor: "tra_value",
           filterable: false,
-          Cell: (invoice) => (
+          Cell: (cell) => (
             <>
-              <div className="fw-semibold ff-secondary">{ }€</div>
+              <div className="fw-semibold ff-secondary">{ cell.row.original.tra_value }€</div>
             </>
           ),
         },
         {
-          Header: "Reste à payer",
+          Header: "Liaison facture",
           accessor: "",
-          filterable: false,
-          Cell: (invoice) => {
-            return (
-              <>
-                <div className="fw-semibold ff-secondary">
-                  {rounded()}€
-                </div>
-              </>
-            )
+         Cell: (cell) => {
+            return (cell.row.original.tra_fen_fk && <Link to={`/factures/detail/${cell.row.original.tra_fen_fk}`} className="fw-medium link-primary">Voir la facture</Link>) || "";
           },
-        },
-        {
-          Header: "État",
-          accessor: "header.fet_name",
-          Cell: (cell) => {
-            return <span className="badge text-uppercase badge-soft-success"> { } </span>
-          }
         },
 
       ]
@@ -250,7 +206,7 @@ const TransactionList = () => {
 
                 <CardBody className="pt-0">
                   <div>
-                    <InvoiceListGlobalSearch origneData={transactions} data={customFiltered} setData={setCustomFiltered} />
+                    <TransactionListGlobalSearch origneData={transactions} data={customFiltered} setData={setCustomFiltered} />
                     {isTransactionsSuccess ? (
                       <TableContainer
                         columns={columns}

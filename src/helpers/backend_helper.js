@@ -98,6 +98,8 @@ export const addNewTransaction = invoice => api.create(url.TRANSACTION, invoice)
 export const getTransaction = () => api.get(url.TRANSACTION);
 // delete Transaction
 export const deleteTransaction = (id) => api.delete(url.TRANSACTION + '/' + id);
+// get tarnsaction liste avec jointure sur facture et entity
+export const getTransactionList = (id) => api.get(url.TRANSACTION + '/list');
 
 
 /*************************/

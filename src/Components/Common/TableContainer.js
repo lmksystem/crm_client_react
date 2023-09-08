@@ -16,8 +16,7 @@ import {
   ProductsGlobalFilter,
   CustomersGlobalFilter,
   OrderGlobalFilter,
-  ContactsGlobalFilter,
-  CompaniesGlobalFilter,
+
   LeadsGlobalFilter,
   CryptoOrdersGlobalFilter,
   InvoiceListGlobalSearch,
@@ -32,19 +31,7 @@ export function GlobalFilter({
   preGlobalFilteredRows,
   globalFilter,
   setGlobalFilter,
-  isCustomerFilter,
-  isOrderFilter,
-  isContactsFilter,
-  isCompaniesFilter,
-  isCryptoOrdersFilter,
-  isInvoiceListFilter,
-  isTicketsListFilter,
-  isNFTRankingFilter,
-  isTaskListFilter,
-  isProductsFilter,
-  isLeadsFilter
 }) {
-  const count = preGlobalFilteredRows.length;
   const [value, setValue] = React.useState(globalFilter);
   const onChange = useAsyncDebounce((value) => {
     setGlobalFilter(value || undefined);
@@ -56,11 +43,11 @@ export function GlobalFilter({
         <form>
           <Row className="g-3">
             <Col>
-              <div className={(isProductsFilter || isContactsFilter || isCompaniesFilter || isNFTRankingFilter) ? "search-box me-2 mb-2 d-inline-block" : "search-box me-2 mb-2 d-inline-block col-12"}>
+              <div className={"search-box me-2 mb-2 d-inline-block"}>
                 <input
                   onChange={(e) => {
-                    // setValue(e.target.value);
-                    // onChange(e.target.value);
+                    setValue(e.target.value);
+                    onChange(e.target.value);
                   }}
                   id="search-bar-0"
                   type="text"
@@ -71,45 +58,6 @@ export function GlobalFilter({
                 <i className="bx bx-search-alt search-icon"></i>
               </div>
             </Col>
-            {isProductsFilter && (
-              <ProductsGlobalFilter />
-            )}
-            {isCustomerFilter && (
-              <CustomersGlobalFilter />
-            )}
-            {isOrderFilter && (
-              <OrderGlobalFilter />
-            )}
-            {isContactsFilter && (
-              <>
-                {/* <ContactsGlobalFilter /> */}
-              </>
-            )}
-            {isCompaniesFilter && (
-              <>
-                {/* <CompaniesGlobalFilter /> */}
-              </>
-            )}
-            {isLeadsFilter && (
-              <LeadsGlobalFilter />
-            )}
-            {isCryptoOrdersFilter && (
-              <CryptoOrdersGlobalFilter />
-            )}
-            {isInvoiceListFilter && (
-              <InvoiceListGlobalSearch onChange={(e) => {
-                // onChange(e.target.value);
-              }} />
-            )}
-            {isTicketsListFilter && (
-              <TicketsListGlobalFilter />
-            )}
-            {isNFTRankingFilter && (
-              <NFTRankingGlobalFilter />
-            )}
-            {isTaskListFilter && (
-              <TaskListGlobalFilter />
-            )}
           </Row>
         </form>
       </CardBody>
@@ -237,51 +185,7 @@ const TableContainer = ({
             isTaskListFilter={isTaskListFilter}
           />
         )}
-        {isAddOptions && (
-          <Col sm="7">
-            <div className="text-sm-end">
-              <Button
-                type="button"
-                color="success"
-                className="btn-rounded  mb-2 me-2"
-                onClick={handleOrderClicks}
-              >
-                <i className="mdi mdi-plus me-1" />
-                Add New Order
-              </Button>
-            </div>
-          </Col>
-        )}
-        {isAddUserList && (
-          <Col sm="7">
-            <div className="text-sm-end">
-              <Button
-                type="button"
-                color="primary"
-                className="btn mb-2 me-2"
-                onClick={handleUserClick}
-              >
-                <i className="mdi mdi-plus-circle-outline me-1" />
-                Create New User
-              </Button>
-            </div>
-          </Col>
-        )}
-        {isAddCustList && (
-          <Col sm="7">
-            <div className="text-sm-end">
-              <Button
-                type="button"
-                color="success"
-                className="btn-rounded mb-2 me-2"
-                onClick={handleCustomerClick}
-              >
-                <i className="mdi mdi-plus me-1" />
-                New Customers
-              </Button>
-            </div>
-          </Col>
-        )}
+        
       </Row>
 
 
