@@ -38,6 +38,7 @@ import {
   getCompany as onGetCompany,
   getTva as onGetTva,
   getProducts as onGetProducts,
+  getConstantes as onGetConstantes,
 } from "../../slices/thunks";
 import SimpleBar from "simplebar-react";
 import { parseInt } from "lodash";
@@ -50,7 +51,10 @@ import { APIClient } from "../../helpers/api_helper";
 let axios = new APIClient()
 
 const InvoiceCreate = () => {
-  const { collaborateurs, company, tva, products } = useSelector((state) => ({
+  const { collaborateurs, company, tva, products, prefix_facture } = useSelector((state) => ({
+    prefix_facture: state.Gestion.constantes?.find(
+      (cst) => cst.con_title === "Prefixe facture"
+    ),
     collaborateurs: state.Gestion.collaborateurs,
     company: state.Company.company[0],
     tva: state.Gestion.tva,
@@ -115,6 +119,7 @@ const InvoiceCreate = () => {
     dispatch(onGetCompany());
     dispatch(onGetTva());
     dispatch(onGetProducts());
+    dispatch(onGetConstantes());
   }, []);
 
   document.title = "Création facture | Countano";
@@ -150,7 +155,7 @@ const InvoiceCreate = () => {
         fen_total_ttc: 0,
         fen_total_tva: 0,
         fen_total_remise: 0,
-        fen_num_fac: company?.com_nb_fac,
+        fen_num_fac:prefix_facture?.con_value?(prefix_facture?.con_value+company?.com_nb_fac):company?.com_nb_fac,
       },
       ligne: []
     },
@@ -356,7 +361,7 @@ const InvoiceCreate = () => {
             fen_den_fk: data.header.fen_den_fk,
             fen_ent_fk: data.header.den_ent_fk,
             fen_sujet: data.header.fen_sujet,
-            fen_num_fac: company?.com_nb_fac
+            fen_num_fac: prefix_facture?.con_value?(prefix_facture?.con_value+company?.com_nb_fac):company?.com_nb_fac,
           },
           contact: {
             ...response.data.contact
