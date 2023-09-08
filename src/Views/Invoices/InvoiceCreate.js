@@ -111,13 +111,11 @@ const InvoiceCreate = () => {
   }, [modalProduct]);
 
   useEffect(() => {
-    if (collaborateurs && !collaborateurs.length) {
-      dispatch(onGetCollaborateurs());
-      dispatch(onGetCompany());
-      dispatch(onGetTva());
-      dispatch(onGetProducts());
-    }
-  }, [dispatch, collaborateurs]);
+    dispatch(onGetCollaborateurs());
+    dispatch(onGetCompany());
+    dispatch(onGetTva());
+    dispatch(onGetProducts());
+  }, []);
 
   document.title = "Création facture | Countano";
 
