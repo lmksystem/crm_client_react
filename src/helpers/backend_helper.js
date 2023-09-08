@@ -55,7 +55,7 @@ export const deleteTva = tva => api.delete(url.DELETE_TVA + '/' + tva);
 /*************************/
 
 // get tva
-export const getConstantes = () => api.get(url.CONSTANTES);
+export const getConstantes = async() => api.get(url.CONSTANTES);
 // add and update constantes
 export const handleConstantes = constantes => api.create(url.CONSTANTES, constantes);
 // export const addNewTva = tva => api.create(url.ADD_NEW_TVA, tva);

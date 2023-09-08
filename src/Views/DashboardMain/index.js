@@ -6,14 +6,17 @@ import Revenue from "./Revenue";
 import SalesByLocations from "./SalesByLocations";
 import Section from "./Section";
 
-const DashboardEcommerce = () => {
+const DashboardMain = () => {
   document.title = "Accueil | Countano";
 
   const [rightColumn, setRightColumn] = useState(true);
   const toggleRightColumn = () => {
     setRightColumn(!rightColumn);
   };
-  console.log("ok");
+  
+
+
+
   return (
     <React.Fragment>
       <div className="page-content">
@@ -22,15 +25,15 @@ const DashboardEcommerce = () => {
           <Row>
             <Col>
               <div className="h-100">
-                <Section rightClickBtn={toggleRightColumn} />
+                <Section />
                 <Row>
                   <Widget />
                 </Row>
                 <Row>
-                  <Col xl={8}>
+                  <Col>
                     <Revenue />
                   </Col>
-                  <SalesByLocations />
+                  {/* <SalesByLocations /> */}
                 </Row>
                 {/* <Row>
                   <BestSellingProducts />
@@ -50,4 +53,4 @@ const DashboardEcommerce = () => {
   );
 };
 
-export default DashboardEcommerce;
+export default DashboardMain;

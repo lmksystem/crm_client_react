@@ -10,7 +10,6 @@ const Section = (props) => {
                     <div className="d-flex align-items-lg-center flex-lg-row flex-column">
                         <div className="flex-grow-1">
                             <h4 className="fs-16 mb-1">Bonjour !</h4>
-                            <p className="text-muted mb-0">Here's what's happening with your store today.</p>
                         </div>
                         <div className="mt-3 mt-lg-0">
                             <form action="#">
@@ -28,12 +27,12 @@ const Section = (props) => {
                                             <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
                                         </div>
                                     </div>
-                                    <div className="col-auto">
+                                    {/* <div className="col-auto">
                                         <button type="button" className="btn btn-soft-success"><i className="ri-add-circle-line align-middle me-1"></i> Add Product</button>
                                     </div>
                                     <div className="col-auto">
                                         <button type="button" className="btn btn-soft-info btn-icon waves-effect waves-light layout-rightside-btn" onClick={props.rightClickBtn} ><i className="ri-pulse-line"></i></button>
-                                    </div>
+                                    </div> */}
                                 </Row>
                             </form>
                         </div>

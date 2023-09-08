@@ -5,6 +5,7 @@ import { Navigate } from "react-router-dom";
 import Contacts from "../Views/Contacts/index";
 import Collaborateurs from "../Views/Collaborateurs";
 import DashboardEcommerce from "../Views/DashboardEcommerce";
+import DashboardMain from "../Views/DashboardMain";
 import GestionParameter from "../Views/GestionParameter";
 import Products from "../Views/Product";
 
@@ -33,7 +34,7 @@ const authProtectedRoutes = [
   { path: "/client-fournisseur", component: <Collaborateurs /> },
   { path: "/gestion/parametre", component: <GestionParameter /> },
   { path: "/produits", component: <Products /> },
-  { path: "/dashboard", component: <DashboardEcommerce /> },
+  { path: "/dashboard", component: <DashboardMain /> },
   { path: "/index", component: <DashboardEcommerce /> },
 
   // //Invoices

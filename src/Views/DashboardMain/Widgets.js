@@ -34,13 +34,13 @@ const Widgets = () => {
                                             duration={4}
                                         />
                                     </span></h4>
-                                    <Link to="#" className="text-decoration-underline text-muted">{item.link}</Link>
+                                    {/* <Link to="#" className="text-decoration-underline text-muted">{item.link}</Link> */}
                                 </div>
-                                <div className="avatar-sm flex-shrink-0">
+                                {/* <div className="avatar-sm flex-shrink-0">
                                     <span className={"avatar-title rounded fs-3 bg-soft-" + item.bgcolor}>
                                         <i className={`text-${item.bgcolor} ${item.icon}`}></i>
                                     </span>
-                                </div>
+                                </div> */}
                             </div>
                         </CardBody>
                     </Card>
