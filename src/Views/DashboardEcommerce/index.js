@@ -2,14 +2,9 @@ import React, { useState } from "react";
 import { Col, Container, Row } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import Widget from "./Widgets";
-import BestSellingProducts from "./BestSellingProducts";
-import RecentActivity from "./RecentActivity";
-import RecentOrders from "./RecentOrders";
 import Revenue from "./Revenue";
 import SalesByLocations from "./SalesByLocations";
 import Section from "./Section";
-import StoreVisits from "./StoreVisits";
-import TopSellers from "./TopSellers";
 
 const DashboardEcommerce = () => {
   document.title = "Accueil | Countano";

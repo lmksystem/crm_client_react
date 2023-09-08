@@ -470,7 +470,7 @@ const Contacts = () => {
                           theadClass="table-light"
                           handleContactClick={handleContactClicks}
                           isContactsFilter={true}
-                          SearchPlaceholder='Search for contact...'
+                          SearchPlaceholder='Recherche...'
                         />
                       ) : (<Loader error={error} />)
                       }
