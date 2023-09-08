@@ -79,7 +79,7 @@ const GestionParameter = () => {
     dispatch(onGetConstantes());
 
     // }
-  }, []);
+  }, [dispatch]);
 
   // useEffect(() => {
   //   setConstanteCompState(constanteComp);
