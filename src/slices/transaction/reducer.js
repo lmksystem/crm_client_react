@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { addNewTransaction, deleteTransaction, getTransaction } from "./thunk";
+import { addNewTransaction, deleteTransaction, getTransaction, getTransactionList } from "./thunk";
 import { toast } from "react-toastify";
 
 export const initialState = {
   transactions: [],
+  transactionsList: [],
   error: {},
   isTransactionsSuccess: false,
 };
@@ -40,6 +41,15 @@ const transactionSlice = createSlice({
     builder.addCase(deleteTransaction.rejected, (state, action) => {
       toast.error('Erreur de suppression !', { autoClose: 3000 })
       state.isTransactionsSuccess = false;
+      state.error = action.payload || "Erreur de suppression !"
+    });
+    builder.addCase(getTransactionList.fulfilled, (state, action) => {
+      state.isTransactionsListSuccess = true;
+      state.transactionsList = action.payload.data
+    })
+    builder.addCase(getTransactionList.rejected, (state, action) => {
+      toast.error('Erreur de suppression !', { autoClose: 3000 })
+      state.isTransactionsListSuccess = false;
       state.error = action.payload || "Erreur de suppression !"
     });
 

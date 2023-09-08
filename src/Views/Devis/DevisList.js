@@ -197,7 +197,7 @@ const DevisList = () => {
         Header: "État",
         accessor: "header.det_name",
         Cell: (cell) => {
-          return <span className="badge text-uppercase badge-soft-success"> {etatDevis?.find((d) => d.det_id == cell.row.original.header.den_etat).det_name} </span>
+          return <span className="badge text-uppercase badge-soft-success"> {etatDevis?.find((d) => d.det_id == cell.row.original.header.den_etat)?.det_name} </span>
         }
       },
     ],

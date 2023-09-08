@@ -517,13 +517,82 @@ const DevisListGlobalSearch = ({ origneData, data, setData, value }) => {
 
       </Row>
 
+    </React.Fragment>
+  );
+};
 
-      {/* <Col sm={4} xxl={1}>
-        <Button color="primary" className="w-100">
-          <i className="ri-equalizer-fill me-1 align-bottom"></i>{" "}
-          Filters
-        </Button>
-      </Col> */}
+const TransactionListGlobalSearch = ({ origneData, data, setData, value }) => {
+  const [isText, setisText] = useState(null);
+  const [isDate, setisDate] = useState(null);
+
+  /**
+   * Fonction de trier des devis
+   */
+  const filteredData = () => {
+  
+    let newData = [...origneData];
+
+    if (isText) {
+      newData = newData.filter((e) => e.contact.dco_cus_email.toLowerCase().includes(isText) || e.contact.dco_cus_name.toLowerCase().includes(isText) || e.header.den_sujet.toLowerCase().includes(isText) || e.header.den_total_ttc.toString().includes(isText))
+    }
+
+    if (isDate) {
+      newData = newData.filter((e) => isDate.includes(e.header.den_date_create))
+    }
+
+    setData(() => newData);
+  }
+
+  useEffect(() => {
+    if (origneData.length) {
+      if ( isText || isDate) {
+        filteredData();
+      } else {
+        setData(origneData)
+      }
+    }
+  }, [isText, isDate])
+
+  return (
+    <React.Fragment>
+      <Row>
+
+        <Col sm={4} xxl={5} >
+          <div className={"search-box me-2 mb-2 d-flex col-12"}>
+            <input
+              onChange={(e) => {
+                setisText(e.target.value != "" ? e.target.value : null)
+              }}
+              id="search-bar-0"
+              type="text"
+              className="form-control search /"
+              placeholder={`Recherche...`}
+              value={isText || ""}
+            />
+            <i className="bx bx-search-alt search-icon"></i>
+          </div>
+        </Col>
+
+        <Col sm={4} xxl={3} className=' mb-2'>
+          <Flatpickr
+            onChange={(date, dateStr) => {
+              setisDate(dateStr ? dateStr.split(', ') : null);
+            }}
+            className="form-control bg-light border-light"
+            id="invoice-date-picker"
+            placeholder="Selectionnez une date"
+            options={{
+              locale: French,
+              altInput: true,
+              enableTime: false,
+              altFormat: "F j, Y",
+              mode: "multiple",
+              dateFormat: "Y-m-d",
+            }}
+
+          />
+        </Col>
+      </Row>
 
     </React.Fragment>
   );
@@ -618,84 +687,11 @@ const TaskListGlobalFilter = () => {
 };
 
 
-const LeadsGlobalFilter = ({ onClickDelete }) => {
-  return (
-    <React.Fragment>
-      <div className="col-sm-auto ms-auto">
-        <div className="hstack gap-2">
-          <button className="btn btn-soft-danger" onClick={onClickDelete}
-          ><i className="ri-delete-bin-2-line"></i></button>
-          <button type="button" className="btn btn-info"
-          //  onClick={toggleInfo}
-          >
-            <i className="ri-filter-3-line align-bottom me-1"></i>{" "}
-            Fliters
-          </button>
-          <button
-            type="button"
-            className="btn btn-success add-btn"
-            id="create-btn"
-          // onClick={() => { setIsEdit(false); toggle(); }}
-          >
-            <i className="ri-add-line align-bottom me-1"></i> Add
-            Leads
-          </button>
-          <UncontrolledDropdown>
-            <DropdownToggle
-              className="btn btn-soft-info btn-icon fs-14"
-              type="button"
-              id="dropdownMenuButton1"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <i className="ri-settings-4-line"></i>
-            </DropdownToggle>
-            <DropdownMenu
-            >
-              <li>
-                <DropdownItem>
-                  Copy
-                </DropdownItem>
-              </li>
-              <li>
-                <DropdownItem>
-                  Move to pipline
-                </DropdownItem>
-              </li>
-              <li>
-                <DropdownItem>
-                  Add to exceptions
-                </DropdownItem>
-              </li>
-              <li>
-                <DropdownItem>
-                  Switch to common form view
-                </DropdownItem>
-              </li>
-              <li>
-                <DropdownItem>
-                  Reset form view to default
-                </DropdownItem>
-              </li>
-            </DropdownMenu>
-          </UncontrolledDropdown>
-        </div>
-      </div>
-    </React.Fragment>
-  );
-};
-
 export {
-  ProductsGlobalFilter,
+  
   CustomersGlobalFilter,
-  OrderGlobalFilter,
-  ContactsGlobalFilter,
-  CompaniesGlobalFilter,
-  CryptoOrdersGlobalFilter,
+  
   InvoiceListGlobalSearch,
-  TicketsListGlobalFilter,
-  NFTRankingGlobalFilter,
-  TaskListGlobalFilter,
-  LeadsGlobalFilter,
-  DevisListGlobalSearch
+  DevisListGlobalSearch,
+  TransactionListGlobalSearch
 };
