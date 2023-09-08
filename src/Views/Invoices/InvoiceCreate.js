@@ -155,7 +155,7 @@ const InvoiceCreate = () => {
         fen_total_ttc: 0,
         fen_total_tva: 0,
         fen_total_remise: 0,
-        fen_num_fac:prefix_facture?.con_value?(prefix_facture?.con_value+company?.com_nb_fac):company?.com_nb_fac,
+        fen_num_fac: prefix_facture?.con_value ? (prefix_facture?.con_value + company?.com_nb_fac) : company?.com_nb_fac,
       },
       ligne: []
     },
@@ -359,9 +359,9 @@ const InvoiceCreate = () => {
           header: {
             ...header,
             fen_den_fk: data.header.fen_den_fk,
-            fen_ent_fk: data.header.den_ent_fk,
+            fen_ent_fk: data.header.fen_ent_fk,
             fen_sujet: data.header.fen_sujet,
-            fen_num_fac: prefix_facture?.con_value?(prefix_facture?.con_value+company?.com_nb_fac):company?.com_nb_fac,
+            fen_num_fac: prefix_facture?.con_value ? (prefix_facture?.con_value + company?.com_nb_fac) : company?.com_nb_fac,
           },
           contact: {
             ...response.data.contact

@@ -7,7 +7,7 @@ import { getRevenueChartsData } from "../../slices/thunks";
 import ReactApexChart from "react-apexcharts";
 import getChartColorsArray from "../../Components/Common/ChartsDynamicColor";
 
-const TransactionCharts = ({chartData}) => {
+const TransactionCharts = ({ chartData }) => {
   const dispatch = useDispatch();
   const linechartcustomerColors = getChartColorsArray('["--vz-primary", "--vz-warning", "--vz-success"]');
 
@@ -17,8 +17,19 @@ const TransactionCharts = ({chartData}) => {
       height: 370,
       type: "line",
       toolbar: {
-        show: false,
+        show: true,
+        tools: {
+          download: true,
+          selection: false,
+          zoom: false,
+          zoomin: false,
+          zoomout: false,
+          pan: false,
+          reset: false,
+          customIcons: []
+        },
       },
+
     },
     stroke: {
       curve: "straight",
@@ -72,7 +83,7 @@ const TransactionCharts = ({chartData}) => {
       },
       padding: {
         top: 0,
-        right: -2,
+        right: 10,
         bottom: 15,
         left: 10,
       },
@@ -89,7 +100,6 @@ const TransactionCharts = ({chartData}) => {
       y: [
         {
           formatter: function (y) {
-            console.log(y);
             return y + "€";
           },
         },

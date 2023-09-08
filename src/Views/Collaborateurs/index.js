@@ -1023,7 +1023,7 @@ const Collaborateurs = () => {
                       <ModalFooter>
                         <div className="hstack gap-2 justify-content-end">
                           <button type="button" className="btn btn-light" onClick={() => { setModal(false); }} > Fermer </button>
-                          <button type="submit" className="btn btn-success" id="add-btn" >  {!!isEdit ? "Modifier" : "Ajouter Collaborateur"} </button>
+                          <button type="submit" className="btn btn-success" id="add-btn" >  {!!isEdit ? "Modifier" : "Ajouter"} </button>
                         </div>
                       </ModalFooter>
                     </Form>
