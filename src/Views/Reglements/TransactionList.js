@@ -206,12 +206,12 @@ console.log(transactions);
                     <h5 className="card-title mb-0 flex-grow-1">Transactions</h5>
                     <div className="flex-shrink-0">
                       <div className='d-flex gap-2 flex-wrap'>
-                        <Link
+                        {/* <Link
                           to={"/factures/creation"}
                           className="btn btn-secondary me-1"
                         >
                           <i className="ri-add-line align-bottom me-1"></i> Créer une transaction
-                        </Link>
+                        </Link> */}
 
                       </div>
                     </div>
