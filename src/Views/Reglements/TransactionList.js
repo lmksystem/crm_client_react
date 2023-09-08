@@ -182,9 +182,6 @@ const TransactionList = () => {
     setChartData(transactionByMount)
   }, [transactions])
 
-
-console.log(transactions);
-
   return (
     <React.Fragment>
       <div className="page-content">

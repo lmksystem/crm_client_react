@@ -48,7 +48,6 @@ const transactionSlice = createSlice({
       state.transactionsList = action.payload.data
     })
     builder.addCase(getTransactionList.rejected, (state, action) => {
-      toast.error('Erreur de suppression !', { autoClose: 3000 })
       state.isTransactionsListSuccess = false;
       state.error = action.payload || "Erreur de suppression !"
     });

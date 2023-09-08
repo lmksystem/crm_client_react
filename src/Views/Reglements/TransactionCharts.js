@@ -107,7 +107,6 @@ const TransactionCharts = ({ chartData }) => {
     },
   };
 
-  console.log(chartData);
   return (
     <React.Fragment>
       <Card>
