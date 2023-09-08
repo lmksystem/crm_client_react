@@ -75,6 +75,7 @@ const InvoiceDetails = () => {
       tra_date: Yup.string().required("Champs obligatoire"),
     }),
     onSubmit: (values) => {
+      console.log(values);
       dispatch(onAddNewTransaction(values))
       setAddActifView(false);
       validation.resetForm();

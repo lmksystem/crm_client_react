@@ -34,6 +34,7 @@ import 'moment/locale/fr'  // without this line it didn't work
 import { TransactionListGlobalSearch } from "../../Components/Common/GlobalSearchFilter";
 import { rounded } from "../../utils/function";
 import { api } from "../../config";
+import TransactionCharts from "./TransactionCharts";
 
 
 moment.locale('fr')
@@ -43,16 +44,16 @@ const TransactionList = () => {
 
   const dispatch = useDispatch();
 
-  const { invoices, transactions, isTransactionsSuccess, error, collaborateurs } = useSelector((state) => ({
+  const { invoices, transactions, isTransactionsListSuccess, error, collaborateurs } = useSelector((state) => ({
     invoices: state.Invoice.invoices,
     transactions: state.Transaction.transactionsList,
-    isTransactionsSuccess: state.Transaction.isTransactionsSuccess,
+    isTransactionsListSuccess: state.Transaction.isTransactionsListSuccess,
     error: state.Transaction.error,
     collaborateurs: state.Gestion.collaborateurs
 
   }));
-  console.log(transactions);
-  const [customFiltered, setCustomFiltered] = useState(null);
+
+  const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
     dispatch(onGetInvoices());
@@ -82,8 +83,6 @@ const TransactionList = () => {
   // Delete Multiple
   const [selectedCheckBoxDelete, setSelectedCheckBoxDelete] = useState([]);
   const [isMultiDeleteButton, setIsMultiDeleteButton] = useState(false);
-
-
 
   const deleteCheckbox = () => {
     const ele = document.querySelectorAll(".invoiceCheckBox:checked");
@@ -154,14 +153,14 @@ const TransactionList = () => {
           filterable: false,
           Cell: (cell) => (
             <>
-              <div className="fw-semibold ff-secondary">{ cell.row.original.tra_value }€</div>
+              <div className="fw-semibold ff-secondary">{cell.row.original.tra_value}€</div>
             </>
           ),
         },
         {
           Header: "Liaison facture",
           accessor: "",
-         Cell: (cell) => {
+          Cell: (cell) => {
             return (cell.row.original.tra_fen_fk && <Link to={`/factures/detail/${cell.row.original.tra_fen_fk}`} className="fw-medium link-primary">Voir la facture</Link>) || "";
           },
         },
@@ -171,7 +170,20 @@ const TransactionList = () => {
     [checkedAll]
   );
 
+  useEffect(() => {
+    // let sortingByDateTransaction = [...transactions].sort((a, b) => new Date(b.tra_date) - new Date(a.tra_date))
+    let transactionByMount = Array(12).fill(0)
+    transactions.forEach((tra) => {
+      let month = moment(tra.tra_date).format('M')
+      transactionByMount[month - 1] += tra.tra_value
 
+    });
+
+    setChartData(transactionByMount)
+  }, [transactions])
+
+
+console.log(transactions);
 
   return (
     <React.Fragment>
@@ -181,7 +193,9 @@ const TransactionList = () => {
           <BreadCrumb title="Factures" pageTitle="Liste" />
           <h3>Statistique de l'année</h3>
           <Row>
-            mettre un graph
+            <div xl={12}>
+              <TransactionCharts chartData={chartData} />
+            </div>
           </Row>
 
           <Row>
@@ -206,19 +220,20 @@ const TransactionList = () => {
 
                 <CardBody className="pt-0">
                   <div>
-                    <TransactionListGlobalSearch origneData={transactions} data={customFiltered} setData={setCustomFiltered} />
-                    {isTransactionsSuccess ? (
+
+                    {isTransactionsListSuccess ? (
                       <TableContainer
                         columns={columns}
-                        data={(customFiltered || transactions || [])}
-                        isGlobalFilter={false}
+                        data={(transactions || [])}
+                        isGlobalFilter={true}
                         isAddUserList={false}
-                        customPageSize={10}
-                        divClass="table-responsive table-card mb-2"
+                        customPageSize={8}
                         className="custom-header-css"
-                        theadClass="text-muted text-uppercase"
-                        isInvoiceListFilter={true}
-                        SearchPlaceholder=''
+                        divClass="table-responsive table-card mb-3"
+                        tableClass="align-middle table-nowrap"
+                        theadClass="table-light"
+                        isContactsFilter={true}
+                        SearchPlaceholder='Search for contact...'
                       />
                     ) : (<Loader error={error} />)
                     }
