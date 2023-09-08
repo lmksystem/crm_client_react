@@ -10,6 +10,14 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  Form,
+  ModalFooter,
+  Label,
+  FormFeedback,
+  Input,
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import * as moment from "moment";
@@ -35,6 +43,8 @@ import { TransactionListGlobalSearch } from "../../Components/Common/GlobalSearc
 import { rounded } from "../../utils/function";
 import { api } from "../../config";
 import TransactionCharts from "./TransactionCharts";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 
 moment.locale('fr')
@@ -54,12 +64,34 @@ const TransactionList = () => {
   }));
 
   const [chartData, setChartData] = useState([]);
+  const [modal, setModal] = useState(false);
+
+  const toggle = () => {
+    setModal(!modal)
+  }
 
   useEffect(() => {
     dispatch(onGetInvoices());
     dispatch(onGetTransactionList());
     dispatch(onGetCollaborateurs());
   }, [dispatch]);
+
+  // validation
+  const validation = useFormik({
+    // enableReinitialize : use this flag when initial values needs to be changed
+    enableReinitialize: true,
+
+    validationSchema: Yup.object({
+
+    }),
+
+    onSubmit: (values) => {
+      console.log(values);
+      toggle();
+    },
+  });
+
+
 
   // Checked All
   const checkedAll = useCallback(() => {
@@ -159,9 +191,10 @@ const TransactionList = () => {
         },
         {
           Header: "Liaison facture",
-          accessor: "",
+          accessor: "fen_num_fac",
           Cell: (cell) => {
-            return (cell.row.original.tra_fen_fk && <Link to={`/factures/detail/${cell.row.original.tra_fen_fk}`} className="fw-medium link-primary">Voir la facture</Link>) || "";
+            console.log(cell.row.original);
+            return (cell.row.original.tra_fen_fk && <Link to={`/factures/detail/${cell.row.original.tra_fen_fk}`} className="fw-medium link-primary">Voir la facture ( ID : {cell.row.original.fen_num_fac} ) </Link>) || "";
           },
         },
 
@@ -181,9 +214,6 @@ const TransactionList = () => {
 
     setChartData(transactionByMount)
   }, [transactions])
-
-
-console.log(transactions);
 
   return (
     <React.Fragment>
@@ -206,12 +236,12 @@ console.log(transactions);
                     <h5 className="card-title mb-0 flex-grow-1">Transactions</h5>
                     <div className="flex-shrink-0">
                       <div className='d-flex gap-2 flex-wrap'>
-                        <Link
-                          to={"/factures/creation"}
+                        <button
+                          onClick={toggle}
                           className="btn btn-secondary me-1"
                         >
                           <i className="ri-add-line align-bottom me-1"></i> Créer une transaction
-                        </Link>
+                        </button>
 
                       </div>
                     </div>
@@ -244,8 +274,135 @@ console.log(transactions);
             </Col>
           </Row>
         </Container>
+        <Modal
+          id="showModal"
+          isOpen={modal}
+          toggle={toggle}
+          centered
+          size="lg"
+        >
+          <ModalHeader className="bg-soft-info p-3" toggle={toggle}>
+            Ajouter un transaction
+          </ModalHeader>
+          <Form
+            className="tablelist-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              validation.handleSubmit();
+              return false;
+            }}
+          >
+            <ModalBody>
+              <input type="hidden" id="id-field" />
+              <Row className="g-3">
+                <Col lg={6}>
+                  <Input
+                    type="select"
+                    className="form-control border-1"
+                    id="fco_name"
+                    name="tra_fen_fk"
+                    value={validation.values?.tra_fen_fk || ""}
+                    onBlur={validation.handleBlur}
+                    onChange={validation.handleChange}
+                    invalid={validation.errors?.tra_fen_fk && validation.touched?.tra_fen_fk ? true : false}
+                  >
+                    {invoices.map((e) => {
+                      <option>{e.header.fen_sujet}</option>
+                    })}
+                  </Input>
+                  {validation.errors?.tra_fen_fk && validation.touched?.tra_fen_fk ? (
+                    <FormFeedback type="invalid">{validation.errors?.tra_fen_fk}</FormFeedback>
+                  ) : null}
+                </Col>
+                <Col lg={6}>
+                  <Input
+                    type="select"
+                    className="form-control border-1"
+                    id="tra_ent_fk"
+                    name="tra_ent_fk"
+                    value={validation.values?.tra_ent_fk || ""}
+                    onBlur={validation.handleBlur}
+                    onChange={validation.handleChange}
+                    invalid={validation.errors?.tra_ent_fk && validation.touched?.tra_ent_fk ? true : false}
+                  />
+                  {validation.errors?.tra_ent_fk && validation.touched?.tra_ent_fk ? (
+                    <FormFeedback type="invalid">{validation.errors?.tra_ent_fk}</FormFeedback>
+                  ) : null}
+                </Col>
+                <Col lg={6}>
+                  <Input
+                    type="date"
+                    className="form-control border-1"
+                    id="tra_date"
+                    name="tra_date"
+                    value={validation.values?.tra_date || ""}
+                    onBlur={validation.handleBlur}
+                    onChange={validation.handleChange}
+                    invalid={validation.errors?.tra_date && validation.touched?.tra_date ? true : false}
+                  />
+                  {validation.errors?.tra_date && validation.touched?.tra_date ? (
+                    <FormFeedback type="invalid">{validation.errors?.tra_date}</FormFeedback>
+                  ) : null}
+                </Col>
+                <Col lg={6}>
+                  <Input type="text"
+                    className="form-control border-1"
+                    id="tra_desc"
+                    name="tra_desc"
+                    value={validation.values?.tra_desc || ""}
+                    onBlur={validation.handleBlur}
+                    onChange={validation.handleChange}
+                    placeholder="Description"
+                    invalid={validation.errors?.tra_desc && validation.touched?.tra_desc ? true : false}
+                  />
+                  {validation.errors?.tra_desc && validation.touched?.tra_desc ? (
+                    <FormFeedback type="invalid">{validation.errors?.tra_desc}</FormFeedback>
+                  ) : null}
+                </Col>
+                <Col lg={3}>
+                  <Input
+                    type="number"
+                    className="form-control border-1"
+                    id="tra_value"
+                    name="tra_value"
+                    value={validation.values?.tra_value || ""}
+                    onBlur={validation.handleBlur}
+                    onChange={validation.handleChange}
+                    placeholder="Montant de la transaction"
+                    invalid={validation.errors?.tra_value && validation.touched?.tra_value ? true : false}
+                  />
+                  {validation.errors?.tra_value && validation.touched?.tra_value ? (
+                    <FormFeedback type="invalid">{validation.errors?.tra_value}</FormFeedback>
+                  ) : null}
+                </Col>
+              </Row>
+            </ModalBody>
+            <ModalFooter>
+              <div className="hstack gap-2 justify-content-end">
+                <button
+                  type="button"
+                  className="btn btn-light"
+                  onClick={() => {
+                    setModal(false);
+                  }}
+                >
+                  {" "}
+                  Fermer{" "}
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-success"
+                  id="add-btn"
+                >
+                  {" "}
+                  Ajouter
+                </button>
+              </div>
+            </ModalFooter>
+          </Form>
+        </Modal>
       </div>
-    </React.Fragment>
+    </React.Fragment >
   );
 };
 

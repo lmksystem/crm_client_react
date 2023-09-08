@@ -7,18 +7,44 @@ import { getRevenueChartsData } from "../../slices/thunks";
 import ReactApexChart from "react-apexcharts";
 import getChartColorsArray from "../../Components/Common/ChartsDynamicColor";
 
-const TransactionCharts = ({chartData}) => {
+const TransactionCharts = ({ chartData }) => {
   const dispatch = useDispatch();
   const linechartcustomerColors = getChartColorsArray('["--vz-primary", "--vz-warning", "--vz-success"]');
 
 
   var options = {
     chart: {
+      defaultLocale: 'fr',
+      locales: [{
+        name: 'fr',
+        options: {
+          months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+          shortMonths: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+          days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+          shortDays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+          toolbar: {
+            exportToSVG: "Export SVG",
+            exportToPNG: "Export PNG",
+            exportToCSV: "Export CSV",
+          }
+        }
+      }],
       height: 370,
       type: "line",
       toolbar: {
-        show: false,
+        show: true,
+        tools: {
+          download: true,
+          selection: false,
+          zoom: false,
+          zoomin: false,
+          zoomout: false,
+          pan: false,
+          reset: false,
+          customIcons: []
+        },
       },
+
     },
     stroke: {
       curve: "straight",
@@ -72,7 +98,7 @@ const TransactionCharts = ({chartData}) => {
       },
       padding: {
         top: 0,
-        right: -2,
+        right: 10,
         bottom: 15,
         left: 10,
       },
@@ -89,7 +115,6 @@ const TransactionCharts = ({chartData}) => {
       y: [
         {
           formatter: function (y) {
-            console.log(y);
             return y + "€";
           },
         },
@@ -97,7 +122,6 @@ const TransactionCharts = ({chartData}) => {
     },
   };
 
-  console.log(chartData);
   return (
     <React.Fragment>
       <Card>
