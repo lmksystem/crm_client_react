@@ -213,14 +213,18 @@ const gestionSlice = createSlice({
     });
 
     builder.addCase(handleConstantes.fulfilled, (state, action) => {
-      let index = state.constantes.findIndex(
-        (c) => c.con_id == action.payload.con_id
-      );
-      if (index != -1) {
-        state.constantes[index] = action.payload;
-      } else {
-        state.constantes.push(action.payload);
+      for (let i = 0; i < action.payload.length; i++) {
+        const newConst = action.payload[i];
+        let index = state.constantes.findIndex(
+          (c) => c.con_id == newConst.con_id
+        );
+        if (index != -1) {
+          state.constantes[index] = newConst;
+        } else {
+          state.constantes.push(newConst);
+        }
       }
+     
     });
 
     builder.addCase(handleConstantes.rejected, (state, action) => {
