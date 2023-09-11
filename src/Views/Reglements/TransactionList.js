@@ -28,7 +28,8 @@ import TableContainer from "../../Components/Common/TableContainer";
 import {
   getCollaborateurs as onGetCollaborateurs,
   getInvoices as onGetInvoices,
-  getTransactionList as onGetTransactionList
+  getTransactionList as onGetTransactionList,
+  addNewTransaction as onAddNewTransaction
 } from "../../slices/thunks";
 
 //redux
@@ -45,6 +46,7 @@ import { api } from "../../config";
 import TransactionCharts from "./TransactionCharts";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import Select from "react-select";
 
 
 moment.locale('fr')
@@ -54,9 +56,10 @@ const TransactionList = () => {
 
   const dispatch = useDispatch();
 
-  const { invoices, transactions, isTransactionsListSuccess, error, collaborateurs } = useSelector((state) => ({
+  const { invoices, transactionsList, transactions, isTransactionsListSuccess, error, collaborateurs } = useSelector((state) => ({
     invoices: state.Invoice.invoices,
-    transactions: state.Transaction.transactionsList,
+    transactionsList: state.Transaction.transactionsList,
+    transactions: state.Transaction.transactions,
     isTransactionsListSuccess: state.Transaction.isTransactionsListSuccess,
     error: state.Transaction.error,
     collaborateurs: state.Gestion.collaborateurs
@@ -65,6 +68,8 @@ const TransactionList = () => {
 
   const [chartData, setChartData] = useState([]);
   const [modal, setModal] = useState(false);
+  const [selectedInvoice, setSelectedInvoice] = useState(null);
+  const [selectedEntity, setSelectedEntity] = useState(null);
 
   const toggle = () => {
     setModal(!modal)
@@ -74,19 +79,29 @@ const TransactionList = () => {
     dispatch(onGetInvoices());
     dispatch(onGetTransactionList());
     dispatch(onGetCollaborateurs());
-  }, [dispatch]);
+  }, [dispatch, transactions]);
 
   // validation
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
 
+    initialValues: {
+      tra_date: moment().format('YYYY-MM-DD'),
+      tra_value: 0,
+      tra_desc: "",
+      tra_fen_fk: null,
+      tra_ent_fk: 0,
+
+    },
+
     validationSchema: Yup.object({
 
     }),
 
     onSubmit: (values) => {
-      console.log(values);
+      dispatch(onAddNewTransaction(values))
+      validation.resetForm();
       toggle();
     },
   });
@@ -193,7 +208,6 @@ const TransactionList = () => {
           Header: "Liaison facture",
           accessor: "fen_num_fac",
           Cell: (cell) => {
-            console.log(cell.row.original);
             return (cell.row.original.tra_fen_fk && <Link to={`/factures/detail/${cell.row.original.tra_fen_fk}`} className="fw-medium link-primary">Voir la facture ( ID : {cell.row.original.fen_num_fac} ) </Link>) || "";
           },
         },
@@ -206,14 +220,20 @@ const TransactionList = () => {
   useEffect(() => {
     // let sortingByDateTransaction = [...transactions].sort((a, b) => new Date(b.tra_date) - new Date(a.tra_date))
     let transactionByMount = Array(12).fill(0)
-    transactions.forEach((tra) => {
+    transactionsList.forEach((tra) => {
       let month = moment(tra.tra_date).format('M')
       transactionByMount[month - 1] += tra.tra_value
 
     });
 
     setChartData(transactionByMount)
-  }, [transactions])
+  }, [transactionsList])
+
+  // useEffect(() => {
+  //   if (invoices) {
+  //     setInvoicesList(invoices)
+  //   }
+  // }, [invoices])
 
   return (
     <React.Fragment>
@@ -254,7 +274,7 @@ const TransactionList = () => {
                     {isTransactionsListSuccess ? (
                       <TableContainer
                         columns={columns}
-                        data={(transactions || [])}
+                        data={(transactionsList || [])}
                         isGlobalFilter={true}
                         isAddUserList={false}
                         customPageSize={8}
@@ -296,38 +316,32 @@ const TransactionList = () => {
               <input type="hidden" id="id-field" />
               <Row className="g-3">
                 <Col lg={6}>
-                  <Input
-                    type="select"
-                    className="form-control border-1"
-                    id="fco_name"
-                    name="tra_fen_fk"
-                    value={validation.values?.tra_fen_fk || ""}
-                    onBlur={validation.handleBlur}
-                    onChange={validation.handleChange}
-                    invalid={validation.errors?.tra_fen_fk && validation.touched?.tra_fen_fk ? true : false}
-                  >
-                    {invoices.map((e) => {
-                      <option>{e.header.fen_sujet}</option>
-                    })}
-                  </Input>
-                  {validation.errors?.tra_fen_fk && validation.touched?.tra_fen_fk ? (
-                    <FormFeedback type="invalid">{validation.errors?.tra_fen_fk}</FormFeedback>
-                  ) : null}
+                  <Select
+                    placeholder={"Selectionnez un facture"}
+                    value={selectedInvoice}
+                    onChange={(res) => {
+                      console.log(res);
+                      setSelectedInvoice(res);
+                      validation.setValues({ ...validation.values, tra_fen_fk: res.value })
+                    }}
+                    options={invoices.map((i) => ({ label: i.header.fen_sujet, value: i.header.fen_id }))}
+                    name="choices-single-default"
+                    id="idStatus"
+                  ></Select>
+
                 </Col>
                 <Col lg={6}>
-                  <Input
-                    type="select"
-                    className="form-control border-1"
-                    id="tra_ent_fk"
-                    name="tra_ent_fk"
-                    value={validation.values?.tra_ent_fk || ""}
-                    onBlur={validation.handleBlur}
-                    onChange={validation.handleChange}
-                    invalid={validation.errors?.tra_ent_fk && validation.touched?.tra_ent_fk ? true : false}
-                  />
-                  {validation.errors?.tra_ent_fk && validation.touched?.tra_ent_fk ? (
-                    <FormFeedback type="invalid">{validation.errors?.tra_ent_fk}</FormFeedback>
-                  ) : null}
+                  <Select
+                  placeholder={"Selectionnez une entreprise"}
+                    value={selectedEntity}
+                    onChange={(res) => {
+                      setSelectedEntity(res);
+                      validation.setValues({ ...validation.values, tra_ent_fk: res.value })
+                    }}
+                    options={collaborateurs.map((i) => ({ label: i.ent_name, value: i.ent_id }))}
+                    name="choices-single-default"
+                    id="idStatus"
+                  ></Select>
                 </Col>
                 <Col lg={6}>
                   <Input
@@ -335,7 +349,7 @@ const TransactionList = () => {
                     className="form-control border-1"
                     id="tra_date"
                     name="tra_date"
-                    value={validation.values?.tra_date || ""}
+                    value={validation.values?.tra_date || moment().format('YYYY-MM-DD')}
                     onBlur={validation.handleBlur}
                     onChange={validation.handleChange}
                     invalid={validation.errors?.tra_date && validation.touched?.tra_date ? true : false}
@@ -359,7 +373,7 @@ const TransactionList = () => {
                     <FormFeedback type="invalid">{validation.errors?.tra_desc}</FormFeedback>
                   ) : null}
                 </Col>
-                <Col lg={3}>
+                <Col lg={6}>
                   <Input
                     type="number"
                     className="form-control border-1"
