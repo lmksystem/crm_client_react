@@ -113,7 +113,7 @@ const gestionSlice = createSlice({
     });
 
     builder.addCase(updateCollaborateur.fulfilled, (state, action) => {
-      console.log("paylaod", action.payload);
+      // console.log("paylaod", action.payload);
       state.collaborateurs = state.collaborateurs.map((collaborateur) =>
         collaborateur.ent_id == action.payload.ent_id
           ? action.payload

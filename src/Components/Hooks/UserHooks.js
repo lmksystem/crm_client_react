@@ -13,6 +13,7 @@ const useProfile = () => {
 
   useEffect(() => {
     const userProfileSession = getLoggedinUser();
+    // console.log(userProfileSession)
     var token =
       userProfileSession &&
       userProfileSession["token"];
@@ -20,7 +21,7 @@ const useProfile = () => {
     setLoading(token ? false : true);
   }, []);
 
-
+console.log("tokezezzzzzzzzzzzzzzzn",token)
   return { userProfile, loading,token };
 };
 

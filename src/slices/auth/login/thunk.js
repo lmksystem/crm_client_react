@@ -20,6 +20,7 @@ export const loginUser = (user, history) => async (dispatch) => {
 
     if (data.user) {
       sessionStorage.setItem("authUser", JSON.stringify(data.user));
+      // console.log("data.user",data.user)
       dispatch(loginSuccess(data.user));
       history('/dashboard')
     } else {

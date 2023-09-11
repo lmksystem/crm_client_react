@@ -1,11 +1,16 @@
 import { createSlice, current } from "@reduxjs/toolkit";
-import { getDevis, addNewDevis, updateDevis, deleteDevis, getDevisById, createPdfDevis, getDevisForEdit, getEtatDevis } from './thunk';
+import { getDevis, addNewDevis, updateDevis, deleteDevis, getDevisById, createPdfDevis, getDevisForEdit, getEtatDevis, getDevisPeriodCount } from './thunk';
 import { getDevisWidgets } from "../../slices/thunks";
 export const initialState = {
   devisList: [],
   widgets: [],
   error: {},
   etatDevis: [],
+  devisCountPeriod:{
+    'dateDebut':null,
+    'dateFin':null,
+
+  },
 };
 
 
@@ -90,6 +95,14 @@ const devisSlice = createSlice({
     });
 
     builder.addCase(getEtatDevis.rejected, (state, action) => {
+      console.log("errors");
+      state.error = action.payload || null;
+    });
+    builder.addCase(getDevisPeriodCount.fulfilled, (state, action) => {
+      state.devisCountPeriod = action.payload.data;
+    });
+
+    builder.addCase(getDevisPeriodCount.rejected, (state, action) => {
       console.log("errors");
       state.error = action.payload || null;
     });

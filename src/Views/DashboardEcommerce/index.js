@@ -13,7 +13,7 @@ const DashboardEcommerce = () => {
   const toggleRightColumn = () => {
     setRightColumn(!rightColumn);
   };
-  console.log("ok");
+  // console.log("ok");
   return (
     <React.Fragment>
       <div className="page-content">

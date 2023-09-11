@@ -1,11 +1,136 @@
-import React from 'react';
+import React,{useEffect, useState} from 'react';
 import CountUp from "react-countup";
 import { Link } from 'react-router-dom';
 import { Card, CardBody, Col } from 'reactstrap';
-import { ecomWidgets } from "../../common/data";
+import {
+    getDevisPeriodCount  as onGetDevisPeriodCount,
+    getTransactionPricePeriode as onGetTransactionPricePeriode
+  } from "../../slices/thunks";
+  import { useSelector, useDispatch } from "react-redux";
+// import { ecomWidgets } from "../../common/data";
+import moment from 'moment';
+moment.locale('fr')
+
 
 const Widgets = () => {
+
+    const dispatch = useDispatch();
+    const dateActuelle = moment(); // Obtenez la date actuelle
+    const dateNow = dateActuelle.format('YYYY-MM-DD')
+    const premiereDateAnnee = dateActuelle.startOf('year'); // Obtenez la première date de l'année
+    const formattedDate = premiereDateAnnee.format('YYYY-MM-DD'); // Formatez la date
+    const [perdiodeCalendar,setPeriodeCalendar] = useState({
+        start:formattedDate.replace(/\./g, ','),
+        end:dateNow,
+    })
+    const { transactionsPeriodPrice,devisCountPeriod,invoicesPeriodCount,fournisseursPeriodCount} = useSelector((state) => ({
+        transactionsPeriodPrice: state.Transaction.transactionsPeriodPrice,
+        devisCountPeriod: state.Devis.devisCountPeriod,
+        invoicesPeriodCount: state.Transaction.invoicesPeriodCount,
+        fournisseursPeriodCount:state.Transaction.fournisseursPeriodCount,
+      }));
+        useEffect(() => {
+        dispatch(onGetTransactionPricePeriode({
+            dateDebut:null,
+            dateFin:null,
+        }));
+        dispatch(onGetDevisPeriodCount({
+            dateDebut:'2023-08-09',
+            dateFin:'2023-08-12',
+        }));
+      }, []);
+      
+      function constructWidgetDetails (label,value){
+        if(label==="badge"){
+            console.log(value);
+            if(value>0){
+                return "ri-arrow-right-up-line";
+            }else if(value<0){
+                return "ri-arrow-right-down-line"
+            }else{
+                return null
+            }   
+        }else if(label==="badgeClass"){
+            if(value>0){
+                return "success";
+            }else if(value<0){
+                return "danger"
+            }else{
+                return "muted"
+            } 
+        }
+        return null
+      }
+
+
+    const ecomWidgets = [
+        {
+            id: 1,
+            cardColor: "primary",
+            label: "Total ventes",
+            badge:constructWidgetDetails("badge",transactionsPeriodPrice?.pourcentage_gain_perte),
+            badgeClass:constructWidgetDetails("badgeClass",transactionsPeriodPrice?.pourcentage_gain_perte),
+            percentage:transactionsPeriodPrice?.pourcentage_gain_perte,
+            counter:transactionsPeriodPrice?.ventes_courantes,
+            bgcolor: "primary",
+            icon: "bx bx-dollar-circle",
+            decimals: 2,
+            prefix: "",
+            suffix: "€"
+        },
+        {
+            id: 2,
+            cardColor: "secondary",
+            label: "Devis",
+            badge: "ri-arrow-right-down-line",
+            badgeClass: "danger",
+            percentage: "-3.57",
+            counter: devisCountPeriod.nb_devis,
+            link: "View all orders",
+            bgcolor: "primary",
+            icon: "bx bx-shopping-bag",
+            decimals: 0,
+            prefix: "",
+            suffix: "",
+            separator:" ",
+        },
+        {
+            id: 3,
+            cardColor: "success",
+            label: "Factures",
+            badge: "ri-arrow-right-up-line",
+            badgeClass: "success",
+            percentage: "+29.08",
+            counter: "183",
+            link: "See details",
+            bgcolor: "primary",
+            icon: "bx bx-user-circle",
+            decimals: 0,
+            prefix: "",
+            suffix: "",
+        },
+        {
+            id: 4,
+            cardColor: "info",
+            label: "Fournisseurs",
+            badgeClass: "muted",
+            badge:null,
+            percentage: "+0.00",
+            counter: "165",
+            link: "Withdraw money",
+            bgcolor: "primary",
+            icon: "bx bx-wallet",
+            decimals: 0,
+    
+        },
+    ];
     return (
+
+        
+
+
+
+
         <React.Fragment>
             {ecomWidgets.map((item, key) => (
                 <Col xl={3} md={6} key={key}>

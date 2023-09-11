@@ -100,7 +100,8 @@ export const getTransaction = () => api.get(url.TRANSACTION);
 export const deleteTransaction = (id) => api.delete(url.TRANSACTION + '/' + id);
 // get tarnsaction liste avec jointure sur facture et entity
 export const getTransactionList = (id) => api.get(url.TRANSACTION + '/list');
-
+// get transaction avec jointure sur facture et entity
+export const getTransactionPricePeriode = data => api.get(url.TRANSACTION + '/price_periode/'+data.dateDebut+ '/' +data.dateFin);
 
 /*************************/
 /*        Company        */
@@ -159,6 +160,9 @@ export const getEtatDevis = () => api.get(url.DEVIS + "/etat");
 export const SendDevisByEmail = id => api.create(url.PDF + '/devis/' + id);
 
 export const createPdfDevis = devis => api.get(url.PDF + "/devis/" + devis);
+
+export const getDevisPeriodCount = data => api.get(url.DEVIS + "/devis_periode/"+data.dateDebut+ '/' +data.dateFin);
+
 
 
 

@@ -14,7 +14,7 @@ const InvoiceSlice = createSlice({
   initialState,
   reducers: {
     addTransactionInvoice(state, action) {
-      console.log("add", action.payload);
+      // console.log("add", action.payload);
       state.invoices = state.invoices.map((invoice) =>
         invoice.header.fen_id == action.payload.tra_fen_fk
           ? { ...invoice, transaction: [...invoice.transaction, action.payload] }

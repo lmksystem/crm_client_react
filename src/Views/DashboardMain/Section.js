@@ -1,8 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Col, Row } from 'reactstrap';
 import Flatpickr from "react-flatpickr";
+import moment from 'moment';
+
+moment.locale('fr')
 
 const Section = (props) => {
+
+const dateActuelle = moment(); // Obtenez la date actuelle
+const dateNow = dateActuelle.format('DD MMM YYYY')
+const premiereDateAnnee = dateActuelle.startOf('year'); // Obtenez la première date de l'année
+
+const formattedDate = premiereDateAnnee.format('DD MMM YYYY'); // Formatez la date
+
+const [perdiodeCalendar,setPeriodeCalendar] = useState({
+    start:formattedDate.replace(/\./g, ','),
+    end:dateNow,
+})
     return (
         <React.Fragment>
             <Row className="mb-3 pb-1">
@@ -19,9 +33,10 @@ const Section = (props) => {
                                             <Flatpickr
                                                 className="form-control border-0 fs-13 dash-filter-picker shadow"
                                                 options={{
+                                                    locale:'fr',
                                                     mode: "range",
                                                     dateFormat: "d M, Y",
-                                                    defaultDate: ["01 Jan 2022", "31 Jan 2022"]
+                                                    defaultDate: [perdiodeCalendar?.start,perdiodeCalendar?.end]
                                                 }}
                                             />
                                             <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>

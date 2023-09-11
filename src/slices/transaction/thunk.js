@@ -4,7 +4,8 @@ import {
   getTransaction as getTransactionApi,
   sendInvocieByEmail as sendInvocieByEmailApi,
   deleteTransaction as deleteTransactionApi,
-  getTransactionList as getTransactionListApi
+  getTransactionList as getTransactionListApi,
+  getTransactionPricePeriode as getTransactionPricePeriodeApi
 } from "../../helpers/backend_helper";
 import { toast } from "react-toastify";
 
@@ -59,6 +60,17 @@ export const getTransactionList = createAsyncThunk("invoice/getTransactionList",
   }
   catch (error) {
     toast.error("Invoice Delete Failed", { autoClose: 3000 });
+    return error;
+  }
+});
+
+export const getTransactionPricePeriode = createAsyncThunk("transaction/getTransactionPricePeriode", async (data) => {
+  try {
+    const response = getTransactionPricePeriodeApi(data);
+    return response;
+  } 
+  catch (error) {
+    toast.error("Transaction Read Failed", { autoClose: 3000 });
     return error;
   }
 });

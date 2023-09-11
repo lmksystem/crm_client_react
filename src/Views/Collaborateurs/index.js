@@ -358,7 +358,7 @@ const Collaborateurs = () => {
         Cell: (cellProps) => {
      
           let collaborateur = cellProps.row.original;
-          console.log(collaborateur);
+          // console.log(collaborateur);
           return (
             <ul className="list-inline hstack gap-2 mb-0">
               {/* <li className="list-inline-item edit" title="Call">

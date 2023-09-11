@@ -13,7 +13,8 @@ import {
   getDevisForEdit as getDevisForEditApi,
   getDevisWidgets as getDevisWidgetsApi,
   SendDevisByEmail as SendDevisByEmailApi,
-  getEtatDevis as getEtatDevisApi
+  getEtatDevis as getEtatDevisApi,
+  getDevisPeriodCount as getDevisPeriodCountApi
 } from "../../helpers/backend_helper";
 
 export const getDevis = createAsyncThunk("devis/getDevis", async () => {
@@ -126,6 +127,18 @@ export const getEtatDevis = createAsyncThunk("devis/getEtatDevis", async (id) =>
   try {
     const response = getEtatDevisApi(id);
 
+    return response;
+  } catch (error) {
+    console.log("thunk catch", error);
+    toast.error("Une erreur ses produite sur ", { autoClose: 3000 });
+    return error;
+  }
+});
+
+
+export const getDevisPeriodCount= createAsyncThunk("devis/getDevisPeriodCount", async (data) => {
+  try {
+    const response = getDevisPeriodCountApi(data);
     return response;
   } catch (error) {
     console.log("thunk catch", error);
