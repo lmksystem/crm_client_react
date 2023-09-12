@@ -4,7 +4,7 @@ import getChartColorsArray from "../../Components/Common/ChartsDynamicColor";
 
 const RevenueCharts = ({ dataColors, series }) => {
   const linechartcustomerColors = getChartColorsArray(dataColors);
-
+  console.log('series',series)
   
   var options = {
     chart: {
@@ -31,18 +31,18 @@ const RevenueCharts = ({ dataColors, series }) => {
     },
     xaxis: {
       categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
+        "Janvier",
+        "Fevrier",
+        "Mars",
+        "Avril",
+        "Mai",
+        "Juin",
+        "Juillet",
+        "Aout",
+        "Septembre",
+        "Octobre",
+        "Novembre",
+        "Decembre",
       ],
       axisTicks: {
         show: false,
@@ -122,7 +122,6 @@ const RevenueCharts = ({ dataColors, series }) => {
       ],
     },
   };
-  console.log(series);
   return (
     <React.Fragment>
       <ReactApexChart 

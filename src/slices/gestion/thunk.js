@@ -18,6 +18,7 @@ import {
   deleteTva as deleteTvaApi,
   getConstantes as getConstantesApi,
   handleConstantes as handleConstantesApi,
+  getEntityPeriodCount as getEntityPeriodCountApi
 } from "../../helpers/backend_helper";
 
 // Gestion
@@ -195,6 +196,18 @@ export const handleConstantes = createAsyncThunk("gestion/handleConstantes", asy
     return arrayResponse;
   } catch (error) {
     toast.error("Updated Failed", { autoClose: 3000 });
+    return error;
+  }
+});
+
+
+export const getEntityPeriodCount= createAsyncThunk("entity/getEntityPeriodCount", async (data) => {
+  try {
+    const response =await getEntityPeriodCountApi(data);
+    return response;
+  } catch (error) {
+    console.log("thunk catch", error);
+    toast.error("Une erreur ses produite sur ", { autoClose: 3000 });
     return error;
   }
 });

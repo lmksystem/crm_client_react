@@ -9,6 +9,7 @@ export const initialState = {
   devisCountPeriod:{
     'dateDebut':null,
     'dateFin':null,
+    'pourcentage_gain_perte':0,
 
   },
 };

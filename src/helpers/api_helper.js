@@ -9,12 +9,17 @@ axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.withCredentials = false;
 
 // content type
-const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
-if(token)
-axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-
-console.log("token ",token);
+// const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
+// if(token)
+// axios.defaults.headers.common["Authorization"] = "Bearer " + token;
 // intercepting to capture errors
+axios.interceptors.request.use(async(config)=>{
+  const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
+  if(token){
+    config.headers.Authorization = "Bearer " + token;
+  }
+  return config
+})
 axios.interceptors.response.use(
   function (response) {
     return response.data ? response.data : response;
@@ -56,7 +61,6 @@ class APIClient {
   // };
   get = (url, params) => {
     let response;
-
     let paramKeys = [];
 
     if (params) {

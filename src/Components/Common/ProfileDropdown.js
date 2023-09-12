@@ -45,25 +45,25 @@ const ProfileDropdown = () => {
           </span>
         </DropdownToggle>
         <DropdownMenu className="dropdown-menu-end">
-          <h6 className="dropdown-header">Welcome {userName}!</h6>
+          <h6 className="dropdown-header">Bienvenue {userName}!</h6>
           <DropdownItem className='p-0'>
             <Link to={process.env.PUBLIC_URL + "/profile"} className="dropdown-item">
               <i className="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
-              <span className="align-middle">Profile</span>
+              <span className="align-middle">Profil</span>
             </Link>
           </DropdownItem>
-         
+{/*          
           <DropdownItem className='p-0'>
             <Link to={process.env.PUBLIC_URL + "/auth-lockscreen-basic"} className="dropdown-item">
               <i
                 className="mdi mdi-lock text-muted fs-16 align-middle me-1"></i> <span className="align-middle">Lock screen</span>
             </Link>
-          </DropdownItem>
+          </DropdownItem> */}
           <DropdownItem className='p-0'>
             <Link to={process.env.PUBLIC_URL + "/logout"} className="dropdown-item">
               <i
                 className="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span
-                  className="align-middle" data-key="t-logout">Logout</span>
+                  className="align-middle" data-key="t-logout">Se déconnecter</span>
             </Link>
           </DropdownItem>
         </DropdownMenu>

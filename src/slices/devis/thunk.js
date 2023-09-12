@@ -126,7 +126,6 @@ export const SendDevisByEmail = createAsyncThunk("devis/SendDevisByEmail", async
 export const getEtatDevis = createAsyncThunk("devis/getEtatDevis", async (id) => {
   try {
     const response = getEtatDevisApi(id);
-
     return response;
   } catch (error) {
     console.log("thunk catch", error);

@@ -22,6 +22,7 @@ export const getRevenueChartsData = createAsyncThunk("dashboardEcommerce/getReve
     if (data === "year") {
       response = getYearRevenueDataApi(data);
     }
+    // console.log(" getRevenueChartsData response",await response)
     return response;
   } catch (error) {
     return error;

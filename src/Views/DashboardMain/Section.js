@@ -5,18 +5,9 @@ import moment from 'moment';
 
 moment.locale('fr')
 
-const Section = (props) => {
+const Section = ({perdiodeCalendar,setPeriodeCalendar}) => {
 
-const dateActuelle = moment(); // Obtenez la date actuelle
-const dateNow = dateActuelle.format('DD MMM YYYY')
-const premiereDateAnnee = dateActuelle.startOf('year'); // Obtenez la première date de l'année
 
-const formattedDate = premiereDateAnnee.format('DD MMM YYYY'); // Formatez la date
-
-const [perdiodeCalendar,setPeriodeCalendar] = useState({
-    start:formattedDate.replace(/\./g, ','),
-    end:dateNow,
-})
     return (
         <React.Fragment>
             <Row className="mb-3 pb-1">
@@ -37,6 +28,26 @@ const [perdiodeCalendar,setPeriodeCalendar] = useState({
                                                     mode: "range",
                                                     dateFormat: "d M, Y",
                                                     defaultDate: [perdiodeCalendar?.start,perdiodeCalendar?.end]
+                                                }}
+                                                onChange={(periodDate)=>{
+                                                    console.log(periodDate)
+
+                                                    if(periodDate.length==2){
+                                                        setPeriodeCalendar({
+                                                            start: moment(periodDate[0]).format("YYYY-MM-DD"),
+                                                            end: moment(periodDate[1]).format("YYYY-MM-DD"),
+                                                        })
+                                                    }else if(periodDate.length==1){
+                                                        setPeriodeCalendar({
+                                                            start: moment(periodDate[0]).format("YYYY-MM-DD"),
+                                                            end: moment(periodDate[0]).format("YYYY-MM-DD"),
+                                                        })
+                                                    }else{
+                                                        setPeriodeCalendar({
+                                                            start: null,
+                                                            end:null,
+                                                        })
+                                                    }
                                                 }}
                                             />
                                             <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>

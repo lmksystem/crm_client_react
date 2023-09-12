@@ -240,11 +240,15 @@ export const ADD_NEW_CONTACT = "/v1/entity_people";
 export const UPDATE_CONTACT = "/v1/entity_people";
 export const DELETE_CONTACT = "/v1/entity_people";
 
+
 // Collaborateurs
 export const GET_COLLABORATEUR = "/v1/entity";
 export const ADD_NEW_COLLABORATEUR = "/v1/entity";
 export const UPDATE_COLLABORATEUR = "/v1/entity";
 export const DELETE_COLLABORATEUR = "/v1/entity";
+
+export const ENTITY = "/v1/entity";
+
 
 // TVA
 export const GET_TVA = "/v1/tva";
@@ -261,6 +265,7 @@ export const CONSTANTES = "/v1/constantes";
  */
 
 // Invoice
+export const INVOICES ="/v1/invoice";
 export const GET_INVOICES = "/v1/invoice";
 export const ADD_NEW_INVOICE = "/v1/invoice";
 export const UPDATE_INVOICE = "/v1/invoice";

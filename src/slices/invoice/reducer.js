@@ -1,11 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getInvoices, addNewInvoice, updateInvoice, createPdf, getWidgetInvoices } from './thunk';
+import { getInvoices, addNewInvoice, updateInvoice, createPdf, getWidgetInvoices, getInvoicePeriodCount } from './thunk';
 import { sendInvocieByEmail } from "../thunks";
 import { toast } from "react-toastify";
 export const initialState = {
   invoices: [],
   widgets: [],
   error: {},
+  invoiceCountPeriod:{
+    'dateDebut':null,
+    'dateFin':null,
+    'pourcentage_gain_perte':0,
+  },
 };
 
 
@@ -84,6 +89,13 @@ const InvoiceSlice = createSlice({
     });
 
     builder.addCase(sendInvocieByEmail.rejected, (state, action) => {
+      state.error = action.payload || null;
+    });
+    builder.addCase(getInvoicePeriodCount.fulfilled, (state, action) => {
+      state.invoiceCountPeriod = action.payload.data;
+    });
+
+    builder.addCase(getInvoicePeriodCount.rejected, (state, action) => {
       state.error = action.payload || null;
     });
   }

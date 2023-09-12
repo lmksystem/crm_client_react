@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { addNewTransaction, deleteTransaction, getTransaction, getTransactionList, getTransactionPricePeriode } from "./thunk";
+import { addNewTransaction, deleteTransaction, getTransaction, getTransactionByMonth, getTransactionList, getTransactionPricePeriode } from "./thunk";
 import { toast } from "react-toastify";
+import moment from "moment";
+moment.locale('fr')
 
 export const initialState = {
   transactions: [],
@@ -10,8 +12,9 @@ export const initialState = {
   transactionsPeriodPrice : {
     'dateDebut':null,
     'dateFin':null,
-
+    'pourcentage_gain_perte':0,
   },
+  transactionByMonth:[]
 };
 
 const transactionSlice = createSlice({
@@ -59,8 +62,16 @@ const transactionSlice = createSlice({
     builder.addCase(getTransactionPricePeriode.fulfilled, (state, action) => {
       state.isTransactionsSuccess = true;
       state.transactionsPeriodPrice = action.payload.data
-    })
+    });
     builder.addCase(getTransactionPricePeriode.rejected, (state, action) => {
+      state.isTransactionsSuccess = false;
+      state.error = action.payload || "Erreur lors de la recupération !"
+    });
+    builder.addCase(getTransactionByMonth.fulfilled, (state, action) => {
+      state.isTransactionsSuccess = true;
+      state.transactionByMonth = action.payload.data
+    });
+    builder.addCase(getTransactionByMonth.rejected, (state, action) => {
       state.isTransactionsSuccess = false;
       state.error = action.payload || "Erreur lors de la recupération !"
     });

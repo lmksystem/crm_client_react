@@ -33,6 +33,8 @@ export const addNewCollaborateur = collabo => api.create(url.ADD_NEW_COLLABORATE
 export const updateCollaborateur = collabo => api.update(url.UPDATE_COLLABORATEUR + '/' + collabo.ent_id, collabo);
 // delete Collaborateurs
 export const deleteCollaborateur = collabo => api.delete(url.DELETE_COLLABORATEUR + '/' + collabo);
+//get entity sur period
+export const getEntityPeriodCount = data => api.get(url.ENTITY + "/entity_periode/"+data.dateDebut+ '/' +data.dateFin);
 
 
 /*************************/
@@ -70,22 +72,25 @@ export const handleConstantes = constantes => api.create(url.CONSTANTES, constan
 /*************************/
 
 //get Invoices
-export const getInvoices = () => api.get(url.GET_INVOICES);
+export const getInvoices = () => api.get(url.INVOICES);
 
 //get widgets data
-export const getWidgetInvoices = () => api.get(url.GET_INVOICES + "/widgets");
+export const getWidgetInvoices = () => api.get(url.INVOICES + "/widgets");
 
 // add Invoice
-export const addNewInvoice = invoice => api.create(url.ADD_NEW_INVOICE, invoice);
+export const addNewInvoice = invoice => api.create(url.INVOICES, invoice);
 
 // update Invoice
-export const updateInvoice = (fen_id, data) => api.update(url.UPDATE_INVOICE + '/' + fen_id, { fen_solde_du: data });
+export const updateInvoice = (fen_id, data) => api.update(url.INVOICES + '/' + fen_id, { fen_solde_du: data });
 
 // create pdf Invoice
 export const createPdf = invoice => api.get(url.PDF + '/facture/' + invoice);
 
 // send pdf Invoice
 export const sendInvocieByEmail = id => api.create(url.PDF + '/facture/' + id);
+
+// get invoice sur period
+export const getInvoicePeriodCount = data => api.get(url.INVOICES + "/invoice_periode/"+data.dateDebut+ '/' +data.dateFin);
 
 
 /*************************/
@@ -100,8 +105,10 @@ export const getTransaction = () => api.get(url.TRANSACTION);
 export const deleteTransaction = (id) => api.delete(url.TRANSACTION + '/' + id);
 // get tarnsaction liste avec jointure sur facture et entity
 export const getTransactionList = (id) => api.get(url.TRANSACTION + '/list');
-// get transaction avec jointure sur facture et entity
+// get transaction sur period
 export const getTransactionPricePeriode = data => api.get(url.TRANSACTION + '/price_periode/'+data.dateDebut+ '/' +data.dateFin);
+// get transaction sur period
+export const getTransactionByMonth = data => api.get(url.TRANSACTION + '/byMonth/'+data.year);
 
 /*************************/
 /*        Company        */

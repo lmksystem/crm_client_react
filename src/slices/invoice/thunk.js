@@ -8,7 +8,8 @@ import {
   addNewInvoice as addNewInvoiceApi,
   updateInvoice as updateInvoiceApi,
   createPdf as createPdfApi,
-  getWidgetInvoices as getWidgetInvoicesApi
+  getWidgetInvoices as getWidgetInvoicesApi,
+  getInvoicePeriodCount as getInvoicePeriodCountApi,
 } from "../../helpers/backend_helper";
 
 export const getInvoices = createAsyncThunk("invoice/getInvoices", async () => {
@@ -63,6 +64,17 @@ export const getWidgetInvoices = createAsyncThunk("invoice/getWidgetInvoices", a
   }
   catch (error) {
     toast.error("Erreur des widgets", { autoClose: 3000 });
+    return error;
+  }
+});
+
+export const getInvoicePeriodCount= createAsyncThunk("devis/getInvoicePeriodCount", async (data) => {
+  try {
+    const response = getInvoicePeriodCountApi(data);
+    return response;
+  } catch (error) {
+    console.log("thunk catch", error);
+    toast.error("Une erreur ses produite sur ", { autoClose: 3000 });
     return error;
   }
 });

@@ -4,24 +4,29 @@ import { RevenueCharts } from "./DashboardEcommerceCharts";
 import CountUp from "react-countup";
 import { useSelector, useDispatch } from "react-redux";
 import { getRevenueChartsData } from "../../slices/thunks";
+import moment from 'moment';
+moment.locale('fr')
 
-const Revenue = () => {
+
+const Revenue = ({perdiodeCalendar}) => {
   const dispatch = useDispatch();
-
+  // transactionByMonth
   const [chartData, setchartData] = useState([]);
 
-  const { revenueData } = useSelector(state => ({
-    revenueData: state.DashboardEcommerce.revenueData
+  const { revenueData ,transactionByMonth} = useSelector(state => ({
+    revenueData: state.DashboardEcommerce.revenueData,
+    transactionByMonth:state.Transaction.transactionByMonth
   }));
 
   useEffect(() => {
     setchartData(revenueData);
+    console.log("revenueData ",revenueData)
   }, [revenueData]);
 
   const onChangeChartPeriod = pType => {
     dispatch(getRevenueChartsData(pType));
   };
-
+  transactionByMonth
   useEffect(() => {
     dispatch(getRevenueChartsData("all"));
   }, [dispatch]);
@@ -29,8 +34,8 @@ const Revenue = () => {
     <React.Fragment>
       <Card>
         <CardHeader className="border-0 align-items-center d-flex">
-          <h4 className="card-title mb-0 flex-grow-1">Revenue</h4>
-          <div className="d-flex gap-1">
+          <h4 className="card-title mb-0 flex-grow-1">Revenue - {perdiodeCalendar?.start!=null?moment(perdiodeCalendar.start).year():moment().year()}</h4>
+          {/* <div className="d-flex gap-1">
             <button type="button" className="btn btn-soft-secondary btn-sm" onClick={() => { onChangeChartPeriod("all"); }}>
               ALL
             </button>
@@ -43,56 +48,44 @@ const Revenue = () => {
             <button type="button" className="btn btn-soft-primary btn-sm" onClick={() => { onChangeChartPeriod("year"); }}>
               1Y
             </button>
-          </div>
-        </CardHeader>
+          </div> */}
+        </CardHeader> 
 
         <CardHeader className="p-0 border-0 bg-soft-light">
           <Row className="g-0 text-center">
-            <Col xs={6} sm={3}>
+            <Col xs={6} sm={4}>
               <div className="p-3 border border-dashed border-start-0">
                 <h5 className="mb-1">
-                  <CountUp start={0} end={7585} duration={3} separator="," />
+                  <CountUp start={0} end={7585} duration={3} separator=" " />
                 </h5>
-                <p className="text-muted mb-0">Orders</p>
+                <p className="text-muted mb-0">Devis</p>
               </div>
             </Col>
-            <Col xs={6} sm={3}>
+            <Col xs={6} sm={4}>
               <div className="p-3 border border-dashed border-start-0">
                 <h5 className="mb-1">
                   <CountUp
-                    suffix="k"
-                    prefix="$"
+                    suffix="€"
+                    prefix=""
                     start={0}
                     decimals={2}
-                    end={22.89}
+                    end={transactionByMonth.length>0?transactionByMonth.reduce((accumulateur, objet) => { return accumulateur + objet["somme_tra_value"];}, 0):0 }
                     duration={3}
+                    separator={","}
                   />
                 </h5>
-                <p className="text-muted mb-0">Earnings</p>
+                <p className="text-muted mb-0">Total des ventes</p>
               </div>
             </Col>
-            <Col xs={6} sm={3}>
+            <Col xs={6} sm={4}>
               <div className="p-3 border border-dashed border-start-0">
                 <h5 className="mb-1">
-                  <CountUp start={0} end={367} duration={3} />
+                  <CountUp start={0} end={367} duration={3}  />
                 </h5>
-                <p className="text-muted mb-0">Refunds</p>
+                <p className="text-muted mb-0">Factures</p>
               </div>
             </Col>
-            <Col xs={6} sm={3}>
-              <div className="p-3 border border-dashed border-start-0 border-end-0">
-                <h5 className="mb-1 text-success">
-                  <CountUp
-                    start={0}
-                    end={18.92}
-                    decimals={2}
-                    duration={3}
-                    suffix="%"
-                  />
-                </h5>
-                <p className="text-muted mb-0">Conversation Ratio</p>
-              </div>
-            </Col>
+        
           </Row>
         </CardHeader>
 

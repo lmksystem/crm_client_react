@@ -14,7 +14,9 @@ import {
   addNewTva,
   getConstantes,
   handleConstantes,
+  getEntityPeriodCount,
 } from "./thunk";
+import { getInvoicePeriodCount } from "../thunks";
 
 export const initialState = {
   contacts: [],
@@ -22,6 +24,11 @@ export const initialState = {
   tva: null,
   constantes: null,
   error: {},
+  entityCountPeriod:{
+    'dateDebut':null,
+    'dateFin':null,
+    'pourcentage_gain_perte':0,
+  },
 };
 
 const gestionSlice = createSlice({
@@ -230,6 +237,15 @@ const gestionSlice = createSlice({
     builder.addCase(handleConstantes.rejected, (state, action) => {
       state.error = action.payload?.data || null;
     });
+
+    builder.addCase(getEntityPeriodCount.fulfilled, (state, action) => {
+      state.entityCountPeriod = action.payload.data;
+    });
+
+    builder.addCase(getInvoicePeriodCount.rejected, (state, action) => {
+      state.error = action.payload || null;
+    });
+
 
     // builder.addCase(updateTva.fulfilled, (state, action) => {
 
