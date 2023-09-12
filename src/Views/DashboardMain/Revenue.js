@@ -69,7 +69,7 @@ const Revenue = ({perdiodeCalendar}) => {
                     prefix=""
                     start={0}
                     decimals={2}
-                    end={transactionByMonth.length>0?transactionByMonth.reduce((accumulateur, objet) => { return accumulateur + objet["somme_tra_value"];}, 0):0 }
+                    end={transactionByMonth?.length>0?transactionByMonth.reduce((accumulateur, objet) => { return accumulateur + objet["somme_tra_value"];}, 0):0 }
                     duration={3}
                     separator={","}
                   />

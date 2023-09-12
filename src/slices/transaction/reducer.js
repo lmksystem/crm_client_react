@@ -14,7 +14,7 @@ export const initialState = {
     'dateFin':null,
     'pourcentage_gain_perte':0,
   },
-  transactionByMonth:[]
+  transactionByMonth:[],
 };
 
 const transactionSlice = createSlice({
