@@ -10,6 +10,7 @@ import {
   createPdf as createPdfApi,
   getWidgetInvoices as getWidgetInvoicesApi,
   getInvoicePeriodCount as getInvoicePeriodCountApi,
+  getInvoiceByMonth as getInvoiceByMonthApi,
 } from "../../helpers/backend_helper";
 
 export const getInvoices = createAsyncThunk("invoice/getInvoices", async () => {
@@ -68,13 +69,25 @@ export const getWidgetInvoices = createAsyncThunk("invoice/getWidgetInvoices", a
   }
 });
 
-export const getInvoicePeriodCount= createAsyncThunk("devis/getInvoicePeriodCount", async (data) => {
+export const getInvoicePeriodCount= createAsyncThunk("invoice/getInvoicePeriodCount", async (data) => {
   try {
     const response = getInvoicePeriodCountApi(data);
     return response;
   } catch (error) {
     console.log("thunk catch", error);
-    toast.error("Une erreur ses produite sur ", { autoClose: 3000 });
+    toast.error("Une erreur s'est produite sur la récupération des factures", { autoClose: 3000 });
+    return error;
+  }
+});
+
+export const getInvoiceByMonth = createAsyncThunk("invoice/getInvoiceByMonth", async (data) => {
+  try {
+    const response =await getInvoiceByMonthApi(data);
+    return response;
+  } 
+  catch (error) {
+    console.log("thunk catch", error);
+    toast.error("Invoice Read Failed", { autoClose: 3000 });
     return error;
   }
 });

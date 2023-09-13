@@ -2,34 +2,45 @@ import React, { useState, useEffect } from "react";
 import { Card, CardBody, CardHeader, Col, Row } from "reactstrap";
 import { RevenueCharts } from "./DashboardEcommerceCharts";
 import CountUp from "react-countup";
-import { useSelector, useDispatch } from "react-redux";
-import { getRevenueChartsData } from "../../slices/thunks";
+import { useSelector } from "react-redux";
 import moment from 'moment';
 moment.locale('fr')
 
 
 const Revenue = ({perdiodeCalendar}) => {
-  const dispatch = useDispatch();
-  // transactionByMonth
   const [chartData, setchartData] = useState([]);
 
-  const { revenueData ,transactionByMonth} = useSelector(state => ({
-    revenueData: state.DashboardEcommerce.revenueData,
-    transactionByMonth:state.Transaction.transactionByMonth
+  const {transactionByMonth,devisByMonth,invoiceByMonth} = useSelector(state => ({
+    transactionByMonth:state.Transaction.transactionByMonth,
+    devisByMonth:state.Devis.devisByMonth,
+    invoiceByMonth:state.Invoice.invoiceByMonth,
+
   }));
-
   useEffect(() => {
-    setchartData(revenueData);
-    console.log("revenueData ",revenueData)
-  }, [revenueData]);
+    const tableauTransaction = transactionByMonth.map(objet => objet["somme_tra_value"]);
+    const tableauDevis = devisByMonth.map(objet => objet["count_devis"]);
+    const tableauInvoice = invoiceByMonth.map(objet => objet["count_invoice"]);
+    const newArrayForGraph = [
+      {
+        name:"Devis",
+        type:"area",
+        data:tableauDevis
+      },
+      {
+        name:"Ventes",
+        type:"bar",
+        data:tableauTransaction
+      },
+      {
+        name:"Factures",
+        type:"line",
+        data:tableauInvoice
+      },
+    ]
+    setchartData(newArrayForGraph);
+  }, [perdiodeCalendar])
+  
 
-  const onChangeChartPeriod = pType => {
-    dispatch(getRevenueChartsData(pType));
-  };
-  transactionByMonth
-  useEffect(() => {
-    dispatch(getRevenueChartsData("all"));
-  }, [dispatch]);
   return (
     <React.Fragment>
       <Card>
@@ -56,7 +67,7 @@ const Revenue = ({perdiodeCalendar}) => {
             <Col xs={6} sm={4}>
               <div className="p-3 border border-dashed border-start-0">
                 <h5 className="mb-1">
-                  <CountUp start={0} end={7585} duration={3} separator=" " />
+                  <CountUp start={0} end={devisByMonth?.length>0?devisByMonth.reduce((accumulateur, objet) => { return accumulateur + objet["count_devis"];}, 0):0 }  duration={3} separator=" " />
                 </h5>
                 <p className="text-muted mb-0">Devis</p>
               </div>
@@ -65,11 +76,11 @@ const Revenue = ({perdiodeCalendar}) => {
               <div className="p-3 border border-dashed border-start-0">
                 <h5 className="mb-1">
                   <CountUp
-                    suffix="€"
-                    prefix=""
+                    suffix={"€"}
+                    // prefix=""
                     start={0}
                     decimals={2}
-                    end={transactionByMonth?.length>0?transactionByMonth.reduce((accumulateur, objet) => { return accumulateur + objet["somme_tra_value"];}, 0):0 }
+                    end={transactionByMonth?.length>0?transactionByMonth.reduce((accumulateur, objet) => { return accumulateur + objet["somme_tra_value"];}, 0) :0 }
                     duration={3}
                     separator={","}
                   />
@@ -80,7 +91,7 @@ const Revenue = ({perdiodeCalendar}) => {
             <Col xs={6} sm={4}>
               <div className="p-3 border border-dashed border-start-0">
                 <h5 className="mb-1">
-                  <CountUp start={0} end={367} duration={3}  />
+                  <CountUp start={0} end={invoiceByMonth?.length>0?invoiceByMonth.reduce((accumulateur, objet) => { return accumulateur + objet["count_invoice"];}, 0):0 } duration={3} separator=" "  />
                 </h5>
                 <p className="text-muted mb-0">Factures</p>
               </div>

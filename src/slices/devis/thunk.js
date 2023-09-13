@@ -14,7 +14,8 @@ import {
   getDevisWidgets as getDevisWidgetsApi,
   SendDevisByEmail as SendDevisByEmailApi,
   getEtatDevis as getEtatDevisApi,
-  getDevisPeriodCount as getDevisPeriodCountApi
+  getDevisPeriodCount as getDevisPeriodCountApi,
+  getDevisByMonth as getDevisByMonthApi,
 } from "../../helpers/backend_helper";
 
 export const getDevis = createAsyncThunk("devis/getDevis", async () => {
@@ -106,7 +107,7 @@ export const getDevisWidgets = createAsyncThunk("devis/getDevisWidgets", async (
     return response;
   } catch (error) {
     console.log("thunk catch", error);
-    toast.error("Une erreur ses produite sur ", { autoClose: 3000 });
+    toast.error("Une erreur s'est produite sur la récupération des devis", { autoClose: 3000 });
     return error;
   }
 });
@@ -118,7 +119,7 @@ export const SendDevisByEmail = createAsyncThunk("devis/SendDevisByEmail", async
     return response;
   } catch (error) {
     console.log("thunk catch", error);
-    toast.error("Une erreur ses produite sur ", { autoClose: 3000 });
+    toast.error("Une erreur s'est produite sur l'envois de devis par mail", { autoClose: 3000 });
     return error;
   }
 });
@@ -129,7 +130,7 @@ export const getEtatDevis = createAsyncThunk("devis/getEtatDevis", async (id) =>
     return response;
   } catch (error) {
     console.log("thunk catch", error);
-    toast.error("Une erreur ses produite sur ", { autoClose: 3000 });
+    toast.error("Une erreur s'est produite sur la lecture de l'état d'un devis", { autoClose: 3000 });
     return error;
   }
 });
@@ -141,7 +142,19 @@ export const getDevisPeriodCount= createAsyncThunk("devis/getDevisPeriodCount", 
     return response;
   } catch (error) {
     console.log("thunk catch", error);
-    toast.error("Une erreur ses produite sur ", { autoClose: 3000 });
+    toast.error("Une erreur s'est produite sur la lecture des devis", { autoClose: 3000 });
+    return error;
+  }
+});
+
+export const getDevisByMonth = createAsyncThunk("devis/getDevisByMonth", async (data) => {
+  try {
+    const response =await getDevisByMonthApi(data);
+    return response;
+  } 
+  catch (error) {
+    console.log("thunk catch", error);
+    toast.error("Transaction Read Failed", { autoClose: 3000 });
     return error;
   }
 });

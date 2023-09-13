@@ -4,7 +4,18 @@ import getChartColorsArray from "../../Components/Common/ChartsDynamicColor";
 
 const RevenueCharts = ({ dataColors, series }) => {
   const linechartcustomerColors = getChartColorsArray(dataColors);
-  console.log('series',series)
+
+  
+  function abregerSomme(somme) {
+    if (somme < 500) {
+      return somme.toString() + "€";
+    } else if (somme < 10000) {
+      return (somme / 1000).toFixed(1) + "K €"
+    } else {
+      return (somme / 1000).toFixed(0) +"K €";
+    }
+  }
+
   
   var options = {
     chart: {
@@ -98,7 +109,7 @@ const RevenueCharts = ({ dataColors, series }) => {
         {
           formatter: function (y) {
             if (typeof y !== "undefined") {
-              return y.toFixed(0);
+              return y.toFixed(0)+ " Devis";
             }
             return y;
           },
@@ -106,7 +117,7 @@ const RevenueCharts = ({ dataColors, series }) => {
         {
           formatter: function (y) {
             if (typeof y !== "undefined") {
-              return "$" + y.toFixed(2) + "k";
+              return   abregerSomme(y);
             }
             return y;
           },
@@ -114,7 +125,7 @@ const RevenueCharts = ({ dataColors, series }) => {
         {
           formatter: function (y) {
             if (typeof y !== "undefined") {
-              return y.toFixed(0) + " Sales";
+              return y.toFixed(0) + " Factures";
             }
             return y;
           },

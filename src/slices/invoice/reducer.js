@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getInvoices, addNewInvoice, updateInvoice, createPdf, getWidgetInvoices, getInvoicePeriodCount } from './thunk';
+import { getInvoices, addNewInvoice, updateInvoice, createPdf, getWidgetInvoices, getInvoicePeriodCount, getInvoiceByMonth } from './thunk';
 import { sendInvocieByEmail } from "../thunks";
 import { toast } from "react-toastify";
 export const initialState = {
@@ -11,6 +11,8 @@ export const initialState = {
     'dateFin':null,
     'pourcentage_gain_perte':0,
   },
+  invoiceByMonth:[],
+
 };
 
 
@@ -97,6 +99,14 @@ const InvoiceSlice = createSlice({
 
     builder.addCase(getInvoicePeriodCount.rejected, (state, action) => {
       state.error = action.payload || null;
+    });
+
+    builder.addCase(getInvoiceByMonth.fulfilled, (state, action) => {
+      state.invoiceByMonth = action.payload.data
+    });
+    builder.addCase(getInvoiceByMonth.rejected, (state, action) => {
+      console.log("errors");
+      state.error = action.payload || "Erreur lors de la recupération !"
     });
   }
 });

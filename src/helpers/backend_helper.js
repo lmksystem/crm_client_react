@@ -92,6 +92,9 @@ export const sendInvocieByEmail = id => api.create(url.PDF + '/facture/' + id);
 // get invoice sur period
 export const getInvoicePeriodCount = data => api.get(url.INVOICES + "/invoice_periode/"+data.dateDebut+ '/' +data.dateFin);
 
+// get invoice par mois par annéee
+export const getInvoiceByMonth = data => api.get(url.INVOICES + '/byMonth/'+data.year);
+
 
 /*************************/
 /*      transaction      */
@@ -169,6 +172,9 @@ export const SendDevisByEmail = id => api.create(url.PDF + '/devis/' + id);
 export const createPdfDevis = devis => api.get(url.PDF + "/devis/" + devis);
 
 export const getDevisPeriodCount = data => api.get(url.DEVIS + "/devis_periode/"+data.dateDebut+ '/' +data.dateFin);
+
+export const getDevisByMonth = data => api.get(url.DEVIS + '/byMonth/'+data.year);
+
 
 
 

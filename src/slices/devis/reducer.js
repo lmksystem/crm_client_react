@@ -1,5 +1,5 @@
 import { createSlice, current } from "@reduxjs/toolkit";
-import { getDevis, addNewDevis, updateDevis, deleteDevis, getDevisById, createPdfDevis, getDevisForEdit, getEtatDevis, getDevisPeriodCount } from './thunk';
+import { getDevis, addNewDevis, updateDevis, deleteDevis, getDevisById, createPdfDevis, getDevisForEdit, getEtatDevis, getDevisPeriodCount, getDevisByMonth } from './thunk';
 import { getDevisWidgets } from "../../slices/thunks";
 export const initialState = {
   devisList: [],
@@ -10,8 +10,8 @@ export const initialState = {
     'dateDebut':null,
     'dateFin':null,
     'pourcentage_gain_perte':0,
-
   },
+  devisByMonth:[],
 };
 
 
@@ -106,6 +106,14 @@ const devisSlice = createSlice({
     builder.addCase(getDevisPeriodCount.rejected, (state, action) => {
       console.log("errors");
       state.error = action.payload || null;
+    });
+
+    builder.addCase(getDevisByMonth.fulfilled, (state, action) => {
+      state.devisByMonth = action.payload.data
+    });
+    builder.addCase(getDevisByMonth.rejected, (state, action) => {
+      console.log("errors");
+      state.error = action.payload || "Erreur lors de la recupération !"
     });
   }
 });

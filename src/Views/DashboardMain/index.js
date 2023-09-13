@@ -9,6 +9,8 @@ import {
   getInvoicePeriodCount as onGetInvoicePeriodCount,
   getEntityPeriodCount as onGetEntityPeriodCount,
   getTransactionByMonth as onGetTransactionByMonth,
+  getDevisByMonth as onGetDevisByMonth,
+  getInvoiceByMonth as onGetInvoiceByMonth,
 } from "../../slices/thunks";
 import { useDispatch } from "react-redux";
 import Section from "./Section";
@@ -18,19 +20,11 @@ moment.locale('fr')
 const DashboardMain = () => {
   document.title = "Accueil | Countano";
 
-  const [rightColumn, setRightColumn] = useState(true);
-  const toggleRightColumn = () => {
-    setRightColumn(!rightColumn);
-  };
   const dispatch = useDispatch();
-
-  
   const dateActuelle = moment(); // Obtenez la date actuelle
   const dateNow = dateActuelle.format('DD MMM YYYY')
   const premiereDateAnnee = dateActuelle.startOf('year'); // Obtenez la première date de l'année
-  
   const formattedDate = premiereDateAnnee.format('DD MMM YYYY'); // Formatez la date
-  console.log("envoi ca",dateNow)
   const [perdiodeCalendar,setPeriodeCalendar] = useState({
       start:formattedDate.replace(/\./g, ','),
       end:dateNow,
@@ -80,7 +74,12 @@ const DashboardMain = () => {
     dispatch(onGetTransactionByMonth({
       year:perdiodeCalendar?.start!=null?moment(perdiodeCalendar.start).year():moment().year()
     }));
-    console.log(perdiodeCalendar);
+    dispatch(onGetDevisByMonth({
+      year:perdiodeCalendar?.start!=null?moment(perdiodeCalendar.start).year():moment().year()
+    }));
+    dispatch(onGetInvoiceByMonth({
+      year:perdiodeCalendar?.start!=null?moment(perdiodeCalendar.start).year():moment().year()
+    }));
   }, [perdiodeCalendar]);
 
 
