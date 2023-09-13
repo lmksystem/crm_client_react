@@ -177,6 +177,14 @@ export const getDevisByMonth = data => api.get(url.DEVIS + '/byMonth/'+data.year
 
 
 
+/*************************/
+/*        Employee       */
+/*************************/
 
 
 
+export const getEmployees = () => api.get(url.EMPLOYEES+'/employees');
+
+export const createUpdateEmployee = data => api.create(url.EMPLOYEES,data);
+
+export const deleteEmployee = use_id => api.delete(url.EMPLOYEES + "/delete/" + use_id);

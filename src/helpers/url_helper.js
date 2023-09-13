@@ -293,3 +293,7 @@ export const DEVIS = "/v1/devis";
 
 // TRANSACTION
 export const TRANSACTION = "/v1/transaction";
+
+// Employee
+export const EMPLOYEES = "/v1/user";
+

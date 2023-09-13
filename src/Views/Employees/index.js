@@ -3,8 +3,6 @@ import { Link } from "react-router-dom";
 import { isEmpty } from "lodash";
 import * as moment from "moment";
 
-// Import Images
-import dummyImg from "../../assets/images/users/user-dummy-img.jpg";
 
 import {
   Col,
@@ -27,18 +25,16 @@ import {
   Table,
   FormFeedback
 } from "reactstrap";
-import Select from "react-select";
 
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import DeleteModal from "../../Components/Common/DeleteModal";
 
 //Import actions
 import {
-  getContacts as onGetContacts,
-  addNewContact as onAddNewContact,
-  updateContact as onUpdateContact,
-  deleteContact as onDeleteContact,
-  getCollaborateurs as onGetCollaborateurs,
+  deleteEmployee as onDeleteEmployee,
+  getEmployees as onGetEmployees,
+  createUpdateEmployee as onCreateUpdateEmployee,
+
 } from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
@@ -52,39 +48,38 @@ import Loader from "../../Components/Common/Loader";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-// Export Modal
-import ExportCSVModal from "../../Components/Common/ExportCSVModal";
-import { api } from "../../config";
 
-const Contacts = () => {
+const Employees = () => {
   const dispatch = useDispatch();
-  const { contacts, collaborateurs, isContactSuccess, error } = useSelector((state) => ({
-    contacts: state.Gestion.contacts,
-    collaborateurs: state.Gestion.collaborateurs,
-    isContactSuccess: state.Gestion.isContactSuccess,
-    isCollaborateurSuccess: state.Gestion.isCollaborateurSuccess,
-    error: state.Gestion.error,
+  const { isEmployeSuccess, error ,employees } = useSelector((state) => ({
+    isEmployeSuccess: state.Employee.isEmployeSuccess,
+    employees : state.Employee.employees,
+    error: state.Employee.error,
+
+    
   }));
 
   useEffect(() => {
-      dispatch(onGetContacts());
-      dispatch(onGetCollaborateurs());
+      dispatch(onGetEmployees())
   }, [dispatch]);
 
-  useEffect(() => {
-    setContact(contacts);
-  }, [contacts]);
+  // useEffect(() => {
+  //   setEmployee(employees);
+  // }, [employees]);
 
-  useEffect(() => {
-    if (!isEmpty(contacts)) {
-      setContact(contacts);
-      setIsEdit(false);
-    }
-  }, [contacts]);
+  // useEffect(() => {
+  //   if (!isEmpty(employees)) {
+  //     setEmployee(employees);
+  //     setIsEdit(false);
+  //   }
+  // }, [employees]);
+
+
+  const [employee, setEmployee] = useState({});
+
 
 
   const [isEdit, setIsEdit] = useState(false);
-  const [contact, setContact] = useState([]);
 
   const [collaborateurList, setCollaborateurList] = useState([]);
   const [collaborateur, setCollaborateur] = useState(null);
@@ -100,7 +95,7 @@ const Contacts = () => {
   const toggle = useCallback(() => {
     if (modal) {
       setModal(false);
-      setContact(null);
+      setEmployee(null);
       setCollaborateur(null)
     } else {
       setModal(true);
@@ -109,22 +104,15 @@ const Contacts = () => {
 
   // Delete Data
   const handleDeleteContact = () => {
-    if (contact) {
-      dispatch(onDeleteContact(contact.epe_id));
+    if (employee) {
+      dispatch(onDeleteEmployee(employee?.use_id));
       setDeleteModal(false);
     }
   };
 
-  const onClickDelete = (contact) => {
-    setContact(contact);
+  const onClickDelete = (employee) => {
+    setEmployee(employee);
     setDeleteModal(true);
-  };
-
-  // Add Data
-  const handleContactClicks = () => {
-    setContact("");
-    setIsEdit(false);
-    toggle();
   };
 
   // validation
@@ -133,60 +121,41 @@ const Contacts = () => {
     enableReinitialize: true,
 
     initialValues: {
-      // contactId: (contact && contact.contactId) || '',
-      // img: (contact && contact.img) || '',
-      lastname: (contact && contact.lastname) || '',
-      firstname: (contact && contact.firstname) || '',
-      email: (contact && contact.email) || '',
-      phone: (contact && contact.phone) || '',
-      job: (contact && contact.job) || '',
-      info: (contact && contact.info) || '',
-      // phone: (contact && contact.phone) || '',
-      // lead_score: (contact && contact.lead_score) || '',
-      // tags: (contact && contact.tags) || [],
+      lastname: (employee && employee.lastname) || '',
+      firstname: (employee && employee.firstname) || '',
+      email: (employee && employee.email) || '',
     },
     validationSchema: Yup.object({
-      // contactId: Yup.string().required("Please Enter Contact Id"),
       lastname: Yup.string().required("Veuillez entrer un nom"),
       firstname: Yup.string().required("Veuillez entrer un prénom"),
       email: Yup.string().required("Veuillez entrer un email"),
-      phone: Yup.string().required("Veuillez entrer un téléphone"),
-      job: Yup.string(),
-      info: Yup.string(),
     }),
     onSubmit: (values) => {
       if (isEdit) {
 
-        const updateContact = {
-          epe_id: contact ? contact.id : 0,
-          epe_lastname: values.lastname,
-          epe_firstname: values.firstname,
-          epe_email: values.email,
-          epe_phone: values.phone,
-          epe_job: values.job,
-          epe_info: values.info,
-          epe_ent_fk: collaborateur.value,
-          ent_name: collaborateur.label,
+        const updateEmployee = {
+          use_id: employee.id ? employee.id : 0,
+          use_lastname: values.lastname,
+          use_firstname: values.firstname,
+          use_email: values.email,
+          use_password: "none",
         };
 
-        // update Contact
-        dispatch(onUpdateContact(updateContact));
+        // update Employee
+        dispatch(onCreateUpdateEmployee(updateEmployee));
         validation.resetForm();
 
       } else {
-        const newContact = {
-          epe_lastname: values["lastname"],
-          epe_firstname: values["firstname"],
-          epe_email: values["email"],
-          epe_phone: values["phone"],
-          epe_job: values["job"],
-          epe_info: values["info"],
-          epe_ent_fk: collaborateur.value,
-          ent_name: collaborateur.label,
+        const newEmployee = {
+          use_lastname: values["lastname"],
+          use_firstname: values["firstname"],
+          use_email: values["email"],
+          use_password: "none",
+          use_rank:1,
         };
-
+        // console.log(newEmployee)
         // save new Contact
-        dispatch(onAddNewContact(newContact));
+        dispatch(onCreateUpdateEmployee(newEmployee));
         validation.resetForm();
       }
       toggle();
@@ -195,16 +164,13 @@ const Contacts = () => {
 
   // Update Data
   const handleContactClick = useCallback((arg) => {
-    const contact = arg;
+    const employee = arg;
 
-    setContact({
-      id: contact.epe_id,
-      lastname: contact.epe_lastname,
-      firstname: contact.epe_firstname,
-      email: contact.epe_email,
-      phone: contact.epe_phone,
-      job: contact.epe_job,
-      info: contact.epe_info,
+    setEmployee({
+      id: employee?.use_id,
+      lastname: employee.use_lastname,
+      firstname: employee.use_firstname,
+      email: employee.use_email,
     });
 
     setIsEdit(true);
@@ -235,7 +201,7 @@ const Contacts = () => {
   const deleteMultiple = () => {
     const checkall = document.getElementById("checkBoxAll");
     selectedCheckBoxDelete.forEach((element) => {
-      dispatch(onDeleteContact(element.value));
+      dispatch(onDeleteEmployee(element.value));
       setTimeout(() => { toast.clearWaitingQueue(); }, 3000);
     });
     setIsMultiDeleteButton(false);
@@ -260,59 +226,32 @@ const Contacts = () => {
       },
       {
         Header: '',
-        accessor: 'epe_id',
+        accessor: 'use_id',
         hiddenColumns: true,
         Cell: (cell) => {
           return <input type="hidden" value={cell.value} />;
         }
       },
       {
-        Header: "Entreprise",
-        accessor: "ent_name",
-        filterable: false,
-      },
-      {
         Header: "Nom",
-        accessor: "epe_lastname",
+        accessor: "use_firstname",
         filterable: false,
       },
       {
         Header: "Prénom",
-        accessor: "epe_firstname",
+        accessor: "use_lastname",
         filterable: false,
       },
       {
         Header: "Email",
-        accessor: "epe_email",
+        accessor: "use_email",
         filterable: false,
-      },
-      {
-        Header: "Téléphone",
-        accessor: "epe_phone",
-        filterable: false,
-        // Cell: (cell) => (
-        //   <>
-        //     {handleValidDate(cell.value)}
-        //   </>
-        // ),
-      },
-      {
-        Header: "Poste",
-        accessor: "epe_job",
-        Cell: (cell) => {
-          return <span className="badge text-uppercase badge-soft-success"> {cell.value} </span>;
-        }
       },
       {
         Header: "Action",
         Cell: (cellProps) => {
           return (
             <ul className="list-inline hstack gap-2 mb-0">
-              <li className="list-inline-item edit" title="Call">
-                <Link to={`tel:${info.epe_phone}`} className="text-muted d-inline-block">
-                  <i className="ri-phone-line fs-16"></i>
-                </Link>
-              </li>
               <li className="list-inline-item">
                 <UncontrolledDropdown>
                   <DropdownToggle
@@ -324,7 +263,7 @@ const Contacts = () => {
                   </DropdownToggle>
                   <DropdownMenu className="dropdown-menu-end">
                     <DropdownItem className="dropdown-item" href="#"
-                      onClick={() => { const contactData = cellProps.row.original; setInfo(contactData); setShow(true); }}
+                      onClick={() => { const employeeData = cellProps.row.original; setInfo(employeeData); setShow(true); }}
                     >
                       <i className="ri-eye-fill align-bottom me-2 text-muted"></i>{" "}
                       Voir
@@ -333,10 +272,10 @@ const Contacts = () => {
                       className="dropdown-item edit-item-btn"
                       href="#"
                       onClick={() => {
-                        const contactData = cellProps.row.original;
+                        const employeeData = cellProps.row.original;
 
-                        setCollaborateur(collaborateurList.filter((c) => c.value == contactData.epe_ent_fk)[0]);
-                        handleContactClick(contactData);
+                        setCollaborateur(collaborateurList.filter((c) => c.value == employeeData.epe_ent_fk)[0]);
+                        handleContactClick(employeeData);
                       }}
                     >
                       <i className="ri-pencil-fill align-bottom me-2 text-muted"></i>{" "}
@@ -345,7 +284,7 @@ const Contacts = () => {
                     <DropdownItem
                       className="dropdown-item remove-item-btn"
                       href="#"
-                      onClick={() => { const contactData = cellProps.row.original; onClickDelete(contactData); }}
+                      onClick={() => { const employeeData = cellProps.row.original; onClickDelete(employeeData); }}
                     >
                       <i className="ri-delete-bin-fill align-bottom me-2 text-muted"></i>{" "}
                       Supprimer
@@ -358,18 +297,18 @@ const Contacts = () => {
         },
       },
     ],
-    [handleContactClick, checkedAll, collaborateurList]
+    [handleContactClick, checkedAll, collaborateurList,employee]
   );
 
-  useEffect(() => {
-    if (collaborateurs) {
-      setCollaborateurList(collaborateurs.map((c) => ({ label: c.ent_name, value: c.ent_id })))
-    }
-  }, [collaborateurs])
+  // useEffect(() => {
+  //   if (collaborateurs) {
+  //     setCollaborateurList(collaborateurs.map((c) => ({ label: c.ent_name, value: c.ent_id })))
+  //   }
+  // }, [collaborateurs])
 
-  function handlestag(collaborateur) {
-    setCollaborateur(collaborateur);
-  }
+  // function handlestag(collaborateur) {
+  //   setCollaborateur(collaborateur);
+  // }
 
   useEffect(() => {
     if (show) {
@@ -383,18 +322,10 @@ const Contacts = () => {
   // SideBar Contact Deatail
   const [info, setInfo] = useState([]);
 
-  // Export Modal
-  const [isExportCSV, setIsExportCSV] = useState(false);
-
-  document.title = "Contacts | Countano";
+  document.title = "Liste employé | Countano";
   return (
     <React.Fragment>
       <div className="page-content">
-        <ExportCSVModal
-          show={isExportCSV}
-          onCloseClick={() => setIsExportCSV(false)}
-          data={contacts}
-        />
 
         <DeleteModal
           show={deleteModal}
@@ -411,7 +342,7 @@ const Contacts = () => {
           onCloseClick={() => setDeleteModalMulti(false)}
         />
         <Container fluid>
-          <BreadCrumb title="Contacts" pageTitle="Gestion" />
+          <BreadCrumb title="Liste employé" pageTitle="Employés" />
           <Row>
             <Col lg={12}>
               <Card>
@@ -425,7 +356,7 @@ const Contacts = () => {
                         }}
                       >
                         <i className="ri-add-fill me-1 align-bottom"></i> Ajouter
-                        Contact
+                        Employé
                       </button>
                     </div>
                     <div className="flex-shrink-0">
@@ -433,19 +364,6 @@ const Contacts = () => {
                         {isMultiDeleteButton && <button className="btn btn-danger"
                           onClick={() => setDeleteModalMulti(true)}
                         ><i className="ri-delete-bin-2-line"></i></button>}
-
-                        <button className="btn btn-soft-success" onClick={() => setIsExportCSV(true)}>Export</button>
-
-                        <UncontrolledDropdown>
-                          <DropdownToggle
-                            href="#"
-                            className="btn btn-soft-info"
-                            tag="button"
-                          >
-                            <i className="ri-more-2-fill"></i>
-                          </DropdownToggle>
-                        </UncontrolledDropdown>
-
                       </div>
                     </div>
                   </div>
@@ -457,10 +375,10 @@ const Contacts = () => {
                 <Card id="contactList">
                   <CardBody className="pt-0">
                     <div>
-                      {isContactSuccess ? (
+                      {isEmployeSuccess ? (
                         <TableContainer
                           columns={columns}
-                          data={(contacts || [])}
+                          data={(employees || [])}
                           isGlobalFilter={true}
                           isAddUserList={false}
                           customPageSize={8}
@@ -468,7 +386,7 @@ const Contacts = () => {
                           divClass="table-responsive table-card mb-3"
                           tableClass="align-middle table-nowrap"
                           theadClass="table-light"
-                          handleContactClick={handleContactClicks}
+                          // handleContactClick={handleContactClicks}
                           isContactsFilter={true}
                           SearchPlaceholder='Recherche...'
                         />
@@ -478,7 +396,7 @@ const Contacts = () => {
 
                     <Modal id="showModal" isOpen={modal} toggle={toggle} centered>
                       <ModalHeader className="bg-soft-info p-3" toggle={toggle}>
-                        {!!isEdit ? "Modifier un contact" : "Ajouter un contact"}
+                        {!!isEdit ? "Modifier un employé" : "Ajouter un employé"}
                       </ModalHeader>
 
                       <Form className="tablelist-form" onSubmit={(e) => {
@@ -489,20 +407,7 @@ const Contacts = () => {
                         <ModalBody>
                           <Input type="hidden" id="id-field" />
                           <Row className="g-3">
-                            <Col lg={12}>
-                              <div className="text-center">
-                                <div className="position-relative d-inline-block">
-                                  <div className="position-absolute  bottom-0 end-0">
-
-                                  </div>
-                                  <div className="avatar-lg p-1">
-                                    <div className="avatar-title bg-light rounded-circle">
-                                      <img src={api.API_URL + "v1/images/" + (info.image_src ? ("company/" + info.image_src) : "user-dummy-img.jpg")} alt="dummyImg" id="customer-img" className="avatar-md rounded-circle object-cover" />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </Col>
+                       
                             <Col lg={6}>
                               <div>
                                 <Label
@@ -595,125 +500,7 @@ const Contacts = () => {
 
                               </div>
                             </Col>
-                            <Col lg={12}>
-                              <div>
-                                <Label
-                                  htmlFor="phone-field"
-                                  className="form-label"
-                                >
-                                  Téléphone
-                                </Label>
-
-                                <Input
-                                  name="phone"
-                                  id="phone-field"
-                                  className="form-control"
-                                  placeholder="Entrer un téléphone"
-                                  type="text"
-                                  validate={{
-                                    required: { value: true },
-                                  }}
-                                  onChange={validation.handleChange}
-                                  onBlur={validation.handleBlur}
-                                  value={validation.values.phone || ""}
-                                  invalid={
-                                    validation.touched.phone && validation.errors.phone ? true : false
-                                  }
-                                />
-                                {validation.touched.phone && validation.errors.phone ? (
-                                  <FormFeedback type="invalid">{validation.errors.phone}</FormFeedback>
-                                ) : null}
-                              </div>
-                            </Col>
-                            <Col lg={6}>
-                              <div>
-                                <Label
-                                  htmlFor="taginput-choices"
-                                  className="form-label font-size-13"
-                                >
-                                  Entreprise
-                                </Label>
-                                <Select
-                                  defaultValue={{ label: 'Séléctionner...', value: null }}
-                                  value={collaborateur}
-                                  onChange={(e) => {
-                                    handlestag(e);
-                                  }}
-                                  className="select-style mb-0"
-                                  options={collaborateurList}
-                                  id="taginput-choices"
-                                >
-                                </Select>
-
-                                {validation.touched.tags &&
-                                  validation.errors.tags ? (
-                                  <FormFeedback type="invalid">
-                                    {validation.errors.tags}
-                                  </FormFeedback>
-                                ) : null}
-                              </div>
-                            </Col>
-                            <Col lg={6}>
-                              <div>
-                                <Label
-                                  htmlFor="job-field"
-                                  className="form-label"
-                                >
-                                  Poste
-                                </Label>
-
-                                <Input
-                                  name="job"
-                                  id="job-field"
-                                  className="form-control"
-                                  placeholder="Entrer un poste"
-                                  type="text"
-                                  validate={{
-                                    required: { value: false },
-                                  }}
-                                  onChange={validation.handleChange}
-                                  onBlur={validation.handleBlur}
-                                  value={validation.values.job || ""}
-                                  invalid={
-                                    validation.touched.job && validation.errors.job ? true : false
-                                  }
-                                />
-                                {validation.touched.job && validation.errors.job ? (
-                                  <FormFeedback type="invalid">{validation.errors.job}</FormFeedback>
-                                ) : null}
-                              </div>
-                            </Col>
-                            <Col lg={12}>
-                              <div>
-                                <Label
-                                  htmlFor="info-field"
-                                  className="form-label"
-                                >
-                                  Information complémentaire
-                                </Label>
-
-                                <textarea
-                                  name="info"
-                                  id="info-field"
-                                  className="form-control"
-                                  placeholder="Information"
-                                  type="text"
-                                  validate={{
-                                    required: { value: false },
-                                  }}
-                                  onChange={validation.handleChange}
-                                  onBlur={validation.handleBlur}
-                                  value={validation.values.info || ""}
-                                  invalid={
-                                    validation.touched.info && validation.errors.info ? "true" : "false"
-                                  }
-                                  rows={5}
-                                />
-                                {validation.touched.info && validation.errors.info ? (
-                                  <FormFeedback type="invalid">{validation.errors.info}</FormFeedback>
-                                ) : null}
-                              </div>
-                            </Col>
+                           
 
                           </Row>
                         </ModalBody>
@@ -733,31 +520,11 @@ const Contacts = () => {
               <div id="start-anime">
                 <Card id="contact-view-detail">
                   <CardBody className="text-center">
-                    <div className="position-relative d-inline-block">
-                      <img
-                        src={api.API_URL + "v1/images/" + (info.image_src ? ("company/" + info.image_src) : "user-dummy-img.jpg")}
-                        alt=""
-                        className="avatar-lg rounded-circle img-thumbnail"
-                      />
-                      <span className="contact-active position-absolute rounded-circle bg-success">
-                        <span className="visually-hidden"></span>
-                      </span>
-                    </div>
-                    <h5 className="mt-4 mb-1">{info.epe_lastname + " " + info.epe_firstname}</h5>
-                    <p className="text-muted"><span className="badge badge-soft-primary me-1">{info.epe_job}</span></p>
-
+                    <h5 className="mt-4 mb-1">{info.use_lastname + " " + info.use_firstname}</h5>
                     <ul className="list-inline mb-0">
                       <li className="list-inline-item avatar-xs">
                         <Link
-                          to={`tel:${info.epe_phone}`}
-                          className="avatar-title bg-soft-success text-success fs-15 rounded"
-                        >
-                          <i className="ri-phone-line"></i>
-                        </Link>
-                      </li>
-                      <li className="list-inline-item avatar-xs">
-                        <Link
-                          to={`mailto:${info.epe_email}`}
+                          to={`mailto:${info.use_email}`}
                           className="avatar-title bg-soft-danger text-danger fs-15 rounded"
                         >
                           <i className="ri-mail-line"></i>
@@ -766,38 +533,15 @@ const Contacts = () => {
                     </ul>
                   </CardBody>
                   <CardBody>
-                    <h6 className="text-muted text-uppercase fw-semibold mb-3">
-                      Information complémentaire
-                    </h6>
-                    <p className="text-muted mb-4">
-                      {(info.epe_info) || "Non renseigné"}
-                    </p>
+                   
                     <div className="table-responsive table-card">
                       <Table className="table table-borderless mb-0">
                         <tbody>
                           <tr>
                             <td className="fw-medium">
-                              Entreprise
-                            </td>
-                            <td>{info.ent_name}</td>
-                          </tr>
-                          <tr>
-                            <td className="fw-medium">
-                              Poste
-                            </td>
-                            <td>{info.epe_job}</td>
-                          </tr>
-                          <tr>
-                            <td className="fw-medium">
                               Email
                             </td>
-                            <td>{info.epe_email}</td>
-                          </tr>
-                          <tr>
-                            <td className="fw-medium">
-                              Téléphone
-                            </td>
-                            <td>{info.epe_phone}</td>
+                            <td>{info.use_email}</td>
                           </tr>
 
                         </tbody>
@@ -815,4 +559,4 @@ const Contacts = () => {
   );
 };
 
-export default Contacts;
+export default Employees;

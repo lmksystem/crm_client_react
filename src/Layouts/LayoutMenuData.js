@@ -10,6 +10,8 @@ const Navdata = () => {
   const [isBanque, setIsBanque] = useState(false);
   const [isRapport, setIsRapport] = useState(false);
   const [isPaie, setIsPaie] = useState(false);
+  const [isEmployee, setIsEmployee] = useState(false);
+
 
   // Authentication
   const [isSignIn, setIsSignIn] = useState(false);
@@ -73,6 +75,9 @@ const Navdata = () => {
     if (iscurrentState !== 'Comptabilité') {
       setIsComptability(false);
     }
+    if(iscurrentState !== 'Employés') {
+      setIsEmployee(false)
+    }
   }, [
     history,
     iscurrentState,
@@ -81,7 +86,8 @@ const Navdata = () => {
     isFacture,
     isGestion,
     isPaie,
-    isRapport
+    isRapport,
+    isEmployee,
   ]);
 
   const menuItems = [
@@ -278,6 +284,46 @@ const Navdata = () => {
       stateVariables: isPaie,
       subItems: [
 
+
+      ],
+    },
+    {
+      id: "employee",
+      label: "Employés",
+      icon: "las la-address-book",
+      link: "/#",
+      click: function (e) {
+        e.preventDefault();
+        setIsEmployee(!isEmployee);
+        setIscurrentState('Employés');
+        updateIconSidebar(e);
+      },
+      stateVariables: isEmployee,
+      subItems: [
+
+       
+        {
+          id: "liste-employee",
+          label: "Liste employé",
+          link: "/employees",
+          isChildItem: false,
+          click: function (e) {
+            e.preventDefault();
+
+          },
+          parentId: "employee",
+        },
+        {
+          id: "salaires",
+          label: "Salaires",
+          link: "/#",
+          isChildItem: false,
+          click: function (e) {
+            e.preventDefault();
+
+          },
+          parentId: "employee",
+        },
 
       ],
     },

@@ -133,7 +133,7 @@ const InvoiceList = () => {
                     </div>
                   </div>
                 }
-                {invoice.row.original.contact.fco_cus_name}
+                {invoice.row.original.contact?.fco_cus_name}
               </div>
             </>
           )

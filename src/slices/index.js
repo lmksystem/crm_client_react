@@ -32,6 +32,9 @@ import APIKeyReducer from "./apiKey/reducer";
 
 // Mes reducer
 
+// Employee
+import EmployeeReducer from "./employee/reducer";
+
 // Gestion 
 import GestionReducer from "./gestion/reducer";
 
@@ -52,6 +55,8 @@ import TransactionReducer from "./transaction/reducer";
 
 import sessionStorage from "redux-persist/es/storage/session";
 
+
+
 const appReducer = combineReducers({
   Layout: LayoutReducer,
   Login: LoginReducer,
@@ -71,6 +76,7 @@ const appReducer = combineReducers({
   Company: CompanyReducer,
   Devis: DevisReducer,
   Transaction: TransactionReducer,
+  Employee :EmployeeReducer,
 });
 
 const rootReducer = (state, action) => {

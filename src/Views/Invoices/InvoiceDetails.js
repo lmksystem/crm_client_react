@@ -151,7 +151,7 @@ const InvoiceDetails = () => {
 
                       <Col className="col-12 d-flex flex-column align-items-end">
                         <h6 className="text-muted text-uppercase fw-semibold mb-3">Information Client</h6>
-                        <p className="fw-medium mb-2" id="billing-name">{invoice.contact.fco_cus_name}</p>
+                        <p className="fw-medium mb-2" id="billing-name">{invoice.contact?.fco_cus_name}</p>
                         <p className="text-muted mb-1" id="billing-address-line-1">{invoice.contact.fco_cus_address}</p>
                         <p className="text-muted mb-1" id="billing-address-line-1">{invoice.contact.fco_cus_cp}, {invoice.contact.fco_cus_city}</p>
                         <p className="text-muted mb-1"><span>Téléphone: </span><span id="billing-phone-no">{invoice.contact.fco_cus_phone}</span></p>

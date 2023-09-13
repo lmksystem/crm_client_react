@@ -50,3 +50,6 @@ export * from "./devis/thunk";
 
 // transaction
 export * from "./transaction/thunk";
+
+// employee
+export * from "./employee/thunk";

@@ -152,11 +152,11 @@ const DevisList = () => {
                   />
                   : <div className="flex-shrink-0 avatar-xs me-2">
                     <div className="avatar-title bg-soft-success text-success rounded-circle fs-13">
-                      {devis.row.original?.contact.dco_cus_name && devis.row.original?.contact.dco_cus_name.charAt(0) || ""}
+                      {devis.row.original?.contact?.dco_cus_name && devis.row.original?.contact?.dco_cus_name.charAt(0) || ""}
                     </div>
                   </div>
                 }
-                {devis.row.original.contact.dco_cus_name}
+                {devis.row.original.contact?.dco_cus_name}
               </div>
             </>
           )

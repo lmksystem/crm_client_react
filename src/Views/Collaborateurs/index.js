@@ -1074,7 +1074,7 @@ const Collaborateurs = () => {
                       Information complémentaire
                     </h6>
                     <p className="text-muted mb-4">
-                      {(info.ent_info) || "non reseigner"}
+                      {(info.ent_info) || "Non renseigné"}
                     </p>
                     <div className="table-responsive table-card">
                       <Table className="table table-borderless mb-0">

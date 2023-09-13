@@ -207,7 +207,7 @@ export const getEntityPeriodCount= createAsyncThunk("entity/getEntityPeriodCount
     return response;
   } catch (error) {
     console.log("thunk catch", error);
-    toast.error("Une erreur ses produite sur ", { autoClose: 3000 });
+    toast.error("Une erreur s'est produite sur la récupération des fournisseurs", { autoClose: 3000 });
     return error;
   }
 });
