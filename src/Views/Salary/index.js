@@ -49,31 +49,20 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-const Employees = () => {
+const Salary = () => {
   const dispatch = useDispatch();
   const { isEmployeSuccess, error ,employees } = useSelector((state) => ({
     isEmployeSuccess: state.Employee.isEmployeSuccess,
     employees : state.Employee.employees,
     error: state.Employee.error,
-
-    
   }));
+
+
+  
 
   useEffect(() => {
       dispatch(onGetEmployees())
   }, [dispatch]);
-
-  // useEffect(() => {
-  //   setEmployee(employees);
-  // }, [employees]);
-
-  useEffect(() => {
-    if (!isEmpty(employees)) {
-      setEmployee(employees);
-      setIsEdit(false);
-    }
-  }, [employees]);
-
 
   const [employee, setEmployee] = useState({});
 
@@ -94,9 +83,8 @@ const Employees = () => {
 
   const toggle = useCallback(() => {
     if (modal) {
-      console.log("tout vider")
       setModal(false);
-      setEmployee({});
+      setEmployee(null);
       setCollaborateur(null)
     } else {
       setModal(true);
@@ -125,15 +113,11 @@ const Employees = () => {
       lastname: (employee && employee.lastname) || '',
       firstname: (employee && employee.firstname) || '',
       email: (employee && employee.email) || '',
-      date_entree: (employee && employee.date_entree) || '',
-
     },
     validationSchema: Yup.object({
       lastname: Yup.string().required("Veuillez entrer un nom"),
       firstname: Yup.string().required("Veuillez entrer un prénom"),
       email: Yup.string().required("Veuillez entrer un email"),
-      date_entree: Yup.date().required("Veuillez entrer une date d'entrée"),
-      
     }),
     onSubmit: (values) => {
       if (isEdit) {
@@ -143,7 +127,6 @@ const Employees = () => {
           use_lastname: values.lastname,
           use_firstname: values.firstname,
           use_email: values.email,
-          usa_date_entree: values?.date_entree || null,
           use_password: "none",
         };
 
@@ -158,8 +141,6 @@ const Employees = () => {
           use_email: values["email"],
           use_password: "none",
           use_rank:1,
-          usa_date_entree: values?.date_entree || null,
-
         };
         // console.log(newEmployee)
         // save new Contact
@@ -179,8 +160,6 @@ const Employees = () => {
       lastname: employee.use_lastname,
       firstname: employee.use_firstname,
       email: employee.use_email,
-      date_entree: employee?.usa_date_entree,
-
     });
 
     setIsEdit(true);
@@ -255,13 +234,18 @@ const Employees = () => {
         filterable: false,
       },
       {
-        Header: "Email",
-        accessor: "use_email",
+        Header: "Net",
+        // accessor: "use_email",
         filterable: false,
       },
       {
-        Header: "Date entrée",
-        accessor: "usa_date_entree",
+        Header: "Brut",
+        // accessor: "use_email",
+        filterable: false,
+      },
+      {
+        Header: "Brut chargé",
+        // accessor: "use_email",
         filterable: false,
       },
       {
@@ -279,12 +263,6 @@ const Employees = () => {
                     <i className="ri-more-fill align-middle"></i>
                   </DropdownToggle>
                   <DropdownMenu className="dropdown-menu-end">
-                    <DropdownItem className="dropdown-item" href="#"
-                      onClick={() => { const employeeData = cellProps.row.original; setInfo(employeeData); setShow(true); }}
-                    >
-                      <i className="ri-eye-fill align-bottom me-2 text-muted"></i>{" "}
-                      Voir
-                    </DropdownItem>
                     <DropdownItem
                       className="dropdown-item edit-item-btn"
                       href="#"
@@ -339,7 +317,7 @@ const Employees = () => {
   // SideBar Contact Deatail
   const [info, setInfo] = useState([]);
 
-  document.title = "Liste employé | Countano";
+  document.title = "Salaires | Countano";
   return (
     <React.Fragment>
       <div className="page-content">
@@ -359,9 +337,9 @@ const Employees = () => {
           onCloseClick={() => setDeleteModalMulti(false)}
         />
         <Container fluid>
-          <BreadCrumb title="Liste employé" pageTitle="Employés" />
+          <BreadCrumb title="Salaires" pageTitle="Employés" />
           <Row>
-            <Col lg={12}>
+            <Col lg={12} >
               <Card>
                 <CardHeader>
                   <div className="d-flex align-items-center flex-wrap gap-2">
@@ -372,7 +350,8 @@ const Employees = () => {
                           setModal(true);
                         }}
                       >
-                        <i className="ri-add-fill me-1 align-bottom"></i> Ajouter Employé
+                        <i className="ri-add-fill me-1 align-bottom"></i> Ajouter
+                        un salaire
                       </button>
                     </div>
                     <div className="flex-shrink-0">
@@ -390,13 +369,17 @@ const Employees = () => {
               <Col className="view-animate" xxl={show ? 9 : 12} >
                 <Card id="contactList">
                   <CardBody className="pt-0">
+                  <Row>
+                  <Col lg={4}>
+                    
+                    </Col>
+                    <Col lg={8}>
                     <div>
                       {isEmployeSuccess ? (
                         <TableContainer
                           columns={columns}
                           data={(employees || [])}
                           isGlobalFilter={true}
-                          isAddUserList={false}
                           customPageSize={8}
                           className="custom-header-css"
                           divClass="table-responsive table-card mb-3"
@@ -409,6 +392,10 @@ const Employees = () => {
                       ) : (<Loader error={error} />)
                       }
                     </div>
+                    </Col>
+                  </Row>
+                 
+                   
 
                     <Modal id="showModal" isOpen={modal} toggle={toggle} centered>
                       <ModalHeader className="bg-soft-info p-3" toggle={toggle}>
@@ -517,42 +504,12 @@ const Employees = () => {
                               </div>
                             </Col>
                            
-                            <Col lg={12}>
-                              <div>
-                                <Label
-                                  htmlFor="date_entree-field"
-                                  className="form-label"
-                                >
-                                  Date entrée dans l'entreprise
-                                </Label>
-
-                                <Input
-                                  name="date_entree"
-                                  id="date_entree-field"
-                                  className="form-control"
-                                  type="date"
-                                  validate={{
-                                    required: { value: true },
-                                  }}
-                                  onChange={validation.handleChange}
-                                  onBlur={validation.handleBlur}
-                                  value={validation.values.date_entree ||""}
-                                  invalid={
-                                    validation.touched.date_entree && validation.errors.date_entree ? true : false
-                                  }
-                                />
-                                {validation.touched.date_entree && validation.errors.date_entree ? (
-                                  <FormFeedback type="invalid">{validation.errors.date_entree}</FormFeedback>
-                                ) : null}
-
-                              </div>
-                            </Col>
 
                           </Row>
                         </ModalBody>
                         <ModalFooter>
                           <div className="hstack gap-2 justify-content-end">
-                            <button type="button" className="btn btn-light" onClick={() => { setModal(false); setIsEdit(false); setEmployee({}) }} > Fermer </button>
+                            <button type="button" className="btn btn-light" onClick={() => { setModal(false); }} > Fermer </button>
                             <button type="submit" className="btn btn-success" id="add-btn" > {!!isEdit ? "Modifier" : "Ajouter"} </button>
                           </div>
                         </ModalFooter>
@@ -605,4 +562,4 @@ const Employees = () => {
   );
 };
 
-export default Employees;
+export default Salary;

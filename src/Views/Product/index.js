@@ -335,15 +335,16 @@ const Products = () => {
                       <TableContainer
                         columns={columns}
                         data={(products || [])}
-                        isGlobalFilter={false}
+                        isGlobalFilter={true}
                         isAddUserList={false}
                         customPageSize={7}
                         className="custom-header-css"
                         divClass="table-responsive table-card mb-2"
                         tableClass="align-middle table-nowrap"
                         theadClass="table-light"
-                        isCompaniesFilter={true}
-
+                        isCompaniesFilter={false}
+                        isProductsFilter={true}
+                        SearchPlaceholder='Recherche...'
                       />
 
                     ) : (<Loader error={error} />)
@@ -494,7 +495,7 @@ const Products = () => {
                       <ModalFooter>
                         <div className="hstack gap-2 justify-content-end">
                           <button type="button" className="btn btn-light" onClick={() => { setModal(false); }} > Fermer </button>
-                          <button type="submit" className="btn btn-success" id="add-btn" >  {!!isEdit ? "Modifier" : "Ajouter la règle"} </button>
+                          <button type="submit" className="btn btn-success" id="add-btn" >  {!!isEdit ? "Modifier" : "Ajouter un produit"} </button>
                         </div>
                       </ModalFooter>
                     </Form>

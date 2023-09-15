@@ -38,6 +38,7 @@ const Revenue = ({perdiodeCalendar}) => {
       },
     ]
     setchartData(newArrayForGraph);
+    console.log(chartData)
   }, [perdiodeCalendar,transactionByMonth,devisByMonth,invoiceByMonth])
   
 
@@ -67,7 +68,7 @@ const Revenue = ({perdiodeCalendar}) => {
             <Col xs={6} sm={4}>
               <div className="p-3 border border-dashed border-start-0">
                 <h5 className="mb-1">
-                  <CountUp start={0} end={devisByMonth?.length>0?devisByMonth.reduce((accumulateur, objet) => { return accumulateur + objet["count_devis"];}, 0):0 }  duration={3} separator=" " />
+                  <CountUp start={0} end={devisByMonth?.length>0?devisByMonth.reduce((accumulateur, objet) => { return accumulateur + objet["count_devis"];}, 0):0 }  duration={1} separator=" " />
                 </h5>
                 <p className="text-muted mb-0">Devis</p>
               </div>
@@ -81,7 +82,7 @@ const Revenue = ({perdiodeCalendar}) => {
                     start={0}
                     decimals={2}
                     end={transactionByMonth?.length>0?transactionByMonth.reduce((accumulateur, objet) => { return accumulateur + objet["somme_tra_value"];}, 0) :0 }
-                    duration={3}
+                    duration={1}
                     separator={","}
                   />
                 </h5>
@@ -91,7 +92,7 @@ const Revenue = ({perdiodeCalendar}) => {
             <Col xs={6} sm={4}>
               <div className="p-3 border border-dashed border-start-0">
                 <h5 className="mb-1">
-                  <CountUp start={0} end={invoiceByMonth?.length>0?invoiceByMonth.reduce((accumulateur, objet) => { return accumulateur + objet["count_invoice"];}, 0):0 } duration={3} separator=" "  />
+                  <CountUp start={0} end={invoiceByMonth?.length>0?invoiceByMonth.reduce((accumulateur, objet) => { return accumulateur + objet["count_invoice"];}, 0):0 } duration={1} separator=" "  />
                 </h5>
                 <p className="text-muted mb-0">Factures</p>
               </div>

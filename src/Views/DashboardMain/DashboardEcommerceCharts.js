@@ -19,7 +19,7 @@ const RevenueCharts = ({ dataColors, series }) => {
   
   var options = {
     chart: {
-      height: 370,
+      height: 350,
       type: "line",
       toolbar: {
         show: false,
@@ -40,6 +40,22 @@ const RevenueCharts = ({ dataColors, series }) => {
         size: 4,
       },
     },
+    // yaxis: [{
+    //   title: {
+    //     text: 'Nombre devis/factures',
+    //   },
+    //   seriesName:"Facture",
+    //   min:0,
+    //   opposite: true,
+    //   tickAmount:1,
+    //   floating: false,
+    //   decimalsInFloat: 0,
+    // }, {
+    //   title: {
+    //     text: 'Vente €'
+    //   },
+      
+    // }],
     xaxis: {
       categories: [
         "Janvier",
@@ -61,6 +77,8 @@ const RevenueCharts = ({ dataColors, series }) => {
       axisBorder: {
         show: false,
       },
+      floating: true,
+      decimalsInFloat: 2,
     },
     grid: {
       show: true,
@@ -84,6 +102,7 @@ const RevenueCharts = ({ dataColors, series }) => {
     legend: {
       show: true,
       horizontalAlign: "center",
+      height:70,
       offsetX: 0,
       offsetY: -5,
       markers: {
@@ -140,7 +159,7 @@ const RevenueCharts = ({ dataColors, series }) => {
         options={options}
         series={series}
         type="line"
-        height="370"
+        height="350"
         className="apex-charts"
       />
     </React.Fragment>

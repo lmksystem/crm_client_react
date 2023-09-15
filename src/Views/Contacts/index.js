@@ -436,7 +436,7 @@ const Contacts = () => {
 
                         <button className="btn btn-soft-success" onClick={() => setIsExportCSV(true)}>Export</button>
 
-                        <UncontrolledDropdown>
+                        {/* <UncontrolledDropdown>
                           <DropdownToggle
                             href="#"
                             className="btn btn-soft-info"
@@ -444,7 +444,7 @@ const Contacts = () => {
                           >
                             <i className="ri-more-2-fill"></i>
                           </DropdownToggle>
-                        </UncontrolledDropdown>
+                        </UncontrolledDropdown> */}
 
                       </div>
                     </div>

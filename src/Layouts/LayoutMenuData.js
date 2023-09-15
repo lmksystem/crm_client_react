@@ -316,7 +316,7 @@ const Navdata = () => {
         {
           id: "salaires",
           label: "Salaires",
-          link: "/#",
+          link: "/salary",
           isChildItem: false,
           click: function (e) {
             e.preventDefault();

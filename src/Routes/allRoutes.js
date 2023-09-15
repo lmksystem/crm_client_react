@@ -26,6 +26,7 @@ import ForgetPasswordPage from "../Views/Authentication/ForgetPassword";
 import Register from "../Views/Authentication/Register";
 import TransactionList from "../Views/Reglements/TransactionList";
 import Employees from "../Views/Employees";
+import Salary from "../Views/Salary";
 // import PdfPreview from "../Views/Pdf";
 
 
@@ -54,6 +55,8 @@ const authProtectedRoutes = [
 
   // Employees
   { path: "/employees", component: <Employees /> },
+  { path: "/salary", component: <Salary /> },
+
 
 
 

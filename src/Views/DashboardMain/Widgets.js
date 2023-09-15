@@ -155,7 +155,7 @@ const Widgets = () => {
                         separator={item.separator}
                         end={item.counter}
                         decimals={item.decimals}
-                        duration={4}
+                        duration={1}
                       />
                     </span>
                   </h4>

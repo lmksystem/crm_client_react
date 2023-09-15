@@ -26,7 +26,14 @@ const employeeSlice = createSlice({
 
     });
     builder.addCase(createUpdateEmployee.fulfilled, (state, action) => {
+      if(state.employees.filter((e) => e.use_id == action.payload.data?.use_id).length>0){
+        let index = state.employees.findIndex(e => e.use_id === action.payload.data?.use_id);
+        if (index !== -1) {
+          state.employees.splice(index, 1, action.payload.data);
+        }
+      }else{
         state.employees.push(action.payload.data);
+      }
         state.isEmployeSuccess = true;
       });
       
@@ -37,13 +44,14 @@ const employeeSlice = createSlice({
 
 
       builder.addCase(deleteEmployee.fulfilled, (state, action) => {
-        state.employees = (state.employees || []).filter(
-            (employee) => employee.use_id != action.payload
-          );
+        state.employees = state.employees.filter((e) => e.use_id != action.payload)
+        state.isEmployeSuccess = true;
+
         });
   
       builder.addCase(deleteEmployee.rejected, (state, action) => {
         state.error = action.payload.msg || null;
+        state.isEmployeSuccess = false;
       });
   },
 });
