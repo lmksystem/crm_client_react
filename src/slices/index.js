@@ -53,6 +53,10 @@ import DevisReducer from "./devis/reducer";
 //Devis
 import TransactionReducer from "./transaction/reducer";
 
+//Salary
+import SalaryReducer from "./salary/reducer";
+
+
 import sessionStorage from "redux-persist/es/storage/session";
 
 
@@ -77,6 +81,8 @@ const appReducer = combineReducers({
   Devis: DevisReducer,
   Transaction: TransactionReducer,
   Employee :EmployeeReducer,
+  Salary :SalaryReducer,
+
 });
 
 const rootReducer = (state, action) => {

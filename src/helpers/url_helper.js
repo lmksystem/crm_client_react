@@ -297,3 +297,5 @@ export const TRANSACTION = "/v1/transaction";
 // Employee
 export const EMPLOYEES = "/v1/user";
 
+// Salary
+export const SALARY = "/v1/salary";

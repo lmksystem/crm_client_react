@@ -53,3 +53,6 @@ export * from "./transaction/thunk";
 
 // employee
 export * from "./employee/thunk";
+
+// salary
+export * from "./salary/thunk";

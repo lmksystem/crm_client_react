@@ -188,3 +188,21 @@ export const getEmployees = () => api.get(url.EMPLOYEES+'/employees');
 export const createUpdateEmployee = data => api.create(url.EMPLOYEES,data);
 
 export const deleteEmployee = use_id => api.delete(url.EMPLOYEES + "/delete/" + use_id);
+
+
+
+
+/*************************/
+/*        Salary       */
+/*************************/
+
+
+
+export const getSalary = year => api.get(url.SALARY+'/'+year);
+
+export const createUpdateSalary = data => api.create(url.SALARY,data);
+
+
+// export const createUpdateEmployee = data => api.create(url.EMPLOYEES,data);
+
+// export const deleteEmployee = use_id => api.delete(url.EMPLOYEES + "/delete/" + use_id);
