@@ -592,9 +592,15 @@ const TransactionBank = () => {
                               </div>
                             </Col>
                           )}
-                          {
+                          {/* {validation.values.file_justify !== ""
 
-                          }
+                          &&
+
+                        //   <div className="ratio ratio-16x9">
+                        //                     <iframe className="rounded" src="https://www.youtube.com/embed/1y_kfWUCFDQ" title="YouTube video" allowFullScreen></iframe>
+                        //                 </div>
+
+                        //   */}
                         </div>
                       </Form>
                     </div>
