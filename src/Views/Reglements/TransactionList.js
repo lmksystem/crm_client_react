@@ -52,7 +52,7 @@ import Select from "react-select";
 moment.locale('fr')
 
 const TransactionList = () => {
-  document.title = "Liste facture  | Countano";
+  document.title = "Règlements | Countano";
 
   const dispatch = useDispatch();
 
@@ -240,7 +240,7 @@ const TransactionList = () => {
       <div className="page-content">
 
         <Container fluid>
-          <BreadCrumb title="Factures" pageTitle="Liste" />
+          <BreadCrumb title="Règlements" pageTitle="Facturation" />
           <h3>Statistique de l'année</h3>
           <Row>
             <div xl={12}>

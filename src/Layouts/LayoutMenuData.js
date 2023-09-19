@@ -218,7 +218,7 @@ const Navdata = () => {
     },
     {
       id: "banque",
-      label: "Banque",
+      label: "Banque / Achat",
       icon: "mdi mdi-bank",
       link: "/#",
       click: function (e) {
@@ -232,7 +232,7 @@ const Navdata = () => {
         {
           id: "transactions-bancaires",
           label: "Transactions bancaires",
-          link: "/#",
+          link: "/transaction/bank",
           isChildItem: false,
           click: function (e) {
             e.preventDefault();
@@ -267,23 +267,6 @@ const Navdata = () => {
       },
       stateVariables: isRapport,
       subItems: [
-
-      ],
-    },
-    {
-      id: "paie",
-      label: "Paie - WIP",
-      icon: "las la-euro-sign",
-      link: "/#",
-      click: function (e) {
-        e.preventDefault();
-        setIsPaie(!isPaie);
-        setIscurrentState('Paie');
-        updateIconSidebar(e);
-      },
-      stateVariables: isPaie,
-      subItems: [
-
 
       ],
     },

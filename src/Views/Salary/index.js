@@ -1,14 +1,10 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { Link } from "react-router-dom";
-import { isEmpty } from "lodash";
-import * as moment from "moment";
 
 import {
   Col,
   Container,
   Row,
   Card,
-  CardHeader,
   CardBody,
   UncontrolledDropdown,
   DropdownToggle,
@@ -21,7 +17,6 @@ import {
   ModalBody,
   Form,
   ModalFooter,
-  Table,
   FormFeedback,
   ListGroup,
   ListGroupItem,
@@ -32,11 +27,10 @@ import DeleteModal from "../../Components/Common/DeleteModal";
 
 //Import actions
 import {
-  deleteEmployee as onDeleteEmployee,
   getEmployees as onGetEmployees,
   getSalary as onGetSalary,
   createUpdateSalary as onCreateUpdateSalary,
-  deleteSalary as onDeleteSalary
+  deleteSalary as onDeleteSalary,
 } from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
@@ -63,15 +57,12 @@ const Salary = () => {
   );
   const yearActual = new Date().getFullYear().toString();
 
-
-  const [salary, setSalary] = useState({});//Objet salaire que l'ion sélectionne pour action 
+  const [salary, setSalary] = useState({}); //Objet salaire que l'ion sélectionne pour action
   const [dateFormat, setDateFormat] = useState(yearActual);
   const [isEdit, setIsEdit] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteModalMulti, setDeleteModalMulti] = useState(false);
-  const [show, setShow] = useState(false);
   const [modal, setModal] = useState(false);
-  const [employeesList, setEmployeesList] = useState(employees);
   const [dateMonthChoice, setDateMonthChoice] = useState(null);
 
   const toggle = useCallback(() => {
@@ -97,59 +88,64 @@ const Salary = () => {
   };
 
   function onDateFormatChange(e) {
-    setDateMonthChoice(null)
+    setDateMonthChoice(null);
     setDateFormat(e.target.rawValue);
-    console.log(e.target.rawValue);
   }
-    // Créez un objet de correspondance entre les noms des mois et leurs indices
-    const moisIndices = {
-      1: "Janvier",
-      2: "Février",
-      3: "Mars",
-      4: "Avril",
-      5: "Mai",
-      6: "Juin",
-      7: "Juillet",
-      8: "Août",
-      9: "Septembre",
-      10: "Octobre",
-      11: "Novembre",
-      12: "Décembre",
-    };
+  // Créez un objet de correspondance entre les noms des mois et leurs indices
+  const moisIndices = {
+    1: "Janvier",
+    2: "Février",
+    3: "Mars",
+    4: "Avril",
+    5: "Mai",
+    6: "Juin",
+    7: "Juillet",
+    8: "Août",
+    9: "Septembre",
+    10: "Octobre",
+    11: "Novembre",
+    12: "Décembre",
+  };
 
-    // Créez un objet pour organiser les données par mois
-    const moisDonnees = {};
+  // Créez un objet pour organiser les données par mois
+  const moisDonnees = {};
 
   function MoisComponent() {
-
-
     salaries?.forEach((item) => {
-      console.log(item)
       const moisNom = moisIndices[item?.mois];
       if (!moisDonnees[moisNom]) {
         moisDonnees[moisNom] = [];
       }
       moisDonnees[moisNom].push(item);
     });
-
     // Affichez tous les mois de l'année, même ceux sans données
-
     return (
       <div>
         {Object.keys(moisIndices).map((moisIndex) => {
           const moisNom = moisIndices[moisIndex];
-          let classBySelectMonth =moisNom===dateMonthChoice?"list-group-item list-group-item-action list-group-item-info":`list-group-item list-group-item-action ${moisDonnees[moisNom]?.length>0?" ":"disabled"}`
+          let classBySelectMonth =
+            moisNom === dateMonthChoice
+              ? "list-group-item list-group-item-action list-group-item-info"
+              : `list-group-item list-group-item-action ${
+                  moisDonnees[moisNom]?.length > 0 ? " " : "disabled"
+                }`;
           return (
             <button
-            disabled={moisDonnees[moisNom]?.length<=0?true:false}
-            onClick={()=>{
-              setDateMonthChoice(moisNom)
-            }}
+              disabled={moisDonnees[moisNom]?.length <= 0 ? true : false}
+              onClick={() => {
+                setDateMonthChoice(moisNom);
+              }}
               key={moisIndex}
               type="button"
               className={classBySelectMonth}
             >
-              <p className={`p-0 m-0 ${moisDonnees[moisNom]?.length>0?"fw-bolder":''}`}>{moisNom}</p>
+              <p
+                className={`p-0 m-0 ${
+                  moisDonnees[moisNom]?.length > 0 ? "fw-bolder" : ""
+                }`}
+              >
+                {moisNom}
+              </p>
             </button>
           );
         })}
@@ -214,8 +210,6 @@ const Salary = () => {
   const handleSalaryClick = useCallback(
     (arg) => {
       const salary = arg;
-      console.log("salary handleSalaryClick",salary);
-    
       setSalary({
         id: salary?.sal_id,
         salaray_use_id: salary.sal_use_fk,
@@ -255,7 +249,6 @@ const Salary = () => {
   const deleteMultiple = () => {
     const checkall = document.getElementById("checkBoxAll");
     selectedCheckBoxDelete.forEach((element) => {
-      console.log(element.value)
       dispatch(onDeleteSalary(element.value));
       setTimeout(() => {
         toast.clearWaitingQueue();
@@ -302,7 +295,7 @@ const Salary = () => {
         accessor: "sal_id",
         hiddenColumns: true,
         Cell: (cell) => {
-          return <input type="hidden"   value={cell.row.original.sal_id}  />;
+          return <input type="hidden" value={cell.row.original.sal_id} />;
         },
       },
       {
@@ -388,21 +381,11 @@ const Salary = () => {
     dispatch(onGetEmployees());
   }, [dispatch]);
 
-
   useEffect(() => {
-    if (show) {
-      setTimeout(() => {
-        document.getElementById("start-anime").classList.add("show");
-      }, 200);
-    }
-  }, [show]);
-
-
-  useEffect(() => {
-    if(dateFormat?.length>3){
+    if (dateFormat?.length > 3) {
       dispatch(onGetSalary(dateFormat));
     }
-  }, [dispatch,dateFormat,salary]);
+  }, [dispatch, dateFormat, salary]);
 
   document.title = "Salaires | Countano";
   return (
@@ -468,11 +451,11 @@ const Salary = () => {
             </Col>
 
             <Row>
-              <Col className="view-animate" xxl={show ? 9 : 12}>
+              <Col className="view-animate">
                 <Card id="contactList">
                   <CardBody className="pt-0">
                     <Row>
-                      <Col lg={4}>
+                      <Col lg={2}>
                         {dateFormat.length > 3 && (
                           <ListGroup className=" mt-3">
                             <ListGroupItem
@@ -486,28 +469,27 @@ const Salary = () => {
                           </ListGroup>
                         )}
                       </Col>
-                      <Col lg={8}>
-                     { dateFormat?.length > 3 &&
-                          dateMonthChoice &&
-                        <div>
-                          {isSalarySuccess ? (
-                            <TableContainer
-                              columns={columns}
-                              data={moisDonnees[dateMonthChoice] || []}
-                              isGlobalFilter={true}
-                              customPageSize={8}
-                              className="custom-header-css"
-                              divClass="table-responsive table-card mb-3"
-                              tableClass="align-middle table-nowrap"
-                              theadClass="table-light"
-                              isContactsFilter={true}
-                              SearchPlaceholder="Recherche..."
-                            />
-                          ) : (
-                            <Loader error={error} />
-                          )}
-                        </div>
-                        }
+                      <Col lg={10}>
+                        {dateFormat?.length > 3 && dateMonthChoice && (
+                          <div>
+                            {isSalarySuccess ? (
+                              <TableContainer
+                                columns={columns}
+                                data={moisDonnees[dateMonthChoice] || []}
+                                isGlobalFilter={true}
+                                customPageSize={8}
+                                className="custom-header-css"
+                                divClass="table-responsive table-card mb-3"
+                                tableClass="align-middle table-nowrap"
+                                theadClass="table-light"
+                                isContactsFilter={true}
+                                SearchPlaceholder="Recherche..."
+                              />
+                            ) : (
+                              <Loader error={error} />
+                            )}
+                          </div>
+                        )}
                       </Col>
                     </Row>
 
@@ -564,7 +546,7 @@ const Salary = () => {
                                   <option disabled={true} value={""}>
                                     Choisir un employé
                                   </option>
-                                  {employeesList?.map((e, i) => (
+                                  {employees?.map((e, i) => (
                                     <option key={i} value={e.use_id}>
                                       {e.use_lastname} {e.use_firstname}
                                     </option>

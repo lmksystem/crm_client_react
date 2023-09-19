@@ -361,11 +361,6 @@ const Collaborateurs = () => {
           // console.log(collaborateur);
           return (
             <ul className="list-inline hstack gap-2 mb-0">
-              {/* <li className="list-inline-item edit" title="Call">
-                <a href={`tel:${collaborateur.ent_phone}`} className="text-muted d-inline-block">
-                  <i className="ri-phone-line fs-16"></i>
-                </a>
-              </li> */}
               <li className="list-inline-item" title="View">
                 <Link to="#"
                   onClick={() => { setInfo(collaborateur); setShow(true); }}

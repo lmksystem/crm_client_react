@@ -27,6 +27,7 @@ import Register from "../Views/Authentication/Register";
 import TransactionList from "../Views/Reglements/TransactionList";
 import Employees from "../Views/Employees";
 import Salary from "../Views/Salary";
+import TransactionBank from "../Views/Transaction";
 // import PdfPreview from "../Views/Pdf";
 
 
@@ -50,15 +51,17 @@ const authProtectedRoutes = [
   { path: "/devis/creation", component: <DevisCreate /> },
   { path: "/devis/edition/:id", component: <DevisCreate /> },
 
-  // Transaction
+  // Réglement - Transaction
   { path: "/transaction/liste", component: <TransactionList /> },
 
   // Employees
   { path: "/employees", component: <Employees /> },
   { path: "/salary", component: <Salary /> },
 
+  // Transactions bancaires
 
-
+  { path: "/transaction/bank", component: <TransactionBank /> },
+  
 
   {
     path: "/",

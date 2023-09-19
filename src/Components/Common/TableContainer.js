@@ -96,6 +96,7 @@ const TableContainer = ({
   thClass,
   divClass,
   pathToDetail,
+  actionItem,
 }) => {
   const {
     getTableProps,
@@ -215,7 +216,7 @@ const TableContainer = ({
               }
               return (
                 <Fragment key={row.getRowProps().key}>
-                  <tr style={{ cursor: "pointer" }} onClick={() => pathToDetail ? navigate(pathToDetail + row.original.header[key]) : null}>
+                  <tr style={{ cursor: "pointer" }} onClick={() => pathToDetail ? navigate(pathToDetail + row.original.header[key]) : (actionItem ? actionItem(row) :null)}>
                     {row.cells.map((cell) => {
                       return (
                         <td key={cell.id} {...cell.getCellProps()}>
