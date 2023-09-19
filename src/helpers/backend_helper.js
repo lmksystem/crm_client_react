@@ -202,6 +202,7 @@ export const getSalary = year => api.get(url.SALARY+'/'+year);
 
 export const createUpdateSalary = data => api.create(url.SALARY,data);
 
+export const deleteSalary= sal_id => api.delete(url.SALARY + "/delete/" + sal_id);
 
 // export const createUpdateEmployee = data => api.create(url.EMPLOYEES,data);
 

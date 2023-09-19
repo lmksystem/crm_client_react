@@ -35,7 +35,8 @@ import {
   deleteEmployee as onDeleteEmployee,
   getEmployees as onGetEmployees,
   getSalary as onGetSalary,
-  createUpdateSalary as onCreateUpdateSalary
+  createUpdateSalary as onCreateUpdateSalary,
+  deleteSalary as onDeleteSalary
 } from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
@@ -62,9 +63,6 @@ const Salary = () => {
   );
   const yearActual = new Date().getFullYear().toString();
 
-  useEffect(() => {
-    dispatch(onGetEmployees());
-  }, [dispatch]);
 
   const [salary, setSalary] = useState({});//Objet salaire que l'ion sélectionne pour action 
   const [dateFormat, setDateFormat] = useState(yearActual);
@@ -86,9 +84,9 @@ const Salary = () => {
   }, [modal]);
 
   // Delete Data
-  const handleDeleteContact = () => {
+  const handleDeleteSalary = () => {
     if (salary) {
-      dispatch(onDeleteEmployee(salary?.sal_id));
+      dispatch(onDeleteSalary(salary?.sal_id));
       setDeleteModal(false);
     }
   };
@@ -257,7 +255,8 @@ const Salary = () => {
   const deleteMultiple = () => {
     const checkall = document.getElementById("checkBoxAll");
     selectedCheckBoxDelete.forEach((element) => {
-      // dispatch(onDeleteEmployee(element.value));
+      console.log(element.value)
+      dispatch(onDeleteSalary(element.value));
       setTimeout(() => {
         toast.clearWaitingQueue();
       }, 3000);
@@ -291,7 +290,7 @@ const Salary = () => {
             <input
               type="checkbox"
               className="contactCheckBox form-check-input"
-              value={cellProps.row.original.use_id}
+              value={cellProps.row.original.sal_id}
               onChange={() => deleteCheckbox()}
             />
           );
@@ -384,6 +383,12 @@ const Salary = () => {
     [handleSalaryClick, checkedAll, salaries]
   );
 
+  //Récupération des employés pour le select du formulaire
+  useEffect(() => {
+    dispatch(onGetEmployees());
+  }, [dispatch]);
+
+
   useEffect(() => {
     if (show) {
       setTimeout(() => {
@@ -405,7 +410,7 @@ const Salary = () => {
       <div className="page-content">
         <DeleteModal
           show={deleteModal}
-          onDeleteClick={handleDeleteContact}
+          onDeleteClick={handleDeleteSalary}
           onCloseClick={() => setDeleteModal(false)}
         />
 
@@ -495,7 +500,6 @@ const Salary = () => {
                               divClass="table-responsive table-card mb-3"
                               tableClass="align-middle table-nowrap"
                               theadClass="table-light"
-                              // handleContactClick={handleContactClicks}
                               isContactsFilter={true}
                               SearchPlaceholder="Recherche..."
                             />

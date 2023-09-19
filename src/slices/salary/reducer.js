@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { addNewTransaction, createUpdateSalary, deleteTransaction, getSalary, getTransaction, getTransactionByMonth, getTransactionList, getTransactionPricePeriode } from "./thunk";
+import { addNewTransaction, createUpdateSalary, deleteSalary, deleteTransaction, getSalary, getTransaction, getTransactionByMonth, getTransactionList, getTransactionPricePeriode } from "./thunk";
 import { toast } from "react-toastify";
 import moment from "moment";
 moment.locale('fr')
@@ -33,41 +33,17 @@ const salarySlice = createSlice({
       state.isSalarySuccess = false;
       state.error = action.payload || "Erreur lors de la recupération !"
     });
-    // builder.addCase(deleteTransaction.fulfilled, (state, action) => {
-    //   toast.success('Transaction supprimer', { autoClose: 3000 })
-    //   state.isTransactionsSuccess = true;
-    //   state.transactions = state.transactions.filter((t) => t.tra_id != action.payload.data)
-    // })
-    // builder.addCase(deleteTransaction.rejected, (state, action) => {
-    //   toast.error('Erreur de suppression !', { autoClose: 3000 })
-    //   state.isTransactionsSuccess = false;
-    //   state.error = action.payload || "Erreur de suppression !"
-    // });
-    // builder.addCase(getTransactionList.fulfilled, (state, action) => {
-    //   state.isTransactionsListSuccess = true;
-    //   state.transactionsList = action.payload.data
-    // })
-    // builder.addCase(getTransactionList.rejected, (state, action) => {
-    //   state.isTransactionsListSuccess = false;
-    //   state.error = action.payload || "Erreur lors de la recupération !"
-    // });
-    // builder.addCase(getTransactionPricePeriode.fulfilled, (state, action) => {
-    //   state.isTransactionsSuccess = true;
-    //   state.transactionsPeriodPrice = action.payload.data
-    // });
-    // builder.addCase(getTransactionPricePeriode.rejected, (state, action) => {
-    //   state.isTransactionsSuccess = false;
-    //   state.error = action.payload || "Erreur lors de la recupération !"
-    // });
-    // builder.addCase(getTransactionByMonth.fulfilled, (state, action) => {
-    //   state.isTransactionsSuccess = true;
-    //   state.transactionByMonth = action.payload.data
-    // });
-    // builder.addCase(getTransactionByMonth.rejected, (state, action) => {
-    //   state.isTransactionsSuccess = false;
-    //   state.error = action.payload || "Erreur lors de la recupération !"
-    // });
-
+    builder.addCase(deleteSalary.fulfilled, (state, action) => {
+      toast.success('Salaire supprimé', { autoClose: 3000 })
+      state.isSalarySuccess = true;
+      state.salaries = state.salaries.filter((s) => s.sal_id != action.payload.data)
+    })
+    builder.addCase(deleteSalary.rejected, (state, action) => {
+      toast.error('Erreur de suppression !', { autoClose: 3000 })
+      state.isSalarySuccess = false;
+      state.error = action.payload || "Erreur de suppression !"
+    });
+    
   }
 });
 
