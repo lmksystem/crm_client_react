@@ -243,7 +243,7 @@ const Navdata = () => {
         {
           id: "factures-achats",
           label: "Factures Achats",
-          link: "/#",
+          link: "/achat",
           isChildItem: false,
           click: function (e) {
             e.preventDefault();

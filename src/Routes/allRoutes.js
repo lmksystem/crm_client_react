@@ -28,6 +28,7 @@ import TransactionList from "../Views/Reglements/TransactionList";
 import Employees from "../Views/Employees";
 import Salary from "../Views/Salary";
 import TransactionBank from "../Views/Transaction";
+import Achats from "../Views/Achat";
 // import PdfPreview from "../Views/Pdf";
 
 
@@ -61,6 +62,10 @@ const authProtectedRoutes = [
   // Transactions bancaires
 
   { path: "/transaction/bank", component: <TransactionBank /> },
+
+  // Achat
+  { path: "/achat", component: <Achats /> },
+
   
 
   {

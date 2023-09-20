@@ -113,6 +113,14 @@ export const getTransactionPricePeriode = data => api.get(url.TRANSACTION + '/pr
 // get transaction sur period
 export const getTransactionByMonth = data => api.get(url.TRANSACTION + '/byMonth/'+data.year);
 
+
+/*************************/
+/*   transaction bank    */
+/*************************/
+
+// get transaction bank
+export const getTransactionBank = data => api.get(url.TRANSACTION_BANK+'/periode/'+data.dateDebut+ '/' +data.dateFin);
+
 /*************************/
 /*        Company        */
 /*************************/

@@ -469,17 +469,18 @@ const Salary = () => {
                           </ListGroup>
                         )}
                       </Col>
-                      <Col lg={10}>
+                      <Col lg={10} className="px-4">
                         {dateFormat?.length > 3 && dateMonthChoice && (
                           <div>
                             {isSalarySuccess ? (
                               <TableContainer
+                                
                                 columns={columns}
                                 data={moisDonnees[dateMonthChoice] || []}
                                 isGlobalFilter={true}
                                 customPageSize={8}
                                 className="custom-header-css"
-                                divClass="table-responsive table-card mb-3"
+                                divClass="table-responsive table-card mb-3 "
                                 tableClass="align-middle table-nowrap"
                                 theadClass="table-light"
                                 isContactsFilter={true}

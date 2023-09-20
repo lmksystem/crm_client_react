@@ -294,6 +294,9 @@ export const DEVIS = "/v1/devis";
 // TRANSACTION
 export const TRANSACTION = "/v1/transaction";
 
+// TRANSACTION BANK
+export const TRANSACTION_BANK = "/v1/transactionBank";
+
 // Employee
 export const EMPLOYEES = "/v1/user";
 

@@ -195,8 +195,8 @@ export const updateLead = lead => api.update(url.UPDATE_LEAD + '/' + lead._id, l
 export const deleteLead = lead => api.delete(url.DELETE_LEAD + '/' + lead);
 
 // Crypto
-// Transation
-export const getTransationList = () => api.get(url.GET_TRANSACTION_LIST);
+// Transaction
+export const getTransactionList = () => api.get(url.GET_TRANSACTION_LIST);
 
 // Order List
 export const getOrderList = () => api.get(url.GET_ORDRER_LIST);

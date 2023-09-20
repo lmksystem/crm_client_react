@@ -41,7 +41,7 @@ import GestionReducer from "./gestion/reducer";
 // Company 
 import CompanyReducer from "./company/reducer";
 
-// Company 
+// Product 
 import ProductReducer from "./product/reducer";
 
 //Invoice
@@ -50,8 +50,11 @@ import InvoiceReducer from "./invoice/reducer";
 //Devis
 import DevisReducer from "./devis/reducer";
 
-//Devis
+//Transaction
 import TransactionReducer from "./transaction/reducer";
+
+//TransactionBank
+import TransactionBankReducer from "./transactionBank/reducer";
 
 //Salary
 import SalaryReducer from "./salary/reducer";
@@ -80,6 +83,7 @@ const appReducer = combineReducers({
   Company: CompanyReducer,
   Devis: DevisReducer,
   Transaction: TransactionReducer,
+  TransactionBank:TransactionBankReducer,
   Employee :EmployeeReducer,
   Salary :SalaryReducer,
 

@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+  useRef,
+} from "react";
 import { Link } from "react-router-dom";
 import { isEmpty } from "lodash";
 import * as moment from "moment";
@@ -8,35 +14,19 @@ import {
   Container,
   Row,
   Card,
-  CardHeader,
   CardBody,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
   Label,
   Input,
-  Modal,
-  ModalHeader,
-  ModalBody,
   Form,
-  ModalFooter,
-  Table,
-  FormFeedback,
   ListGroup,
   ListGroupItem,
 } from "reactstrap";
 import Flatpickr from "react-flatpickr";
 
 import BreadCrumb from "../../Components/Common/BreadCrumb";
-import DeleteModal from "../../Components/Common/DeleteModal";
 
 //Import actions
-import {
-  deleteEmployee as onDeleteEmployee,
-  getEmployees as onGetEmployees,
-  createUpdateEmployee as onCreateUpdateEmployee,
-} from "../../slices/thunks";
+import { getTransactionBank as onGetTransactionBank } from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
 import TableContainer from "../../Components/Common/TableContainer";
@@ -46,84 +36,41 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 
 import Loader from "../../Components/Common/Loader";
-import { toast, ToastContainer } from "react-toastify";
+import {  ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SimpleBar from "simplebar-react";
 
 const TransactionBank = () => {
   const dispatch = useDispatch();
-  const { isEmployeSuccess, error, employees } = useSelector((state) => ({
-    isEmployeSuccess: state.Employee.isEmployeSuccess,
-    employees: state.Employee.employees,
-    error: state.Employee.error,
-  }));
+  const { isTransactionBankSuccess, error, transactions } = useSelector(
+    (state) => ({
+      isTransactionBankSuccess: state.TransactionBank.isTransactionBankSuccess,
+      transactions: state.TransactionBank.transactionsBank,
+      error: state.Employee.error,
+    })
+  );
+  const flatpickrRef = useRef();
+  const dateActuelle = moment(); // Obtenir la date actuelle
+  const dateNow = dateActuelle.format('DD MMM YYYY')
+  const premiereDateAnnee = dateActuelle.startOf('year'); // Obtenir la première date de l'année
+  const formattedDate = premiereDateAnnee.format('DD MMM YYYY'); // Formatage de la date
+  const [perdiodeCalendar,setPeriodeCalendar] = useState({
+      start:formattedDate.replace(/\./g, ','),
+      end:dateNow,
+  })
 
-  useEffect(() => {
-    dispatch(onGetEmployees());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (!isEmpty(employees)) {
-      setEmployee(employees);
-      setIsEdit(false);
-    }
-  }, [employees]);
-
-  const [employee, setEmployee] = useState({});
-
-  const [isEdit, setIsEdit] = useState(false);
-
-  const dataForceTransacBank = [
-    {
-      tba_id: 1,
-      tba_date: "2023-02-01",
-      tba_desc:
-        "Lorem ipsum dolor sit amet, ut aliquip ex ea commodo consequat. ",
-      ent_name: "Banque",
-      tba_debit: 10.55,
-      tba_credit: "",
-      tba_assoc: "Validé",
-    },
-    {
-      tba_id: 2,
-      tba_date: "2023-02-01",
-      tba_desc:
-        "Lorem ipsum dolor sit amet, ut aliquip ex ea commodo consequat.",
-      ent_name: "Client",
-      tba_debit: "",
-      tba_credit: 40.8,
-      tba_assoc: "Effectué",
-    },
-  ];
-
-  const [collaborateurList, setCollaborateurList] = useState([]);
-  const [collaborateur, setCollaborateur] = useState(null);
-
-  //delete Conatct
-  const [deleteModal, setDeleteModal] = useState(false);
+  const [transaction, setTransaction] = useState({});
 
   const [show, setShow] = useState(false);
 
-  const [modal, setModal] = useState(false);
-
   const toggle = useCallback(() => {
-    console.log("modal", modal);
-    if (modal) {
-      setModal(false);
-      setEmployee({});
-      setCollaborateur(null);
+    if (show) {
+      setShow(false);
+      setTransaction({});
     } else {
-      setModal(true);
+      setShow(true);
     }
-  }, [modal]);
-
-  // Delete Data
-  const handleDeleteContact = () => {
-    if (employee) {
-      dispatch(onDeleteEmployee(employee?.use_id));
-      setDeleteModal(false);
-    }
-  };
+  }, [show]);
 
   // validation
   const validation = useFormik({
@@ -135,8 +82,11 @@ const TransactionBank = () => {
       //   firstname: (employee && employee.firstname) || "",
       //   email: (employee && employee.email) || "",
       //   date_entree: (employee && employee.date_entree) || "",
-      nojustify: false,
-      file_justify: "",
+      nojustify:
+        (transaction && transaction.tba_justify && transaction.tba_justify === 0
+          ? true
+          : false) || false,
+      file_justify: (transaction && transaction.tdo_file_name) || "",
     },
     // validationSchema: Yup.object({
     //   lastname: Yup.string().required("Veuillez entrer un nom"),
@@ -174,25 +124,6 @@ const TransactionBank = () => {
     },
   });
 
-  // Update Data
-  const handleContactClick = useCallback(
-    (arg) => {
-      const employee = arg;
-
-      setEmployee({
-        id: employee?.use_id,
-        lastname: employee.use_lastname,
-        firstname: employee.use_firstname,
-        email: employee.use_email,
-        date_entree: employee?.usa_date_entree,
-      });
-
-      setIsEdit(true);
-      toggle();
-    },
-    [toggle]
-  );
-
   // Column
   const columns = useMemo(
     () => [
@@ -206,7 +137,7 @@ const TransactionBank = () => {
       },
       {
         Header: "Date",
-        accessor: "tba_date",
+        accessor: "tba_bkg_date",
         filterable: false,
       },
       {
@@ -215,19 +146,32 @@ const TransactionBank = () => {
         filterable: false,
       },
       {
-        Header: "Fournisseur/Client",
-        accessor: "ent_name",
-        filterable: false,
-      },
-      {
         Header: "Débit",
         accessor: "tba_debit",
         filterable: false,
+        Cell: (cell) => {
+          return (
+            <div className="d-flex align-items-center">
+              <p className="p-0 m-0">
+                {cell.value != null ? cell.value + "€" : ""}
+              </p>
+            </div>
+          );
+        },
       },
       {
         Header: "Crédit",
         accessor: "tba_credit",
         filterable: false,
+        Cell: (cell) => {
+          return (
+            <div className="d-flex align-items-center">
+              <p className="p-0 m-0">
+                {cell.value != null ? cell.value + "€" : ""}
+              </p>
+            </div>
+          );
+        },
       },
       {
         Header: "Association",
@@ -235,7 +179,7 @@ const TransactionBank = () => {
         filterable: false,
       },
     ],
-    [handleContactClick, collaborateurList, employee]
+    [transaction]
   );
 
   useEffect(() => {
@@ -244,14 +188,28 @@ const TransactionBank = () => {
         document.getElementById("start-anime").classList.add("show");
       }, 400);
     } else {
-      // setTimeout(() => {
       document.getElementById("start-anime").classList.remove("show");
-      //   }, 200);
     }
   }, [show]);
 
-  // SideBar Contact Deatail
-  const [info, setInfo] = useState([]);
+  useEffect(() => {
+    dispatch(
+      onGetTransactionBank({
+        dateDebut: perdiodeCalendar.start
+          ? moment(perdiodeCalendar.start).format("YYYY-MM-DD")
+          : null,
+        dateFin: perdiodeCalendar.end
+          ? moment(perdiodeCalendar.end).format("YYYY-MM-DD")
+          : null,
+      })
+    );
+  }, [dispatch, perdiodeCalendar]);
+
+  useEffect(() => {
+    if (!isEmpty(transactions)) {
+      setTransaction({});
+    }
+  }, [transactions]);
 
   const partiesDuChemin = validation?.values?.file_justify.split("\\"); // Divise le chemin en morceaux en fonction de "\"
   const nomDuFichier = partiesDuChemin[partiesDuChemin.length - 1];
@@ -265,66 +223,88 @@ const TransactionBank = () => {
             pageTitle="Banque / Achat"
           />
           <Row>
-            <div className="mt-3 mt-lg-0">
-              <form action="#">
-                <Row className="g-3 mb-0 align-items-center">
-                  <div className="col-sm-auto">
-                    <div className="input-group">
-                      <Flatpickr
-                        className="form-control border-0 fs-13 dash-filter-picker shadow"
-                        options={{
-                          locale: "fr",
-                          mode: "range",
-                          dateFormat: "d M, Y",
-                          // defaultDate: [perdiodeCalendar?.start,perdiodeCalendar?.end]
-                        }}
-                        onChange={(periodDate) => {
-                          console.log(periodDate);
-
-                          if (periodDate.length == 2) {
-                            setPeriodeCalendar({
-                              start: moment(periodDate[0]).format("YYYY-MM-DD"),
-                              end: moment(periodDate[1]).format("YYYY-MM-DD"),
-                            });
-                          } else if (periodDate.length == 1) {
-                            setPeriodeCalendar({
-                              start: moment(periodDate[0]).format("YYYY-MM-DD"),
-                              end: moment(periodDate[0]).format("YYYY-MM-DD"),
-                            });
-                          } else {
+            <Col className="view-animate" xxl={show ? 7 : 12}>
+              <div className="mt-3 mt-lg-0">
+                <form action="#">
+                  <Row className="g-3 mb-0 align-items-center justify-content-end">
+                    <div className="col-sm-auto d-flex align-items-center">
+                      {flatpickrRef.current?.flatpickr?.selectedDates?.length >
+                        0 && (
+                        <i
+                          className="las la-calendar-times la-lg mx-3"
+                          onClick={() => {
                             setPeriodeCalendar({
                               start: null,
                               end: null,
                             });
-                          }
-                        }}
-                      />
-                      <div className="input-group-text bg-secondary border-secondary text-white">
-                        <i className="ri-calendar-2-line"></i>
+                            flatpickrRef.current.flatpickr.clear();
+                            if (show) {
+                              toggle();
+                            }
+                          }}
+                          style={{ color: "red" }}
+                        ></i>
+                      )}
+                      <div className="input-group">
+                        <Flatpickr
+                          ref={flatpickrRef}
+                          className="form-control border-0 fs-13 dash-filter-picker shadow"
+                          options={{
+                            locale: "fr",
+                            mode: "range",
+                            dateFormat: "d M, Y",
+                            defaultDate: [perdiodeCalendar?.start,perdiodeCalendar?.end]
+                          }}
+                          onChange={(periodDate) => {
+                            if (show) {
+                              toggle();
+                            }
+                            if (periodDate.length == 2) {
+                              setPeriodeCalendar({
+                                start: moment(periodDate[0]).format(
+                                  "YYYY-MM-DD"
+                                ),
+                                end: moment(periodDate[1]).format("YYYY-MM-DD"),
+                              });
+                            } else if (periodDate.length == 1) {
+                              setPeriodeCalendar({
+                                start: moment(periodDate[0]).format(
+                                  "YYYY-MM-DD"
+                                ),
+                                end: moment(periodDate[0]).format("YYYY-MM-DD"),
+                              });
+                            } else {
+                              setPeriodeCalendar({
+                                start: null,
+                                end: null,
+                              });
+                            }
+                          }}
+                        />
+                        <div className="input-group-text bg-secondary border-secondary text-white">
+                          <i className="ri-calendar-2-line"></i>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  {/* <div className="col-auto">
-                                        <button type="button" className="btn btn-soft-success"><i className="ri-add-circle-line align-middle me-1"></i> Add Product</button>
-                                    </div>
-                                    <div className="col-auto">
-                                        <button type="button" className="btn btn-soft-info btn-icon waves-effect waves-light layout-rightside-btn" onClick={props.rightClickBtn} ><i className="ri-pulse-line"></i></button>
-                                    </div> */}
-                </Row>
-              </form>
-            </div>
-            <Col className="view-animate" xxl={show ? 7 : 12}>
+                  </Row>
+                </form>
+              </div>
               <Card id="contactList">
                 <CardBody className="pt-0">
                   <div>
-                    {isEmployeSuccess ? (
+                    {isTransactionBankSuccess ? (
                       <TableContainer
                         columns={columns}
-                        data={dataForceTransacBank || []}
+                        data={transactions || []}
                         actionItem={(row) => {
                           const transData = row.original;
-                          setInfo(transData);
                           setShow(true);
+                          setTransaction({
+                            id: transData.tba_id,
+                            nojustify:
+                              transData.tba_justify == 1 ? false : true,
+                            file_justify: transData.tdo_file_name,
+                          });
                         }}
                         isGlobalFilter={true}
                         isAddUserList={false}
@@ -333,7 +313,6 @@ const TransactionBank = () => {
                         divClass="table-responsive table-card mb-3"
                         tableClass="align-middle table-nowrap"
                         theadClass="table-light"
-                        // handleContactClick={handleContactClicks}
                         isContactsFilter={true}
                         SearchPlaceholder="Recherche..."
                       />
@@ -348,11 +327,7 @@ const TransactionBank = () => {
             <Col xxl={show ? 5 : 0}>
               <div id="start-anime">
                 <Card id="contact-view-detail">
-                  <div
-                    onClick={() => {
-                      setShow(false);
-                    }}
-                  >
+                  <div onClick={toggle}>
                     <i className="las la-chevron-circle-left la-2x m-2"></i>
                   </div>
 
@@ -372,7 +347,7 @@ const TransactionBank = () => {
                         <div className="p-3">
                           <Input type="hidden" id="id-field" />
 
-                          {validation?.values?.file_justify === "" && (
+                          {transaction?.file_justify === null && (
                             <Col lg={8} className="mt-3">
                               <div className="form-switch">
                                 <Input
@@ -381,7 +356,7 @@ const TransactionBank = () => {
                                   className="form-check-input"
                                   type="checkbox"
                                   role="switch"
-                                  checked={validation.values.nojustify || false}
+                                  checked={transaction.nojustify || false}
                                   onChange={validation.handleChange}
                                   onBlur={validation.handleBlur}
                                 />
@@ -395,203 +370,204 @@ const TransactionBank = () => {
                             </Col>
                           )}
 
-                          {validation?.values?.file_justify !== "" && (
+                          {transaction?.file_justify !== null && (
                             <Row className="mt-3">
-                            <Col lg={3}>
-                              <p>{nomDuFichier}</p>
-                            </Col>
-                            <Col lg={3} >
+                              <Col lg={3}>
+                                <p>{nomDuFichier}</p>
+                              </Col>
+                              <Col lg={3}>
                                 <i className="lab la-readme la-lg mx-2"></i>
-                                <i className="ri-delete-bin-fill text-muted la-lg  mx-2"></i>                                
-                            </Col>
+                                <i className="ri-delete-bin-fill text-muted la-lg  mx-2"></i>
+                              </Col>
                             </Row>
                           )}
 
-                          {!validation?.values?.nojustify && validation?.values?.file_justify === "" && (
-                            <Col lg={11} className="mt-4">
-                              <div>
-                                <p className="text-muted">
-                                  Sélectionner un justificatif d'achat /
-                                  Importer le depuis vos fichiers
-                                </p>
-                                <div id="users">
-                                  <Row className="mb-2">
-                                    <Col lg={5}>
-                                      <div>
-                                        <input
-                                          className="search form-control"
-                                          placeholder="Chercher justificatif"
+                          {!transaction.nojustify &&
+                            transaction?.file_justify == null && (
+                              <Col lg={11} className="mt-4">
+                                <div>
+                                  <p className="text-muted">
+                                    Sélectionner un justificatif d'achat /
+                                    Importer le depuis vos fichiers
+                                  </p>
+                                  <div id="users">
+                                    <Row className="mb-2">
+                                      <Col lg={5}>
+                                        <div>
+                                          <input
+                                            className="search form-control"
+                                            placeholder="Chercher justificatif"
+                                          />
+                                        </div>
+                                      </Col>
+                                      <Col lg={1} className="my-auto ">
+                                        <p className="text-align-center">ou</p>
+                                      </Col>
+                                      <Col lg={6} className="col-auto">
+                                        <Input
+                                          name="file_justify"
+                                          id="file_justify-field"
+                                          className="form-control"
+                                          type="file"
+                                          onChange={validation.handleChange}
+                                          onBlur={validation.handleBlur}
+                                          value={
+                                            transaction?.file_justify || ""
+                                          }
+                                          accept=".pdf"
                                         />
-                                      </div>
-                                    </Col>
-                                    <Col lg={1} className="my-auto ">
-                                      <p className="text-align-center">ou</p>
-                                    </Col>
-                                    <Col lg={6} className="col-auto">
-                                      <Input
-                                        name="file_justify"
-                                        id="file_justify-field"
-                                        className="form-control"
-                                        type="file"
-                                        onChange={validation.handleChange}
-                                        onBlur={validation.handleBlur}
-                                        value={
-                                          validation.values.file_justify || ""
-                                        }
-                                        accept=".pdf"
-                                      />
-                                    </Col>
-                                  </Row>
+                                      </Col>
+                                    </Row>
 
-                                  <SimpleBar
-                                    style={{ height: "242px" }}
-                                    className="mx-n3"
-                                  >
-                                    <ListGroup className="list mb-0" flush>
-                                      <ListGroupItem data-id="1">
-                                        <div className="d-flex">
-                                          <div className="flex-grow-1">
-                                            <h5 className="fs-13 mb-1">
-                                              <Link
-                                                to="#"
-                                                className="link name text-dark"
+                                    <SimpleBar
+                                      style={{ height: "242px" }}
+                                      className="mx-n3"
+                                    >
+                                      <ListGroup className="list mb-0" flush>
+                                        <ListGroupItem data-id="1">
+                                          <div className="d-flex">
+                                            <div className="flex-grow-1">
+                                              <h5 className="fs-13 mb-1">
+                                                <Link
+                                                  to="#"
+                                                  className="link name text-dark"
+                                                >
+                                                  Banque
+                                                </Link>
+                                              </h5>
+                                              <p
+                                                className="born timestamp text-muted mb-0"
+                                                data-timestamp="12345"
                                               >
-                                                Banque
-                                              </Link>
-                                            </h5>
-                                            <p
-                                              className="born timestamp text-muted mb-0"
-                                              data-timestamp="12345"
-                                            >
-                                              2023-05-05
-                                            </p>
+                                                2023-05-05
+                                              </p>
+                                            </div>
+                                            <div className="flex-shrink-0">
+                                              <div>€ -25.00</div>
+                                            </div>
                                           </div>
-                                          <div className="flex-shrink-0">
-                                            <div>€ -25.00</div>
-                                          </div>
-                                        </div>
-                                      </ListGroupItem>
-                                      <ListGroupItem data-id="1">
-                                        <div className="d-flex">
-                                          <div className="flex-grow-1">
-                                            <h5 className="fs-13 mb-1">
-                                              <Link
-                                                to="#"
-                                                className="link name text-dark"
+                                        </ListGroupItem>
+                                        <ListGroupItem data-id="1">
+                                          <div className="d-flex">
+                                            <div className="flex-grow-1">
+                                              <h5 className="fs-13 mb-1">
+                                                <Link
+                                                  to="#"
+                                                  className="link name text-dark"
+                                                >
+                                                  Banque
+                                                </Link>
+                                              </h5>
+                                              <p
+                                                className="born timestamp text-muted mb-0"
+                                                data-timestamp="12345"
                                               >
-                                                Banque
-                                              </Link>
-                                            </h5>
-                                            <p
-                                              className="born timestamp text-muted mb-0"
-                                              data-timestamp="12345"
-                                            >
-                                              2023-05-05
-                                            </p>
+                                                2023-05-05
+                                              </p>
+                                            </div>
+                                            <div className="flex-shrink-0">
+                                              <div>€ -25.00</div>
+                                            </div>
                                           </div>
-                                          <div className="flex-shrink-0">
-                                            <div>€ -25.00</div>
-                                          </div>
-                                        </div>
-                                      </ListGroupItem>
-                                      <ListGroupItem data-id="1">
-                                        <div className="d-flex">
-                                          <div className="flex-grow-1">
-                                            <h5 className="fs-13 mb-1">
-                                              <Link
-                                                to="#"
-                                                className="link name text-dark"
+                                        </ListGroupItem>
+                                        <ListGroupItem data-id="1">
+                                          <div className="d-flex">
+                                            <div className="flex-grow-1">
+                                              <h5 className="fs-13 mb-1">
+                                                <Link
+                                                  to="#"
+                                                  className="link name text-dark"
+                                                >
+                                                  Banque
+                                                </Link>
+                                              </h5>
+                                              <p
+                                                className="born timestamp text-muted mb-0"
+                                                data-timestamp="12345"
                                               >
-                                                Banque
-                                              </Link>
-                                            </h5>
-                                            <p
-                                              className="born timestamp text-muted mb-0"
-                                              data-timestamp="12345"
-                                            >
-                                              2023-05-05
-                                            </p>
+                                                2023-05-05
+                                              </p>
+                                            </div>
+                                            <div className="flex-shrink-0">
+                                              <div>€ -25.00</div>
+                                            </div>
                                           </div>
-                                          <div className="flex-shrink-0">
-                                            <div>€ -25.00</div>
-                                          </div>
-                                        </div>
-                                      </ListGroupItem>
-                                      <ListGroupItem data-id="1">
-                                        <div className="d-flex">
-                                          <div className="flex-grow-1">
-                                            <h5 className="fs-13 mb-1">
-                                              <Link
-                                                to="#"
-                                                className="link name text-dark"
+                                        </ListGroupItem>
+                                        <ListGroupItem data-id="1">
+                                          <div className="d-flex">
+                                            <div className="flex-grow-1">
+                                              <h5 className="fs-13 mb-1">
+                                                <Link
+                                                  to="#"
+                                                  className="link name text-dark"
+                                                >
+                                                  Banque
+                                                </Link>
+                                              </h5>
+                                              <p
+                                                className="born timestamp text-muted mb-0"
+                                                data-timestamp="12345"
                                               >
-                                                Banque
-                                              </Link>
-                                            </h5>
-                                            <p
-                                              className="born timestamp text-muted mb-0"
-                                              data-timestamp="12345"
-                                            >
-                                              2023-05-05
-                                            </p>
+                                                2023-05-05
+                                              </p>
+                                            </div>
+                                            <div className="flex-shrink-0">
+                                              <div>€ -25.00</div>
+                                            </div>
                                           </div>
-                                          <div className="flex-shrink-0">
-                                            <div>€ -25.00</div>
-                                          </div>
-                                        </div>
-                                      </ListGroupItem>
-                                      <ListGroupItem data-id="1">
-                                        <div className="d-flex">
-                                          <div className="flex-grow-1">
-                                            <h5 className="fs-13 mb-1">
-                                              <Link
-                                                to="#"
-                                                className="link name text-dark"
+                                        </ListGroupItem>
+                                        <ListGroupItem data-id="1">
+                                          <div className="d-flex">
+                                            <div className="flex-grow-1">
+                                              <h5 className="fs-13 mb-1">
+                                                <Link
+                                                  to="#"
+                                                  className="link name text-dark"
+                                                >
+                                                  Banque
+                                                </Link>
+                                              </h5>
+                                              <p
+                                                className="born timestamp text-muted mb-0"
+                                                data-timestamp="12345"
                                               >
-                                                Banque
-                                              </Link>
-                                            </h5>
-                                            <p
-                                              className="born timestamp text-muted mb-0"
-                                              data-timestamp="12345"
-                                            >
-                                              2023-05-05
-                                            </p>
+                                                2023-05-05
+                                              </p>
+                                            </div>
+                                            <div className="flex-shrink-0">
+                                              <div>€ -25.00</div>
+                                            </div>
                                           </div>
-                                          <div className="flex-shrink-0">
-                                            <div>€ -25.00</div>
-                                          </div>
-                                        </div>
-                                      </ListGroupItem>
-                                      <ListGroupItem data-id="1">
-                                        <div className="d-flex">
-                                          <div className="flex-grow-1">
-                                            <h5 className="fs-13 mb-1">
-                                              <Link
-                                                to="#"
-                                                className="link name text-dark"
+                                        </ListGroupItem>
+                                        <ListGroupItem data-id="1">
+                                          <div className="d-flex">
+                                            <div className="flex-grow-1">
+                                              <h5 className="fs-13 mb-1">
+                                                <Link
+                                                  to="#"
+                                                  className="link name text-dark"
+                                                >
+                                                  Banque
+                                                </Link>
+                                              </h5>
+                                              <p
+                                                className="born timestamp text-muted mb-0"
+                                                data-timestamp="12345"
                                               >
-                                                Banque
-                                              </Link>
-                                            </h5>
-                                            <p
-                                              className="born timestamp text-muted mb-0"
-                                              data-timestamp="12345"
-                                            >
-                                              2023-05-05
-                                            </p>
+                                                2023-05-05
+                                              </p>
+                                            </div>
+                                            <div className="flex-shrink-0">
+                                              <div>€ -25.00</div>
+                                            </div>
                                           </div>
-                                          <div className="flex-shrink-0">
-                                            <div>€ -25.00</div>
-                                          </div>
-                                        </div>
-                                      </ListGroupItem>
-                                    </ListGroup>
-                                  </SimpleBar>
+                                        </ListGroupItem>
+                                      </ListGroup>
+                                    </SimpleBar>
+                                  </div>
                                 </div>
-                              </div>
-                            </Col>
-                          )}
+                              </Col>
+                            )}
                           {/* {validation.values.file_justify !== ""
 
                           &&

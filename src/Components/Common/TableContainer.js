@@ -190,7 +190,7 @@ const TableContainer = ({
       </Row>
 
 
-      <div className={divClass}>
+      <div className={divClass} style={{ minHeight:200 }}>
         <Table hover {...getTableProps()} className={tableClass}>
           <thead className={theadClass}>
             {headerGroups.map((headerGroup) => (

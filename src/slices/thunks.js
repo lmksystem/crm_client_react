@@ -51,6 +51,9 @@ export * from "./devis/thunk";
 // transaction
 export * from "./transaction/thunk";
 
+// transactionBank
+export * from "./transactionBank/thunk";
+
 // employee
 export * from "./employee/thunk";
 
