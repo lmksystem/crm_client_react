@@ -106,7 +106,6 @@ export const getDevisWidgets = createAsyncThunk("devis/getDevisWidgets", async (
 
     return response;
   } catch (error) {
-    console.log("thunk catch", error);
     toast.error("Une erreur s'est produite sur la récupération des devis", { autoClose: 3000 });
     return error;
   }

@@ -6,21 +6,12 @@ import {
   Card,
   Container,
   CardHeader,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import * as moment from "moment";
-import CountUp from "react-countup";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import TableContainer from "../../Components/Common/TableContainer";
 
-//Import Icons
-import FeatherIcon from "feather-icons-react";
-
-import { invoiceWidgets } from "../../common/data/invoiceList";
 //Import actions
 import {
   getInvoices as onGetInvoices,

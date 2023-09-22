@@ -302,3 +302,6 @@ export const EMPLOYEES = "/v1/user";
 
 // Salary
 export const SALARY = "/v1/salary";
+
+// Salary
+export const ACHAT = "/v1/achat";

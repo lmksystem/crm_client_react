@@ -87,7 +87,6 @@ const devisSlice = createSlice({
     });
 
     builder.addCase(getDevisWidgets.rejected, (state, action) => {
-      console.log("errors");
       state.error = action.payload || null;
     });
  

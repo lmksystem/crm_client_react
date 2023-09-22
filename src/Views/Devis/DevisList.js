@@ -67,7 +67,7 @@ const DevisList = () => {
     dispatch(onGetDevisWidgets())
     dispatch(onGetDevis());
     dispatch(onGetEtatDevis());
-  }, []);
+  }, [dispatch]);
 
 
   const handleDeleteDevis = (id) => {
@@ -225,7 +225,7 @@ const DevisList = () => {
           <BreadCrumb title="Devis" pageTitle="Liste" />
           <h3>Statistique de l'année</h3>
           <Row>
-            {devisWidgets.map((widget, i) => {
+            {devisWidgets?.map((widget, i) => {
               return (<WidgetCountUp key={i} data={widget} type={"Devis"} />)
             })}
           </Row>

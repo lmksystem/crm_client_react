@@ -59,3 +59,6 @@ export * from "./employee/thunk";
 
 // salary
 export * from "./salary/thunk";
+
+// achat
+export * from "./achat/thunk";

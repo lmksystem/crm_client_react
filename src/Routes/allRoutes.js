@@ -29,6 +29,8 @@ import Employees from "../Views/Employees";
 import Salary from "../Views/Salary";
 import TransactionBank from "../Views/Transaction";
 import Achats from "../Views/Achat";
+import BankAccount from "../Views/BankAccount";
+
 // import PdfPreview from "../Views/Pdf";
 
 
@@ -59,12 +61,12 @@ const authProtectedRoutes = [
   { path: "/employees", component: <Employees /> },
   { path: "/salary", component: <Salary /> },
 
-  // Transactions bancaires
+  // Banque / Achat
 
   { path: "/transaction/bank", component: <TransactionBank /> },
-
-  // Achat
   { path: "/achat", component: <Achats /> },
+  { path:'/bankaccount',component :<BankAccount/>},
+  
 
   
 

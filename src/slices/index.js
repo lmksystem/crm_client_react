@@ -59,6 +59,9 @@ import TransactionBankReducer from "./transactionBank/reducer";
 //Salary
 import SalaryReducer from "./salary/reducer";
 
+//Achat
+import AchatReducer from "./achat/reducer";
+
 
 import sessionStorage from "redux-persist/es/storage/session";
 
@@ -86,6 +89,8 @@ const appReducer = combineReducers({
   TransactionBank:TransactionBankReducer,
   Employee :EmployeeReducer,
   Salary :SalaryReducer,
+  Achat :AchatReducer,
+
 
 });
 

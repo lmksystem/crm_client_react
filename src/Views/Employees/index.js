@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { isEmpty } from "lodash";
-import * as moment from "moment";
 
 import {
   Col,
@@ -54,27 +53,9 @@ const Employees = () => {
     error: state.Employee.error,
   }));
 
-  useEffect(() => {
-    dispatch(onGetEmployees());
-  }, [dispatch]);
-
-  // useEffect(() => {
-  //   setEmployee(employees);
-  // }, [employees]);
-
-  useEffect(() => {
-    if (!isEmpty(employees)) {
-      setEmployee(employees);
-      setIsEdit(false);
-    }
-  }, [employees]);
-
   const [employee, setEmployee] = useState({});
 
   const [isEdit, setIsEdit] = useState(false);
-
-  const [collaborateurList, setCollaborateurList] = useState([]);
-  const [collaborateur, setCollaborateur] = useState(null);
 
   //delete Conatct
   const [deleteModal, setDeleteModal] = useState(false);
@@ -84,12 +65,12 @@ const Employees = () => {
 
   const [modal, setModal] = useState(false);
 
+  const [info, setInfo] = useState([]);
+
   const toggle = useCallback(() => {
     if (modal) {
-      console.log("tout vider");
       setModal(false);
       setEmployee({});
-      setCollaborateur(null);
     } else {
       setModal(true);
     }
@@ -148,7 +129,7 @@ const Employees = () => {
           use_rank: 1,
           usa_date_entree: values?.date_entree || null,
         };
-        // console.log(newEmployee)
+
         // save new Contact
         dispatch(onCreateUpdateEmployee(newEmployee));
         validation.resetForm();
@@ -303,8 +284,6 @@ const Employees = () => {
                       href="#"
                       onClick={() => {
                         const employeeData = cellProps.row.original;
-
-                        // setCollaborateur(collaborateurList.filter((c) => c.value == employeeData.epe_ent_fk)[0]);
                         handleContactClick(employeeData);
                       }}
                     >
@@ -330,7 +309,7 @@ const Employees = () => {
         },
       },
     ],
-    [handleContactClick, checkedAll, collaborateurList, employee]
+    [handleContactClick, checkedAll, employee]
   );
 
 
@@ -342,8 +321,19 @@ const Employees = () => {
     }
   }, [show]);
 
+  useEffect(() => {
+    dispatch(onGetEmployees());
+  }, [dispatch]);
+
+
+  useEffect(() => {
+    if (!isEmpty(employees)) {
+      setEmployee(employees);
+      setIsEdit(false);
+    }
+  }, [employees]);
+
   // SideBar Contact Deatail
-  const [info, setInfo] = useState([]);
 
   document.title = "Liste employé | Countano";
   return (

@@ -21,7 +21,6 @@ import {
   ListGroup,
   ListGroupItem,
 } from "reactstrap";
-import Flatpickr from "react-flatpickr";
 
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 
@@ -49,7 +48,6 @@ const TransactionBank = () => {
       error: state.Employee.error,
     })
   );
-  const flatpickrRef = useRef();
   const dateActuelle = moment(); // Obtenir la date actuelle
   const dateNow = dateActuelle.format('DD MMM YYYY')
   const premiereDateAnnee = dateActuelle.startOf('year'); // Obtenir la première date de l'année
@@ -160,6 +158,20 @@ const TransactionBank = () => {
         },
       },
       {
+        Header: "Reste à pointer",
+        accessor: "tba_rp",
+        filterable: false,
+        Cell: (cell) => {
+          return (
+            <div className="d-flex align-items-center">
+              <p className="p-0 m-0">
+                {cell.value != null ? cell.value + "€" : ""}
+              </p>
+            </div>
+          );
+        },
+      },
+      {
         Header: "Crédit",
         accessor: "tba_credit",
         filterable: false,
@@ -211,6 +223,14 @@ const TransactionBank = () => {
     }
   }, [transactions]);
 
+  const setterDate =(value,showPartClose=false) =>{
+    setPeriodeCalendar(value);
+    if(showPartClose){
+      setShow(false)
+    }
+
+  }
+
   const partiesDuChemin = validation?.values?.file_justify.split("\\"); // Divise le chemin en morceaux en fonction de "\"
   const nomDuFichier = partiesDuChemin[partiesDuChemin.length - 1];
   document.title = "Transactions bancaires | Countano";
@@ -224,71 +244,7 @@ const TransactionBank = () => {
           />
           <Row>
             <Col className="view-animate" xxl={show ? 7 : 12}>
-              <div className="mt-3 mt-lg-0">
-                <form action="#">
-                  <Row className="g-3 mb-0 align-items-center justify-content-end">
-                    <div className="col-sm-auto d-flex align-items-center">
-                      {flatpickrRef.current?.flatpickr?.selectedDates?.length >
-                        0 && (
-                        <i
-                          className="las la-calendar-times la-lg mx-3"
-                          onClick={() => {
-                            setPeriodeCalendar({
-                              start: null,
-                              end: null,
-                            });
-                            flatpickrRef.current.flatpickr.clear();
-                            if (show) {
-                              toggle();
-                            }
-                          }}
-                          style={{ color: "red" }}
-                        ></i>
-                      )}
-                      <div className="input-group">
-                        <Flatpickr
-                          ref={flatpickrRef}
-                          className="form-control border-0 fs-13 dash-filter-picker shadow"
-                          options={{
-                            locale: "fr",
-                            mode: "range",
-                            dateFormat: "d M, Y",
-                            defaultDate: [perdiodeCalendar?.start,perdiodeCalendar?.end]
-                          }}
-                          onChange={(periodDate) => {
-                            if (show) {
-                              toggle();
-                            }
-                            if (periodDate.length == 2) {
-                              setPeriodeCalendar({
-                                start: moment(periodDate[0]).format(
-                                  "YYYY-MM-DD"
-                                ),
-                                end: moment(periodDate[1]).format("YYYY-MM-DD"),
-                              });
-                            } else if (periodDate.length == 1) {
-                              setPeriodeCalendar({
-                                start: moment(periodDate[0]).format(
-                                  "YYYY-MM-DD"
-                                ),
-                                end: moment(periodDate[0]).format("YYYY-MM-DD"),
-                              });
-                            } else {
-                              setPeriodeCalendar({
-                                start: null,
-                                end: null,
-                              });
-                            }
-                          }}
-                        />
-                        <div className="input-group-text bg-secondary border-secondary text-white">
-                          <i className="ri-calendar-2-line"></i>
-                        </div>
-                      </div>
-                    </div>
-                  </Row>
-                </form>
-              </div>
+             
               <Card id="contactList">
                 <CardBody className="pt-0">
                   <div>
@@ -296,6 +252,8 @@ const TransactionBank = () => {
                       <TableContainer
                         columns={columns}
                         data={transactions || []}
+                        perdiodeCalendar={perdiodeCalendar}
+                        setPeriodeCalendar={setterDate}
                         actionItem={(row) => {
                           const transData = row.original;
                           setShow(true);

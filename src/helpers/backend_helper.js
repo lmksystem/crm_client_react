@@ -204,14 +204,21 @@ export const deleteEmployee = use_id => api.delete(url.EMPLOYEES + "/delete/" + 
 /*        Salary       */
 /*************************/
 
-
-
 export const getSalary = year => api.get(url.SALARY+'/'+year);
 
 export const createUpdateSalary = data => api.create(url.SALARY,data);
 
 export const deleteSalary= sal_id => api.delete(url.SALARY + "/delete/" + sal_id);
 
-// export const createUpdateEmployee = data => api.create(url.EMPLOYEES,data);
 
-// export const deleteEmployee = use_id => api.delete(url.EMPLOYEES + "/delete/" + use_id);
+
+
+/*************************/
+/*        Achat       */
+/*************************/
+
+export const getAchat = () => api.get(url.ACHAT);
+
+export const createUpdateAchat = data => api.create(url.ACHAT,data);
+
+export const deleteAchat= ach_id => api.delete(url.ACHAT + "/delete/" + ach_id);

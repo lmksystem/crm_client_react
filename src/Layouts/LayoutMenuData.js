@@ -230,6 +230,17 @@ const Navdata = () => {
       stateVariables: isBanque,
       subItems: [
         {
+          id: "factures-achats",
+          label: "Mes comptes bancaires",
+          link: "/accountbank",
+          isChildItem: false,
+          click: function (e) {
+            e.preventDefault();
+
+          },
+          parentId: "banque",
+        },
+        {
           id: "transactions-bancaires",
           label: "Transactions bancaires",
           link: "/transaction/bank",
@@ -251,6 +262,7 @@ const Navdata = () => {
           },
           parentId: "banque",
         },
+       
 
       ],
     },

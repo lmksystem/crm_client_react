@@ -33,6 +33,8 @@ import {
   deleteEmployee as onDeleteEmployee,
   getEmployees as onGetEmployees,
   createUpdateEmployee as onCreateUpdateEmployee,
+
+  getAchat as onGetAchat
 } from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
@@ -48,14 +50,18 @@ import "react-toastify/dist/ReactToastify.css";
 
 const Achats = () => {
   const dispatch = useDispatch();
-  const { isEmployeSuccess, error, employees } = useSelector((state) => ({
-    isEmployeSuccess: state.Employee.isEmployeSuccess,
+  const { employees, isAchatSuccess,achats,error} = useSelector((state) => ({
     employees: state.Employee.employees,
-    error: state.Employee.error,
+
+    isAchatSuccess: state.Achat.isAchatSuccess,
+    achats: state.Achat.achats,
+    error: state.Achat.error,
   }));
 
   useEffect(() => {
     dispatch(onGetEmployees());
+    dispatch(onGetAchat());
+
   }, [dispatch]);
 
   // useEffect(() => {
@@ -71,9 +77,11 @@ const Achats = () => {
 
   const [employee, setEmployee] = useState({});
 
+  const [achat, setAchat] = useState({});
+
+
   const [isEdit, setIsEdit] = useState(false);
 
-  const [collaborateurList, setCollaborateurList] = useState([]);
   const [collaborateur, setCollaborateur] = useState(null);
 
   //delete Conatct
@@ -86,7 +94,6 @@ const Achats = () => {
 
   const toggle = useCallback(() => {
     if (modal) {
-      console.log("tout vider");
       setModal(false);
       setEmployee({});
       setCollaborateur(null);
@@ -245,7 +252,7 @@ const Achats = () => {
       },
       {
         Header: "",
-        accessor: "fac_id",
+        accessor: "ach_id",
         hiddenColumns: true,
         Cell: (cell) => {
           return <input type="hidden" value={cell.value} />;
@@ -253,32 +260,43 @@ const Achats = () => {
       },
       {
         Header: "Titre",
-        accessor: "use_firstname",
+        accessor: "ent_name",
         filterable: false,
       },
       {
         Header: "Statut",
-        accessor: "use_lastname",
+        accessor: "ach_status",
         filterable: false,
+        Cell: (cell) => {
+          console.log(cell)
+          return <div className="d-flex align-items-center">
+                <p className="m-0">{cell.value == 1 ? "Validé":(cell.value == 2 ?"Partiellement pointé" :"A traiter")}</p>
+            </div>
+        },
       },
       {
         Header: "Montant",
-        accessor: "use_email",
+        accessor: "ach_total_amount",
+        filterable: false,
+      },
+      {
+        Header: "Reste à pointer",
+        accessor: "ach_rp",
         filterable: false,
       },
       {
         Header: "Date",
-        accessor: "fac_date_create",
+        accessor: "ach_date_create",
         filterable: false,
       },
       {
         Header: "Echéance",
-        accessor: "fac_date_expired",
+        accessor: "ach_date_expired",
         filterable: false,
       },
       {
         Header: "Catégorie",
-        accessor: "fac_cat",
+        accessor: "ach_categorie",
         filterable: false,
       },
       {
@@ -313,8 +331,6 @@ const Achats = () => {
                       href="#"
                       onClick={() => {
                         const employeeData = cellProps.row.original;
-
-                        // setCollaborateur(collaborateurList.filter((c) => c.value == employeeData.epe_ent_fk)[0]);
                         handleContactClick(employeeData);
                       }}
                     >
@@ -340,7 +356,7 @@ const Achats = () => {
         },
       },
     ],
-    [handleContactClick, checkedAll, collaborateurList, employee]
+    [handleContactClick, checkedAll, employee,achat]
   );
 
 
@@ -388,7 +404,7 @@ const Achats = () => {
                         }}
                       >
                         <i className="ri-add-fill me-1 align-bottom"></i>{" "}
-                        Ajouter une facture d'achat
+                        Ajouter un achat
                       </button>
                     </div>
                     <div className="flex-shrink-0">
@@ -407,10 +423,10 @@ const Achats = () => {
                 </CardHeader>
                 <CardBody className="pt-0">
                   <div>
-                    {isEmployeSuccess ? (
+                    {isAchatSuccess ? (
                       <TableContainer
                         columns={columns}
-                        data={ []}
+                        data={achats || []}
                         isGlobalFilter={true}
                         isAddUserList={false}
                         customPageSize={8}

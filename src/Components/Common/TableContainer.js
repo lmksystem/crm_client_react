@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useRef } from "react";
 import PropTypes from "prop-types";
 import {
   useTable,
@@ -11,6 +11,8 @@ import {
   useRowSelect
 } from "react-table";
 import { Table, Row, Col, Button, Input, CardBody } from "reactstrap";
+import Flatpickr from "react-flatpickr";
+
 import { DefaultColumnFilter } from "./filters";
 import {
   ProductsGlobalFilter,
@@ -25,14 +27,19 @@ import {
   TaskListGlobalFilter
 } from "../../Components/Common/GlobalSearchFilter";
 import { Navigate, useNavigate } from "react-router-dom";
+import * as moment from "moment";
 
 // Define a default UI for filtering
 export function GlobalFilter({
   preGlobalFilteredRows,
   globalFilter,
   setGlobalFilter,
+  perdiodeCalendar ,
+  setPeriodeCalendar
 }) {
   const [value, setValue] = React.useState(globalFilter);
+  const flatpickrRef = useRef();
+
   const onChange = useAsyncDebounce((value) => {
     setGlobalFilter(value || undefined);
   }, 200);
@@ -58,6 +65,68 @@ export function GlobalFilter({
                 <i className="bx bx-search-alt search-icon"></i>
               </div>
             </Col>
+          {setPeriodeCalendar && perdiodeCalendar &&  <Col>
+            <div className="mt-lg-0">
+                <form action="#">
+                  <Row className="g-3 mb-0 align-items-center justify-content-end">
+                    <div className="col-sm-auto d-flex align-items-center">
+                      {flatpickrRef.current?.flatpickr?.selectedDates?.length >
+                        0 && (
+                        <i
+                          className="las la-calendar-times la-lg mx-3"
+                          onClick={() => {
+                            setPeriodeCalendar({
+                              start: null,
+                              end: null,
+                            },true);
+                            flatpickrRef.current.flatpickr.clear();
+                          }}
+                          style={{ color: "red" }}
+                        ></i>
+                      )}
+                      <div className="input-group">
+                        <Flatpickr
+                          ref={flatpickrRef}
+                          className="form-control border-0 fs-13 dash-filter-picker shadow"
+                          options={{
+                            locale: "fr",
+                            mode: "range",
+                            dateFormat: "d M, Y",
+                            defaultDate: [perdiodeCalendar?.start,perdiodeCalendar?.end]
+                          }}
+                          onChange={(periodDate) => {
+                            if (periodDate.length == 2) {
+                              setPeriodeCalendar({
+                                start: moment(periodDate[0]).format(
+                                  "YYYY-MM-DD"
+                                ),
+                                end: moment(periodDate[1]).format("YYYY-MM-DD"),
+                              },true);
+                            } else if (periodDate.length == 1) {
+                              setPeriodeCalendar({
+                                start: moment(periodDate[0]).format(
+                                  "YYYY-MM-DD"
+                                ),
+                                end: moment(periodDate[0]).format("YYYY-MM-DD"),
+                              },true);
+                            } else {
+                              setPeriodeCalendar({
+                                start: null,
+                                end: null,
+                              },true);
+
+                            }
+                          }}
+                        />
+                        <div className="input-group-text bg-secondary border-secondary text-white">
+                          <i className="ri-calendar-2-line"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </Row>
+                </form>
+              </div>
+            </Col>}
           </Row>
         </form>
       </CardBody>
@@ -97,6 +166,9 @@ const TableContainer = ({
   divClass,
   pathToDetail,
   actionItem,
+  setPeriodeCalendar,
+  perdiodeCalendar,
+
 }) => {
   const {
     getTableProps,
@@ -184,13 +256,15 @@ const TableContainer = ({
             isTicketsListFilter={isTicketsListFilter}
             isNFTRankingFilter={isNFTRankingFilter}
             isTaskListFilter={isTaskListFilter}
+            setPeriodeCalendar={setPeriodeCalendar}
+            perdiodeCalendar={perdiodeCalendar}
           />
         )}
         
       </Row>
 
 
-      <div className={divClass} style={{ minHeight:200 }}>
+      <div className={divClass} style={{ minHeight:230 }}>
         <Table hover {...getTableProps()} className={tableClass}>
           <thead className={theadClass}>
             {headerGroups.map((headerGroup) => (
