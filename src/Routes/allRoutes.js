@@ -30,6 +30,7 @@ import Salary from "../Views/Salary";
 import TransactionBank from "../Views/Transaction";
 import Achats from "../Views/Achat";
 import BankAccount from "../Views/BankAccount";
+import Recurrence from "../Views/Recurrence";
 
 // import PdfPreview from "../Views/Pdf";
 
@@ -53,7 +54,7 @@ const authProtectedRoutes = [
   { path: "/devis/detail/:id", component: <DevisDetails /> },
   { path: "/devis/creation", component: <DevisCreate /> },
   { path: "/devis/edition/:id", component: <DevisCreate /> },
-
+  
   // Réglement - Transaction
   { path: "/transaction/liste", component: <TransactionList /> },
 
@@ -67,6 +68,8 @@ const authProtectedRoutes = [
   { path: "/achat", component: <Achats /> },
   { path:'/bankaccount',component :<BankAccount/>},
   
+  // Recurrence 
+  { path: "/recurrence", component: <Recurrence />},
 
   
 

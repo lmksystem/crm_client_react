@@ -154,6 +154,8 @@ export const getProducts = () => api.get(url.PRODUCTS);
 
 export const updateProduct = product => api.update(url.PRODUCTS + "/" + product.pro_id, product);
 
+export const deleteProduct = pro_id => api.delete(url.PRODUCTS + "/" + pro_id);
+
 
 /*************************/
 /*         Devis         */

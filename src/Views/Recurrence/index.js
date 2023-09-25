@@ -1,5 +1,10 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
+import { isEmpty } from "lodash";
+import * as moment from "moment";
+
+// Import Images
+import dummyImg from "../../assets/images/users/user-dummy-img.jpg";
 
 import {
   Col,
@@ -17,6 +22,7 @@ import {
   ModalFooter,
   FormFeedback
 } from "reactstrap";
+import Select from "react-select";
 
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import DeleteModal from "../../Components/Common/DeleteModal";
@@ -26,7 +32,6 @@ import {
   getProducts as onGetProducts,
   addProduct as onAddProduct,
   getTva as onGetTva,
-  deleteProduct as onDeleteProduct,
   updateProduct as onUpdateProduct
 } from "../../slices/thunks";
 //redux
@@ -44,32 +49,20 @@ import 'react-toastify/dist/ReactToastify.css';
 // Export Modal
 import ExportCSVModal from "../../Components/Common/ExportCSVModal";
 
-const Products = () => {
+const Recurrence = () => {
   const dispatch = useDispatch();
-  const { products, isProductSuccess, error, tva } = useSelector((state) => ({
-    products: state.Product.products,
+  const { products, isProductSuccess, error } = useSelector((state) => ({
+    products: [],
     isProductSuccess: state.Product.isProductSuccess,
     error: state.Product.error,
-    tva: state.Gestion.tva,
   }));
 
   const [product, setProduct] = useState([]);
+  const [isEdit, setIsEdit] = useState(false);
 
   useEffect(() => {
     dispatch(onGetProducts());
-    dispatch(onGetTva());
   }, [dispatch]);
-
-  // useEffect(() => {
-  //   if (!isEmpty(product)) {
-  //     console.log(product);
-  //     setIsEdit(false);
-  //   }
-  // }, [product]);
-
-
-  const [isEdit, setIsEdit] = useState(false);
-
 
   //delete Conatct
   const [deleteModal, setDeleteModal] = useState(false);
@@ -502,4 +495,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default Recurrence;

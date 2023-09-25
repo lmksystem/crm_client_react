@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getProducts, addProduct, updateProduct } from './thunk';
+import { getProducts, addProduct, updateProduct, deleteProduct } from './thunk';
 
 export const initialState = {
   products: [],
@@ -44,6 +44,18 @@ const ProductSlice = createSlice({
     builder.addCase(updateProduct.rejected, (state, action) => {
       state.isProductAdd = false;
       state.isProductAddFail = true;
+    });
+
+    builder.addCase(deleteProduct.fulfilled, (state, action) => {
+      state.products = (state.products || []).filter((t) => t.pro_id != action.payload);
+      state.isTvaDelete = true;
+      state.isTvaDeleteFail = false;
+    });
+
+    builder.addCase(deleteProduct.rejected, (state, action) => {
+      state.error = action.payload?.data || null;
+      state.isTvaDelete = false;
+      state.isTvaDeleteFail = true;
     });
   }
 });

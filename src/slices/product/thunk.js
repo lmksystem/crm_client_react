@@ -6,7 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import {
   getProducts as getProductsApi,
   addProduct as addProductApi,
-  updateProduct as updateProductApi
+  updateProduct as updateProductApi,
+  deleteProduct as deleteProductApi
 } from "../../helpers/backend_helper";
 
 export const getProducts = createAsyncThunk("product/getProducts", async () => {
@@ -36,6 +37,18 @@ export const updateProduct = createAsyncThunk("product/updateProduct", async (pr
     return response;
   } catch (error) {
     toast.error("Echec de la mise à jour", { autoClose: 3000 });
+    return error;
+  }
+});
+
+export const deleteProduct = createAsyncThunk("product/deleteProduct", async (pro_id) => {
+  try {
+    const response = deleteProductApi(pro_id);
+    toast.success("Produit mis à jour", { autoClose: 3000 });
+    return pro_id;
+  } catch (error) {
+    toast.error("Echec de la mise à jour", { autoClose: 3000 });
+    console.log(error);
     return error;
   }
 });
