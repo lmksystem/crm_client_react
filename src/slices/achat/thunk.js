@@ -12,6 +12,7 @@ export const createUpdateAchat= createAsyncThunk("achat/createUpdateAchat", asyn
     return response;
   }
   catch (error) {
+    console.log(error)
     toast.error("Achat Post Failed", { autoClose: 3000 });
     return error;
   }
@@ -31,10 +32,12 @@ export const getAchat = createAsyncThunk("achat/getAchat", async (year) => {
 
 export const deleteAchat = createAsyncThunk("achat/deleteAchat", async (id) => {
   try {
-    const response = deleteAchatApi(id);
+    const response =await deleteAchatApi(id);
+
     return response;
   }
   catch (error) {
+    console.log(error)
     toast.error("Achat Delete Failed", { autoClose: 3000 });
     return error;
   }

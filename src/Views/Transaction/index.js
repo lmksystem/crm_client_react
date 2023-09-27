@@ -25,7 +25,10 @@ import {
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 
 //Import actions
-import { getTransactionBank as onGetTransactionBank } from "../../slices/thunks";
+import {
+  getTransactionBank as onGetTransactionBank,
+  getAchat as onGetAchat,
+} from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
 import TableContainer from "../../Components/Common/TableContainer";
@@ -35,27 +38,28 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 
 import Loader from "../../Components/Common/Loader";
-import {  ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SimpleBar from "simplebar-react";
 
 const TransactionBank = () => {
   const dispatch = useDispatch();
-  const { isTransactionBankSuccess, error, transactions } = useSelector(
+  const { isTransactionBankSuccess, error, transactions, achats } = useSelector(
     (state) => ({
       isTransactionBankSuccess: state.TransactionBank.isTransactionBankSuccess,
       transactions: state.TransactionBank.transactionsBank,
       error: state.Employee.error,
+      achats: state.Achat.achats,
     })
   );
   const dateActuelle = moment(); // Obtenir la date actuelle
-  const dateNow = dateActuelle.format('DD MMM YYYY')
-  const premiereDateAnnee = dateActuelle.startOf('year'); // Obtenir la première date de l'année
-  const formattedDate = premiereDateAnnee.format('DD MMM YYYY'); // Formatage de la date
-  const [perdiodeCalendar,setPeriodeCalendar] = useState({
-      start:formattedDate.replace(/\./g, ','),
-      end:dateNow,
-  })
+  const dateNow = dateActuelle.format("DD MMM YYYY");
+  const premiereDateAnnee = dateActuelle.startOf("year"); // Obtenir la première date de l'année
+  const formattedDate = premiereDateAnnee.format("DD MMM YYYY"); // Formatage de la date
+  const [perdiodeCalendar, setPeriodeCalendar] = useState({
+    start: formattedDate.replace(/\./g, ","),
+    end: dateNow,
+  });
 
   const [transaction, setTransaction] = useState({});
 
@@ -84,7 +88,7 @@ const TransactionBank = () => {
         (transaction && transaction.tba_justify && transaction.tba_justify === 0
           ? true
           : false) || false,
-      file_justify: (transaction && transaction.tdo_file_name) || "",
+      file_justify: (transaction && transaction.ado_file_name) || "",
     },
     // validationSchema: Yup.object({
     //   lastname: Yup.string().required("Veuillez entrer un nom"),
@@ -158,20 +162,6 @@ const TransactionBank = () => {
         },
       },
       {
-        Header: "Reste à pointer",
-        accessor: "tba_rp",
-        filterable: false,
-        Cell: (cell) => {
-          return (
-            <div className="d-flex align-items-center">
-              <p className="p-0 m-0">
-                {cell.value != null ? cell.value + "€" : ""}
-              </p>
-            </div>
-          );
-        },
-      },
-      {
         Header: "Crédit",
         accessor: "tba_credit",
         filterable: false,
@@ -186,9 +176,65 @@ const TransactionBank = () => {
         },
       },
       {
-        Header: "Association",
-        accessor: "tba_assoc",
+        Header: "Reste à pointer",
+        accessor: "tba_rp",
         filterable: false,
+        Cell: (cell) => {
+          return (
+            <div className="d-flex align-items-center">
+              <p className="p-0 m-0">
+                {cell.value != null ? cell.value + "€" : ""}
+              </p>
+            </div>
+          );
+        },
+      },
+     
+      {
+        Header: "Association",
+        // accessor: "tba_assoc",
+        filterable: false,
+
+        Cell: (cell) => {
+          let styleCSS = {};
+          if(cell.row.original.tba_rp==0){
+            styleCSS = {
+              width: '20px',
+              height: '20px',
+              borderRadius: '50%',
+              backgroundColor: 'green',
+            };
+          }else if(cell.row.original.tba_rp == Math.abs(parseFloat(cell.row.original.tba_amount))){
+            styleCSS = {
+              width: '20px',
+              height: '20px',
+              borderRadius: '50%',
+              border: '2px solid red',
+              backgroundColor: 'transparent',
+              alignItems:"center",
+              justifyContent:'center',
+              display:'flex'
+            };
+          }else if(cell.row.original.tba_rp < Math.abs(parseFloat(cell.row.original.tba_amount)) && cell.row.original.tba_rp>0){
+            styleCSS = {
+              width: '10px',
+              height: '20px',
+              borderBottomRightRadius: '10px',
+              borderTopRightRadius: '10px',
+              backgroundColor: 'orange',
+              marginLeft:8
+            };
+          }
+          return (
+            <div className="d-flex align-items-center">
+              <div style={styleCSS}>
+              {cell.row.original.tba_rp == Math.abs(parseFloat(cell.row.original.tba_amount)) &&
+             <i style={{color:'red'}} className="las la-times" ></i>
+              }
+              </div>
+            </div>
+          );
+        },
       },
     ],
     [transaction]
@@ -218,19 +264,47 @@ const TransactionBank = () => {
   }, [dispatch, perdiodeCalendar]);
 
   useEffect(() => {
+    dispatch(onGetAchat());
+  }, [dispatch]);
+
+  const [achatFilter,setAchatFilter] = useState({
+    data:achats || [],
+    searchTerm:'',
+  })
+
+  
+  const handleSearchChange = (e) => {
+    const { value } = e.target;
+    setAchatFilter({...achatFilter,searchTerm: value });
+  };
+
+  useEffect(() => {
+    dispatch(onGetAchat());
+  }, [dispatch]);
+
+  useEffect(() => {
     if (!isEmpty(transactions)) {
       setTransaction({});
     }
   }, [transactions]);
 
-  const setterDate =(value,showPartClose=false) =>{
+  const setterDate = (value, showPartClose = false) => {
     setPeriodeCalendar(value);
-    if(showPartClose){
-      setShow(false)
+    if (showPartClose) {
+      setShow(false);
     }
+  };
 
+  const  filterData = () => {
+    return achatFilter?.data?.filter((item) => {
+      // Définissez ici les propriétés sur lesquelles vous souhaitez effectuer la recherche
+      const searchFields = [item.ach_lib, item.ach_rp,item.ach_date_create];
+      return searchFields.some((field) =>
+        field?.toLowerCase()?.includes(achatFilter?.searchTerm?.toLowerCase())
+      );
+    });
   }
-
+  const filteredData = filterData();
   const partiesDuChemin = validation?.values?.file_justify.split("\\"); // Divise le chemin en morceaux en fonction de "\"
   const nomDuFichier = partiesDuChemin[partiesDuChemin.length - 1];
   document.title = "Transactions bancaires | Countano";
@@ -244,7 +318,6 @@ const TransactionBank = () => {
           />
           <Row>
             <Col className="view-animate" xxl={show ? 7 : 12}>
-             
               <Card id="contactList">
                 <CardBody className="pt-0">
                   <div>
@@ -261,7 +334,7 @@ const TransactionBank = () => {
                             id: transData.tba_id,
                             nojustify:
                               transData.tba_justify == 1 ? false : true,
-                            file_justify: transData.tdo_file_name,
+                            file_justify: transData.ado_file_name,
                           });
                         }}
                         isGlobalFilter={true}
@@ -305,7 +378,7 @@ const TransactionBank = () => {
                         <div className="p-3">
                           <Input type="hidden" id="id-field" />
 
-                          {transaction?.file_justify === null && (
+                          {/* {transaction?.file_justify === null && ( */}
                             <Col lg={8} className="mt-3">
                               <div className="form-switch">
                                 <Input
@@ -326,9 +399,9 @@ const TransactionBank = () => {
                                 </Label>
                               </div>
                             </Col>
-                          )}
+                          {/* )} */}
 
-                          {transaction?.file_justify !== null && (
+                          {/* {transaction?.file_justify !== null && (
                             <Row className="mt-3">
                               <Col lg={3}>
                                 <p>{nomDuFichier}</p>
@@ -338,27 +411,27 @@ const TransactionBank = () => {
                                 <i className="ri-delete-bin-fill text-muted la-lg  mx-2"></i>
                               </Col>
                             </Row>
-                          )}
+                           )}  */}
 
                           {!transaction.nojustify &&
-                            transaction?.file_justify == null && (
+                            (
                               <Col lg={11} className="mt-4">
                                 <div>
                                   <p className="text-muted">
-                                    Sélectionner un justificatif d'achat /
-                                    Importer le depuis vos fichiers
+                                    Associer la transaction à un/plusieurs achat(s)
                                   </p>
                                   <div id="users">
                                     <Row className="mb-2">
-                                      <Col lg={5}>
+                                      <Col lg={7}>
                                         <div>
                                           <input
                                             className="search form-control"
-                                            placeholder="Chercher justificatif"
+                                            placeholder="Chercher un achat"
+                                            value={achatFilter.searchTerm} onChange={handleSearchChange} 
                                           />
                                         </div>
                                       </Col>
-                                      <Col lg={1} className="my-auto ">
+                                      {/* <Col lg={1} className="my-auto ">
                                         <p className="text-align-center">ou</p>
                                       </Col>
                                       <Col lg={6} className="col-auto">
@@ -374,7 +447,7 @@ const TransactionBank = () => {
                                           }
                                           accept=".pdf"
                                         />
-                                      </Col>
+                                      </Col> */}
                                     </Row>
 
                                     <SimpleBar
@@ -382,144 +455,33 @@ const TransactionBank = () => {
                                       className="mx-n3"
                                     >
                                       <ListGroup className="list mb-0" flush>
-                                        <ListGroupItem data-id="1">
-                                          <div className="d-flex">
-                                            <div className="flex-grow-1">
-                                              <h5 className="fs-13 mb-1">
-                                                <Link
-                                                  to="#"
-                                                  className="link name text-dark"
-                                                >
-                                                  Banque
-                                                </Link>
-                                              </h5>
-                                              <p
-                                                className="born timestamp text-muted mb-0"
-                                                data-timestamp="12345"
-                                              >
-                                                2023-05-05
-                                              </p>
-                                            </div>
-                                            <div className="flex-shrink-0">
-                                              <div>€ -25.00</div>
-                                            </div>
-                                          </div>
-                                        </ListGroupItem>
-                                        <ListGroupItem data-id="1">
-                                          <div className="d-flex">
-                                            <div className="flex-grow-1">
-                                              <h5 className="fs-13 mb-1">
-                                                <Link
-                                                  to="#"
-                                                  className="link name text-dark"
-                                                >
-                                                  Banque
-                                                </Link>
-                                              </h5>
-                                              <p
-                                                className="born timestamp text-muted mb-0"
-                                                data-timestamp="12345"
-                                              >
-                                                2023-05-05
-                                              </p>
-                                            </div>
-                                            <div className="flex-shrink-0">
-                                              <div>€ -25.00</div>
-                                            </div>
-                                          </div>
-                                        </ListGroupItem>
-                                        <ListGroupItem data-id="1">
-                                          <div className="d-flex">
-                                            <div className="flex-grow-1">
-                                              <h5 className="fs-13 mb-1">
-                                                <Link
-                                                  to="#"
-                                                  className="link name text-dark"
-                                                >
-                                                  Banque
-                                                </Link>
-                                              </h5>
-                                              <p
-                                                className="born timestamp text-muted mb-0"
-                                                data-timestamp="12345"
-                                              >
-                                                2023-05-05
-                                              </p>
-                                            </div>
-                                            <div className="flex-shrink-0">
-                                              <div>€ -25.00</div>
-                                            </div>
-                                          </div>
-                                        </ListGroupItem>
-                                        <ListGroupItem data-id="1">
-                                          <div className="d-flex">
-                                            <div className="flex-grow-1">
-                                              <h5 className="fs-13 mb-1">
-                                                <Link
-                                                  to="#"
-                                                  className="link name text-dark"
-                                                >
-                                                  Banque
-                                                </Link>
-                                              </h5>
-                                              <p
-                                                className="born timestamp text-muted mb-0"
-                                                data-timestamp="12345"
-                                              >
-                                                2023-05-05
-                                              </p>
-                                            </div>
-                                            <div className="flex-shrink-0">
-                                              <div>€ -25.00</div>
-                                            </div>
-                                          </div>
-                                        </ListGroupItem>
-                                        <ListGroupItem data-id="1">
-                                          <div className="d-flex">
-                                            <div className="flex-grow-1">
-                                              <h5 className="fs-13 mb-1">
-                                                <Link
-                                                  to="#"
-                                                  className="link name text-dark"
-                                                >
-                                                  Banque
-                                                </Link>
-                                              </h5>
-                                              <p
-                                                className="born timestamp text-muted mb-0"
-                                                data-timestamp="12345"
-                                              >
-                                                2023-05-05
-                                              </p>
-                                            </div>
-                                            <div className="flex-shrink-0">
-                                              <div>€ -25.00</div>
-                                            </div>
-                                          </div>
-                                        </ListGroupItem>
-                                        <ListGroupItem data-id="1">
-                                          <div className="d-flex">
-                                            <div className="flex-grow-1">
-                                              <h5 className="fs-13 mb-1">
-                                                <Link
-                                                  to="#"
-                                                  className="link name text-dark"
-                                                >
-                                                  Banque
-                                                </Link>
-                                              </h5>
-                                              <p
-                                                className="born timestamp text-muted mb-0"
-                                                data-timestamp="12345"
-                                              >
-                                                2023-05-05
-                                              </p>
-                                            </div>
-                                            <div className="flex-shrink-0">
-                                              <div>€ -25.00</div>
-                                            </div>
-                                          </div>
-                                        </ListGroupItem>
+                                        {filteredData?.map((ach) => {
+                                          return (
+                                            <ListGroupItem data-id="1">
+                                              <div className="d-flex">
+                                                <div className="flex-grow-1">
+                                                  <h5 className="fs-13 mb-1">
+                                                    <Link
+                                                      to="#"
+                                                      className="link name text-dark"
+                                                    >
+                                                      {ach.ach_lib}
+                                                    </Link>
+                                                  </h5>
+                                                  <p
+                                                    className="born timestamp text-muted mb-0"
+                                                    data-timestamp="12345"
+                                                  >
+                                                    {ach.ach_date_create}
+                                                  </p>
+                                                </div>
+                                                <div className="flex-shrink-0">
+                                                  <div>€ -{ach.ach_rp}</div>
+                                                </div>
+                                              </div>
+                                            </ListGroupItem>
+                                          );
+                                        })}
                                       </ListGroup>
                                     </SimpleBar>
                                   </div>

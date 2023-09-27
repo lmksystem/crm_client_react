@@ -320,7 +320,6 @@ const TransactionList = () => {
                     placeholder={"Selectionnez un facture"}
                     value={selectedInvoice}
                     onChange={(res) => {
-                      console.log(res);
                       setSelectedInvoice(res);
                       validation.setValues({ ...validation.values, tra_fen_fk: res.value })
                     }}

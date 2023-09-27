@@ -288,12 +288,14 @@ const TableContainer = ({
               if (pathToDetail) {
                 key = Object.keys(row.original.header).find((e) => e.includes('en_id') );
               }
+              // console.log(row.Cells)
               return (
                 <Fragment key={row.getRowProps().key}>
-                  <tr style={{ cursor: "pointer" }} onClick={() => pathToDetail ? navigate(pathToDetail + row.original.header[key]) : (actionItem ? actionItem(row) :null)}>
+                  <tr style={{ cursor: "pointer" }} onClick={() =>{ if(pathToDetail){navigate(pathToDetail + row.original.header[key])} }} >
                     {row.cells.map((cell) => {
+                      // console.log(cell)
                       return (
-                        <td key={cell.id} {...cell.getCellProps()}>
+                        <td key={cell.id} onClick={()=>{if(actionItem && cell.column.id != "Action"&& cell.column.id != "checkDelete"){ actionItem(row)}}} {...cell.getCellProps()}>
                           {cell.render("Cell")}
                         </td>
                       );
