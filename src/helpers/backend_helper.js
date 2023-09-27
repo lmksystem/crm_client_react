@@ -121,6 +121,9 @@ export const getTransactionByMonth = data => api.get(url.TRANSACTION + '/byMonth
 // get transaction bank
 export const getTransactionBank = data => api.get(url.TRANSACTION_BANK+'/periode/'+data.dateDebut+ '/' +data.dateFin);
 
+// get transaction bank and link achat
+export const getTransactionBankAchat = ach_id => api.get(url.TRANSACTION_BANK+'/achat/'+ach_id);
+
 /*************************/
 /*        Company        */
 /*************************/
@@ -220,5 +223,6 @@ export const deleteSalary= sal_id => api.delete(url.SALARY + "/delete/" + sal_id
 export const getAchat = () => api.get(url.ACHAT);
 
 export const createUpdateAchat = data => api.create(url.ACHAT,data);
+
 
 export const deleteAchat= ach_id => api.delete(url.ACHAT + "/delete/" + ach_id);

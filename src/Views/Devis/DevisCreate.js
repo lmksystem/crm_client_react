@@ -201,9 +201,9 @@ const InvoiceCreate = () => {
 
     if (searchValue != "") {
       data = data.filter(e =>
-        e.ent_name?.toLowerCase()?.includes(searchValue.toLowerCase()) ||
-        e.ent_email?.toLowerCase()?.includes(searchValue.toLowerCase()) ||
-        e.ent_phone?.toLowerCase()?.includes(searchValue.toLowerCase())
+        e.ent_name?.toLowerCase()?.includes(searchValue?.toLowerCase()) ||
+        e.ent_email?.toLowerCase()?.includes(searchValue?.toLowerCase()) ||
+        e.ent_phone?.toLowerCase()?.includes(searchValue?.toLowerCase())
       );
     }
 

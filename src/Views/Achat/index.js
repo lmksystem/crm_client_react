@@ -23,6 +23,8 @@ import {
   ModalFooter,
   Table,
   FormFeedback,
+  ListGroupItem,
+  ListGroup,
 } from "reactstrap";
 
 import BreadCrumb from "../../Components/Common/BreadCrumb";
@@ -30,11 +32,13 @@ import DeleteModal from "../../Components/Common/DeleteModal";
 
 //Import actions
 import {
-  deleteEmployee as onDeleteEmployee,
   getEmployees as onGetEmployees,
-  createUpdateEmployee as onCreateUpdateEmployee,
+  getAchat as onGetAchat,
+  getTransactionBankAchat as onGetTransactionBankAchat,
+  createUpdateAchat as onCreateUpdateAchat,
 
-  getAchat as onGetAchat
+  getCollaborateurs as onGetCollaborateurs,
+  deleteAchat as onDeleteAchat,
 } from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
@@ -47,42 +51,39 @@ import { useFormik } from "formik";
 import Loader from "../../Components/Common/Loader";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import SimpleBar from "simplebar-react";
+import ModalCreate from "./ModalCreate";
 
 const Achats = () => {
   const dispatch = useDispatch();
-  const { employees, isAchatSuccess,achats,error} = useSelector((state) => ({
-    employees: state.Employee.employees,
+  const { isAchatSuccess, achats, error, transactions,collaborateurs } = useSelector(
+    (state) => ({
+      isAchatSuccess: state.Achat.isAchatSuccess,
+      achats: state.Achat.achats,
+      error: state.Achat.error,
+      collaborateurs: state.Gestion.collaborateurs,
+      transactions: state.TransactionBank.transactionsBank,
+    })
+  );
 
-    isAchatSuccess: state.Achat.isAchatSuccess,
-    achats: state.Achat.achats,
-    error: state.Achat.error,
-  }));
-
-  useEffect(() => {
-    dispatch(onGetEmployees());
-    dispatch(onGetAchat());
-
-  }, [dispatch]);
-
-  // useEffect(() => {
-  //   setEmployee(employees);
-  // }, [employees]);
-
-  useEffect(() => {
-    if (!isEmpty(employees)) {
-      setEmployee(employees);
-      setIsEdit(false);
-    }
-  }, [employees]);
-
-  const [employee, setEmployee] = useState({});
 
   const [achat, setAchat] = useState({});
-
+  
+  const[achatDisplay,setAchatDisplay] =useState([]);
+  useEffect(() => {
+    setAchatDisplay(achats)
+  }, [achats])
+  
+  
 
   const [isEdit, setIsEdit] = useState(false);
 
-  const [collaborateur, setCollaborateur] = useState(null);
+  const [filesSelected, setFilesSelected] = useState([]);
+
+  const [transFilter, setTransFilter] = useState({
+    data:  [],
+    searchTerm: "",
+  });
 
   //delete Conatct
   const [deleteModal, setDeleteModal] = useState(false);
@@ -94,26 +95,61 @@ const Achats = () => {
 
   const toggle = useCallback(() => {
     if (modal) {
+      if (!isEdit) {
+        setFilesSelected([]);
+      }
+      setAchat({});
+      setTransFilter({
+        data:  [],
+        searchTerm: "",
+      })
       setModal(false);
-      setEmployee({});
-      setCollaborateur(null);
+      setIsEdit(false);
     } else {
+   
       setModal(true);
     }
   }, [modal]);
 
   // Delete Data
   const handleDeleteContact = () => {
-    if (employee) {
-      dispatch(onDeleteEmployee(employee?.use_id));
+    if (achat) {
+      dispatch(onDeleteAchat(achat?.ach_id));
       setDeleteModal(false);
     }
   };
 
-  const onClickDelete = (employee) => {
-    setEmployee(employee);
+  const onClickDelete = (achat) => {
+    setAchat(achat);
     setDeleteModal(true);
   };
+
+  const createAchats = useFormik({
+    enableReinitialize: true,
+
+    initialValues: {
+      type: "",
+      files: filesSelected,
+    },
+    validationSchema: Yup.object({
+      type: Yup.string().required("Veuillez choisir un type"),
+      files: Yup.array()
+        .min(1)
+        .required("Veuillez choisir un/plusieurs fichier(s)"),
+    }),
+    onSubmit: (values) => {
+      if (!isEdit) {
+        const newAchat = {
+          ach_type: values.type,
+          files: values.files,
+        };
+        // save new Achat
+        dispatch(onCreateUpdateAchat(newAchat));
+        createAchats.resetForm();
+      }
+      toggle();
+    },
+  });
 
   // validation
   const validation = useFormik({
@@ -121,62 +157,84 @@ const Achats = () => {
     enableReinitialize: true,
 
     initialValues: {
-      lastname: (employee && employee.lastname) || "",
-      firstname: (employee && employee.firstname) || "",
-      email: (employee && employee.email) || "",
-      date_entree: (employee && employee.date_entree) || "",
+      id: (achat && achat.id) || "",
+      montant: (achat && achat.montant) ||  0.00,
+      tva: (achat && achat.tva) || 0.00,
+      libelle: (achat && achat.libelle) || "",
+      categorie: (achat && achat.categorie) || "",
+      methode: (achat && achat.methode) || "",
+      dateAchat: (achat && achat.dateAchat) || "",
+      dateEcheance: (achat && achat.dateEcheance) || "",
+      numero: (achat && achat.numero) || "",
+      justificatif: (achat && achat.justificatif) || "",
+      transactionAssoc: (achat && achat.transactionAssoc) || [],
+      entity :(achat && achat.entity) || "",
+      rp:(achat && achat.rp) || 0.00,
     },
-    validationSchema: Yup.object({
-      lastname: Yup.string().required("Veuillez entrer un nom"),
-      firstname: Yup.string().required("Veuillez entrer un prénom"),
-      email: Yup.string().required("Veuillez entrer un email"),
-      date_entree: Yup.date().required("Veuillez entrer une date d'entrée"),
-    }),
     onSubmit: (values) => {
-    //   if (isEdit) {
-    //     const updateEmployee = {
-    //       use_id: employee.id ? employee.id : 0,
-    //       use_lastname: values.lastname,
-    //       use_firstname: values.firstname,
-    //       use_email: values.email,
-    //       usa_date_entree: values?.date_entree || null,
-    //       use_password: "none",
-    //     };
+      if (isEdit) {
+        let TRANS_ASSOC_DISOC =  transFilter?.data?.filter((item) => item.type === "assoc" || item.type =="disoc") || [];
+        let newTransAssoc =TRANS_ASSOC_DISOC?.map((trAss) =>{
+          let newItem= {
+            aba_ach_fk:values.id,
+            aba_tba_fk:trAss.tba_id,
+            type:trAss.type
+          }
+          if(trAss.old == 1 && trAss.type =="disoc" && trAss.aba_id){
+            newItem.aba_id=trAss.aba_id;
+          }
+          return newItem
+          
+        })
 
-    //     // update Employee
-    //     dispatch(onCreateUpdateEmployee(updateEmployee));
-    //     validation.resetForm();
-    //   } else {
-    //     const newEmployee = {
-    //       use_lastname: values["lastname"],
-    //       use_firstname: values["firstname"],
-    //       use_email: values["email"],
-    //       use_password: "none",
-    //       use_rank: 1,
-    //       usa_date_entree: values?.date_entree || null,
-    //     };
-    //     // console.log(newEmployee)
-    //     // save new Contact
-    //     dispatch(onCreateUpdateEmployee(newEmployee));
-    //     validation.resetForm();
-    //   }
-    //   toggle();
+        const updateAchat = {
+          dataUp :{
+            ach_id:achat.id ? achat.id : 0,
+            ach_date_create: values.dateAchat,
+            ach_ent_fk:values.entity,
+            ach_date_expired: values.dateEcheance,
+            ach_total_amount: values.montant,
+            ach_total_tva: values.tva,
+            ach_categorie: values.categorie,
+            ach_lib: values.libelle,
+            ach_met: values.methode,
+            ach_num: values.numero,
+            ach_rp: values.rp
+          },
+          associate:newTransAssoc
+     
+        };
+        dispatch(onCreateUpdateAchat(updateAchat));
+        validation.resetForm();
+      }
+      toggle();
     },
   });
 
   // Update Data
   const handleContactClick = useCallback(
     (arg) => {
-      const employee = arg;
-
-      setEmployee({
-        id: employee?.use_id,
-        lastname: employee.use_lastname,
-        firstname: employee.use_firstname,
-        email: employee.use_email,
-        date_entree: employee?.usa_date_entree,
+      const achatH = arg;
+      if(achatH?.ach_id){
+        dispatch(
+          onGetTransactionBankAchat(achatH?.ach_id)
+        );
+      }
+      setAchat({
+        id: achatH?.ach_id,
+        montant: achatH?.ach_total_amount,
+        tva: achatH?.ach_total_tva,
+        libelle: achatH.ach_lib,
+        categorie: achatH.ach_categorie,
+        methode: achatH.ach_met,
+        dateEcheance: achatH.ach_date_expired,
+        dateAchat: achatH.ach_date_create,
+        numero: achatH.ach_num,
+        justificatif: achatH.ado_file_name,
+        entity:achatH.ach_ent_fk,
+        transactionAssoc: [],
+        rp:achatH?.ach_rp,
       });
-
       setIsEdit(true);
       toggle();
     },
@@ -207,8 +265,7 @@ const Achats = () => {
   const deleteMultiple = () => {
     const checkall = document.getElementById("checkBoxAll");
     selectedCheckBoxDelete.forEach((element) => {
-      console.log();
-      dispatch(onDeleteEmployee(element.value));
+      dispatch(onDeleteAchat(element.value));
       setTimeout(() => {
         toast.clearWaitingQueue();
       }, 3000);
@@ -222,7 +279,6 @@ const Achats = () => {
     ele.length > 0
       ? setIsMultiDeleteButton(true)
       : setIsMultiDeleteButton(false);
-    console.log(ele);
     setSelectedCheckBoxDelete(ele);
   };
 
@@ -238,17 +294,18 @@ const Achats = () => {
             onClick={() => checkedAll()}
           />
         ),
+
         Cell: (cellProps) => {
           return (
             <input
               type="checkbox"
               className="contactCheckBox form-check-input"
-              value={cellProps.row.original.use_id}
+              value={cellProps.row.original.ach_id}
               onChange={() => deleteCheckbox()}
             />
           );
         },
-        id: "#",
+        id: "checkDelete",
       },
       {
         Header: "",
@@ -265,13 +322,24 @@ const Achats = () => {
       },
       {
         Header: "Statut",
-        accessor: "ach_status",
+        // accessor: "ach_status",
         filterable: false,
         Cell: (cell) => {
-          console.log(cell)
-          return <div className="d-flex align-items-center">
-                <p className="m-0">{cell.value == 1 ? "Validé":(cell.value == 2 ?"Partiellement pointé" :"A traiter")}</p>
+          let status = ""
+          if(cell.row.original.ach_total_amount<=0 || cell.row.original.ach_total_amount==null || cell.row.original.ach_categorie?.length==0 || (cell.row.original?.ach_date_create =="" || cell.row.original.ach_date_create ==null)){
+            status="A traiter"
+          }else if(parseFloat(cell.row.original.ach_rp)!=0){
+            status="A associer"
+          }else{
+            status="Validé"
+          }
+          return (
+            <div className="d-flex align-items-center">
+              <p className="m-0">
+                {status}
+              </p>
             </div>
+          );
         },
       },
       {
@@ -285,7 +353,7 @@ const Achats = () => {
         filterable: false,
       },
       {
-        Header: "Date",
+        Header: "Date d'achat",
         accessor: "ach_date_create",
         filterable: false,
       },
@@ -300,76 +368,118 @@ const Achats = () => {
         filterable: false,
       },
       {
+        Header: "Association",
+        accessor: "assoc",
+        filterable: false,
+        Cell: (cell) => {
+
+          let styleCSS = {};
+          if(parseFloat(cell.row.original.ach_rp)==0 && parseFloat(cell.row.original.ach_total_amount)!=0){
+            styleCSS = {
+              width: '15px',
+              height: '15px',
+              borderRadius: '50%',
+              backgroundColor: 'green',
+              marginLeft:"15%"
+            };
+          }else if(parseFloat(cell.row.original.ach_rp) == Math.abs(parseFloat(cell.row.original.ach_total_amount))){
+            styleCSS = {
+              width: '15px',
+              height: '15px',
+              borderRadius: '50%',
+              border: '2px solid red',
+              backgroundColor: 'transparent',
+              alignItems:"center",
+              justifyContent:'center',
+              display:'flex',
+              marginLeft:"15%",
+              overflow:'hidden'
+            };
+          }else if(parseFloat(cell.row.original.ach_rp) < Math.abs(parseFloat(cell.row.original.ach_total_amount)) && parseFloat(cell.row.original.ach_rp)>0){
+            styleCSS = {
+              width: '10px',
+              height: '15px',
+              borderBottomRightRadius: '10px',
+              borderTopRightRadius: '10px',
+              backgroundColor: 'orange',
+              // marginLeft:8,
+              marginLeft:"16%"
+            };
+          }
+          return (
+            <div className="d-flex align-items-center">
+              <div style={styleCSS}>
+              {cell.row.original.ach_rp == Math.abs(parseFloat(cell.row.original.ach_total_amount)) &&
+             <i style={{color:'red'}} className="las la-times" ></i>
+              }
+              </div>
+            </div>
+          );
+        },
+      },
+      {
         Header: "Action",
+        id: "Action",
         Cell: (cellProps) => {
           return (
-            <ul className="list-inline hstack gap-2 mb-0">
-              <li className="list-inline-item">
-                <UncontrolledDropdown>
-                  <DropdownToggle
-                    href="#"
-                    className="btn btn-soft-secondary btn-sm dropdown"
-                    tag="button"
-                  >
-                    <i className="ri-more-fill align-middle"></i>
-                  </DropdownToggle>
-                  <DropdownMenu className="dropdown-menu-end">
-                    <DropdownItem
-                      className="dropdown-item"
-                      href="#"
-                      onClick={() => {
-                        const employeeData = cellProps.row.original;
-                        setInfo(employeeData);
-                        setShow(true);
-                      }}
-                    >
-                      <i className="ri-eye-fill align-bottom me-2 text-muted"></i>{" "}
-                      Voir
-                    </DropdownItem>
-                    <DropdownItem
-                      className="dropdown-item edit-item-btn"
-                      href="#"
-                      onClick={() => {
-                        const employeeData = cellProps.row.original;
-                        handleContactClick(employeeData);
-                      }}
-                    >
-                      <i className="ri-pencil-fill align-bottom me-2 text-muted"></i>{" "}
-                      Modifier
-                    </DropdownItem>
-                    <DropdownItem
-                      className="dropdown-item remove-item-btn"
-                      href="#"
-                      onClick={() => {
-                        const employeeData = cellProps.row.original;
-                        onClickDelete(employeeData);
-                      }}
-                    >
-                      <i className="ri-delete-bin-fill align-bottom me-2 text-muted"></i>{" "}
-                      Supprimer
-                    </DropdownItem>
-                  </DropdownMenu>
-                </UncontrolledDropdown>
-              </li>
-            </ul>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-start",
+                alignItems: "center",
+              }}
+            >
+              <i
+                style={{ marginLeft: "14%" }}
+                onClick={() => {
+                  const achatData = cellProps.row.original;
+                  onClickDelete(achatData);
+                }}
+                className="ri-delete-bin-fill align-bottom me-2 text-muted"
+              ></i>
+            </div>
           );
         },
       },
     ],
-    [handleContactClick, checkedAll, employee,achat]
+    []
   );
 
+  useEffect(() => {
+    dispatch(onGetEmployees());
+    dispatch(onGetAchat());
+  
+    dispatch(onGetCollaborateurs());
+   
+    ;
+  }, [dispatch]);
 
+
+  // useEffect(() => {
+  //   if(achat.id){
+  //     dispatch(
+  //       onGetTransactionBankAchat(achat.id)
+  //     );
+  //   }
+  // }, [achat])
+
+
+  
+
+
+  useEffect(() => {
+    if (!isEmpty(achats)) {
+      setAchat({});
+      setIsEdit(false);
+    }
+  }, [achats]);
   useEffect(() => {
     if (show) {
       setTimeout(() => {
         document.getElementById("start-anime").classList.add("show");
       }, 200);
     }
-  }, [show]);
-
-  // SideBar Contact Deatail
-  const [info, setInfo] = useState([]);
+  }, []);
 
   document.title = "Factures Achats | Countano";
   return (
@@ -426,7 +536,7 @@ const Achats = () => {
                     {isAchatSuccess ? (
                       <TableContainer
                         columns={columns}
-                        data={achats || []}
+                        data={achatDisplay || []}
                         isGlobalFilter={true}
                         isAddUserList={false}
                         customPageSize={8}
@@ -434,6 +544,10 @@ const Achats = () => {
                         divClass="table-responsive table-card mb-3"
                         tableClass="align-middle table-nowrap"
                         theadClass="table-light"
+                        actionItem={(row) => {
+                          const achatData = row.original;
+                          handleContactClick(achatData);
+                        }}
                         // handleContactClick={handleContactClicks}
                         isContactsFilter={true}
                         SearchPlaceholder="Recherche..."
@@ -442,230 +556,27 @@ const Achats = () => {
                       <Loader error={error} />
                     )}
                   </div>
-
-                  <Modal id="showModal" isOpen={modal} toggle={toggle} centered>
-                    <ModalHeader className="bg-soft-info p-3" toggle={toggle}>
-                      {!!isEdit ? "Modifier une facture d'achat" : "Ajouter une facture d'acture"}
-                    </ModalHeader>
-
-                    <Form
-                      className="tablelist-form"
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        validation.handleSubmit();
-                        return false;
-                      }}
-                    >
-                      <ModalBody>
-                        <Input type="hidden" id="id-field" />
-                        <Row className="g-3">
-                          <Col lg={6}>
-                            {/* <div>
-                              <Label
-                                htmlFor="lastname-field"
-                                className="form-label"
-                              >
-                                Nom
-                              </Label>
-                              <Input
-                                name="lastname"
-                                id="lastname-field"
-                                className="form-control"
-                                placeholder="Entrer un nom"
-                                type="text"
-                                validate={{
-                                  required: { value: true },
-                                }}
-                                onChange={validation.handleChange}
-                                onBlur={validation.handleBlur}
-                                value={validation.values.lastname || ""}
-                                invalid={
-                                  validation.touched.lastname &&
-                                  validation.errors.lastname
-                                    ? true
-                                    : false
-                                }
-                              />
-                              {validation.touched.lastname &&
-                              validation.errors.lastname ? (
-                                <FormFeedback type="invalid">
-                                  {validation.errors.lastname}
-                                </FormFeedback>
-                              ) : null}
-                            </div> */}
-                          </Col>
-                          <Col lg={6}>
-                            {/* <div>
-                              <Label
-                                htmlFor="firstname-field"
-                                className="form-label"
-                              >
-                                Prénom
-                              </Label>
-                              <Input
-                                name="firstname"
-                                id="firstname-field"
-                                className="form-control"
-                                placeholder="Entrer un prénom"
-                                type="text"
-                                validate={{
-                                  required: { value: true },
-                                }}
-                                onChange={validation.handleChange}
-                                onBlur={validation.handleBlur}
-                                value={validation.values.firstname || ""}
-                                invalid={
-                                  validation.touched.firstname &&
-                                  validation.errors.firstname
-                                    ? true
-                                    : false
-                                }
-                              />
-                              {validation.touched.firstname &&
-                              validation.errors.firstname ? (
-                                <FormFeedback type="invalid">
-                                  {validation.errors.firstname}
-                                </FormFeedback>
-                              ) : null}
-                            </div> */}
-                          </Col>
-
-                          <Col lg={12}>
-                            {/* <div>
-                              <Label
-                                htmlFor="email_id-field"
-                                className="form-label"
-                              >
-                                Email
-                              </Label>
-
-                              <Input
-                                name="email"
-                                id="email_id-field"
-                                className="form-control"
-                                placeholder="Entrer un email"
-                                type="email"
-                                validate={{
-                                  required: { value: true },
-                                }}
-                                onChange={validation.handleChange}
-                                onBlur={validation.handleBlur}
-                                value={validation.values.email || ""}
-                                invalid={
-                                  validation.touched.email &&
-                                  validation.errors.email
-                                    ? true
-                                    : false
-                                }
-                              />
-                              {validation.touched.email &&
-                              validation.errors.email ? (
-                                <FormFeedback type="invalid">
-                                  {validation.errors.email}
-                                </FormFeedback>
-                              ) : null}
-                            </div> */}
-                          </Col>
-
-                          <Col lg={12}>
-                            {/* <div>
-                              <Label
-                                htmlFor="date_entree-field"
-                                className="form-label"
-                              >
-                                Date entrée dans l'entreprise
-                              </Label>
-
-                              <Input
-                                name="date_entree"
-                                id="date_entree-field"
-                                className="form-control"
-                                type="date"
-                                validate={{
-                                  required: { value: true },
-                                }}
-                                onChange={validation.handleChange}
-                                onBlur={validation.handleBlur}
-                                value={validation.values.date_entree || ""}
-                                invalid={
-                                  validation.touched.date_entree &&
-                                  validation.errors.date_entree
-                                    ? true
-                                    : false
-                                }
-                              />
-                              {validation.touched.date_entree &&
-                              validation.errors.date_entree ? (
-                                <FormFeedback type="invalid">
-                                  {validation.errors.date_entree}
-                                </FormFeedback>
-                              ) : null}
-                            </div> */}
-                          </Col>
-                        </Row>
-                      </ModalBody>
-                      <ModalFooter>
-                        <div className="hstack gap-2 justify-content-end">
-                          <button
-                            type="button"
-                            className="btn btn-light"
-                            onClick={() => {
-                              setModal(false);
-                              setIsEdit(false);
-                              setEmployee({});
-                            }}
-                          >
-                            {" "}
-                            Fermer{" "}
-                          </button>
-                          <button
-                            type="submit"
-                            className="btn btn-success"
-                            id="add-btn"
-                          >
-                            {" "}
-                            {!!isEdit ? "Modifier" : "Ajouter"}{" "}
-                          </button>
-                        </div>
-                      </ModalFooter>
-                    </Form>
-                  </Modal>
+                  <ModalCreate
+                    validation={validation}
+                    modal={modal}
+                    toggle={toggle}
+                    isEdit={isEdit}
+                    setModal={setModal}
+                    setIsEdit={setIsEdit}
+                    setAchat={setAchat}
+                    achat={achat}
+                    transactions={transactions}
+                    createAchats={createAchats}
+                    filesSelected={createAchats.values}
+                    setFilesSelected={createAchats.setValues}
+                    collaborateurs={collaborateurs}
+                    transFilter={transFilter}
+                    setTransFilter={setTransFilter}
+                  />
                   <ToastContainer closeButton={false} limit={1} />
                 </CardBody>
               </Card>
             </Col>
-
-            <div id="start-anime">
-              <Card id="contact-view-detail">
-                <CardBody className="text-center">
-                  <h5 className="mt-4 mb-1">
-                    {info.use_lastname + " " + info.use_firstname}
-                  </h5>
-                  <ul className="list-inline mb-0">
-                    <li className="list-inline-item avatar-xs">
-                      <Link
-                        to={`mailto:${info.use_email}`}
-                        className="avatar-title bg-soft-danger text-danger fs-15 rounded"
-                      >
-                        <i className="ri-mail-line"></i>
-                      </Link>
-                    </li>
-                  </ul>
-                </CardBody>
-                <CardBody>
-                  <div className="table-responsive table-card">
-                    <Table className="table table-borderless mb-0">
-                      <tbody>
-                        <tr>
-                          <td className="fw-medium">Email</td>
-                          <td>{info.use_email}</td>
-                        </tr>
-                      </tbody>
-                    </Table>
-                  </div>
-                </CardBody>
-              </Card>
-            </div>
           </Row>
         </Container>
       </div>
