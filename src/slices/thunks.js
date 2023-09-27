@@ -62,3 +62,6 @@ export * from "./salary/thunk";
 
 // achat
 export * from "./achat/thunk";
+
+// Recurrence
+export * from "./recurrence/thunk";

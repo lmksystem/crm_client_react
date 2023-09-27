@@ -1,10 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { isEmpty } from "lodash";
-import * as moment from "moment";
-
-// Import Images
-import dummyImg from "../../assets/images/users/user-dummy-img.jpg";
 
 import {
   Col,
@@ -30,9 +25,11 @@ import DeleteModal from "../../Components/Common/DeleteModal";
 //Import actions
 import {
   getProducts as onGetProducts,
-  addProduct as onAddProduct,
-  getTva as onGetTva,
-  updateProduct as onUpdateProduct
+  addRecurrence as onAddRecurrence,
+  getRecurrences as onGetRecurrences,
+  getCollaborateurs as onGetCollaborateurs,
+  deleteRecurrence as onDeleteRecurrence,
+  getRecurrenceOfEntity as onGetRecurrenceOfEntity
 } from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
@@ -48,49 +45,88 @@ import 'react-toastify/dist/ReactToastify.css';
 
 // Export Modal
 import ExportCSVModal from "../../Components/Common/ExportCSVModal";
+import SimpleBar from "simplebar-react";
+import moment from "moment";
+
 
 const Recurrence = () => {
   const dispatch = useDispatch();
-  const { products, isProductSuccess, error } = useSelector((state) => ({
-    products: [],
+  const { products, isProductSuccess, error, collaborateurs, recurrences, isRecurrenceAdd, recurrenceOfEntity } = useSelector((state) => ({
+    recurrenceOfEntity: state.Recurrence.recurrenceOfEntity,
+    collaborateurs: state.Gestion.collaborateurs,
+    products: state.Product.products,
+    recurrences: state.Recurrence.recurrences,
     isProductSuccess: state.Product.isProductSuccess,
+    isRecurrenceAdd: state.Recurrence.isRecurrenceAdd,
     error: state.Product.error,
   }));
 
-  const [product, setProduct] = useState([]);
-  const [isEdit, setIsEdit] = useState(false);
+  const [searchValueProduct, setSearchValueProduct] = useState("");
+  const [searchValueClient, setSearchValueClient] = useState("");
+  const [recurrenceToDelete, setRecurrenceToDelete] = useState(null);
+  const [modalProduct, setModalProduct] = useState(false);
+  const [modalClient, setModalClient] = useState(false);
+  const [openCreate, setOpenCreate] = useState(false);
+  const [show, setShow] = useState(false);
+  const [info, setInfo] = useState(null);
+  const [isLastRec, setIsLastRec] = useState(false);
 
   useEffect(() => {
+    if (isRecurrenceAdd) {
+      dispatch(onGetRecurrences())
+    }
+  }, [dispatch, isRecurrenceAdd, recurrenceOfEntity]);
+
+  useEffect(() => {
+
     dispatch(onGetProducts());
-  }, [dispatch]);
+    dispatch(onGetRecurrences())
+    dispatch(onGetCollaborateurs());
+
+  }, []);
 
   //delete Conatct
   const [deleteModal, setDeleteModal] = useState(false);
-  const [deleteModalMulti, setDeleteModalMulti] = useState(false);
 
-  const [modal, setModal] = useState(false);
-
-  const toggle = useCallback(() => {
-    if (modal) {
-      setModal(false);
-      setProduct(null);
-      setIsEdit(false);
+  const toggleModalProduct = useCallback(() => {
+    if (modalProduct) {
+      setModalProduct(false);
     } else {
-      setModal(true);
+      setModalProduct(true);
     }
-  }, [modal]);
+  }, [modalProduct]);
+
+  const toggleModalCreate = useCallback(() => {
+    if (openCreate) {
+      setOpenCreate(false);
+    } else {
+      setOpenCreate(true);
+    }
+  }, [openCreate]);
+
+  const toggleModalClient = useCallback(() => {
+    if (modalClient) {
+      setModalClient(false);
+    } else {
+      setModalClient(true);
+    }
+  }, [modalClient]);
 
   // Delete Data
-  const handleDeleteProduct = () => {
-    if (product) {
-      dispatch(onDeleteProduct(product.pro_id));
+  const handleDeleteRecurrence = () => {
+    if (recurrenceToDelete) {
+      dispatch(onDeleteRecurrence(recurrenceToDelete));
       setDeleteModal(false);
+      if (isLastRec) {
+        setShow(false);
+      }
     }
   };
 
-  const onClickDelete = (product) => {
-    setProduct(product);
+  const onClickDelete = (rec_id, is_last) => {
+    setRecurrenceToDelete(rec_id);
     setDeleteModal(true);
+    setIsLastRec(is_last);
   };
 
   // validation
@@ -99,157 +135,131 @@ const Recurrence = () => {
     enableReinitialize: true,
 
     initialValues: {
+      products: [],
+      clients: {},
+      recurrence_data: {
+        rec_ent_fk: "",
+        rec_desc: "",
+        rec_date_echeance: "",
+        rec_nb: 1,
+        rec_quand: 0,
+        rec_repetition: 1,
+      }
 
-      pro_name: (product && product.pro_name) || "",
-      pro_detail: (product && product.pro_detail) || "",
-      pro_prix: (product && product.pro_prix) || 0,
-      pro_tva: (product && product.pro_tva) || 0,
     },
     validationSchema: Yup.object({
-      pro_name: Yup.string().required("Veuillez entrer un nom"),
-      pro_detail: Yup.string().required("Veuillez entrer une description"),
-      pro_prix: Yup.number().required("Veuillez entrer une valeur"),
-      pro_tva: Yup.number().required("Veuillez entrer une valeur"),
+      recurrence_data: Yup.object({
+        rec_ent_fk: Yup.number().required("Veuillez entrer un client"),
+        rec_date_echeance: Yup.string().required("Veuillez entrer une date"),
+        rec_nb: Yup.number().required("Champs obligatoire"),
+        rec_quand: Yup.string().required("Champs obligatoire"),
+        rec_repetition: Yup.string().required("Champs obligatoire"),
+
+      }),
+      products: Yup.array().min(1, "Ajouter au moins un produit")
     }),
     onSubmit: (values) => {
-      values.pro_tva = parseFloat(values.pro_tva)
-      if (isEdit) {
-        // update tva
-        values.pro_id = (product && product.pro_id) || 0;
-        dispatch(onUpdateProduct(values));
-        validation.resetForm();
-
-      } else {
-        // save new tva
-        dispatch(onAddProduct(values));
-        validation.resetForm();
+      for (let index = 0; index < values.products.length; index++) {
+        const element = values.products[index];
+        let data = { ...element, ...values.recurrence_data };
+        delete data.pro_id;
+        dispatch(onAddRecurrence(data));
       }
-      toggle();
+      setOpenCreate(false);
+      setShow(false);
+      validation.resetForm();
     },
   });
 
-  // Update Data
-  const handleProductClick = useCallback((arg) => {
-    const product = arg;
+  /**
+  * Fonction de recherche d'un client lors de la séléction
+  * @returns 
+  */
+  const handleListClient = () => {
+    let data = [...collaborateurs];
 
-    setProduct({
-      pro_id: product.pro_id,
-      pro_name: product.pro_name,
-      pro_detail: product.pro_detail,
-      pro_tva: product.pro_tva,
-      pro_prix: product.pro_prix,
-    });
-
-    setIsEdit(true);
-    toggle();
-  }, [toggle]);
-
-  // Checked All
-  const checkedAll = useCallback(() => {
-    const checkall = document.getElementById("checkBoxAll");
-    const ele = document.querySelectorAll(".tvaCheckBox");
-
-    if (checkall.checked) {
-      ele.forEach((ele) => {
-        ele.checked = true;
-      });
-    } else {
-      ele.forEach((ele) => {
-        ele.checked = false;
-      });
+    if (searchValueClient != "") {
+      data = data.filter(e =>
+        e.ent_name?.toLowerCase()?.includes(searchValueClient.toLowerCase()) ||
+        e.ent_email?.toLowerCase()?.includes(searchValueClient.toLowerCase()) ||
+        e.ent_phone?.toLowerCase()?.includes(searchValueClient.toLowerCase())
+      );
     }
-    deleteCheckbox();
-  }, []);
 
-  // Delete Multiple
-  const [selectedCheckBoxDelete, setSelectedCheckBoxDelete] = useState([]);
-  const [isMultiDeleteButton, setIsMultiDeleteButton] = useState(false);
-
-  const deleteMultiple = () => {
-    const checkall = document.getElementById("checkBoxAll");
-
-    selectedCheckBoxDelete.forEach((element) => {
-      console.log(element.value);
-      dispatch(onDeleteTva(element.value));
-      setTimeout(() => { toast.clearWaitingQueue(); }, 3000);
-    });
-    setIsMultiDeleteButton(false);
-    checkall.checked = false;
-  };
-
-  const deleteCheckbox = () => {
-    const ele = document.querySelectorAll(".tvaCheckBox:checked");
-    ele.length > 0 ? setIsMultiDeleteButton(true) : setIsMultiDeleteButton(false);
-    setSelectedCheckBoxDelete(ele);
-  };
+    return data
+  }
 
   // Column
   const columns = useMemo(
     () => [
-      {
-        Header: <input type="checkbox" id="checkBoxAll" className="form-check-input" onClick={() => checkedAll()} />,
-        Cell: (cellProps) => {
-          return <input type="checkbox" className="tvaCheckBox form-check-input" value={cellProps.row.original.pro_id} onChange={() => deleteCheckbox()} />;
-        },
-        id: '#',
-      },
+
       {
         id: "hidden-id",
-        accessor: 'pro_id',
+        accessor: 'ent_id',
         hiddenColumns: true,
         Cell: (cell) => {
           return <input type="hidden" value={cell.value} />;
         }
       },
       {
-        Header: "Nom",
-        accessor: "pro_name",
+        Header: "Entreprise",
+        accessor: "ent_name",
       },
       {
-        Header: "Détail",
-        accessor: "pro_detail",
+        Header: "Email",
+        accessor: "ent_email",
         filterable: false,
       },
       {
-        Header: "Prix",
-        accessor: "pro_prix",
+        Header: "Montant total",
+        accessor: "",
         filterable: false,
         Cell: (cell) => {
-          return <div>{cell.value ? cell.value + "€" : <i>Non renseigné</i>}</div>;
+          let recurrenceMotantArray = cell.row.original.recurrences.map((r) => r.rec_montant);
+          let montantTotal = recurrenceMotantArray.reduce((partialSum, a) => partialSum + a, 0);
+          return <div>{montantTotal}€</div>;
         }
       },
       {
-        Header: "Tva",
+        Header: "Nombre de produit récurrent",
         accessor: "pro_tva",
         filterable: false,
         Cell: (cell) => {
-          return <div>{cell.value ? cell.value + "%" : <i>Non renseigné</i>}</div>;
+          let recurrences = cell.row.original.recurrences;
+          return <div>{recurrences.length}</div>;
         }
       },
       {
         Header: "Action",
         Cell: (cellProps) => {
-          let product = cellProps.row.original;
+          let data = cellProps.row.original;
           return (
             <ul className="list-inline hstack gap-2 mb-0">
-              <li className="list-inline-item edit" title="Call">
-                <Link to="#" onClick={() => { handleProductClick(product) }} className="text-primary d-inline-block edit-item-btn">
-                  <i className="ri-pencil-fill fs-16"></i>
+              <li className="list-inline-item" title="View">
+                <Link to="#"
+                  onClick={() => { setInfo(data); dispatch(onGetRecurrenceOfEntity(data.ent_id)); setShow(true); }}
+                >
+                  <i className="ri-eye-fill align-bottom text-muted"></i>
                 </Link>
               </li>
-              <li className="list-inline-item edit" title="Call">
-                <Link to="#" onClick={() => { onClickDelete(product) }} className="text-danger d-inline-block remove-item-btn">
-                  <i className="ri-delete-bin-5-fill fs-16"></i>
-                </Link>
-              </li>
-
             </ul>
           );
         },
       },
     ],
-    [handleProductClick, checkedAll]
+    []
   );
+
+  useEffect(() => {
+    if (show) {
+      setTimeout(() => {
+        document.getElementById('start-anime').classList.add("show")
+      }, 200);
+    }
+  }, [show])
+
+  const [currentViewMore, setCurrentViewMore] = useState(null);
+
 
   // Export Modal
   const [isExportCSV, setIsExportCSV] = useState(false);
@@ -266,232 +276,462 @@ const Recurrence = () => {
 
         <DeleteModal
           show={deleteModal}
-          onDeleteClick={handleDeleteProduct}
-          onCloseClick={() => setDeleteModal(false)}
+          onDeleteClick={handleDeleteRecurrence}
+          onCloseClick={() => { setDeleteModal(false); setIsLastRec(false); }}
         />
 
-        <DeleteModal
-          show={deleteModalMulti}
-          onDeleteClick={() => {
-            deleteMultiple();
-            setDeleteModalMulti(false);
-          }}
-          onCloseClick={() => setDeleteModalMulti(false)}
-        />
         <Container fluid>
           <BreadCrumb title="Produit" pageTitle="Gestion" />
           <Row>
             <Col lg={12}>
               <Card>
                 <CardHeader>
-                  <div className="d-flex align-items-center flex-wrap gap-2 ">
+
+                  <Col lg={12}>
                     <div className="d-flex flex-grow-1 justify-content-end">
-                      <button
-                        className="btn btn-info add-btn"
-                        onClick={() => {
-                          setModal(true);
-                        }}
-                      >
+
+                      <button className="btn btn-info add-btn" onClick={() => setOpenCreate(true)}>
                         <i className="ri-add-fill me-1 align-bottom"></i>
-                        Ajouter un produit
+                        Ajouter une facturation récurrente
                       </button>
                     </div>
-                    <div className="flex-shrink-0">
-                      <div className="hstack text-nowrap gap-2">
-                        {isMultiDeleteButton && <button className="btn btn-danger"
-                          onClick={() => setDeleteModalMulti(true)}
-                        ><i className="ri-delete-bin-2-line"></i></button>}
 
-                        {/* <button className="btn btn-soft-success" onClick={() => setIsExportCSV(true)}>Export</button> */}
-
-                      </div>
-                    </div>
-                  </div>
+                  </Col>
                 </CardHeader>
 
 
-                <CardBody className="pt-0">
-                  <div>
+                <CardBody className="pt-3">
+                  <Row>
+                    <Col xxl={show ? 7 : 12}>
+                      <div>
 
-                    {isProductSuccess ? (
+                        {isProductSuccess ? (
 
-                      <TableContainer
-                        columns={columns}
-                        data={(products || [])}
-                        isGlobalFilter={true}
-                        isAddUserList={false}
-                        customPageSize={7}
-                        className="custom-header-css"
-                        divClass="table-responsive table-card mb-2"
-                        tableClass="align-middle table-nowrap"
-                        theadClass="table-light"
-                        isCompaniesFilter={false}
-                        isProductsFilter={true}
-                        SearchPlaceholder='Recherche...'
-                      />
+                          <TableContainer
+                            columns={columns}
+                            data={(recurrences || [])}
+                            isGlobalFilter={true}
+                            isAddUserList={false}
+                            customPageSize={7}
+                            className="custom-header-css"
+                            divClass="table-responsive table-card mb-2"
+                            tableClass="align-middle table-nowrap"
+                            theadClass="table-light"
+                            isCompaniesFilter={false}
+                            isProductsFilter={true}
+                            SearchPlaceholder='Recherche...'
+                          />
 
-                    ) : (<Loader error={error} />)
-                    }
-                  </div>
-                  <Modal id="showModal" isOpen={modal} toggle={toggle} centered size="lg">
-                    <ModalHeader className="bg-soft-info p-3" toggle={toggle}>
-                      {!!isEdit ? "Modifier produit" : "Ajouter produit"}
-                    </ModalHeader>
-                    <Form className="tablelist-form" onSubmit={(e) => {
-                      console.log("fhuegfes");
-                      e.preventDefault();
-                      validation.handleSubmit();
-                      return false;
-                    }}>
-                      <ModalBody>
-                        <input type="hidden" id="id-field" />
-                        <Row className="g-3">
-                          <Col lg={12}>
+                        ) : (<Loader error={error} />)
+                        }
+                      </div>
+                    </Col>
 
-                            <div>
-                              <Label
-                                htmlFor="pro_name-field"
-                                className="form-label"
-                              >
-                                Nom
-                              </Label>
-                              <Input
-                                name="pro_name"
-                                id="pro_name-field"
-                                className="form-control"
-                                placeholder="Entrer un nom"
-                                type="text"
-                                validate={{
-                                  required: { value: true },
-                                }}
-                                onChange={validation.handleChange}
-                                onBlur={validation.handleBlur}
-                                value={validation.values.pro_name || ""}
-                                invalid={
-                                  validation.touched.pro_name && validation.errors.pro_name ? true : false
-                                }
-                              />
-                              {validation.touched.pro_name && validation.errors.pro_name ? (
-                                <FormFeedback type="invalid">{validation.errors.pro_name}</FormFeedback>
-                              ) : null}
-                            </div>
-
-                          </Col>
-                          <Col lg={12}>
-
-                            <div>
-                              <Label
-                                htmlFor="pro_detail-field"
-                                className="form-label"
-                              >
-                                Détail
-                              </Label>
-                              <Input
-                                name="pro_detail"
-                                id="pro_detail-field"
-                                className="form-control"
-                                placeholder="Entrer un détail"
-                                type="text"
-                                validate={{
-                                  required: { value: true },
-                                }}
-                                onChange={validation.handleChange}
-                                onBlur={validation.handleBlur}
-                                value={validation.values.pro_detail || ""}
-                                invalid={
-                                  validation.touched.pro_detail && validation.errors.pro_detail ? true : false
-                                }
-                              />
-                              {validation.touched.pro_detail && validation.errors.pro_detail ? (
-                                <FormFeedback type="invalid">{validation.errors.pro_detail}</FormFeedback>
-                              ) : null}
-                            </div>
-
-                          </Col>
-                          <Col lg={6}>
-
-                            <div>
-                              <Label
-                                htmlFor="pro_tva-field"
-                                className="form-label"
-                              >
-                                Tva
-                              </Label>
-                              <Input
-                                name="pro_tva"
-                                id="pro_tva-field"
-                                className="form-control"
-                                placeholder="Entrer une tva"
-                                type="select"
-                                validate={{
-                                  required: { value: true },
-                                }}
-                                onChange={validation.handleChange}
-                                onBlur={validation.handleBlur}
-                                value={validation.values.pro_tva || 0}
-                                invalid={
-                                  validation.touched.pro_tva && validation.errors.pro_tva ? true : false
-                                }
-                              >
-                                <option value={0}>Séléctionnez une Tva</option>
-                                {tva?.map((e, i) => <option {...e.value == product?.pro_tva ? "selected" : ""} key={i} value={e.tva_value}>{e.tva_libelle}</option>)}
-                              </Input>
-                              {validation.touched.pro_tva && validation.errors.pro_tva ? (
-                                <FormFeedback type="invalid">{validation.errors.pro_tva}</FormFeedback>
-                              ) : null}
-                            </div>
-
-                          </Col>
-                          <Col lg={6}>
-
-                            <div>
-                              <Label
-                                htmlFor="pro_detail-field"
-                                className="form-label"
-                              >
-                                Prix
-                              </Label>
-                              <Input
-                                name="pro_prix"
-                                id="pro_prix-field"
-                                className="form-control"
-                                placeholder="Entrer un prix"
-                                type="number"
-                                validate={{
-                                  required: { value: true },
-                                }}
-                                onChange={validation.handleChange}
-                                onBlur={validation.handleBlur}
-                                value={validation.values.pro_prix || ""}
-                                invalid={
-                                  validation.touched.pro_prix && validation.errors.pro_prix ? true : false
-                                }
-                              />
-                              {validation.touched.pro_prix && validation.errors.pro_prix ? (
-                                <FormFeedback type="invalid">{validation.errors.pro_prix}</FormFeedback>
-                              ) : null}
-                            </div>
-
-                          </Col>
-                        </Row>
-                      </ModalBody>
-                      <ModalFooter>
-                        <div className="hstack gap-2 justify-content-end">
-                          <button type="button" className="btn btn-light" onClick={() => { setModal(false); }} > Fermer </button>
-                          <button type="submit" className="btn btn-success" id="add-btn" >  {!!isEdit ? "Modifier" : "Ajouter un produit"} </button>
+                    <Col xxl={5} className="">
+                      <div id="start-anime" style={{}}>
+                        <div style={{ height: 75, verticalAlign: "middle" }} className="border border-top-dashed border-bottom-0 border-end-0 border-start-0 card-body">
+                          <h4>{info?.ent_name}</h4>
                         </div>
-                      </ModalFooter>
-                    </Form>
-                  </Modal>
-                  <ToastContainer closeButton={false} limit={1} />
+                        <div id="contact-view-detail" style={{ display: "flex", flexWrap: "wrap", flexDirection: "row" }}>
+                          {recurrenceOfEntity?.map((rec, i) => {
+                            return (
+                              <CardBody style={{ cursor: "pointer", position: "relative", margin: 9, boxShadow: "0px 0px 5px rgb(80, 66, 66, 0.21)", borderRadius: 5, minWidth: "45%", maxWidth: "45%" }}>
+                                <div onClick={() => onClickDelete(rec.rec_id, recurrenceOfEntity.length < 2)} style={{ position: "absolute", top: -12, left: -9, fontSize: "20px" }} ><i className="text-danger ri-close-circle-fill"></i></div>
+                                <div style={{ position: "absolute", top: -5, right: -5 }} className="bg-primary badge badge-primary">Échéance: {moment(rec.rec_date_echeance).format('DD/MM/YYYY')}</div>
+                                <table className="w-100">
+                                  <tr>
+                                    <td><b>{rec.rec_pro_name}</b></td>
+                                    <td align="center"></td>
+                                    <td align="right"></td>
+                                  </tr>
+                                  <tr>
+                                    <td>quantité: {rec.rec_pro_qty}</td>
+                                    <td align="center" >{rec.rec_montant}€</td>
+                                    <td align="right"></td>
+                                  </tr>
+
+                                </table>
+                                <div style={{
+                                  zIndex: 1,
+                                  opacity: currentViewMore == i ? "1" : "0",
+                                  height: currentViewMore == i ? "auto" : '0px',
+                                  transition: "all 0.5s",
+                                  visibility: currentViewMore == i ? "visible" : "hidden",
+
+                                }}>
+                                  {rec.rec_desc}
+                                </div>
+                                <div style={{ cursor: "pointer", textAlign: "center" }} onClick={() => setCurrentViewMore((v) => v == i ? null : i)}><i className={(currentViewMore == i ? "ri-arrow-up-circle-line" : "ri-arrow-down-circle-line") + " text-primary"} style={{ fontSize: "20px" }}></i></div>
+                              </CardBody>
+                            )
+                          })}
+
+                        </div>
+                      </div>
+                    </Col>
+                    <ToastContainer closeButton={false} limit={1} />
+                  </Row>
+
                 </CardBody>
 
               </Card>
             </Col>
+
           </Row>
         </Container>
-      </div>
-    </React.Fragment>
+        <Modal id="showModal" isOpen={modalProduct} toggle={toggleModalProduct} centered>
+          <ModalHeader className="bg-soft-info p-3" toggle={toggleModalProduct}>
+            Séléctionner un produit
+          </ModalHeader>
+
+
+          <ModalBody>
+
+            <Row className="g-3">
+              <Input type="text"
+                className="form-control bg-light border-0"
+                id="cart-total"
+                placeholder="Recherche par nom"
+
+                onChange={(e) => { setSearchValueProduct(e.target.value) }}
+                value={searchValueProduct}
+              />
+              <SimpleBar autoHide={false} style={{ maxHeight: "220px" }} className="px-3">
+                <div style={{ cursor: "pointer", zIndex: 5000, padding: 8, borderBottom: "0.5px solid #dddddd" }}>
+                  <Row>
+                    <Col lg={6}><b>Nom</b></Col>
+                    <Col className="text-end" lg={2}><b>Tva</b></Col>
+                    <Col className="text-end" lg={4}><b>Prix</b></Col>
+                  </Row>
+                </div>
+                {
+                  products.filter((product) => product.pro_name.includes(searchValueProduct)).map((p, key) => {
+
+                    let isSelected = validation.values.products.filter((s) => s.pro_id == p.pro_id).length > 0 ? true : false;
+                    let fixedStyle = { cursor: "pointer", zIndex: 5000, padding: 8, marginTop: 1 };
+                    let styleSelected = isSelected ? { border: "3px solid #004D8560", borderRadius: 3, backgroundColor: "#004D8530" } : { borderBottom: "0.5px solid #dddddd" };
+
+                    return (
+                      <div
+                        style={{ ...styleSelected, ...fixedStyle }}
+                        onClick={() => {
+                          let isSelected = validation.values.products.filter((s) => s.pro_id == p.pro_id).length > 0 ? true : false;
+                          if (isSelected) {
+                            validation.setValues({ ...validation.values, products: validation.values.products.filter((s) => s.pro_id != p.pro_id) })
+                          } else {
+                            validation.setValues({ ...validation.values, products: [...validation.values.products, { pro_id: p.pro_id, rec_pro_name: p.pro_name, rec_pro_qty: 1, rec_montant: 0 }] })
+                          }
+                        }}
+                        key={key}
+                      >
+                        <Row>
+                          <Col lg={6}>{p.pro_name}</Col>
+                          <Col className="text-end" lg={2}>{p.pro_tva}%</Col>
+                          <Col className="text-end" lg={4}>{p.pro_prix}€</Col>
+                        </Row>
+                      </div>
+                    )
+                  })
+
+
+                }
+              </SimpleBar>
+            </Row>
+          </ModalBody>
+          <ModalFooter>
+            <div className="hstack gap-2 justify-content-end">
+              <button type="button" className="btn btn-light" onClick={() => {
+                // validation.setValues({ ...validation.values, products: validation.values.products.filter((p) => selectedProducts.find((e) => e.pro_id == p.pro_id)) });
+                setModalProduct(false);
+              }}> Valider </button>
+            </div>
+          </ModalFooter>
+
+        </Modal>
+        <Modal id="showModal" isOpen={openCreate} toggle={toggleModalCreate} centered>
+          <ModalHeader className="bg-soft-info p-3" toggle={toggleModalCreate}>
+            Ajouter des récurrences
+          </ModalHeader>
+          <Form className="tablelist-form" onSubmit={(e) => {
+            e.preventDefault();
+            validation.handleSubmit();
+            return false;
+          }}>
+
+            <ModalBody>
+              <Row>
+
+
+                <Col lg={12}>
+                  <div className="w-10 d-flex input-group mb-2 position-relative">
+                    <Input
+                      style={{ flex: 1 }}
+                      type="text"
+                      autoComplete="off"
+                      className="form-control border-1"
+                      placeholder="Ajouter un client"
+                      onChange={() => { }}
+                      value={validation.values.clients.ent_name || ""}
+                      disabled
+                      required
+                      invalid={validation.errors?.recurrence_data?.rec_ent_fk && validation.touched?.recurrence_data?.rec_ent_fk ? true : false}
+                    />
+                    <button onClick={() => { toggleModalClient(); }} className="btn btn-primary" type="button" id="button-addon2">+</button>
+                    {validation.errors?.recurrence_data?.rec_ent_fk && validation.touched?.recurrence_data?.rec_ent_fk ? (
+                      <FormFeedback type="invalid">{validation.errors?.recurrence_data?.rec_ent_fk}</FormFeedback>
+                    ) : null}
+                  </div>
+                </Col>
+
+
+                <Col lg={12}>
+                  <Label>Description</Label>
+                  <div className="w-10 d-flex input-group mb-2 position-relative">
+
+                    <Input
+                      style={{ flex: 1 }}
+                      type="text"
+                      name={`recurrence_data.rec_desc`}
+                      className="form-control border-1"
+                      onChange={validation.handleChange}
+                      onBlur={validation.handleBlur}
+                      value={validation.values.recurrence_data.rec_desc || ""}
+                    />
+                  </div>
+                </Col>
+
+
+                <Col lg={12}>
+                  <div className="mb-2">
+                    <Label for="date-field">Date de la prochaine échéance</Label>
+                    <Input
+                      type="date"
+                      name="recurrence_data.rec_date_echeance"
+                      id="date-field"
+                      className="form-control"
+                      placeholder="Selectionnez une date"
+                      onBlur={validation.handleBlur}
+                      onChange={validation.handleChange}
+                      invalid={validation.errors?.recurrence_data?.rec_date_echeance && validation.touched?.recurrence_data?.rec_date_echeance ? true : false}
+                    />
+                    {validation.errors?.recurrence_data?.rec_date_echeance && validation.touched?.recurrence_data?.rec_date_echeance ? (
+                      <FormFeedback type="invalid">{validation.errors?.recurrence_data?.rec_date_echeance}</FormFeedback>
+                    ) : null}
+                  </div>
+                </Col>
+
+
+                <Label for="date-field">Créer la facture toute les</Label>
+                <Col lg={12} className="d-flex">
+
+                  <div className="mb-2 input-group position-relative">
+                    <Input
+                      type="number"
+                      name="recurrence_data.rec_repetition"
+                      id="date-field"
+                      className="form-control w-5"
+                      placeholder=""
+
+                      onBlur={validation.handleBlur}
+                      onChange={validation.handleChange}
+                      value={validation.values.recurrence_data.rec_repetition}
+                      invalid={validation.errors?.recurrence_data?.rec_repetition && validation.touched?.recurrence_data?.rec_repetition ? true : false}
+
+                    />
+                    <Input
+                      type="select"
+                      name="recurrence_data.rec_quand"
+                      id="date-field"
+                      className="w-75 form-control"
+                      placeholder="Select a date"
+                      onBlur={validation.handleBlur}
+                      onChange={validation.handleChange}
+                      value={validation.values.recurrence_data.rec_quand}
+                      invalid={validation.errors?.recurrence_data?.rec_quand && validation.touched?.recurrence_data?.rec_quand ? true : false}
+
+                    >
+                      <option>Séléctionnez une répétition...</option>
+                      <option value={1} >Jours</option>
+                      <option value={2}>Semaines</option>
+                      <option value={3}>Mois</option>
+                      <option value={4}>Trimestres</option>
+                    </Input>
+
+                  </div>
+                  <div className="mb-2 ms-2 d-flex align-items-center">
+                    <span className="me-2">répéter</span>
+                    <Input
+                      type="number"
+                      name="recurrence_data.rec_nb"
+                      id="date-field"
+                      className="form-control w-5"
+                      placeholder=""
+                      onBlur={validation.handleBlur}
+                      onChange={validation.handleChange}
+                      value={validation.values.recurrence_data.rec_nb}
+                      invalid={validation.errors?.recurrence_data?.rec_nb && validation.touched?.recurrence_data?.rec_nb ? true : false}
+
+                    />
+                  </div>
+                </Col>
+
+
+
+                <Col lg={6}>
+                  <div>
+                    <Label htmlFor="pro_name-field" className="form-label"                      >
+                      <button onClick={() => { toggleModalProduct(); }} className="btn btn-primary" type="button" id="button-addon2">+ Ajouter des produits</button>
+                    </Label>
+                  </div>
+                </Col>
+                <Col lg={12}>
+
+                  {validation.values.products.length
+                    ? validation.values.products.map((product, i) => (
+                      <div key={i} className="d-flex">
+                        <div className="w-75 d-flex input-group mb-2 position-relative">
+                          <Input
+                            style={{ flex: 1 }}
+                            type="text"
+                            className="form-control border-1"
+                            placeholder="Nom du produit"
+                            value={product.rec_pro_name}
+                            disabled
+                            required
+                          />
+                          <div className="input-step">
+                            <button type="button" className="minus" onClick={(e) => {
+                              if (product.rec_pro_qty > 1) {
+                                validation.setValues({ ...validation.values, products: validation.values.products.map((e) => e.pro_id == product.pro_id ? { ...e, rec_pro_qty: e.rec_pro_qty - 1 } : e) })
+                              }
+                            }}>
+                              –
+                            </button>
+                            <Input
+                              type="number"
+                              placeholder="0"
+                              className="product-quantity"
+                              id="product-qty-1"
+                              value={product?.rec_pro_qty}
+                              onChange={(e) => { }}
+                              onBlur={validation.handleBlur}
+                              required
+                            />
+                            <button type="button" className="plus" onClick={(e) => {
+                              validation.setValues({ ...validation.values, products: validation.values.products.map((e) => e.pro_id == product.pro_id ? { ...e, rec_pro_qty: e.rec_pro_qty + 1 } : e) })
+                            }}>
+                              +
+                            </button>
+                          </div>
+                        </div>
+                        <div style={{ width: "30%" }} className="input-group mb-2 ms-2">
+
+                          <Input
+                            name={`products[${i}].rec_montant`}
+                            type="number"
+                            className="form-control border-1"
+                            value={product.rec_montant}
+                            onChange={validation.handleChange}
+                            onBlur={validation.handleBlur}
+                            required
+
+                          />
+
+
+                          <label className="btn btn-primary btn-input-group form-label">€</label>
+                        </div>
+
+                      </div>
+                    ))
+                    : <i>Aucun produit ajouté</i>}
+                  {validation.errors?.products ? (
+                    <div type="invalid" style={{ width: "100%", marginTop: "0.25rem", fontSize: "0.875em", color: "#fa896b", backgroundImage: 'url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 12 12%27 width=%2712%27 height=%2712%27 fill=%27none%27 stroke=%27%23fa896b%27%3e%3ccircle cx=%276%27 cy=%276%27 r=%274.5%27/%3e%3cpath stroke-linejoin=%27round%27 d=%27M5.8 3.6h.4L6 6.5z%27/%3e%3ccircle cx=%276%27 cy=%278.2%27 r=%27.6%27 fill=%27%23fa896b%27 stroke=%27none%27/%3e%3c/svg%3e")', backgroundRepeat: 'no-repeat', backgroundSize: 'contain', backgroundPositionX: "0", paddingLeft: "20px" }}>{validation.errors?.products}</div>
+                  ) : null}
+                </Col>
+
+
+
+
+
+              </Row>
+            </ModalBody>
+            <ModalFooter>
+              <div className="d-flex flex-grow-1 justify-content-end">
+
+                <button className="btn btn-info add-btn" type="submit">
+                  <i className="ri-add-fill me-1 align-bottom"></i>
+                  Ajouter une facturation récurrente
+                </button>
+              </div>
+            </ModalFooter>
+          </Form>
+        </Modal>
+        <Modal id="showModal" isOpen={modalClient} toggle={toggleModalClient} centered>
+          <ModalHeader className="bg-soft-info p-3" toggle={toggleModalClient}>
+            Séléctionner un client
+          </ModalHeader>
+
+
+          <ModalBody>
+
+            <Row className="g-3">
+              <Input type="text"
+                className="form-control bg-light border-0"
+                id="cart-total"
+                placeholder="Recherche par nom, téléphone, email..."
+
+                onChange={(e) => { setSearchValueClient(e.target.value) }}
+                value={searchValueClient}
+              />
+              <SimpleBar autoHide={false} style={{ maxHeight: "220px" }} className="px-3">
+                {handleListClient()?.map((c, i) => {
+                  return (
+                    <div key={i} style={{ display: "flex", alignItems: "center", width: "100%", borderBottom: "0.5px solid #dddddd", margin: 3 }}>
+                      <div className="flex-shrink-0">
+                        {c.ent_img_url ? <img
+                          src={api.API_URL + "/images/" + c.ent_img_url}
+                          alt=""
+                          className="avatar-xxs rounded-circle"
+                        /> :
+                          <div className="flex-shrink-0 avatar-xs me-2">
+                            <div className="avatar-title bg-soft-success text-success rounded-circle fs-13">
+                              {c.ent_name.charAt(0)}
+                            </div>
+                          </div>
+                        }
+                      </div>
+                      <div style={{ cursor: "pointer", padding: 8, display: "flex", flexDirection: "column", width: "100%" }} onClick={() => {
+                        setModalClient(() => false);
+                        validation.setValues({
+                          ...validation.values, recurrence_data: {
+                            ...validation.values.recurrence_data,
+                            rec_ent_fk: c.ent_id
+                          },
+                          clients: c
+                        })
+                      }} key={i}>
+
+                        <span>{c.ent_name}</span>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span><i>{c.ent_email}</i></span>  <span><i>{c.ent_phone}</i></span>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </SimpleBar>
+            </Row>
+          </ModalBody>
+          <ModalFooter>
+            <div className="hstack gap-2 justify-content-end">
+              <button type="button" className="btn btn-light" onClick={() => { setModalClient(false); }} > Fermer </button>
+              <button type="submit" className="btn btn-success" id="add-btn" > Séléctionner </button>
+            </div>
+          </ModalFooter>
+
+        </Modal>
+      </div >
+    </React.Fragment >
   );
 };
 

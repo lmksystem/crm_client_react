@@ -224,3 +224,18 @@ export const getAchat = () => api.get(url.ACHAT);
 export const createUpdateAchat = data => api.create(url.ACHAT,data);
 
 export const deleteAchat= ach_id => api.delete(url.ACHAT + "/delete/" + ach_id);
+
+/*************************/
+/*       Recurrence       */
+/*************************/
+
+export const getRecurrences = () => api.get(url.RECURRENCE);
+
+export const addRecurrence = data => api.create(url.RECURRENCE, data);
+
+export const deleteRecurrence = id => api.delete(url.RECURRENCE + "/" +id);
+
+export const getRecurrenceOfEntity = ent_id => api.get(url.RECURRENCE + "/" +ent_id);
+
+
+

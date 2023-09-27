@@ -62,6 +62,9 @@ import SalaryReducer from "./salary/reducer";
 //Achat
 import AchatReducer from "./achat/reducer";
 
+//Recurrence
+import RecurrenceReducer from "./recurrence/reducer";
+
 
 import sessionStorage from "redux-persist/es/storage/session";
 
@@ -86,16 +89,17 @@ const appReducer = combineReducers({
   Company: CompanyReducer,
   Devis: DevisReducer,
   Transaction: TransactionReducer,
-  TransactionBank:TransactionBankReducer,
-  Employee :EmployeeReducer,
-  Salary :SalaryReducer,
-  Achat :AchatReducer,
+  TransactionBank: TransactionBankReducer,
+  Employee: EmployeeReducer,
+  Salary: SalaryReducer,
+  Achat: AchatReducer,
+  Recurrence: RecurrenceReducer,
 
 
 });
 
 const rootReducer = (state, action) => {
- 
+
   if (action.type === 'login/logoutUserSuccess') {
     console.log("logout");
     sessionStorage.removeItem('authUser')

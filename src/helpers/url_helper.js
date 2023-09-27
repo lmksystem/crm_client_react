@@ -305,3 +305,6 @@ export const SALARY = "/v1/salary";
 
 // Salary
 export const ACHAT = "/v1/achat";
+
+// recurrence
+export const RECURRENCE = "/v1/recurrence";
