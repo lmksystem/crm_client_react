@@ -378,7 +378,7 @@ const TransactionBank = () => {
                         <div className="p-3">
                           <Input type="hidden" id="id-field" />
 
-                          {transaction?.file_justify === null && (
+                          {/* {transaction?.file_justify === null && ( */}
                             <Col lg={8} className="mt-3">
                               <div className="form-switch">
                                 <Input
@@ -399,9 +399,9 @@ const TransactionBank = () => {
                                 </Label>
                               </div>
                             </Col>
-                          )}
+                          {/* )} */}
 
-                          {transaction?.file_justify !== null && (
+                          {/* {transaction?.file_justify !== null && (
                             <Row className="mt-3">
                               <Col lg={3}>
                                 <p>{nomDuFichier}</p>
@@ -411,10 +411,10 @@ const TransactionBank = () => {
                                 <i className="ri-delete-bin-fill text-muted la-lg  mx-2"></i>
                               </Col>
                             </Row>
-                          )}
+                           )}  */}
 
                           {!transaction.nojustify &&
-                            transaction?.file_justify == null && (
+                            (
                               <Col lg={11} className="mt-4">
                                 <div>
                                   <p className="text-muted">
