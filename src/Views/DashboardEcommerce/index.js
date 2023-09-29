@@ -18,7 +18,7 @@ const DashboardEcommerce = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb title="Tableau de bord" pageTitle="Coutano" />
+          <BreadCrumb title="Tableau de bord" pageTitle="Countano" />
           <Row>
             <Col>
               <div className="h-100">

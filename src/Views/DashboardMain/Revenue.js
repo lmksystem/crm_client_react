@@ -46,7 +46,7 @@ const Revenue = ({perdiodeCalendar}) => {
     <React.Fragment>
       <Card>
         <CardHeader className="border-0 align-items-center d-flex">
-          <h4 className="card-title mb-0 flex-grow-1">Revenue - {perdiodeCalendar?.start!=null?moment(perdiodeCalendar.start).year():moment().year()}</h4>
+          <h4 className="card-title mb-0 flex-grow-1">Revenus - {perdiodeCalendar?.start!=null?moment(perdiodeCalendar.start).year():moment().year()}</h4>
           {/* <div className="d-flex gap-1">
             <button type="button" className="btn btn-soft-secondary btn-sm" onClick={() => { onChangeChartPeriod("all"); }}>
               ALL

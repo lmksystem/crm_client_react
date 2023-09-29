@@ -671,7 +671,7 @@ const Collaborateurs = () => {
                                 name="ent_name"
                                 id="ent_name-field"
                                 className="form-control"
-                                placeholder="entrer un nom d'entreprise"
+                                placeholder="Entrer un nom d'entreprise"
                                 type="text"
                                 validate={{
                                   required: { value: true },
@@ -822,7 +822,7 @@ const Collaborateurs = () => {
                                 name="ent_email"
                                 id="ent_email-field"
                                 className="form-control"
-                                placeholder="Enter Contact email"
+                                placeholder="Entrer un email"
                                 type="text"
                                 validate={{
                                   required: { value: true },
