@@ -99,6 +99,12 @@ class APIClient {
   delete = (url, config) => {
     return axios.delete(url, { ...config });
   };
+  /**
+   * For file
+   */
+  fileSend = (url, data,params) => {
+    return axios.post(url, data,params);
+  };
 }
 const getLoggedinUser = () => {
   const user = sessionStorage.getItem("authUser");

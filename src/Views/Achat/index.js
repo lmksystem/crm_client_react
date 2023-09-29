@@ -53,6 +53,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SimpleBar from "simplebar-react";
 import ModalCreate from "./ModalCreate";
+import FileService from "../../utils/FileService";
 
 const Achats = () => {
   const dispatch = useDispatch();
@@ -92,6 +93,8 @@ const Achats = () => {
   const [show, setShow] = useState(false);
 
   const [modal, setModal] = useState(false);
+
+
 
   const toggle = useCallback(() => {
     if (modal) {
@@ -139,12 +142,18 @@ const Achats = () => {
     }),
     onSubmit: (values) => {
       if (!isEdit) {
-        const newAchat = {
-          ach_type: values.type,
-          files: values.files,
-        };
-        // save new Achat
-        dispatch(onCreateUpdateAchat(newAchat));
+         FileService.uploadFile(values.files).then((res)=>{
+          if(res.fileName){
+            const newAchat = {
+              ach_type: values.type,
+              files: res.fileName,
+            };
+            // save new Achat
+            dispatch(onCreateUpdateAchat(newAchat));
+          }
+         })
+        
+  
         createAchats.resetForm();
       }
       toggle();
