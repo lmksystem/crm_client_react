@@ -115,7 +115,7 @@ const InvoiceDetails = () => {
   return (
     <div className="page-content">
       <Container fluid>
-        <BreadCrumb className="d-print-none" title="Facture détails" pageTitle="Factures" />
+        <BreadCrumb className="d-print-none" title="Facture détaillée" pageTitle="Factures" />
         <ConfirmModal title={'Êtes-vous sûr ?'} text={"Êtes-vous sûr de vouloir envoyer la facture ?"} show={showConfirmModal} onCloseClick={() => setShowConfirmModal(false)} onActionClick={() => sendInvoiceByEmail()} />
         <DeleteModal show={showModalDelete} onCloseClick={() => setShowModalDelete(false)} onDeleteClick={() => { deletetransaction() }} />
         <Row className="justify-content-center">

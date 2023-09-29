@@ -79,7 +79,7 @@ const DevisDetails = () => {
   return (
     <div className="page-content">
       <Container fluid>
-        <BreadCrumb className="d-print-none" title="Dévis détails" pageTitle="Dévis" />
+        <BreadCrumb className="d-print-none" title="Devis détaillé" pageTitle="Devis" />
         <ConfirmModal title={'Êtes-vous sûr ?'} text={"Êtes-vous sûr de vouloir envoyer le devis ?"} show={showConfirmModal} onCloseClick={() => setShowConfirmModal(false)} onActionClick={() => sendDevisByEmail()} />
         <DeleteModal
           show={deleteModal}

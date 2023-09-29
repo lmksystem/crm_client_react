@@ -196,7 +196,7 @@ const InvoiceList = () => {
 
         <Container fluid>
           <BreadCrumb title="Factures" pageTitle="Liste" />
-          <h3>Statistique de l'année</h3>
+          <h3>Statistiques de l'année</h3>
           <Row>
             {invoiceWidgets?.map((widget,i) => {
               return <WidgetCountUp key={i} data={widget} type={"Factures"} />
@@ -208,7 +208,7 @@ const InvoiceList = () => {
               <Card id="invoiceList">
                 <CardHeader className="border-0">
                   <div className="d-flex align-items-center">
-                    <h5 className="card-title mb-0 flex-grow-1">Factures</h5>
+                    {/* <h5 className="card-title mb-0 flex-grow-1">Factures</h5> */}
                     <div className="flex-shrink-0">
                       <div className='d-flex gap-2 flex-wrap'>
                         <Link
