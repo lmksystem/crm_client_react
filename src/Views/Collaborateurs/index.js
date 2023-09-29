@@ -131,7 +131,7 @@ const Collaborateurs = () => {
     setIsEdit(false);
     toggle();
   };
-  console.log("state ",collaborateur);
+  console.log("state ", collaborateur);
   // validation
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
@@ -356,7 +356,7 @@ const Collaborateurs = () => {
       {
         Header: "Action",
         Cell: (cellProps) => {
-     
+
           let collaborateur = cellProps.row.original;
           // console.log(collaborateur);
           return (
@@ -414,7 +414,9 @@ const Collaborateurs = () => {
     if (show) {
       setTimeout(() => {
         document.getElementById('start-anime').classList.add("show")
-      }, 200);
+      }, 350);
+    } else {
+      document.getElementById('start-anime').classList.remove("show")
     }
   }, [show])
 
@@ -512,7 +514,7 @@ const Collaborateurs = () => {
                       <ModalBody>
                         <input type="hidden" id="id-field" />
                         <Row className="g-3">
-                   
+
                           {/* <Col lg={12}>
                             <div className="text-center">
                               <div className="position-relative d-inline-block">
@@ -552,7 +554,7 @@ const Collaborateurs = () => {
                               >
                                 Client
                               </Label>
-                          
+
                               <Input
                                 className="form-check-input  ms-2"
                                 type="checkbox"
@@ -574,7 +576,7 @@ const Collaborateurs = () => {
                               <Input
                                 type="checkbox"
                                 className="form-check-input ms-2"
-                                checked={validation.values.type.fournisseur.eti_removed == 0 ? true : false} 
+                                checked={validation.values.type.fournisseur.eti_removed == 0 ? true : false}
                                 onChange={(e) => handleTypeEntity(e)}
                                 name="fournisseur"
                                 id="isfournisseur-field"
@@ -1032,6 +1034,7 @@ const Collaborateurs = () => {
               <div id="start-anime">
                 <Card id="contact-view-detail">
                   <CardBody className="text-center">
+                    <div style={{ position: "absolute", right: 10, top: 5 }}><i onClick={() => setShow(false)} className="ri-close-fill" style={{ cursor: "pointer", fontSize: "20px" }}></i></div>
                     <div className="position-relative d-inline-block">
                       <img
                         src={api.API_URL + "v1/images/user-dummy-img.jpg"}

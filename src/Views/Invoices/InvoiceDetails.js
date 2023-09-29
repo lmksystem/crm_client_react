@@ -19,14 +19,14 @@ import { rounded } from "../../utils/function";
 import ConfirmModal from "../../Components/Common/ConfirmModal";
 import DeleteModal from "../../Components/Common/DeleteModal";
 import { ToastContainer } from "react-toastify";
-
+import SimpleBar from "simplebar-react";
 const axios = new APIClient();
 
 const InvoiceDetails = () => {
   document.title = "Détail facture | Countano";
 
   let { id } = useParams();
-  
+
   const { invoice, invoices, isTransactionsSuccess, transactions } = useSelector((state) => ({
     invoice: state.Invoice.invoices.find((f) => f.header.fen_id == id),
     invoices: state.Invoice.invoices,
@@ -106,7 +106,7 @@ const InvoiceDetails = () => {
       dispatch(onUpdateInvoice({ fen_id: invoice.header.fen_id, fen_solde_du: dataInvoiceUpdate }));
     }
   }, [transactions])
-  
+
 
   if (!invoice) {
     return null;
@@ -243,137 +243,139 @@ const InvoiceDetails = () => {
                         </tbody>
                       </Table>
                     </div>
-                    <div className="border-top border-top-dashed mt-2">
-                      <Table className="pagebreak table-borderless table-nowrap align-middle mb-0 ms-auto mt-3">
-                        <thead>
-                          <tr className="table-active">
-                            <th scope="col">Transaction</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Description</th>
-                            <th scope="col" className="text-end">Montant</th>
-                            <th className="text-end">
-                              <button onClick={() => setAddActifView(() => true)} className="d-print-none btn btn-primary btn-icon " style={{ width: "25px", height: "25px" }} >+</button>
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="border-bottom border-bottom-dashed fs-15">
-
-                          {transactions.length > 0 && transactions.map((element, index) => {
-                            return (
-                              <tr key={index}>
-                                <td>
-                                  #{index}
-                                </td>
-
-                                <td>
-                                  {moment(element.tra_date).format('L')}
-                                </td>
-                                <td>
-                                  {element.tra_desc}
-                                </td>
-                                <td className="text-end">
-                                  {element.tra_value}€
-                                </td>
-                                <td width={40}>
-                                  <button onClick={() => { setShowModalDelete(() => true); setSelectedId(element.tra_id); }} className="btn btn-danger btn-icon " style={{ width: "25px", height: "25px" }} >
-                                    <div style={{ position: "absolute", transform: "rotate(45deg)" }}>+</div>
-                                  </button>
-                                </td>
-                              </tr>
-                            )
-                          })}
-
-                        </tbody>
-                      </Table>
-
-                      {transactions.length > 0 &&
-                        <Table className="pagebreak table-borderless table-nowrap align-middle mb-4 ms-auto" style={{ width: "250px" }}>
-                          <tbody >
-                            <tr>
-                              <td>
-                                Solde
-                              </td>
-                              <td className="text-end">
-                                {invoice.header.fen_solde_du}€
-                              </td>
-                              <td width={40}></td>
+                    <div className="border-top border-top-dashed mt-2  table-responsive">
+                      <SimpleBar autoHide={false} className="px-3">
+                        <Table className="pagebreak table-borderless table-nowrap align-middle mb-0 ms-auto mt-3">
+                          <thead>
+                            <tr className="table-active">
+                              <th scope="col">Transaction</th>
+                              <th scope="col">Date</th>
+                              <th scope="col">Description</th>
+                              <th scope="col" className="text-end">Montant</th>
+                              <th className="text-end">
+                                <button onClick={() => setAddActifView(() => true)} className="d-print-none btn btn-primary btn-icon " style={{ width: "25px", height: "25px" }} >+</button>
+                              </th>
                             </tr>
+                          </thead>
+                          <tbody className="border-bottom border-bottom-dashed fs-15">
+
+                            {transactions.length > 0 && transactions.map((element, index) => {
+                              return (
+                                <tr key={index}>
+                                  <td>
+                                    #{index}
+                                  </td>
+
+                                  <td>
+                                    {moment(element.tra_date).format('L')}
+                                  </td>
+                                  <td>
+                                    {element.tra_desc}
+                                  </td>
+                                  <td className="text-end">
+                                    {element.tra_value}€
+                                  </td>
+                                  <td width={40}>
+                                    <button onClick={() => { setShowModalDelete(() => true); setSelectedId(element.tra_id); }} className="btn btn-danger btn-icon " style={{ width: "25px", height: "25px" }} >
+                                      <div style={{ position: "absolute", transform: "rotate(45deg)" }}>+</div>
+                                    </button>
+                                  </td>
+                                </tr>
+                              )
+                            })}
+
                           </tbody>
                         </Table>
-                      }
 
-                      {!transactions.length && (
-                        <Row>
-                          <Col xl={12} className="mt-3 mb-3 text-center"><i>Aucune Transaction</i></Col>
-                        </Row>
-                      )}
-
-
-                      <form className="d-print-none" onSubmit={(e) => {
-                        e.preventDefault();
-                        validation.handleSubmit();
-                        return false;
-                      }}>
-
-
-                        {addActifView
-                          ?
-                          <Row>
-
-                            <Col lg={3}>
-                              <Input
-                                type="date"
-                                className="form-control border-1"
-                                id="fco_name"
-                                name="tra_date"
-                                value={validation.values.tra_date || ""}
-                                onBlur={validation.handleBlur}
-                                onChange={validation.handleChange}
-                                invalid={validation.errors?.tra_date && validation.touched?.tra_date ? true : false}
-                              />
-                              {validation.errors?.tra_date && validation.touched?.tra_date ? (
-                                <FormFeedback type="invalid">{validation.errors?.tra_date}</FormFeedback>
-                              ) : null}
-                            </Col>
-                            <Col lg={3}>
-                              <Input type="text"
-                                className="form-control border-1"
-                                id="fco_name"
-                                name="tra_desc"
-                                value={validation.values.tra_desc || ""}
-                                onBlur={validation.handleBlur}
-                                onChange={validation.handleChange}
-                                placeholder="Description"
-                                invalid={validation.errors?.tra_desc && validation.touched?.tra_desc ? true : false}
-                              />
-                              {validation.errors?.tra_desc && validation.touched?.tra_desc ? (
-                                <FormFeedback type="invalid">{validation.errors?.tra_desc}</FormFeedback>
-                              ) : null}
-                            </Col>
-                            <Col lg={3}>
-                              <Input
-                                type="number"
-                                className="form-control border-1"
-                                id="tra_value"
-                                name="tra_value"
-                                value={validation.values.tra_value || ""}
-                                onBlur={validation.handleBlur}
-                                onChange={validation.handleChange}
-                                placeholder="Montant de la transaction"
-                                invalid={validation.errors?.tra_value && validation.touched?.tra_value ? true : false}
-                              />
-                              {validation.errors?.tra_value && validation.touched?.tra_value ? (
-                                <FormFeedback type="invalid">{validation.errors?.tra_value}</FormFeedback>
-                              ) : null}
-                            </Col>
-                            <Col lg={3}>
-                              <button type="submit" className="mx-2 btn btn-primary">Enregistrer</button>
-                              <button type="button" onClick={(e) => { e.preventDefault(); setAddActifView(() => false) }} className="btn btn-danger">Annuler</button>
-                            </Col>
-                          </Row>
-                          : ""
+                        {transactions.length > 0 &&
+                          <Table className="pagebreak table-borderless table-nowrap align-middle mb-4 ms-auto" style={{ width: "250px" }}>
+                            <tbody >
+                              <tr>
+                                <td>
+                                  Solde
+                                </td>
+                                <td className="text-end">
+                                  {invoice.header.fen_solde_du}€
+                                </td>
+                                <td width={40}></td>
+                              </tr>
+                            </tbody>
+                          </Table>
                         }
-                      </form>
+
+                        {!transactions.length && (
+                          <Row>
+                            <Col xl={12} className="mt-3 mb-3 text-center"><i>Aucune Transaction</i></Col>
+                          </Row>
+                        )}
+
+
+                        <form className="d-print-none" onSubmit={(e) => {
+                          e.preventDefault();
+                          validation.handleSubmit();
+                          return false;
+                        }}>
+
+
+                          {addActifView
+                            ?
+                            <Row>
+
+                              <Col lg={3}>
+                                <Input
+                                  type="date"
+                                  className="form-control border-1 mb-2"
+                                  id="fco_name"
+                                  name="tra_date"
+                                  value={validation.values.tra_date || ""}
+                                  onBlur={validation.handleBlur}
+                                  onChange={validation.handleChange}
+                                  invalid={validation.errors?.tra_date && validation.touched?.tra_date ? true : false}
+                                />
+                                {validation.errors?.tra_date && validation.touched?.tra_date ? (
+                                  <FormFeedback type="invalid">{validation.errors?.tra_date}</FormFeedback>
+                                ) : null}
+                              </Col>
+                              <Col lg={3}>
+                                <Input type="text"
+                                  className="form-control border-1 mb-2"
+                                  id="fco_name"
+                                  name="tra_desc"
+                                  value={validation.values.tra_desc || ""}
+                                  onBlur={validation.handleBlur}
+                                  onChange={validation.handleChange}
+                                  placeholder="Description"
+                                  invalid={validation.errors?.tra_desc && validation.touched?.tra_desc ? true : false}
+                                />
+                                {validation.errors?.tra_desc && validation.touched?.tra_desc ? (
+                                  <FormFeedback type="invalid">{validation.errors?.tra_desc}</FormFeedback>
+                                ) : null}
+                              </Col>
+                              <Col lg={2}>
+                                <Input
+                                  type="number"
+                                  className="form-control border-1 mb-2"
+                                  id="tra_value"
+                                  name="tra_value"
+                                  value={validation.values.tra_value || ""}
+                                  onBlur={validation.handleBlur}
+                                  onChange={validation.handleChange}
+                                  placeholder="Montant"
+                                  invalid={validation.errors?.tra_value && validation.touched?.tra_value ? true : false}
+                                />
+                                {validation.errors?.tra_value && validation.touched?.tra_value ? (
+                                  <FormFeedback type="invalid">{validation.errors?.tra_value}</FormFeedback>
+                                ) : null}
+                              </Col>
+                              <Col lg={4}>
+                                <button type="submit" className="mx-2 btn btn-primary">Enregistrer</button>
+                                <button type="button" onClick={(e) => { e.preventDefault(); setAddActifView(() => false) }} className="btn btn-danger">Annuler</button>
+                              </Col>
+                            </Row>
+                            : ""
+                          }
+                        </form>
+                      </SimpleBar>
                     </div>
 
                     <div className="hstack gap-2 justify-content-end d-print-none mt-4">
