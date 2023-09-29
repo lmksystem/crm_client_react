@@ -169,7 +169,7 @@ const Navdata = () => {
         },
         {
           id: "recurrence",
-          label: "Recurrence",
+          label: "Récurrence",
           link: "/recurrence",
           isChildItem: false,
           parentId: "facturation",
@@ -273,7 +273,7 @@ const Navdata = () => {
       subItems: [
         {
           id: "liste-employee",
-          label: "Liste employé",
+          label: "Liste des employés",
           link: "/employees",
           isChildItem: false,
           click: function (e) {

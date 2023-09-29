@@ -252,15 +252,15 @@ const TransactionList = () => {
             <Col lg={12}>
               <Card id="invoiceList">
                 <CardHeader className="border-0">
-                  <div className="d-flex align-items-center">
-                    <h5 className="card-title mb-0 flex-grow-1">Transactions</h5>
+                  <div className="d-flex flex-column">
+                    <h5 className="card-title mb-3 flex-grow-1">Transactions</h5>
                     <div className="flex-shrink-0">
                       <div className='d-flex gap-2 flex-wrap'>
                         <button
                           onClick={toggle}
                           className="btn btn-secondary me-1"
                         >
-                          <i className="ri-add-line align-bottom me-1"></i> Créer une transaction
+                          <i className="ri-add-line align-bottom me-1"></i> Ajouter un réglement
                         </button>
 
                       </div>
