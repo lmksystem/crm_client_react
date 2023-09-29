@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 // Import Images
-import multiUser from '../../assets/images/users/multi-user.jpg';
+import multiUser from "../../assets/images/users/multi-user.jpg";
 
 import {
   Col,
@@ -25,7 +25,7 @@ import {
 } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import DeleteModal from "../../Components/Common/DeleteModal";
-import { isEmpty } from "lodash";
+import { forIn, isEmpty } from "lodash";
 
 //Import actions
 import {
@@ -43,8 +43,8 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 
 import Loader from "../../Components/Common/Loader";
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Export Modal
 import ExportCSVModal from "../../Components/Common/ExportCSVModal";
@@ -53,11 +53,13 @@ import { api } from "../../config";
 const Collaborateurs = () => {
   const dispatch = useDispatch();
 
-  const { collaborateurs, isCollaborateurSuccess, error } = useSelector((state) => ({
-    collaborateurs: state.Gestion.collaborateurs,
-    isCollaborateurSuccess: state.Gestion.isCollaborateurSuccess,
-    error: state.Gestion.error,
-  }));
+  const { collaborateurs, isCollaborateurSuccess, error } = useSelector(
+    (state) => ({
+      collaborateurs: state.Gestion.collaborateurs,
+      isCollaborateurSuccess: state.Gestion.isCollaborateurSuccess,
+      error: state.Gestion.error,
+    })
+  );
 
   const country = [
     { label: "Argentina", value: "Argentina" },
@@ -90,7 +92,6 @@ const Collaborateurs = () => {
     }
   }, [collaborateurs]);
 
-
   const [isEdit, setIsEdit] = useState(false);
   const [collaborateur, setCollaborateur] = useState(null);
 
@@ -103,7 +104,6 @@ const Collaborateurs = () => {
   const [show, setShow] = useState(false);
 
   const toggle = useCallback(() => {
-
     if (modal) {
       setModal(false);
       setCollaborateur(null);
@@ -131,39 +131,48 @@ const Collaborateurs = () => {
     setIsEdit(false);
     toggle();
   };
-  console.log("state ",collaborateur);
+  console.log("state ", collaborateur);
   // validation
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
     initialValues: {
-      ent_lastname: (collaborateur && collaborateur.ent_lastname) || '',
-      ent_firstname: (collaborateur && collaborateur.ent_firstname) || '',
-      ent_phone: (collaborateur && collaborateur.ent_phone) || '',
-      ent_email: (collaborateur && collaborateur.ent_email) || '',
-      ent_name: (collaborateur && collaborateur.ent_name) || '',
-      ent_adresse: (collaborateur && collaborateur.ent_adresse) || '',
-      ent_cp: (collaborateur && collaborateur.ent_cp) || '',
-      ent_ville: (collaborateur && collaborateur.ent_ville) || '',
-      ent_pays: (collaborateur && collaborateur.ent_pays) || '',
-      ent_img_url: (collaborateur && collaborateur.ent_img_url) || '',
-      ent_info: (collaborateur && collaborateur.ent_info) || '',
-      ent_bic: (collaborateur && collaborateur.ent_bic) || '',
-      ent_iban: (collaborateur && collaborateur.ent_iban) || '',
-      ent_siren: (collaborateur && collaborateur.ent_siren) || '',
-      ent_methode_payment: (collaborateur && collaborateur.ent_methode_payment) || '',
+      ent_lastname: (collaborateur && collaborateur.ent_lastname) || "",
+      ent_firstname: (collaborateur && collaborateur.ent_firstname) || "",
+      ent_phone: (collaborateur && collaborateur.ent_phone) || "",
+      ent_email: (collaborateur && collaborateur.ent_email) || "",
+      ent_name: (collaborateur && collaborateur.ent_name) || "",
+      ent_adresse: (collaborateur && collaborateur.ent_adresse) || "",
+      ent_cp: (collaborateur && collaborateur.ent_cp) || "",
+      ent_ville: (collaborateur && collaborateur.ent_ville) || "",
+      ent_pays: (collaborateur && collaborateur.ent_pays) || "",
+      ent_img_url: (collaborateur && collaborateur.ent_img_url) || "",
+      ent_info: (collaborateur && collaborateur.ent_info) || "",
+      ent_bic: (collaborateur && collaborateur.ent_bic) || "",
+      ent_iban: (collaborateur && collaborateur.ent_iban) || "",
+      ent_siren: (collaborateur && collaborateur.ent_siren) || "",
+      ent_methode_payment:
+        (collaborateur && collaborateur.ent_methode_payment) || "",
       type: {
         // { eti_removed: 1 } permet au backend de savoir si il doit l'inserrer ou non  (1 : non / 0: oui)
-        client: (collaborateur && collaborateur.type?.client) || { eti_removed: 1 },
-        prospect: (collaborateur && collaborateur.type?.prospect) || { eti_removed: 1 },
-        fournisseur: (collaborateur && collaborateur.type?.fournisseur) || { eti_removed: 1 },
-      }
+        client: (collaborateur && collaborateur.type?.client) || {
+          eti_removed: 1,
+        },
+        prospect: (collaborateur && collaborateur.type?.prospect) || {
+          eti_removed: 1,
+        },
+        fournisseur: (collaborateur && collaborateur.type?.fournisseur) || {
+          eti_removed: 1,
+        },
+      },
     },
 
     validationSchema: Yup.object({
       ent_lastname: Yup.string().required("Veuillez entrer un nom"),
       ent_firstname: Yup.string().required("Veuillez entrer un prénom"),
-      ent_phone: Yup.number().required("Veuillez entrer un téléphone").label('Le téléphone ne doit pas contenir de lettre'),
+      ent_phone: Yup.number()
+        .required("Veuillez entrer un téléphone")
+        .label("Le téléphone ne doit pas contenir de lettre"),
       ent_email: Yup.string().required("Veuillez entrer un email"),
       ent_name: Yup.string().required("Veuillez entrer un nom d'entreprise"),
       ent_adresse: Yup.string().required("Veuillez entrer une adresse"),
@@ -200,16 +209,15 @@ const Collaborateurs = () => {
       const company_type = {
         fournisseur: values.type.fournisseur,
         client: values.type.client,
-        prospect: values.type.prospect
-      }
+        prospect: values.type.prospect,
+      };
 
       let data = {
         company: { ...companyData },
-        company_type: { ...company_type }
-      }
+        company_type: { ...company_type },
+      };
 
       if (isEdit) {
-
         data.ent_id = collaborateur.ent_id || 0;
 
         // update Company
@@ -225,36 +233,38 @@ const Collaborateurs = () => {
   });
 
   // Update Data
-  const handleCompanyClick = useCallback((arg) => {
-    const collaborateur = arg;
-    setCollaborateur({
-      ent_id: collaborateur.ent_id,
-      ent_lastname: collaborateur.ent_lastname,
-      ent_firstname: collaborateur.ent_firstname,
-      ent_phone: collaborateur.ent_phone,
-      ent_email: collaborateur.ent_email,
-      ent_name: collaborateur.ent_name,
-      ent_adresse: collaborateur.ent_adresse,
-      ent_cp: collaborateur.ent_cp,
-      ent_ville: collaborateur.ent_ville,
-      ent_pays: collaborateur.ent_pays,
-      ent_img_url: collaborateur.ent_img_url,
-      ent_info: collaborateur.ent_info,
-      ent_bic: collaborateur.ent_bic,
-      ent_iban: collaborateur.ent_iban,
-      ent_siren: collaborateur.ent_siren,
-      ent_methode_payment: collaborateur.ent_methode_payment,
-      type: {
-        client: collaborateur.type.client,
-        prospect: collaborateur.type.prospect,
-        fournisseur: collaborateur.type.fournisseur,
-      }
-    });
+  const handleCompanyClick = useCallback(
+    (arg) => {
+      const collaborateur = arg;
+      setCollaborateur({
+        ent_id: collaborateur.ent_id,
+        ent_lastname: collaborateur.ent_lastname,
+        ent_firstname: collaborateur.ent_firstname,
+        ent_phone: collaborateur.ent_phone,
+        ent_email: collaborateur.ent_email,
+        ent_name: collaborateur.ent_name,
+        ent_adresse: collaborateur.ent_adresse,
+        ent_cp: collaborateur.ent_cp,
+        ent_ville: collaborateur.ent_ville,
+        ent_pays: collaborateur.ent_pays,
+        ent_img_url: collaborateur.ent_img_url,
+        ent_info: collaborateur.ent_info,
+        ent_bic: collaborateur.ent_bic,
+        ent_iban: collaborateur.ent_iban,
+        ent_siren: collaborateur.ent_siren,
+        ent_methode_payment: collaborateur.ent_methode_payment,
+        type: {
+          client: collaborateur.type.client,
+          prospect: collaborateur.type.prospect,
+          fournisseur: collaborateur.type.fournisseur,
+        },
+      });
 
-    setIsEdit(true);
-    toggle();
-  }, [toggle]);
-
+      setIsEdit(true);
+      toggle();
+    },
+    [toggle]
+  );
 
   // Checked All
   const checkedAll = useCallback(() => {
@@ -281,7 +291,9 @@ const Collaborateurs = () => {
     const checkall = document.getElementById("checkBoxAll");
     selectedCheckBoxDelete.forEach((element) => {
       dispatch(onDeleteCollaborateur(element.value));
-      setTimeout(() => { toast.clearWaitingQueue(); }, 3000);
+      setTimeout(() => {
+        toast.clearWaitingQueue();
+      }, 3000);
     });
     setIsMultiDeleteButton(false);
     checkall.checked = false;
@@ -289,47 +301,79 @@ const Collaborateurs = () => {
 
   const deleteCheckbox = () => {
     const ele = document.querySelectorAll(".companyCheckBox:checked");
-    ele.length > 0 ? setIsMultiDeleteButton(true) : setIsMultiDeleteButton(false);
+    ele.length > 0
+      ? setIsMultiDeleteButton(true)
+      : setIsMultiDeleteButton(false);
     setSelectedCheckBoxDelete(ele);
   };
 
   // Column
   const columns = useMemo(
-
     () => [
-
       {
-        Header: <input type="checkbox" id="checkBoxAll" className="form-check-input" onClick={() => checkedAll()} />,
+        Header: (
+          <input
+            type="checkbox"
+            id="checkBoxAll"
+            className="form-check-input"
+            onClick={() => checkedAll()}
+          />
+        ),
         Cell: (cellProps) => {
-
-          return <input type="checkbox" className="companyCheckBox form-check-input" value={cellProps.row.original.ent_id} onChange={() => deleteCheckbox()} />;
+          return (
+            <input
+              type="checkbox"
+              className="companyCheckBox form-check-input"
+              value={cellProps.row.original.ent_id}
+              onChange={() => deleteCheckbox()}
+            />
+          );
         },
-        id: '#',
+        id: "#",
       },
       {
         id: "logo",
-        Cell: (company) => (
-          <>
-            <div className="flex-shrink-0">
-              {company.row.original.ent_img_url ? <img
-                src={api.API_URL + "/images/" + company.row.original.ent_img_url}
-                alt=""
-                className="avatar-xxs rounded-circle"
-              /> :
-                <div className="flex-shrink-0 avatar-xs me-2">
-                  <div className="avatar-title bg-soft-success text-success rounded-circle fs-13">
-                    {company.row.original.ent_name?.charAt(0)}
-                  </div>
-                </div>
-                // <img src={multiUser} alt="" className="avatar-xxs rounded-circle" />
+        Cell: (company) => {
+          let LETTERS_CLI = "";
+          for (const key in company.row.original.type) {
+            if (Object.hasOwnProperty.call(company.row.original.type, key)) {
+              const element = company.row.original.type[key];
+              if (element.eti_removed == 0) {
+                LETTERS_CLI += " " + key.charAt(0).toUpperCase();
               }
-            </div>
-          </>
-        ),
+            }
+          }
+          return (
+            <>
+              <div className="flex-shrink-0">
+                {
+                  company.row.original.ent_img_url ? (
+                    <img
+                      src={
+                        api.API_URL +
+                        "/images/" +
+                        company.row.original.ent_img_url
+                      }
+                      alt=""
+                      className="avatar-xxs rounded-circle"
+                    />
+                  ) : (
+                    <div className="flex-shrink-0 avatar-xs me-2">
+                      <div className="avatar-title bg-soft-success text-success rounded-circle fs-13">
+                        {LETTERS_CLI}
+                      </div>
+                    </div>
+                  )
+                  // <img src={multiUser} alt="" className="avatar-xxs rounded-circle" />
+                }
+              </div>
+            </>
+          );
+        },
       },
       {
         Header: "Entreprise",
-        accessor: "ent_name"
+        accessor: "ent_name",
       },
 
       {
@@ -339,7 +383,6 @@ const Collaborateurs = () => {
       {
         Header: "Téléphone",
         accessor: "ent_phone",
-
       },
       {
         Header: "Localisation",
@@ -348,28 +391,34 @@ const Collaborateurs = () => {
           let collaborateur = cellProps.row.original;
           return (
             <>
-              {collaborateur.ent_adresse} {collaborateur.ent_cp}, {collaborateur.ent_ville}
+              {collaborateur.ent_adresse} {collaborateur.ent_cp},{" "}
+              {collaborateur.ent_ville}
             </>
-          )
+          );
         },
       },
       {
         Header: "Action",
         Cell: (cellProps) => {
-     
           let collaborateur = cellProps.row.original;
           // console.log(collaborateur);
           return (
             <ul className="list-inline hstack gap-2 mb-0">
               <li className="list-inline-item" title="View">
-                <Link to="#"
-                  onClick={() => { setInfo(collaborateur); setShow(true); }}
+                <Link
+                  to="#"
+                  onClick={() => {
+                    setInfo(collaborateur);
+                    setShow(true);
+                  }}
                 >
                   <i className="ri-eye-fill align-bottom text-muted"></i>
                 </Link>
               </li>
               <li className="list-inline-item" title="Edit">
-                <Link className="edit-item-btn" to="#"
+                <Link
+                  className="edit-item-btn"
+                  to="#"
                   onClick={() => {
                     handleCompanyClick(collaborateur);
                   }}
@@ -380,7 +429,9 @@ const Collaborateurs = () => {
               <li className="list-inline-item" title="Delete">
                 <Link
                   className="remove-item-btn"
-                  onClick={() => { onClickDelete(collaborateur); }}
+                  onClick={() => {
+                    onClickDelete(collaborateur);
+                  }}
                   to="#"
                 >
                   <i className="ri-delete-bin-fill align-bottom text-muted"></i>
@@ -403,20 +454,19 @@ const Collaborateurs = () => {
         ...validation.values.type,
         [e.target.name]: {
           ...validation.values.type[e.target.name],
-          eti_removed: value ? 0 : 1
-        }
-      }
-    })
-  }
-
+          eti_removed: value ? 0 : 1,
+        },
+      },
+    });
+  };
 
   useEffect(() => {
     if (show) {
       setTimeout(() => {
-        document.getElementById('start-anime').classList.add("show")
+        document.getElementById("start-anime").classList.add("show");
       }, 200);
     }
-  }, [show])
+  }, [show]);
 
   // SideBar Company Deatail
   const [info, setInfo] = useState([]);
@@ -458,18 +508,34 @@ const Collaborateurs = () => {
                 <CardHeader>
                   <div className="d-flex align-items-center flex-wrap gap-2">
                     <div className="flex-grow-1">
-                      <button className="btn btn-info add-btn" onClick={() => { setIsEdit(false); toggle(); }}>
-                        <i className="ri-add-fill me-1 align-bottom"></i> Ajouter un client / fournisseur
+                      <button
+                        className="btn btn-info add-btn"
+                        onClick={() => {
+                          setIsEdit(false);
+                          toggle();
+                        }}
+                      >
+                        <i className="ri-add-fill me-1 align-bottom"></i>{" "}
+                        Ajouter un client / fournisseur
                       </button>
                     </div>
                     <div className="flex-shrink-0">
                       <div className="hstack text-nowrap gap-2">
-                        {isMultiDeleteButton && <button className="btn btn-soft-danger"
-                          onClick={() => setDeleteModalMulti(true)}
-                        ><i className="ri-delete-bin-2-line"></i></button>}
+                        {isMultiDeleteButton && (
+                          <button
+                            className="btn btn-soft-danger"
+                            onClick={() => setDeleteModalMulti(true)}
+                          >
+                            <i className="ri-delete-bin-2-line"></i>
+                          </button>
+                        )}
 
-                        <button className="btn btn-soft-primary" onClick={() => setIsExportCSV(true)}>Export</button>
-
+                        <button
+                          className="btn btn-soft-primary"
+                          onClick={() => setIsExportCSV(true)}
+                        >
+                          Export
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -478,13 +544,12 @@ const Collaborateurs = () => {
             </Col>
             <Col className="view-animate" xxl={show ? 9 : 12}>
               <Card id="companyList">
-
                 <CardBody className="pt-0">
                   <div>
                     {isCollaborateurSuccess ? (
                       <TableContainer
                         columns={columns}
-                        data={(collaborateurs || [])}
+                        data={collaborateurs || []}
                         isGlobalFilter={true}
                         isAddUserList={false}
                         customPageSize={7}
@@ -494,25 +559,33 @@ const Collaborateurs = () => {
                         theadClass="table-light"
                         handleCompanyClick={handleCompanyClicks}
                         isCompaniesFilter={true}
-                        SearchPlaceholder='Search for company...'
+                        SearchPlaceholder="Search for company..."
                       />
-                    ) : (<Loader error={error} />)
-                    }
+                    ) : (
+                      <Loader error={error} />
+                    )}
                   </div>
-                  <Modal id="showModal" isOpen={modal} toggle={toggle} centered size="lg">
+                  <Modal
+                    id="showModal"
+                    isOpen={modal}
+                    toggle={toggle}
+                    centered
+                    size="lg"
+                  >
                     <ModalHeader className="bg-soft-info p-3" toggle={toggle}>
                       {!!isEdit ? "Modifier" : "Ajouter"}
                     </ModalHeader>
-                    <Form className="tablelist-form" onSubmit={(e) => {
-
-                      e.preventDefault();
-                      validation.handleSubmit();
-                      return false;
-                    }}>
+                    <Form
+                      className="tablelist-form"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        validation.handleSubmit();
+                        return false;
+                      }}
+                    >
                       <ModalBody>
                         <input type="hidden" id="id-field" />
                         <Row className="g-3">
-                   
                           {/* <Col lg={12}>
                             <div className="text-center">
                               <div className="position-relative d-inline-block">
@@ -544,7 +617,10 @@ const Collaborateurs = () => {
                             </div>
                           </Col> */}
                           <h5>Informations Générales</h5>
-                          <Col lg={4} className="d-flex justify-content-center align-items-end">
+                          <Col
+                            lg={4}
+                            className="d-flex justify-content-center align-items-end"
+                          >
                             <div>
                               <Label
                                 htmlFor="isclient-field"
@@ -552,18 +628,25 @@ const Collaborateurs = () => {
                               >
                                 Client
                               </Label>
-                          
+
                               <Input
                                 className="form-check-input  ms-2"
                                 type="checkbox"
-                                checked={validation.values.type.client.eti_removed == 0 ? true : false}
+                                checked={
+                                  validation.values.type.client.eti_removed == 0
+                                    ? true
+                                    : false
+                                }
                                 onChange={(e) => handleTypeEntity(e)}
                                 name="client"
                                 id="isclient-field"
                               />
                             </div>
                           </Col>
-                          <Col lg={4} className="d-flex justify-content-center align-items-end">
+                          <Col
+                            lg={4}
+                            className="d-flex justify-content-center align-items-end"
+                          >
                             <div>
                               <Label
                                 htmlFor="isfournisseur-field"
@@ -574,14 +657,22 @@ const Collaborateurs = () => {
                               <Input
                                 type="checkbox"
                                 className="form-check-input ms-2"
-                                checked={validation.values.type.fournisseur.eti_removed == 0 ? true : false} 
+                                checked={
+                                  validation.values.type.fournisseur
+                                    .eti_removed == 0
+                                    ? true
+                                    : false
+                                }
                                 onChange={(e) => handleTypeEntity(e)}
                                 name="fournisseur"
                                 id="isfournisseur-field"
                               />
                             </div>
                           </Col>
-                          <Col lg={4} className="d-flex justify-content-center align-items-end">
+                          <Col
+                            lg={4}
+                            className="d-flex justify-content-center align-items-end"
+                          >
                             <div>
                               <Label
                                 htmlFor="isfournisseur-field"
@@ -592,7 +683,12 @@ const Collaborateurs = () => {
                               <Input
                                 type="checkbox"
                                 className="form-check-input ms-2"
-                                checked={validation.values.type.prospect.eti_removed == 0 ? true : false}
+                                checked={
+                                  validation.values.type.prospect.eti_removed ==
+                                  0
+                                    ? true
+                                    : false
+                                }
                                 onChange={(e) => handleTypeEntity(e)}
                                 name="prospect"
                                 id="isfournisseur-field"
@@ -621,11 +717,17 @@ const Collaborateurs = () => {
                                 onBlur={validation.handleBlur}
                                 value={validation.values.ent_lastname || ""}
                                 invalid={
-                                  validation.touched.ent_lastname && validation.errors.ent_lastname ? true : false
+                                  validation.touched.ent_lastname &&
+                                  validation.errors.ent_lastname
+                                    ? true
+                                    : false
                                 }
                               />
-                              {validation.touched.ent_lastname && validation.errors.ent_lastname ? (
-                                <FormFeedback type="invalid">{validation.errors.ent_lastname}</FormFeedback>
+                              {validation.touched.ent_lastname &&
+                              validation.errors.ent_lastname ? (
+                                <FormFeedback type="invalid">
+                                  {validation.errors.ent_lastname}
+                                </FormFeedback>
                               ) : null}
                             </div>
                           </Col>
@@ -650,11 +752,17 @@ const Collaborateurs = () => {
                                 onBlur={validation.handleBlur}
                                 value={validation.values.ent_firstname || ""}
                                 invalid={
-                                  validation.touched.ent_firstname && validation.errors.ent_firstname ? true : false
+                                  validation.touched.ent_firstname &&
+                                  validation.errors.ent_firstname
+                                    ? true
+                                    : false
                                 }
                               />
-                              {validation.touched.ent_firstname && validation.errors.ent_firstname ? (
-                                <FormFeedback type="invalid">{validation.errors.ent_firstname}</FormFeedback>
+                              {validation.touched.ent_firstname &&
+                              validation.errors.ent_firstname ? (
+                                <FormFeedback type="invalid">
+                                  {validation.errors.ent_firstname}
+                                </FormFeedback>
                               ) : null}
                             </div>
                           </Col>
@@ -680,11 +788,17 @@ const Collaborateurs = () => {
                                 onBlur={validation.handleBlur}
                                 value={validation.values.ent_name || ""}
                                 invalid={
-                                  validation.touched.ent_name && validation.errors.ent_name ? true : false
+                                  validation.touched.ent_name &&
+                                  validation.errors.ent_name
+                                    ? true
+                                    : false
                                 }
                               />
-                              {validation.touched.ent_name && validation.errors.ent_name ? (
-                                <FormFeedback type="invalid">{validation.errors.ent_name}</FormFeedback>
+                              {validation.touched.ent_name &&
+                              validation.errors.ent_name ? (
+                                <FormFeedback type="invalid">
+                                  {validation.errors.ent_name}
+                                </FormFeedback>
                               ) : null}
                             </div>
                           </Col>
@@ -704,7 +818,10 @@ const Collaborateurs = () => {
                                   required: { value: true },
                                 }}
                                 invalid={
-                                  validation.touched.ent_pays && validation.errors.ent_pays ? true : false
+                                  validation.touched.ent_pays &&
+                                  validation.errors.ent_pays
+                                    ? true
+                                    : false
                                 }
                                 value={validation.values.ent_pays}
                                 onChange={validation.handleChange}
@@ -712,13 +829,20 @@ const Collaborateurs = () => {
                                 name="ent_pays"
                                 id="ent_pays-field"
                               >
-                                <option disabled={true} value={""}>Choisir un pays</option>
+                                <option disabled={true} value={""}>
+                                  Choisir un pays
+                                </option>
                                 {country.map((e, i) => (
-                                  <option key={i} value={e.value}>{e.label}</option>
+                                  <option key={i} value={e.value}>
+                                    {e.label}
+                                  </option>
                                 ))}
                               </Input>
-                              {validation.touched.ent_pays && validation.errors.ent_pays ? (
-                                <FormFeedback type="invalid">{validation.errors.ent_pays}</FormFeedback>
+                              {validation.touched.ent_pays &&
+                              validation.errors.ent_pays ? (
+                                <FormFeedback type="invalid">
+                                  {validation.errors.ent_pays}
+                                </FormFeedback>
                               ) : null}
                             </div>
                           </Col>
@@ -743,13 +867,18 @@ const Collaborateurs = () => {
                                 onBlur={validation.handleBlur}
                                 value={validation.values.ent_adresse || ""}
                                 invalid={
-                                  validation.touched.ent_adresse && validation.errors.ent_adresse ? true : false
+                                  validation.touched.ent_adresse &&
+                                  validation.errors.ent_adresse
+                                    ? true
+                                    : false
                                 }
                               />
-                              {validation.touched.ent_adresse && validation.errors.ent_adresse ? (
-                                <FormFeedback type="invalid">{validation.errors.ent_adresse}</FormFeedback>
+                              {validation.touched.ent_adresse &&
+                              validation.errors.ent_adresse ? (
+                                <FormFeedback type="invalid">
+                                  {validation.errors.ent_adresse}
+                                </FormFeedback>
                               ) : null}
-
                             </div>
                           </Col>
                           <Col lg={2}>
@@ -773,11 +902,17 @@ const Collaborateurs = () => {
                                 onBlur={validation.handleBlur}
                                 value={validation.values.ent_cp || ""}
                                 invalid={
-                                  validation.touched.ent_cp && validation.errors.ent_cp ? true : false
+                                  validation.touched.ent_cp &&
+                                  validation.errors.ent_cp
+                                    ? true
+                                    : false
                                 }
                               />
-                              {validation.touched.ent_cp && validation.errors.ent_cp ? (
-                                <FormFeedback type="invalid">{validation.errors.ent_cp}</FormFeedback>
+                              {validation.touched.ent_cp &&
+                              validation.errors.ent_cp ? (
+                                <FormFeedback type="invalid">
+                                  {validation.errors.ent_cp}
+                                </FormFeedback>
                               ) : null}
                             </div>
                           </Col>
@@ -802,11 +937,17 @@ const Collaborateurs = () => {
                                 onBlur={validation.handleBlur}
                                 value={validation.values.ent_ville || ""}
                                 invalid={
-                                  validation.touched.ent_ville && validation.errors.ent_ville ? true : false
+                                  validation.touched.ent_ville &&
+                                  validation.errors.ent_ville
+                                    ? true
+                                    : false
                                 }
                               />
-                              {validation.touched.ent_ville && validation.errors.ent_ville ? (
-                                <FormFeedback type="invalid">{validation.errors.ent_ville}</FormFeedback>
+                              {validation.touched.ent_ville &&
+                              validation.errors.ent_ville ? (
+                                <FormFeedback type="invalid">
+                                  {validation.errors.ent_ville}
+                                </FormFeedback>
                               ) : null}
                             </div>
                           </Col>
@@ -831,11 +972,17 @@ const Collaborateurs = () => {
                                 onBlur={validation.handleBlur}
                                 value={validation.values.ent_email || ""}
                                 invalid={
-                                  validation.touched.ent_email && validation.errors.ent_email ? true : false
+                                  validation.touched.ent_email &&
+                                  validation.errors.ent_email
+                                    ? true
+                                    : false
                                 }
                               />
-                              {validation.touched.ent_email && validation.errors.ent_email ? (
-                                <FormFeedback type="invalid">{validation.errors.ent_email}</FormFeedback>
+                              {validation.touched.ent_email &&
+                              validation.errors.ent_email ? (
+                                <FormFeedback type="invalid">
+                                  {validation.errors.ent_email}
+                                </FormFeedback>
                               ) : null}
                             </div>
                           </Col>
@@ -860,11 +1007,17 @@ const Collaborateurs = () => {
                                 onBlur={validation.handleBlur}
                                 value={validation.values.ent_phone || ""}
                                 invalid={
-                                  validation.touched.ent_phone && validation.errors.ent_phone ? true : false
+                                  validation.touched.ent_phone &&
+                                  validation.errors.ent_phone
+                                    ? true
+                                    : false
                                 }
                               />
-                              {validation.touched.ent_phone && validation.errors.ent_phone ? (
-                                <FormFeedback type="invalid">{validation.errors.ent_phone}</FormFeedback>
+                              {validation.touched.ent_phone &&
+                              validation.errors.ent_phone ? (
+                                <FormFeedback type="invalid">
+                                  {validation.errors.ent_phone}
+                                </FormFeedback>
                               ) : null}
                             </div>
                           </Col>
@@ -889,11 +1042,17 @@ const Collaborateurs = () => {
                                 onBlur={validation.handleBlur}
                                 value={validation.values.ent_iban || ""}
                                 invalid={
-                                  validation.touched.ent_iban && validation.errors.ent_iban ? true : false
+                                  validation.touched.ent_iban &&
+                                  validation.errors.ent_iban
+                                    ? true
+                                    : false
                                 }
                               />
-                              {validation.touched.ent_iban && validation.errors.ent_iban ? (
-                                <FormFeedback type="invalid">{validation.errors.ent_iban}</FormFeedback>
+                              {validation.touched.ent_iban &&
+                              validation.errors.ent_iban ? (
+                                <FormFeedback type="invalid">
+                                  {validation.errors.ent_iban}
+                                </FormFeedback>
                               ) : null}
                             </div>
                           </Col>
@@ -918,11 +1077,17 @@ const Collaborateurs = () => {
                                 onBlur={validation.handleBlur}
                                 value={validation.values.ent_bic || ""}
                                 invalid={
-                                  validation.touched.ent_bic && validation.errors.ent_bic ? true : false
+                                  validation.touched.ent_bic &&
+                                  validation.errors.ent_bic
+                                    ? true
+                                    : false
                                 }
                               />
-                              {validation.touched.ent_bic && validation.errors.ent_bic ? (
-                                <FormFeedback type="invalid">{validation.errors.ent_bic}</FormFeedback>
+                              {validation.touched.ent_bic &&
+                              validation.errors.ent_bic ? (
+                                <FormFeedback type="invalid">
+                                  {validation.errors.ent_bic}
+                                </FormFeedback>
                               ) : null}
                             </div>
                           </Col>
@@ -947,11 +1112,17 @@ const Collaborateurs = () => {
                                 onBlur={validation.handleBlur}
                                 value={validation.values.ent_siren || ""}
                                 invalid={
-                                  validation.touched.ent_siren && validation.errors.ent_siren ? true : false
+                                  validation.touched.ent_siren &&
+                                  validation.errors.ent_siren
+                                    ? true
+                                    : false
                                 }
                               />
-                              {validation.touched.ent_siren && validation.errors.ent_siren ? (
-                                <FormFeedback type="invalid">{validation.errors.ent_siren}</FormFeedback>
+                              {validation.touched.ent_siren &&
+                              validation.errors.ent_siren ? (
+                                <FormFeedback type="invalid">
+                                  {validation.errors.ent_siren}
+                                </FormFeedback>
                               ) : null}
                             </div>
                           </Col>
@@ -974,13 +1145,21 @@ const Collaborateurs = () => {
                                 }}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
-                                value={validation.values.ent_methode_payment || ""}
+                                value={
+                                  validation.values.ent_methode_payment || ""
+                                }
                                 invalid={
-                                  validation.touched.ent_methode_payment && validation.errors.ent_methode_payment ? true : false
+                                  validation.touched.ent_methode_payment &&
+                                  validation.errors.ent_methode_payment
+                                    ? true
+                                    : false
                                 }
                               />
-                              {validation.touched.ent_methode_payment && validation.errors.ent_methode_payment ? (
-                                <FormFeedback type="invalid">{validation.errors.ent_methode_payment}</FormFeedback>
+                              {validation.touched.ent_methode_payment &&
+                              validation.errors.ent_methode_payment ? (
+                                <FormFeedback type="invalid">
+                                  {validation.errors.ent_methode_payment}
+                                </FormFeedback>
                               ) : null}
                             </div>
                           </Col>
@@ -1005,27 +1184,47 @@ const Collaborateurs = () => {
                             onBlur={validation.handleBlur}
                             value={validation.values.ent_info || ""}
                             invalid={
-                              validation.touched.ent_info && validation.errors.ent_info ? "true" : "false"
+                              validation.touched.ent_info &&
+                              validation.errors.ent_info
+                                ? "true"
+                                : "false"
                             }
                             rows={5}
                           />
-                          {validation.touched.ent_info && validation.errors.ent_info ? (
-                            <FormFeedback type="invalid">{validation.errors.ent_info}</FormFeedback>
+                          {validation.touched.ent_info &&
+                          validation.errors.ent_info ? (
+                            <FormFeedback type="invalid">
+                              {validation.errors.ent_info}
+                            </FormFeedback>
                           ) : null}
-
                         </Row>
                       </ModalBody>
                       <ModalFooter>
                         <div className="hstack gap-2 justify-content-end">
-                          <button type="button" className="btn btn-light" onClick={() => { setModal(false); }} > Fermer </button>
-                          <button type="submit" className="btn btn-success" id="add-btn" >  {!!isEdit ? "Modifier" : "Ajouter"} </button>
+                          <button
+                            type="button"
+                            className="btn btn-light"
+                            onClick={() => {
+                              setModal(false);
+                            }}
+                          >
+                            {" "}
+                            Fermer{" "}
+                          </button>
+                          <button
+                            type="submit"
+                            className="btn btn-success"
+                            id="add-btn"
+                          >
+                            {" "}
+                            {!!isEdit ? "Modifier" : "Ajouter"}{" "}
+                          </button>
                         </div>
                       </ModalFooter>
                     </Form>
                   </Modal>
                   <ToastContainer closeButton={false} limit={1} />
                 </CardBody>
-
               </Card>
             </Col>
             <Col xxl={3}>
@@ -1043,7 +1242,9 @@ const Collaborateurs = () => {
                       </span>
                     </div>
                     <h5 className="mt-4 mb-1">{info.ent_name}</h5>
-                    <h6 className="text-muted">{info.ent_lastname + " " + info.ent_firstname}</h6>
+                    <h6 className="text-muted">
+                      {info.ent_lastname + " " + info.ent_firstname}
+                    </h6>
 
                     <ul className="list-inline mb-0">
                       <li className="list-inline-item avatar-xs">
@@ -1069,54 +1270,41 @@ const Collaborateurs = () => {
                       Information complémentaire
                     </h6>
                     <p className="text-muted mb-4">
-                      {(info.ent_info) || "Non renseigné"}
+                      {info.ent_info || "Non renseigné"}
                     </p>
                     <div className="table-responsive table-card">
                       <Table className="table table-borderless mb-0">
                         <tbody>
                           <tr>
-                            <td className="fw-medium">
-                              Entreprise
-                            </td>
+                            <td className="fw-medium">Entreprise</td>
                             <td>{info.ent_name}</td>
                           </tr>
                           <tr>
-                            <td className="fw-medium">
-                              Adresse
+                            <td className="fw-medium">Adresse</td>
+                            <td>
+                              {info.ent_adresse}, {info.ent_cp} {info.ent_ville}
                             </td>
-                            <td>{info.ent_adresse}, {info.ent_cp} {info.ent_ville}</td>
                           </tr>
                           <tr>
-                            <td className="fw-medium">
-                              Email
-                            </td>
+                            <td className="fw-medium">Email</td>
                             <td>{info.ent_email}</td>
                           </tr>
                           <tr>
-                            <td className="fw-medium">
-                              Téléphone
-                            </td>
+                            <td className="fw-medium">Téléphone</td>
                             <td>{info.ent_phone}</td>
                           </tr>
                           <tr>
-                            <td className="fw-medium">
-                              Siren
-                            </td>
+                            <td className="fw-medium">Siren</td>
                             <td>{info.ent_siren}</td>
                           </tr>
                           <tr>
-                            <td className="fw-medium">
-                              Iban
-                            </td>
+                            <td className="fw-medium">Iban</td>
                             <td>{info.ent_iban}</td>
                           </tr>
                           <tr>
-                            <td className="fw-medium">
-                              Bic
-                            </td>
+                            <td className="fw-medium">Bic</td>
                             <td>{info.ent_bic}</td>
                           </tr>
-
                         </tbody>
                       </Table>
                     </div>
