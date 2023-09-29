@@ -65,14 +65,36 @@ const TransactionBank = () => {
 
   const [show, setShow] = useState(false);
 
+  const [achatFilter,setAchatFilter] = useState({
+    data:achats || [],
+    searchTerm:'',
+  })
+
   const toggle = useCallback(() => {
     if (show) {
       setShow(false);
-      setTransaction({});
+      // setTransaction({});
     } else {
       setShow(true);
     }
   }, [show]);
+  const handleTransactionClick = useCallback(
+    (arg) => {
+      const transData = arg;
+      console.log( transData.tba_justify)
+      // console.log("transdata",transData)
+      setTransaction({
+        id: transData.tba_id,
+        tba_justify: transData.tba_justify == 1 ? false : true,
+        file_justify: transData.ado_file_name,
+      });
+      console.log(transaction)
+      // toggle();
+    },
+    [toggle]
+  );
+
+  
 
   // validation
   const validation = useFormik({
@@ -80,22 +102,12 @@ const TransactionBank = () => {
     enableReinitialize: true,
 
     initialValues: {
-      //   lastname: (employee && employee.lastname) || "",
-      //   firstname: (employee && employee.firstname) || "",
-      //   email: (employee && employee.email) || "",
-      //   date_entree: (employee && employee.date_entree) || "",
       nojustify:
-        (transaction && transaction.tba_justify && transaction.tba_justify === 0
+        (transaction && transaction.tba_justify === 1
           ? true
-          : false) || false,
+          : false),
       file_justify: (transaction && transaction.ado_file_name) || "",
     },
-    // validationSchema: Yup.object({
-    //   lastname: Yup.string().required("Veuillez entrer un nom"),
-    //   firstname: Yup.string().required("Veuillez entrer un prénom"),
-    //   email: Yup.string().required("Veuillez entrer un email"),
-    //   date_entree: Yup.date().required("Veuillez entrer une date d'entrée"),
-    // }),
     onSubmit: (values) => {
       //   if (isEdit) {
       //     const updateEmployee = {
@@ -267,17 +279,6 @@ const TransactionBank = () => {
     dispatch(onGetAchat());
   }, [dispatch]);
 
-  const [achatFilter,setAchatFilter] = useState({
-    data:achats || [],
-    searchTerm:'',
-  })
-
-  
-  const handleSearchChange = (e) => {
-    const { value } = e.target;
-    setAchatFilter({...achatFilter,searchTerm: value });
-  };
-
   useEffect(() => {
     dispatch(onGetAchat());
   }, [dispatch]);
@@ -287,7 +288,11 @@ const TransactionBank = () => {
       setTransaction({});
     }
   }, [transactions]);
-
+  
+  const handleSearchChange = (e) => {
+    const { value } = e.target;
+    setAchatFilter({...achatFilter,searchTerm: value });
+  };
   const setterDate = (value, showPartClose = false) => {
     setPeriodeCalendar(value);
     if (showPartClose) {
@@ -304,6 +309,7 @@ const TransactionBank = () => {
       );
     });
   }
+  // console.log(validation.values.nojustify)
   const filteredData = filterData();
   const partiesDuChemin = validation?.values?.file_justify.split("\\"); // Divise le chemin en morceaux en fonction de "\"
   const nomDuFichier = partiesDuChemin[partiesDuChemin.length - 1];
@@ -330,12 +336,8 @@ const TransactionBank = () => {
                         actionItem={(row) => {
                           const transData = row.original;
                           setShow(true);
-                          setTransaction({
-                            id: transData.tba_id,
-                            nojustify:
-                              transData.tba_justify == 1 ? false : true,
-                            file_justify: transData.ado_file_name,
-                          });
+                          handleTransactionClick(transData);
+                  
                         }}
                         isGlobalFilter={true}
                         isAddUserList={false}
@@ -387,8 +389,8 @@ const TransactionBank = () => {
                                   className="form-check-input"
                                   type="checkbox"
                                   role="switch"
-                                  checked={transaction.nojustify || false}
-                                  onChange={validation.handleChange}
+                                  checked={transaction?.tba_justify}
+                                  onChange={()=>{setTransaction({...transaction,tba_justify:!transaction.tba_justify})   }}
                                   onBlur={validation.handleBlur}
                                 />
                                 <Label
@@ -413,7 +415,7 @@ const TransactionBank = () => {
                             </Row>
                            )}  */}
 
-                          {!transaction.nojustify &&
+                          {!transaction.tba_justify &&
                             (
                               <Col lg={11} className="mt-4">
                                 <div>

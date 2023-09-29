@@ -36,7 +36,6 @@ import {
   getAchat as onGetAchat,
   getTransactionBankAchat as onGetTransactionBankAchat,
   createUpdateAchat as onCreateUpdateAchat,
-
   getCollaborateurs as onGetCollaborateurs,
   deleteAchat as onDeleteAchat,
 } from "../../slices/thunks";
@@ -57,32 +56,28 @@ import FileService from "../../utils/FileService";
 
 const Achats = () => {
   const dispatch = useDispatch();
-  const { isAchatSuccess, achats, error, transactions,collaborateurs } = useSelector(
-    (state) => ({
+  const { isAchatSuccess, achats, error, transactions, collaborateurs } =
+    useSelector((state) => ({
       isAchatSuccess: state.Achat.isAchatSuccess,
       achats: state.Achat.achats,
       error: state.Achat.error,
       collaborateurs: state.Gestion.collaborateurs,
       transactions: state.TransactionBank.transactionsBank,
-    })
-  );
-
+    }));
 
   const [achat, setAchat] = useState({});
-  
-  const[achatDisplay,setAchatDisplay] =useState([]);
+
+  const [achatDisplay, setAchatDisplay] = useState([]);
   useEffect(() => {
-    setAchatDisplay(achats)
-  }, [achats])
-  
-  
+    setAchatDisplay(achats);
+  }, [achats]);
 
   const [isEdit, setIsEdit] = useState(false);
 
   const [filesSelected, setFilesSelected] = useState([]);
 
   const [transFilter, setTransFilter] = useState({
-    data:  [],
+    data: [],
     searchTerm: "",
   });
 
@@ -94,8 +89,6 @@ const Achats = () => {
 
   const [modal, setModal] = useState(false);
 
-
-
   const toggle = useCallback(() => {
     if (modal) {
       if (!isEdit) {
@@ -103,13 +96,12 @@ const Achats = () => {
       }
       setAchat({});
       setTransFilter({
-        data:  [],
+        data: [],
         searchTerm: "",
-      })
+      });
       setModal(false);
       setIsEdit(false);
     } else {
-   
       setModal(true);
     }
   }, [modal]);
@@ -142,8 +134,8 @@ const Achats = () => {
     }),
     onSubmit: (values) => {
       if (!isEdit) {
-         FileService.uploadFile(values.files).then((res)=>{
-          if(res.fileName){
+        FileService.uploadFile(values.files).then((res) => {
+          if (res.fileName) {
             const newAchat = {
               ach_type: values.type,
               files: res.fileName,
@@ -151,9 +143,8 @@ const Achats = () => {
             // save new Achat
             dispatch(onCreateUpdateAchat(newAchat));
           }
-         })
-        
-  
+        });
+
         createAchats.resetForm();
       }
       toggle();
@@ -167,8 +158,8 @@ const Achats = () => {
 
     initialValues: {
       id: (achat && achat.id) || "",
-      montant: (achat && achat.montant) ||  0.00,
-      tva: (achat && achat.tva) || 0.00,
+      montant: (achat && achat.montant) || 0.0,
+      tva: (achat && achat.tva) || 0.0,
       libelle: (achat && achat.libelle) || "",
       categorie: (achat && achat.categorie) || "",
       methode: (achat && achat.methode) || "",
@@ -177,30 +168,32 @@ const Achats = () => {
       numero: (achat && achat.numero) || "",
       justificatif: (achat && achat.justificatif) || "",
       transactionAssoc: (achat && achat.transactionAssoc) || [],
-      entity :(achat && achat.entity) || "",
-      rp:(achat && achat.rp) || 0.00,
+      entity: (achat && achat.entity) || "",
+      rp: (achat && achat.rp) || 0.0,
     },
     onSubmit: (values) => {
       if (isEdit) {
-        let TRANS_ASSOC_DISOC =  transFilter?.data?.filter((item) => item.type === "assoc" || item.type =="disoc") || [];
-        let newTransAssoc =TRANS_ASSOC_DISOC?.map((trAss) =>{
-          let newItem= {
-            aba_ach_fk:values.id,
-            aba_tba_fk:trAss.tba_id,
-            type:trAss.type
+        let TRANS_ASSOC_DISOC =
+          transFilter?.data?.filter(
+            (item) => item.type === "assoc" || item.type == "disoc"
+          ) || [];
+        let newTransAssoc = TRANS_ASSOC_DISOC?.map((trAss) => {
+          let newItem = {
+            aba_ach_fk: values.id,
+            aba_tba_fk: trAss.tba_id,
+            type: trAss.type,
+          };
+          if (trAss.old == 1 && trAss.type == "disoc" && trAss.aba_id) {
+            newItem.aba_id = trAss.aba_id;
           }
-          if(trAss.old == 1 && trAss.type =="disoc" && trAss.aba_id){
-            newItem.aba_id=trAss.aba_id;
-          }
-          return newItem
-          
-        })
+          return newItem;
+        });
 
         const updateAchat = {
-          dataUp :{
-            ach_id:achat.id ? achat.id : 0,
+          dataUp: {
+            ach_id: achat.id ? achat.id : 0,
             ach_date_create: values.dateAchat,
-            ach_ent_fk:values.entity,
+            ach_ent_fk: values.entity,
             ach_date_expired: values.dateEcheance,
             ach_total_amount: values.montant,
             ach_total_tva: values.tva,
@@ -208,10 +201,9 @@ const Achats = () => {
             ach_lib: values.libelle,
             ach_met: values.methode,
             ach_num: values.numero,
-            ach_rp: values.rp
+            ach_rp: values.rp,
           },
-          associate:newTransAssoc
-     
+          associate: newTransAssoc,
         };
         dispatch(onCreateUpdateAchat(updateAchat));
         validation.resetForm();
@@ -224,10 +216,8 @@ const Achats = () => {
   const handleContactClick = useCallback(
     (arg) => {
       const achatH = arg;
-      if(achatH?.ach_id){
-        dispatch(
-          onGetTransactionBankAchat(achatH?.ach_id)
-        );
+      if (achatH?.ach_id) {
+        dispatch(onGetTransactionBankAchat(achatH?.ach_id));
       }
       setAchat({
         id: achatH?.ach_id,
@@ -240,9 +230,9 @@ const Achats = () => {
         dateAchat: achatH.ach_date_create,
         numero: achatH.ach_num,
         justificatif: achatH.ado_file_name,
-        entity:achatH.ach_ent_fk,
+        entity: achatH.ach_ent_fk,
         transactionAssoc: [],
-        rp:achatH?.ach_rp,
+        rp: achatH?.ach_rp,
       });
       setIsEdit(true);
       toggle();
@@ -334,19 +324,23 @@ const Achats = () => {
         // accessor: "ach_status",
         filterable: false,
         Cell: (cell) => {
-          let status = ""
-          if(cell.row.original.ach_total_amount<=0 || cell.row.original.ach_total_amount==null || cell.row.original.ach_categorie?.length==0 || (cell.row.original?.ach_date_create =="" || cell.row.original.ach_date_create ==null)){
-            status="A traiter"
-          }else if(parseFloat(cell.row.original.ach_rp)!=0){
-            status="A associer"
-          }else{
-            status="Validé"
+          let status = "";
+          if (
+            cell.row.original.ach_total_amount <= 0 ||
+            cell.row.original.ach_total_amount == null ||
+            cell.row.original.ach_categorie?.length == 0 ||
+            cell.row.original?.ach_date_create == "" ||
+            cell.row.original.ach_date_create == null
+          ) {
+            status = "A traiter";
+          } else if (parseFloat(cell.row.original.ach_rp) != 0) {
+            status = "A associer";
+          } else {
+            status = "Validé";
           }
           return (
             <div className="d-flex align-items-center">
-              <p className="m-0">
-                {status}
-              </p>
+              <p className="m-0">{status}</p>
             </div>
           );
         },
@@ -381,47 +375,53 @@ const Achats = () => {
         accessor: "assoc",
         filterable: false,
         Cell: (cell) => {
-
           let styleCSS = {};
-          if(parseFloat(cell.row.original.ach_rp)==0 && parseFloat(cell.row.original.ach_total_amount)!=0){
+          let elementDisplay = ``;
+          if (
+            parseFloat(cell.row.original.ach_rp) == 0 &&
+            parseFloat(cell.row.original.ach_total_amount) != 0
+          ) {
             styleCSS = {
-              width: '15px',
-              height: '15px',
-              borderRadius: '50%',
-              backgroundColor: 'green',
-              marginLeft:"15%"
+              width: "15px",
+              height: "15px",
+              borderRadius: "50%",
+              backgroundColor: "green",
+              marginLeft: "15%",
             };
-          }else if(parseFloat(cell.row.original.ach_rp) == Math.abs(parseFloat(cell.row.original.ach_total_amount))){
+          } else if (
+            parseFloat(cell.row.original.ach_rp) <
+              Math.abs(parseFloat(cell.row.original.ach_total_amount)) &&
+            parseFloat(cell.row.original.ach_rp) > 0
+          ) {
             styleCSS = {
-              width: '15px',
-              height: '15px',
-              borderRadius: '50%',
-              border: '2px solid red',
-              backgroundColor: 'transparent',
-              alignItems:"center",
-              justifyContent:'center',
-              display:'flex',
-              marginLeft:"15%",
-              overflow:'hidden'
-            };
-          }else if(parseFloat(cell.row.original.ach_rp) < Math.abs(parseFloat(cell.row.original.ach_total_amount)) && parseFloat(cell.row.original.ach_rp)>0){
-            styleCSS = {
-              width: '10px',
-              height: '15px',
-              borderBottomRightRadius: '10px',
-              borderTopRightRadius: '10px',
-              backgroundColor: 'orange',
+              width: "10px",
+              height: "15px",
+              borderBottomRightRadius: "10px",
+              borderTopRightRadius: "10px",
+              backgroundColor: "orange",
               // marginLeft:8,
-              marginLeft:"16%"
+              marginLeft: "16%",
             };
+          } else {
+            styleCSS = {
+              width: "15px",
+              height: "15px",
+              borderRadius: "50%",
+              border: "2px solid red",
+              backgroundColor: "transparent",
+              alignItems: "center",
+              justifyContent: "center",
+              display: "flex",
+              marginLeft: "15%",
+              overflow: "hidden",
+            };
+            elementDisplay = (
+              <i style={{ color: "red" }} className="las la-times"></i>
+            );
           }
           return (
             <div className="d-flex align-items-center">
-              <div style={styleCSS}>
-              {cell.row.original.ach_rp == Math.abs(parseFloat(cell.row.original.ach_total_amount)) &&
-             <i style={{color:'red'}} className="las la-times" ></i>
-              }
-              </div>
+              <div style={styleCSS}>{elementDisplay}</div>
             </div>
           );
         },
@@ -457,12 +457,9 @@ const Achats = () => {
   useEffect(() => {
     dispatch(onGetEmployees());
     dispatch(onGetAchat());
-  
-    dispatch(onGetCollaborateurs());
-   
-    ;
-  }, [dispatch]);
 
+    dispatch(onGetCollaborateurs());
+  }, [dispatch]);
 
   // useEffect(() => {
   //   if(achat.id){
@@ -471,10 +468,6 @@ const Achats = () => {
   //     );
   //   }
   // }, [achat])
-
-
-  
-
 
   useEffect(() => {
     if (!isEmpty(achats)) {
