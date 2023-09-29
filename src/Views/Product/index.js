@@ -286,13 +286,13 @@ const Products = () => {
           onCloseClick={() => setDeleteModalMulti(false)}
         />
         <Container fluid>
-          <BreadCrumb title="Produit" pageTitle="Gestion" />
+          <BreadCrumb title="Produits" pageTitle="Gestion" />
           <Row>
             <Col lg={12}>
               <Card>
                 <CardHeader>
                   <div className="d-flex align-items-center flex-wrap gap-2 ">
-                    <div className="d-flex flex-grow-1 justify-content-end">
+                    <div className="d-flex flex-grow-1 justify-content-start">
                       <button
                         className="btn btn-info add-btn"
                         onClick={() => {

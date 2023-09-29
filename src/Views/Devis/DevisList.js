@@ -223,7 +223,7 @@ const DevisList = () => {
 
         <Container fluid>
           <BreadCrumb title="Devis" pageTitle="Liste" />
-          <h3>Statistique de l'année</h3>
+          <h3>Statistiques de l'année</h3>
           <Row>
             {devisWidgets?.map((widget, i) => {
               return (<WidgetCountUp key={i} data={widget} type={"Devis"} />)
@@ -235,7 +235,7 @@ const DevisList = () => {
               <Card id="invoiceList">
                 <CardHeader className="border-0">
                   <div className="d-flex align-items-center">
-                    <h5 className="card-title mb-0 flex-grow-1">Devis</h5>
+                    {/* <h5 className="card-title mb-0 flex-grow-1">Devis</h5> */}
                     <div className="flex-shrink-0">
                       <div className='d-flex gap-2 flex-wrap'>
                         <Link

@@ -59,17 +59,17 @@ const RevenueCharts = ({ dataColors, series }) => {
     xaxis: {
       categories: [
         "Janvier",
-        "Fevrier",
+        "Février",
         "Mars",
         "Avril",
         "Mai",
         "Juin",
         "Juillet",
-        "Aout",
+        "Août",
         "Septembre",
         "Octobre",
         "Novembre",
-        "Decembre",
+        "Décembre",
       ],
       axisTicks: {
         show: false,

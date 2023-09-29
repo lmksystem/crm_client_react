@@ -480,7 +480,7 @@ const GestionParameter = () => {
                         }}
                       >
                         <i className="ri-add-fill me-1 align-bottom"></i>
-                        Ajouter règle
+                        Ajouter TVA
                       </button>
                     </div>
                     <div className="flex-shrink-0">
@@ -528,7 +528,7 @@ const GestionParameter = () => {
                     size="lg"
                   >
                     <ModalHeader className="bg-soft-info p-3" toggle={toggle}>
-                      {!!isEdit ? "Modifier règle" : "Ajouter règle"}
+                      {!!isEdit ? "Modifier une TVA" : "Ajouter une TVA"}
                     </ModalHeader>
                     <Form
                       className="tablelist-form"
@@ -631,7 +631,7 @@ const GestionParameter = () => {
                             id="add-btn"
                           >
                             {" "}
-                            {!!isEdit ? "Modifier" : "Ajouter la règle"}{" "}
+                            {!!isEdit ? "Modifier" : "Ajouter"}{" "}
                           </button>
                         </div>
                       </ModalFooter>

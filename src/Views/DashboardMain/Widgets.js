@@ -46,7 +46,7 @@ const Widgets = () => {
     {
       id: 1,
       cardColor: "primary",
-      label: "Total ventes",
+      label: "Ventes",
       badge: constructWidgetDetails(
         "badge",
         transactionsPeriodPrice?.pourcentage_gain_perte

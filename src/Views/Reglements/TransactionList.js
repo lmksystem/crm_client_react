@@ -241,7 +241,7 @@ const TransactionList = () => {
 
         <Container fluid>
           <BreadCrumb title="Règlements" pageTitle="Facturation" />
-          <h3>Statistique de l'année</h3>
+          <h3>Statistiques de l'année</h3>
           <Row>
             <div xl={12}>
               <TransactionCharts chartData={chartData} />
