@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
 
 import {
@@ -47,6 +47,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ExportCSVModal from "../../Components/Common/ExportCSVModal";
 import SimpleBar from "simplebar-react";
 import moment from "moment";
+import DataTable from "react-data-table-component";
 
 
 const Recurrence = () => {
@@ -62,6 +63,7 @@ const Recurrence = () => {
   }));
 
   const [searchValueProduct, setSearchValueProduct] = useState("");
+  const [openList, setOpenList] = useState(false);
   const [searchValueClient, setSearchValueClient] = useState("");
   const [recurrenceToDelete, setRecurrenceToDelete] = useState(null);
   const [modalProduct, setModalProduct] = useState(false);
@@ -70,6 +72,9 @@ const Recurrence = () => {
   const [show, setShow] = useState(false);
   const [info, setInfo] = useState(null);
   const [isLastRec, setIsLastRec] = useState(false);
+  const [height, setHeight] = useState(0)
+
+  const ref = useRef(null)
 
   useEffect(() => {
     if (isRecurrenceAdd) {
@@ -111,6 +116,15 @@ const Recurrence = () => {
       setModalClient(true);
     }
   }, [modalClient]);
+
+  const toggleModalList = useCallback(() => {
+    if (openList) {
+      setOpenList(false);
+      setInfo(null);
+    } else {
+      setOpenList(true);
+    }
+  }, [openList]);
 
   // Delete Data
   const handleDeleteRecurrence = () => {
@@ -215,7 +229,7 @@ const Recurrence = () => {
         accessor: "",
         filterable: false,
         Cell: (cell) => {
-          let recurrenceMotantArray = cell.row.original.recurrences.map((r) => r.rec_montant);
+          let recurrenceMotantArray = cell.row.original.recurrences.map((r) => r.rec_montant * r.rec_pro_qty);
           let montantTotal = recurrenceMotantArray.reduce((partialSum, a) => partialSum + a, 0);
           return <div>{montantTotal}€</div>;
         }
@@ -237,7 +251,11 @@ const Recurrence = () => {
             <ul className="list-inline hstack gap-2 mb-0">
               <li className="list-inline-item" title="View">
                 <Link to="#"
-                  onClick={() => { setInfo(data); dispatch(onGetRecurrenceOfEntity(data.ent_id)); setShow(true); }}
+                  onClick={() => {
+                    setInfo(data);
+                    setOpenList(true);
+
+                  }}
                 >
                   <i className="ri-eye-fill align-bottom text-muted"></i>
                 </Link>
@@ -250,16 +268,38 @@ const Recurrence = () => {
     []
   );
 
+  let columns2 = [
+    { name: "Produit", selector: row => row.rec_pro_name, sortable: true, },
+    { name: "Qté", selector: row => row.rec_pro_qty, sortable: true, width: "70px" },
+    { name: "Montant/unit", selector: row => row.rec_montant + "€", sortable: true },
+    { name: "Échéance", selector: row => moment(row.rec_date_echeance).format('D MMM'), sortable: true },
+    {
+      name: "", selector: (row) => {
+        return (
+          <i onClick={() => onClickDelete(row.rec_id, recurrenceOfEntity.length < 2)} className="text-danger ri-close-circle-fill"></i>
+        )
+      },
+      width: "50px"
+    }]
+
+  //  Internally, customStyles will deep merges your customStyles with the default styling.
+  const customStyles = {
+
+    headCells: {
+      style: {
+        paddingLeft: '2px', // override the cell padding for head cells
+        paddingRight: '2px',
+      },
+    },
+
+  };
+
   useEffect(() => {
-    if (show) {
-      setTimeout(() => {
-        document.getElementById('start-anime').classList.add("show")
-      }, 200);
+
+    if (info) {
+      dispatch(onGetRecurrenceOfEntity(info.ent_id));
     }
-  }, [show])
-
-  const [currentViewMore, setCurrentViewMore] = useState(null);
-
+  }, [info])
 
   // Export Modal
   const [isExportCSV, setIsExportCSV] = useState(false);
@@ -302,7 +342,7 @@ const Recurrence = () => {
 
                 <CardBody className="pt-3">
                   <Row>
-                    <Col xxl={show ? 7 : 12}>
+                    <Col xxl={12}>
                       <div>
 
                         {isProductSuccess ? (
@@ -327,48 +367,7 @@ const Recurrence = () => {
                       </div>
                     </Col>
 
-                    <Col xxl={5} className="">
-                      <div id="start-anime" style={{}}>
-                        <div style={{ height: 75, verticalAlign: "middle" }} className="border border-top-dashed border-bottom-0 border-end-0 border-start-0 card-body">
-                          <h4>{info?.ent_name}</h4>
-                        </div>
-                        <div id="contact-view-detail" style={{ display: "flex", flexWrap: "wrap", flexDirection: "row" }}>
-                          {recurrenceOfEntity?.map((rec, i) => {
-                            return (
-                              <CardBody style={{ cursor: "pointer", position: "relative", margin: 9, boxShadow: "0px 0px 5px rgb(80, 66, 66, 0.21)", borderRadius: 5, minWidth: "45%", maxWidth: "45%" }}>
-                                <div onClick={() => onClickDelete(rec.rec_id, recurrenceOfEntity.length < 2)} style={{ position: "absolute", top: -12, left: -9, fontSize: "20px" }} ><i className="text-danger ri-close-circle-fill"></i></div>
-                                <div style={{ position: "absolute", top: -5, right: -5 }} className="bg-primary badge badge-primary">Échéance: {moment(rec.rec_date_echeance).format('DD/MM/YYYY')}</div>
-                                <table className="w-100">
-                                  <tr>
-                                    <td><b>{rec.rec_pro_name}</b></td>
-                                    <td align="center"></td>
-                                    <td align="right"></td>
-                                  </tr>
-                                  <tr>
-                                    <td>quantité: {rec.rec_pro_qty}</td>
-                                    <td align="center" >{rec.rec_montant}€</td>
-                                    <td align="right"></td>
-                                  </tr>
 
-                                </table>
-                                <div style={{
-                                  zIndex: 1,
-                                  opacity: currentViewMore == i ? "1" : "0",
-                                  height: currentViewMore == i ? "auto" : '0px',
-                                  transition: "all 0.5s",
-                                  visibility: currentViewMore == i ? "visible" : "hidden",
-
-                                }}>
-                                  {rec.rec_desc}
-                                </div>
-                                <div style={{ cursor: "pointer", textAlign: "center" }} onClick={() => setCurrentViewMore((v) => v == i ? null : i)}><i className={(currentViewMore == i ? "ri-arrow-up-circle-line" : "ri-arrow-down-circle-line") + " text-primary"} style={{ fontSize: "20px" }}></i></div>
-                              </CardBody>
-                            )
-                          })}
-
-                        </div>
-                      </div>
-                    </Col>
                     <ToastContainer closeButton={false} limit={1} />
                   </Row>
 
@@ -419,7 +418,7 @@ const Recurrence = () => {
                           if (isSelected) {
                             validation.setValues({ ...validation.values, products: validation.values.products.filter((s) => s.pro_id != p.pro_id) })
                           } else {
-                            validation.setValues({ ...validation.values, products: [...validation.values.products, { pro_id: p.pro_id, rec_pro_name: p.pro_name, rec_pro_qty: 1, rec_montant: 0 }] })
+                            validation.setValues({ ...validation.values, products: [...validation.values.products, { pro_id: p.pro_id, rec_pro_name: p.pro_name, rec_pro_qty: 1, rec_montant: p.pro_prix }] })
                           }
                         }}
                         key={key}
@@ -614,7 +613,7 @@ const Recurrence = () => {
                               id="product-qty-1"
                               value={product?.rec_pro_qty}
                               onChange={(e) => { }}
-                              onBlur={validation.handleBlur}
+                              // onBlur={validation.handleBlur}
                               required
                             />
                             <button type="button" className="plus" onClick={(e) => {
@@ -630,11 +629,11 @@ const Recurrence = () => {
                             name={`products[${i}].rec_montant`}
                             type="number"
                             className="form-control border-1"
-                            value={product.rec_montant}
+                            value={product.rec_pro_qty * product.rec_montant}
                             onChange={validation.handleChange}
                             onBlur={validation.handleBlur}
                             required
-
+                            min={1}
                           />
 
 
@@ -725,6 +724,34 @@ const Recurrence = () => {
           <ModalFooter>
             <div className="hstack gap-2 justify-content-end">
               <button type="button" className="btn btn-light" onClick={() => { setModalClient(false); }} > Fermer </button>
+              <button type="submit" className="btn btn-success" id="add-btn" > Séléctionner </button>
+            </div>
+          </ModalFooter>
+
+        </Modal>
+        <Modal id="showModal" isOpen={openList} toggle={toggleModalList} centered>
+          <ModalHeader className="bg-soft-info p-3" toggle={toggleModalList}>
+            Liste des produits récurrents
+          </ModalHeader>
+
+
+          <ModalBody style={{}}>
+
+            <Row className="g-3">
+
+              <SimpleBar autoHide={false} style={{ maxHeight: "220px" }} className="px-3">
+                <Col lg={12} className="">
+                  <div style={{}}>
+                    <DataTable columns={columns2} data={recurrenceOfEntity} tableStyle={{ minWidth: '60rem' }} customStyles={customStyles} />
+
+                  </div>
+                </Col>
+              </SimpleBar>
+            </Row>
+          </ModalBody>
+          <ModalFooter>
+            <div className="hstack gap-2 justify-content-end">
+              <button type="button" className="btn btn-light" onClick={() => { setOpenList(false); }} > Fermer </button>
               <button type="submit" className="btn btn-success" id="add-btn" > Séléctionner </button>
             </div>
           </ModalFooter>
