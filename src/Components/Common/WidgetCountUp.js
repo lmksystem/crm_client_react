@@ -48,7 +48,7 @@ const WidgetCountUp = ({ data, type }) => {
                     prefix={"€"}
                     decimals="2"
                     end={data.total}
-                    duration={3}
+                    duration={1}
                     className="counter-value"
                   />
                 </h4>
