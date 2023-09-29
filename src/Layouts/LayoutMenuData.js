@@ -182,7 +182,7 @@ const Navdata = () => {
         {
           id: "recurrence",
           label: "Recurrence",
-          link: "/#",
+          link: "/recurrence",
           isChildItem: false,
           parentId: "facturation",
 

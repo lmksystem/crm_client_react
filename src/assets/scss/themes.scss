@@ -24,6 +24,18 @@ body {
   }
 }
 
+.is-hide {
+  height: 0;
+
+}
+
+.is-open {
+  height: auto;
+  transition: height 2s;
+}
+
+
+
 #fco_name * {
   border-radius: 15px;
   background-color: red;
@@ -231,8 +243,8 @@ $value in $theme-colors {
 }
 
 .show {
-  flex:3;
-  display: block!important;
+  flex: 3;
+  display: block !important;
 }
 
 #start-anime {
@@ -247,4 +259,3 @@ $value in $theme-colors {
   display: flex;
   justify-content: space-between;
 }
-

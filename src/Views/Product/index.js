@@ -1,10 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { isEmpty } from "lodash";
-import * as moment from "moment";
-
-// Import Images
-import dummyImg from "../../assets/images/users/user-dummy-img.jpg";
 
 import {
   Col,
@@ -13,10 +8,6 @@ import {
   Card,
   CardHeader,
   CardBody,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
   Label,
   Input,
   Modal,
@@ -24,10 +15,8 @@ import {
   ModalBody,
   Form,
   ModalFooter,
-  Table,
   FormFeedback
 } from "reactstrap";
-import Select from "react-select";
 
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import DeleteModal from "../../Components/Common/DeleteModal";
@@ -37,6 +26,7 @@ import {
   getProducts as onGetProducts,
   addProduct as onAddProduct,
   getTva as onGetTva,
+  deleteProduct as onDeleteProduct,
   updateProduct as onUpdateProduct
 } from "../../slices/thunks";
 //redux
@@ -100,7 +90,7 @@ const Products = () => {
   // Delete Data
   const handleDeleteProduct = () => {
     if (product) {
-      dispatch(onDeleteTva(product.pro_id));
+      dispatch(onDeleteProduct(product.pro_id));
       setDeleteModal(false);
     }
   };

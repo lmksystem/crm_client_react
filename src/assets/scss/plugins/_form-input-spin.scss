@@ -10,13 +10,14 @@
 }
 
 .input-step {
+  position: relative;
     border: 1px solid $input-border-color;
     display: inline-flex;
     overflow: visible;
-    height: 37.5px;
+
     @include border-radius($input-border-radius, 0);
     background: $input-bg;
-    padding: 4px;
+    padding: 1px;
 
     input {
         width: 4em;
@@ -35,7 +36,6 @@
     button {
         width: 1.4em;
         font-weight: 300;
-        height: 100%;
         line-height: 0.1em;
         font-size: 1.4em;
         padding: 0.2em !important;
