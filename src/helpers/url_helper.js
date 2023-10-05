@@ -308,3 +308,6 @@ export const ACHAT = "/v1/achat";
 
 // recurrence
 export const RECURRENCE = "/v1/recurrence";
+
+// recurrence
+export const EXPORT = "/v1/export";

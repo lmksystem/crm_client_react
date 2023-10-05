@@ -65,6 +65,9 @@ import AchatReducer from "./achat/reducer";
 //Recurrence
 import RecurrenceReducer from "./recurrence/reducer";
 
+//exportReducer
+import ExportReducer from "./export/reducer";
+
 
 import sessionStorage from "redux-persist/es/storage/session";
 
@@ -94,7 +97,7 @@ const appReducer = combineReducers({
   Salary: SalaryReducer,
   Achat: AchatReducer,
   Recurrence: RecurrenceReducer,
-
+  Export: ExportReducer
 
 });
 

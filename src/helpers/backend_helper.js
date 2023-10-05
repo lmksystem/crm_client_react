@@ -242,4 +242,9 @@ export const deleteRecurrence = id => api.delete(url.RECURRENCE + "/" +id);
 export const getRecurrenceOfEntity = ent_id => api.get(url.RECURRENCE + "/" +ent_id);
 
 
+/*************************/
+/*          Export       */
+/*************************/
+
+export const dowloadExport = (data) => api.get(url.EXPORT, data);
 

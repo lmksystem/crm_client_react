@@ -5,6 +5,12 @@ import { useDispatch } from "react-redux";
 import Section from "../DashboardMain/Section";
 import moment from 'moment';
 import Flatpickr from "react-flatpickr";
+import {
+  dowloadExport as onDowloadExport
+} from '../../slices/thunks'
+import { api } from "../../config";
+import axios from "axios";
+
 
 moment.locale('fr')
 
@@ -16,6 +22,25 @@ const Export = () => {
     start: moment().format('YYYY-MM-DD'),
     end: moment().format('YYYY-MM-DD')
   })
+
+  const download = async (filename) => {
+    axios.get(`${api.API_URL}/v1/export?date_start=${periodeCalendar.start}&date_end=${periodeCalendar.end}`, {
+      mode: 'no-cors',
+      responseType: 'blob'
+    }).then((response) => {
+      try {
+        let elm = document.createElement('a');  // CREATE A LINK ELEMENT IN DOM
+        elm.href = URL.createObjectURL(response);  // SET LINK ELEMENTS CONTENTS
+        elm.setAttribute('download', filename); // SET ELEMENT CREATED 'ATTRIBUTE' TO DOWNLOAD, FILENAME PARAM AUTOMATICALLY
+        elm.click();                             // TRIGGER ELEMENT TO DOWNLOAD
+        elm.remove();
+      }
+      catch (err) {
+        console.log(err);
+      }
+    });
+
+  }
 
   return (
     <React.Fragment>
@@ -59,11 +84,12 @@ const Export = () => {
                       />
                       <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
                     </div>
+                    <button onClick={() => download("test.zip")} type="submit" className="mt-2 btn btn-primary">Télécharger les exports</button>
                   </form>
                 </div>
                 <Row>
                   <Col>
-                    {/* <RevenueCharts perdiodeCalendar={perdiodeCalendar} /> */}
+
                   </Col>
                 </Row>
               </div>

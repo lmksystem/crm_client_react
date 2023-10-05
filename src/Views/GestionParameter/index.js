@@ -57,6 +57,7 @@ import "react-toastify/dist/ReactToastify.css";
 import ExportCSVModal from "../../Components/Common/ExportCSVModal";
 
 import TvaParameter from "./tvaParameter";
+import AlertParametrage from "./AlertParametrage";
 
 const GestionParameter = () => {
   const dispatch = useDispatch();
@@ -110,7 +111,7 @@ const GestionParameter = () => {
   });
 
 
- 
+
 
   // Export Modal
   const [isExportCSV, setIsExportCSV] = useState(false);
@@ -217,6 +218,7 @@ const GestionParameter = () => {
                     </Row>
                   </CardBody>
                 </Form>
+                <AlertParametrage />
               </Card>
               <TvaParameter />
             </Col>
