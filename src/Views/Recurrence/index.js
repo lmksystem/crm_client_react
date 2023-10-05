@@ -557,23 +557,29 @@ const Recurrence = () => {
                     </Input>
 
                   </div>
-                  <div className="mb-2 ms-2 d-flex align-items-center">
-                    <span className="me-2">répéter</span>
-                    <Input
-                      type="number"
-                      name="recurrence_data.rec_nb"
-                      id="date-field"
-                      className="form-control w-5"
-                      placeholder=""
-                      onBlur={validation.handleBlur}
-                      onChange={validation.handleChange}
-                      value={validation.values.recurrence_data.rec_nb}
-                      invalid={validation.errors?.recurrence_data?.rec_nb && validation.touched?.recurrence_data?.rec_nb ? true : false}
+                  {validation.values.recurrence_data.rec_nb != 0 ?
+                    <div className="mb-2 ms-2 d-flex align-items-center">
+                      <span className="me-2">répéter</span>
+                      <Input
+                        type="number"
+                        name="recurrence_data.rec_nb"
+                        id="date-field"
+                        className="form-control w-5"
+                        placeholder=""
+                        onBlur={validation.handleBlur}
+                        onChange={validation.handleChange}
+                        value={validation.values.recurrence_data.rec_nb}
+                        invalid={validation.errors?.recurrence_data?.rec_nb && validation.touched?.recurrence_data?.rec_nb ? true : false}
 
-                    />
-                  </div>
+                      />
+                    </div> : ""
+                  }
+
                 </Col>
-
+                <Col xl={12}>
+                  <Input onChange={(e) => validation.setValues({ ...validation.values, recurrence_data: { ...validation.values.recurrence_data, rec_nb: e.target.checked ? 0 : 1 } })} type="checkbox" />
+                  <Label>ne pas définir un nombre de répétition</Label>
+                </Col>
 
 
                 <Col lg={6}>
@@ -584,7 +590,11 @@ const Recurrence = () => {
                   </div>
                 </Col>
                 <Col lg={12}>
-
+                  <div className="d-flex">
+                    <div style={{ flex: 2 }}><Label>Nom</Label></div>
+                    <div style={{ flex: 1 }}><Label>Qté</Label></div>
+                    <div style={{ flex: 1 }}><Label>Prix unit ht</Label></div>
+                  </div>
                   {validation.values.products.length
                     ? validation.values.products.map((product, i) => (
                       <div key={i} className="d-flex">
@@ -623,13 +633,13 @@ const Recurrence = () => {
                             </button>
                           </div>
                         </div>
-                        <div style={{ width: "30%" }} className="input-group mb-2 ms-2">
+                        <div style={{ width: "30%", display: "flex", }} className="input-group mb-2 ms-2">
 
                           <Input
                             name={`products[${i}].rec_montant`}
                             type="number"
                             className="form-control border-1"
-                            value={product.rec_pro_qty * product.rec_montant}
+                            value={product.rec_montant}
                             onChange={validation.handleChange}
                             onBlur={validation.handleBlur}
                             required

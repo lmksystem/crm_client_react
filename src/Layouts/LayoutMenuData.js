@@ -192,7 +192,7 @@ const Navdata = () => {
         {
           id: "export",
           label: "Export",
-          link: "/#",
+          link: "/export",
           isChildItem: false,
           click: function (e) {},
           parentId: "comptability",

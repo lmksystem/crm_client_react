@@ -243,9 +243,6 @@ const InvoiceCreate = () => {
     // montant de la remise pour un produit
     let montant_unit_remise = fli_unit_ht * (fli_pourcent_remise / 100);
 
-    // montant de la remise pour la totalité de la ligne 
-    let total_remise = montant_unit_remise * fli_qty
-
     // montant ht d'un produit après application de la remise
     let total_unit_remise_ht = fli_unit_ht - montant_unit_remise;
 
@@ -253,18 +250,18 @@ const InvoiceCreate = () => {
     let total_unit_remise_tva = total_unit_remise_ht * (fli_tva / 100);
 
     // Montant unitaire d'un produit avant remise
-    let total_unit_tva = fli_unit_ht * (fli_tva / 100);
+    let total_unit_tva = total_unit_remise_ht * (fli_tva / 100);
 
     // Montant total d'un produit ttc
     let total_unit_remise_ttc = total_unit_remise_ht + total_unit_remise_tva;
 
-    // Montant ttc d'un produit avant remise
-    let total_unit_ttc = fli_unit_ht + total_unit_tva;
+    // Montant ttc d'un produit après remise
+    let total_unit_ttc = total_unit_remise_ht + total_unit_tva;
 
     ligne.fli_total_ht = rounded(fli_qty * total_unit_remise_ht);
     ligne.fli_total_ttc = rounded(fli_qty * total_unit_remise_ttc);
-    ligne.fli_unit_remise = rounded(montant_unit_remise);
-    ligne.fli_total_remise = rounded(total_remise);
+    ligne.fli_unit_remise = rounded(total_unit_remise_ht);
+    ligne.fli_total_remise = rounded(montant_unit_remise * fli_qty);
     ligne.fli_total_tva = rounded(fli_qty * total_unit_remise_tva);
     ligne.fli_unit_ttc = rounded(total_unit_ttc);
     return ligne;
@@ -320,7 +317,7 @@ const InvoiceCreate = () => {
         validation.setValues({ ...validation.values, ligne: [...validation.values.ligne].map((l) => i == index ? updatingLine : l) })
       }
     });
-
+    
     let header = handleHeaderValue(lignesData);
     validation.setValues({ ...validation.values, header: header });
   }

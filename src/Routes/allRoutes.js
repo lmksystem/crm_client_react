@@ -4,7 +4,6 @@ import { Navigate } from "react-router-dom";
 // Mes import 
 import Contacts from "../Views/Contacts/index";
 import Collaborateurs from "../Views/Collaborateurs";
-import DashboardEcommerce from "../Views/DashboardEcommerce";
 import DashboardMain from "../Views/DashboardMain";
 import GestionParameter from "../Views/GestionParameter";
 import Products from "../Views/Product";
@@ -31,6 +30,7 @@ import TransactionBank from "../Views/Transaction";
 import Achats from "../Views/Achat";
 import BankAccount from "../Views/BankAccount";
 import Recurrence from "../Views/Recurrence";
+import Export from "../Views/Export";
 
 // import PdfPreview from "../Views/Pdf";
 
@@ -42,7 +42,7 @@ const authProtectedRoutes = [
   { path: "/gestion/parametre", component: <GestionParameter /> },
   { path: "/produits", component: <Products /> },
   { path: "/dashboard", component: <DashboardMain /> },
-  { path: "/index", component: <DashboardEcommerce /> },
+
 
   // //Invoices
   { path: "/factures/liste", component: <InvoiceList /> },
@@ -70,6 +70,9 @@ const authProtectedRoutes = [
   
   // Recurrence 
   { path: "/recurrence", component: <Recurrence />},
+ 
+  // comptability 
+  { path: "/export", component: <Export />},
 
   
 

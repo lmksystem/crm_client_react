@@ -52,7 +52,7 @@ const InvoiceDetails = () => {
   };
 
   const handleGeneratePdf = () => {
-    if (invoice && invoice.doc.fdo_file_name) {
+    if (invoice && invoice.doc?.fdo_file_name) {
       downloadPdf()
     }
   };
