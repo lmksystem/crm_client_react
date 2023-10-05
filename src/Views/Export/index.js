@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useId, useState } from "react";
 import { Col, Container, Row } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { useDispatch } from "react-redux";
@@ -16,7 +16,7 @@ moment.locale('fr')
 
 const Export = () => {
   document.title = "Accueil | Countano";
-
+  const id = useId();
   const dispatch = useDispatch();
   const [periodeCalendar, setPeriodeCalendar] = useState({
     start: moment().format('YYYY-MM-DD'),
@@ -30,8 +30,8 @@ const Export = () => {
     }).then((response) => {
       try {
         let elm = document.createElement('a');  // CREATE A LINK ELEMENT IN DOM
-        elm.href = URL.createObjectURL(response.data);  // SET LINK ELEMENTS CONTENTS
-        elm.setAttribute('download', response.filename); // SET ELEMENT CREATED 'ATTRIBUTE' TO DOWNLOAD, FILENAME PARAM AUTOMATICALLY
+        elm.href = URL.createObjectURL(response);  // SET LINK ELEMENTS CONTENTS
+        elm.setAttribute('download', id ); // SET ELEMENT CREATED 'ATTRIBUTE' TO DOWNLOAD, FILENAME PARAM AUTOMATICALLY
         elm.click();                             // TRIGGER ELEMENT TO DOWNLOAD
         elm.remove();
       }
