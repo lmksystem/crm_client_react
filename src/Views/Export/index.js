@@ -30,8 +30,8 @@ const Export = () => {
     }).then((response) => {
       try {
         let elm = document.createElement('a');  // CREATE A LINK ELEMENT IN DOM
-        elm.href = URL.createObjectURL(response);  // SET LINK ELEMENTS CONTENTS
-        elm.setAttribute('download', filename); // SET ELEMENT CREATED 'ATTRIBUTE' TO DOWNLOAD, FILENAME PARAM AUTOMATICALLY
+        elm.href = URL.createObjectURL(response.data);  // SET LINK ELEMENTS CONTENTS
+        elm.setAttribute('download', response.filename); // SET ELEMENT CREATED 'ATTRIBUTE' TO DOWNLOAD, FILENAME PARAM AUTOMATICALLY
         elm.click();                             // TRIGGER ELEMENT TO DOWNLOAD
         elm.remove();
       }
