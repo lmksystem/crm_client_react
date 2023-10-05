@@ -31,7 +31,7 @@ const Export = () => {
       try {
         let elm = document.createElement('a');  // CREATE A LINK ELEMENT IN DOM
         elm.href = URL.createObjectURL(response);  // SET LINK ELEMENTS CONTENTS
-        elm.setAttribute('download', id ); // SET ELEMENT CREATED 'ATTRIBUTE' TO DOWNLOAD, FILENAME PARAM AUTOMATICALLY
+        elm.setAttribute('download', "export_comptable.zip" ); // SET ELEMENT CREATED 'ATTRIBUTE' TO DOWNLOAD, FILENAME PARAM AUTOMATICALLY
         elm.click();                             // TRIGGER ELEMENT TO DOWNLOAD
         elm.remove();
       }
