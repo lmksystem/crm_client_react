@@ -84,7 +84,7 @@ const Export = () => {
                       />
                       <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
                     </div>
-                    <button onClick={() => download("test.zip")} type="submit" className="mt-2 btn btn-primary">Télécharger les exports</button>
+                    <button onClick={() => download("test.zip")} className="mt-2 btn btn-primary">Télécharger les exports</button>
                   </form>
                 </div>
                 <Row>
