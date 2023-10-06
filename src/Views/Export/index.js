@@ -31,7 +31,7 @@ const Export = () => {
       try {
         let elm = document.createElement('a');  // CREATE A LINK ELEMENT IN DOM
         elm.href = URL.createObjectURL(response);  // SET LINK ELEMENTS CONTENTS
-        elm.setAttribute('download', "export_comptable.zip" ); // SET ELEMENT CREATED 'ATTRIBUTE' TO DOWNLOAD, FILENAME PARAM AUTOMATICALLY
+        elm.setAttribute('download', "export_comptable.zip"); // SET ELEMENT CREATED 'ATTRIBUTE' TO DOWNLOAD, FILENAME PARAM AUTOMATICALLY
         elm.click();                             // TRIGGER ELEMENT TO DOWNLOAD
         elm.remove();
       }
@@ -84,7 +84,7 @@ const Export = () => {
                       />
                       <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
                     </div>
-                    <button onClick={() => download("test.zip")} className="mt-2 btn btn-primary">Télécharger les exports</button>
+                    <button onClick={(e) => { e.preventDefault(); download("test.zip"); }} className="mt-2 btn btn-primary">Télécharger les exports</button>
                   </form>
                 </div>
                 <Row>
