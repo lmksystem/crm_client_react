@@ -70,7 +70,6 @@ const ModalCreate = ({
   const handleTransaction = (tra) => {
     let newArrayselected = [...transFilter?.data];
     newArrayselected = newArrayselected.map((item,i) => {
-      // item.key=i;
       if (item.tba_id === tra?.tba_id) {
       
         if(tra.old === 1 && tra.type=="disoc"){
@@ -87,6 +86,7 @@ const ModalCreate = ({
           return {
             ...item,
             ["type"]: "assoc", 
+            ["aba_match_amount"] :tra.tba_amount,
           };
         }else if(tra.old === 0 && tra.type=="assoc"){
           return {

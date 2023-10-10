@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import moment from "moment";
-import { createUpdateAchat, deleteAchat, getAchat } from "./thunk";
+import { createUpdateAchat, deleteAchat, getAchat, getAchatLinkTransaction, linkTransToAchat, updateMatchAmount } from "./thunk";
 moment.locale('fr')
 
 export const initialState = {
@@ -53,17 +53,43 @@ const achatSlice = createSlice({
       state.isAchatSuccess = false;
       state.error = action.payload ||  "Erreur de suppression !"
     });
-    // builder.addCase(deleteSalary.fulfilled, (state, action) => {
-    //   toast.success('Salaire supprimé', { autoClose: 3000 })
-    //   state.isSalarySuccess = true;
-    //   state.salaries = state.salaries.filter((s) => s.sal_id != action.payload.data)
-    // })
-    // builder.addCase(deleteSalary.rejected, (state, action) => {
-    //   toast.error('Erreur de suppression !', { autoClose: 3000 })
-    //   state.isSalarySuccess = false;
-    //   state.error = action.payload || "Erreur de suppression !"
-    // });
+
+    builder.addCase(getAchatLinkTransaction.fulfilled, (state, action) => {
+      state.isAchatSuccess = true;
+      state.achats = action.payload.data || [];
+    });
+    builder.addCase(getAchatLinkTransaction.rejected, (state, action) => {
+      state.isAchatSuccess = false;
+      state.error = action.payload || "Erreur lors de la recupération !"
+    });
+    builder.addCase(linkTransToAchat.fulfilled, (state, action) => {
+      state.isAchatSuccess = true;
+      state.achats = state.achats.map((ach) =>
+      ach.ach_id == action.payload.data.ach_id
+      ? { ...action.payload.data, old:(ach.old==1?0:1),aba_match_amount:(action.payload.data?.aba_match_amount?action.payload.data.aba_match_amount:0),ach_rp:(action.payload.data?.ach_rp?action.payload.data.ach_rp:0) }
+      : ach
+    );
+    });
+    builder.addCase(linkTransToAchat.rejected, (state, action) => {
+      state.isAchatSuccess = false;
+      state.error = action.payload || "Erreur lors de la recupération !";
+    });
+
+    builder.addCase(updateMatchAmount.fulfilled, (state, action) => {
+      state.isAchatSuccess = true;
+      state.achats = state.achats.map((ach) =>
+      ach.ach_id == action.payload.data.ach_id
+      ? action.payload.data
+      : ach
+    );
+    });
+    builder.addCase(updateMatchAmount.rejected, (state, action) => {
+      state.isAchatSuccess = false;
+      state.error = action.payload || "Erreur lors de la recupération !";
+    });
+
     
+
   }
 });
 

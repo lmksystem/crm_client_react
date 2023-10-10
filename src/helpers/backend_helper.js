@@ -124,6 +124,11 @@ export const getTransactionBank = data => api.get(url.TRANSACTION_BANK+'/periode
 // get transaction bank and link achat
 export const getTransactionBankAchat = ach_id => api.get(url.TRANSACTION_BANK+'/achat/'+ach_id);
 
+// update justify transaction bank
+export const updateJustifyTransactionBank = data => api.create(url.TRANSACTION_BANK+'/justify',data);
+
+
+
 /*************************/
 /*        Company        */
 /*************************/
@@ -226,8 +231,15 @@ export const getAchat = () => api.get(url.ACHAT);
 
 export const createUpdateAchat = data => api.create(url.ACHAT,data);
 
-
 export const deleteAchat= ach_id => api.delete(url.ACHAT + "/delete/" + ach_id);
+// get achat bank and link by transaction
+export const getAchatLinkTransaction = tba_id => api.get(url.ACHAT+'/transaction/'+tba_id);
+// update transaction bank link to achat
+export const linkTransToAchat = data => api.create(url.TRANSACTION_BANK+'/achat',data);
+// update match amount bank link to achat
+export const updateMatchAmount = data => api.create(url.TRANSACTION_BANK+'/amountMatch',data);
+
+
 
 /*************************/
 /*       Recurrence       */

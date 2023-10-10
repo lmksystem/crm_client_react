@@ -171,27 +171,35 @@ const Achats = () => {
       entity: (achat && achat.entity) || "",
       rp: (achat && achat.rp) || 0.0,
     },
+    validationSchema: Yup.object({
+      montant: Yup.number().required("Veuillez choisir entrer un montant"),
+      categorie: Yup.string().required("Veuillez choisir entrer une catégorie"),
+      entity: Yup.number().required("Veuillez choisir un client/fournisseur"),
+    }),
+   
     onSubmit: (values) => {
       if (isEdit) {
         let TRANS_ASSOC_DISOC =
           transFilter?.data?.filter(
-            (item) => item.type === "assoc" || item.type == "disoc"
+            (item) => item.type === "assoc" || item.type == "disoc" || item.old==1
           ) || [];
         let newTransAssoc = TRANS_ASSOC_DISOC?.map((trAss) => {
           let newItem = {
             aba_ach_fk: values.id,
             aba_tba_fk: trAss.tba_id,
+            aba_match_amount: Math.abs(trAss.tba_amount),
             type: trAss.type,
+            tba_amount:trAss.tba_amount,
+
           };
           if (trAss.old == 1 && trAss.type == "disoc" && trAss.aba_id) {
             newItem.aba_id = trAss.aba_id;
           }
           return newItem;
         });
-
         const updateAchat = {
           dataUp: {
-            ach_id: achat.id ? achat.id : 0,
+            ach_id: achat?.id ? achat.id : 0,
             ach_date_create: values.dateAchat,
             ach_ent_fk: values.entity,
             ach_date_expired: values.dateEcheance,
@@ -231,7 +239,6 @@ const Achats = () => {
         numero: achatH.ach_num,
         justificatif: achatH.ado_file_name,
         entity: achatH.ach_ent_fk,
-        transactionAssoc: [],
         rp: achatH?.ach_rp,
       });
       setIsEdit(true);
@@ -299,7 +306,7 @@ const Achats = () => {
             <input
               type="checkbox"
               className="contactCheckBox form-check-input"
-              value={cellProps.row.original.ach_id}
+              value={cellProps.row.original?.ach_id}
               onChange={() => deleteCheckbox()}
             />
           );

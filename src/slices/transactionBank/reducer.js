@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 // import { addNewTransaction, deleteTransaction, getTransaction, getTransactionByMonth, getTransactionList, getTransactionPricePeriode } from "./thunk";
 import { toast } from "react-toastify";
 import moment from "moment";
-import { getTransactionBank, getTransactionBankAchat } from "./thunk";
+import { getTransactionBank, getTransactionBankAchat, linkTransToAchat, updateJustifyTransactionBank } from "./thunk";
 moment.locale("fr");
 
 export const initialState = {
@@ -32,6 +32,22 @@ const transactionBankSlice = createSlice({
       state.isTransactionBankSuccess = false;
       state.error = action.payload || "Erreur lors de la recupération !";
     });
+    builder.addCase(updateJustifyTransactionBank.fulfilled, (state, action) => {
+      state.isTransactionBankSuccess = true;
+      state.transactionsBank = state.transactionsBank.map((tba) =>
+      tba.tba_id == action.payload.data.tba_id
+      ? { ...tba, tba_justify: action.payload.data.tba_justify }
+      : tba
+    );
+      // state.transactionsBank = action.payload.data;
+    });
+    builder.addCase(updateJustifyTransactionBank.rejected, (state, action) => {
+      state.isTransactionBankSuccess = false;
+      state.error = action.payload || "Erreur lors de la recupération !";
+    });
+
+    
+   
   },
 });
 
