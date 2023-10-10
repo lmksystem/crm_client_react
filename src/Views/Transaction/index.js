@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import { isEmpty } from "lodash";
 import * as moment from "moment";
 import { api } from "../../config";
-
+// import process from "process";
 import {
   Col,
   Container,
@@ -49,9 +49,11 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SimpleBar from "simplebar-react";
 import { use } from "echarts";
+import { useProfile } from "../../Components/Hooks/UserHooks";
 
 const TransactionBank = () => {
   const dispatch = useDispatch();
+  const { userProfile } = useProfile();
   const { isTransactionBankSuccess, error, transactions, achats } = useSelector(
     (state) => ({
       isTransactionBankSuccess: state.TransactionBank.isTransactionBankSuccess,
@@ -61,7 +63,6 @@ const TransactionBank = () => {
     })
   );
   const [achatEvol, setAchatEvol] = useState(false);
-
   const dateActuelle = moment(); // Obtenir la date actuelle
   const dateNow = dateActuelle.format("DD MMM YYYY");
   const premiereDateAnnee = dateActuelle.startOf("year"); // Obtenir la première date de l'année
@@ -354,7 +355,6 @@ const TransactionBank = () => {
   }
 
   const filteredData = filterData();
-
   document.title = "Transactions bancaires | Countano";
   return (
     <React.Fragment>
@@ -445,7 +445,7 @@ const TransactionBank = () => {
                     <iframe
                       style={{ width: "100%", height: 550 }}
                       lg={12}
-                      src={`${api.API_URL}/v1/achat/doc/C6kFkb6I20231002112614551.pdf`}
+                      src={!process.env.NODE_ENV || process.env.NODE_ENV === 'development' ?`${api.API_URL}/v1/achat/doc/${doc}`:`${api.API_PDF}/${userProfile.use_com_fk}/achat/${doc}` }
                       title={doc}
                     ></iframe>
                   </Col>
