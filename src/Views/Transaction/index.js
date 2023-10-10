@@ -353,6 +353,7 @@ const TransactionBank = () => {
 
     return false;
   }
+  console.log(api.API_PDF)
 
   const filteredData = filterData();
   document.title = "Transactions bancaires | Countano";
