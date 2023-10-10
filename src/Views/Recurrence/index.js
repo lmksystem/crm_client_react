@@ -229,7 +229,7 @@ const Recurrence = () => {
         accessor: "",
         filterable: false,
         Cell: (cell) => {
-          let recurrenceMotantArray = cell.row.original.recurrences.map((r) => r.rec_montant * r.rec_pro_qty);
+          let recurrenceMotantArray = cell.row.original.recurrences?.map((r) => r.rec_montant * r.rec_pro_qty);
           let montantTotal = recurrenceMotantArray.reduce((partialSum, a) => partialSum + a, 0);
           return <div>{montantTotal}€</div>;
         }
@@ -404,7 +404,7 @@ const Recurrence = () => {
                   </Row>
                 </div>
                 {
-                  products.filter((product) => product.pro_name.includes(searchValueProduct)).map((p, key) => {
+                  products.filter((product) => product.pro_name.includes(searchValueProduct))?.map((p, key) => {
 
                     let isSelected = validation.values.products.filter((s) => s.pro_id == p.pro_id).length > 0 ? true : false;
                     let fixedStyle = { cursor: "pointer", zIndex: 5000, padding: 8, marginTop: 1 };
@@ -596,7 +596,7 @@ const Recurrence = () => {
                     <div style={{ flex: 1 }}><Label>Prix unit ht</Label></div>
                   </div>
                   {validation.values.products.length
-                    ? validation.values.products.map((product, i) => (
+                    ? validation?.values?.products?.map((product, i) => (
                       <div key={i} className="d-flex">
                         <div className="w-75 d-flex input-group mb-2 position-relative">
                           <Input
@@ -611,7 +611,7 @@ const Recurrence = () => {
                           <div className="input-step">
                             <button type="button" className="minus" onClick={(e) => {
                               if (product.rec_pro_qty > 1) {
-                                validation.setValues({ ...validation.values, products: validation.values.products.map((e) => e.pro_id == product.pro_id ? { ...e, rec_pro_qty: e.rec_pro_qty - 1 } : e) })
+                                validation.setValues({ ...validation.values, products: validation.values.products?.map((e) => e.pro_id == product.pro_id ? { ...e, rec_pro_qty: e.rec_pro_qty - 1 } : e) })
                               }
                             }}>
                               –
@@ -627,7 +627,7 @@ const Recurrence = () => {
                               required
                             />
                             <button type="button" className="plus" onClick={(e) => {
-                              validation.setValues({ ...validation.values, products: validation.values.products.map((e) => e.pro_id == product.pro_id ? { ...e, rec_pro_qty: e.rec_pro_qty + 1 } : e) })
+                              validation.setValues({ ...validation.values, products: validation.values.products?.map((e) => e.pro_id == product.pro_id ? { ...e, rec_pro_qty: e.rec_pro_qty + 1 } : e) })
                             }}>
                               +
                             </button>
