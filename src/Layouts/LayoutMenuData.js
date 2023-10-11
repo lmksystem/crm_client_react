@@ -215,7 +215,7 @@ const Navdata = () => {
         {
           id: "factures-achats",
           label: "Mes comptes bancaires",
-          link: "/accountbank",
+          link: "/bankaccount",
           isChildItem: false,
           click: function (e) {
             e.preventDefault();
