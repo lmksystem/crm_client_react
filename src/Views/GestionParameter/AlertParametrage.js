@@ -1,38 +1,23 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { Link } from "react-router-dom";
-import { isEmpty } from "lodash";
-import * as moment from "moment";
-
-// Import Images
-import dummyImg from "../../assets/images/users/user-dummy-img.jpg";
+import React, { useEffect } from "react";
 
 import {
   Col,
-  Container,
-  Row,
-  Card,
-  CardHeader,
   CardBody,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
   Label,
   Input,
-  Modal,
-  ModalHeader,
-  ModalBody,
   Form,
-  ModalFooter,
-  Table,
-  FormFeedback,
 } from "reactstrap";
-import Select from "react-select";
 import { useFormik, validateYupSchema } from "formik";
 
+import { handleAlert as onHandleAlert, getAlert as onGetAlert, deleteAlert as onDeleteAlert } from '../../slices/thunks'
+import { useDispatch, useSelector } from "react-redux";
+
 const AlertParametrage = () => {
+  const { alerts } = useSelector((state) => ({
+    alerts: state.Gestion.alerts,
+  }));
 
-
+  const dispatch = useDispatch();
 
   // Formulaire constante
   const alertForm = useFormik({
@@ -40,32 +25,33 @@ const AlertParametrage = () => {
     enableReinitialize: true,
 
     initialValues: {
-      alerts: [
-        {
-          aec_id: "",
-          aec_com_fk: "",
-          aec_delai: "",
-        },
-        {
-          aec_id: "",
-          aec_com_fk: "",
-          aec_delai: "",
-        }
-      ]
+      alerts: [...alerts] || []
 
     },
     onSubmit: (values) => {
+      let alerts = values.alerts
 
-      // dispatch(onHandleConstantes(newPrefixes));
+      dispatch(onHandleAlert(alerts));
       return;
 
-      // constanteForm.resetForm();
+
     },
   });
 
 
+  useEffect(() => {
+    dispatch(onGetAlert());
+  }, [])
+
+
   return (
-    <Form>
+    <Form
+      onSubmit={(e) => {
+        e.preventDefault();
+        alertForm.handleSubmit();
+        return false;
+      }} className="border-top border-top-dashed"
+    >
       <CardBody>
 
         <Col lg={6}>
@@ -77,7 +63,7 @@ const AlertParametrage = () => {
           </Label>
           {alertForm.values?.alerts.map((alert, i) => {
             return (
-              <div className="m-2 input-group">
+              <div key={i} className="m-2 input-group">
                 <div className="input-group-text bg-primary border-primary text-white">
                   Nombres de jours
                 </div>
@@ -86,12 +72,12 @@ const AlertParametrage = () => {
                   id="prefixe_libelle_fac-field"
                   className="form-control"
                   placeholder="ex: 5"
-                  type="number"
+                  type="text"
                   onChange={alertForm.handleChange}
                   onBlur={alertForm.handleBlur}
-                  value={alertForm.values?.alerts[i].aec_delai || ""}
+                  value={(Math.sign(alertForm.values?.alerts[i].aec_delai) == 1 ? "+" : "") + alertForm.values?.alerts[i].aec_delai || ""}
                 />
-                <div style={{ cursor: "pointer" }} onClick={() => console.log("delete")} className="input-group-text bg-danger border-danger text-white">
+                <div style={{ cursor: "pointer" }} onClick={() => { dispatch(onDeleteAlert(alert.aec_id)); }} className="input-group-text bg-danger border-danger text-white">
                   <i className="ri-close-fill"></i>
                 </div>
               </div>
@@ -102,7 +88,26 @@ const AlertParametrage = () => {
 
         </Col>
 
-        <Row className="mx-auto" w lg={12}>
+        <div className="mx-auto d-flex" w lg={12}>
+          <div className="m-2">
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                alertForm.setValues({
+                  ...alertForm.values, alerts: [...alertForm.values.alerts, {
+                    aec_id: "",
+                    aec_com_fk: "",
+                    aec_delai: "",
+                  }]
+                })
+              }}
+
+              className="btn btn-primary"
+              id="add-btn"
+            >
+              + Ajouter
+            </button>
+          </div>
           <div className="m-2">
             <button
               type="submit"
@@ -112,7 +117,7 @@ const AlertParametrage = () => {
               Enregistrer
             </button>
           </div>
-        </Row>
+        </div>
       </CardBody>
     </Form>
   )

@@ -260,3 +260,13 @@ export const getRecurrenceOfEntity = ent_id => api.get(url.RECURRENCE + "/" +ent
 
 export const dowloadExport = (data) => api.get(url.EXPORT, data);
 
+/*************************/
+/*          Alert        */
+/*************************/
+
+export const handleAlert = (data) => api.create(url.ALERT, data);
+
+export const getAlert = () => api.get(url.ALERT);
+
+export const deleteAlert = (id) => api.delete(url.ALERT + "/" + id);
+

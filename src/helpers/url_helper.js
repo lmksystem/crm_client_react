@@ -311,3 +311,6 @@ export const RECURRENCE = "/v1/recurrence";
 
 // recurrence
 export const EXPORT = "/v1/export";
+
+// ALERT
+export const ALERT = "/v1/alert";

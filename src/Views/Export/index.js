@@ -23,7 +23,7 @@ const Export = () => {
     end: moment().format('YYYY-MM-DD')
   })
 
-  const download = async (filename) => {
+  const download = async () => {
     axios.get(`${api.API_URL}/v1/export?date_start=${periodeCalendar.start}&date_end=${periodeCalendar.end}`, {
       mode: 'no-cors',
       responseType: 'blob'
@@ -84,7 +84,7 @@ const Export = () => {
                       />
                       <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
                     </div>
-                    <button onClick={(e) => { e.preventDefault(); download("test.zip"); }} className="mt-2 btn btn-primary">Télécharger les exports</button>
+                    <button onClick={(e) => { e.preventDefault(); download(); }} className="mt-2 btn btn-primary">Télécharger les exports</button>
                   </form>
                 </div>
                 <Row>
