@@ -27,10 +27,8 @@ const InvoiceDetails = () => {
 
   let { id } = useParams();
 
-  const { invoice, invoices, isTransactionsSuccess, transactions } = useSelector((state) => ({
+  const { invoice,  transactions } = useSelector((state) => ({
     invoice: state.Invoice.invoices.find((f) => f.header.fen_id == id),
-    invoices: state.Invoice.invoices,
-    isTransactionsSuccess: state.Transaction.isTransactionsSuccess,
     transactions: state.Transaction.transactions.filter((t) => t.tra_fen_fk == id)
   }));
 
@@ -230,7 +228,7 @@ const InvoiceDetails = () => {
                           </tr>
                           <tr>
                             <td>Total TVA <small className="text-muted"></small></td>
-                            <td className="text-end">{invoice.header.fen_total_tva}</td>
+                            <td className="text-end">{invoice.header.fen_total_tva}€</td>
                           </tr>
                           {/* <tr>
                             <td></td>
@@ -238,7 +236,7 @@ const InvoiceDetails = () => {
                           </tr> */}
                           <tr className="border-top border-top-dashed fs-15">
                             <th scope="row">Total TTC</th>
-                            <th className="text-end">{invoice.header.fen_total_ttc}</th>
+                            <th className="text-end">{invoice.header.fen_total_ttc}€</th>
                           </tr>
                         </tbody>
                       </Table>
