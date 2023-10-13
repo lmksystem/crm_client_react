@@ -272,4 +272,13 @@ export const getListBank = () => api.get(url.LIST_BANK)
 export const getAccountsBankUser = () => api.get(url.BANK_ACCOUNT)
 
 export const insertBankAccount = (data) => api.create(url.BANK_ACCOUNT,data)
+/*************************/
+/*          Alert        */
+/*************************/
+
+export const handleAlert = (data) => api.create(url.ALERT, data);
+
+export const getAlert = () => api.get(url.ALERT);
+
+export const deleteAlert = (id) => api.delete(url.ALERT + "/" + id);
 

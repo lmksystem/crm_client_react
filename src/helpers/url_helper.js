@@ -317,3 +317,5 @@ export const LIST_BANK = "/v1/listBank";
 
 // Bank account
 export const BANK_ACCOUNT = "/v1/bankAccount";
+// ALERT
+export const ALERT = "/v1/alert";

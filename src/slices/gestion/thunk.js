@@ -18,7 +18,10 @@ import {
   deleteTva as deleteTvaApi,
   getConstantes as getConstantesApi,
   handleConstantes as handleConstantesApi,
-  getEntityPeriodCount as getEntityPeriodCountApi
+  getEntityPeriodCount as getEntityPeriodCountApi,
+  handleAlert as handleAlertApi,
+  getAlert as getAlertApi,
+  deleteAlert as deleteAlertApi
 } from "../../helpers/backend_helper";
 
 // Gestion
@@ -190,24 +193,61 @@ export const handleConstantes = createAsyncThunk("gestion/handleConstantes", asy
     for (let index = 0; index < constantes.length; index++) {
       const newConst = constantes[index];
       let reponse = await handleConstantesApi(newConst);
-      arrayResponse.push(reponse.data) 
+      arrayResponse.push(reponse.data)
     }
-    toast.success("Updated Successfully", { autoClose: 3000 });
+    toast.success("Enregistrer !", { autoClose: 3000 });
     return arrayResponse;
   } catch (error) {
-    toast.error("Updated Failed", { autoClose: 3000 });
+    toast.error("Echec !", { autoClose: 3000 });
     return error;
   }
 });
 
 
-export const getEntityPeriodCount= createAsyncThunk("entity/getEntityPeriodCount", async (data) => {
+export const getEntityPeriodCount = createAsyncThunk("gestion/getEntityPeriodCount", async (data) => {
   try {
-    const response =await getEntityPeriodCountApi(data);
+    const response = await getEntityPeriodCountApi(data);
     return response;
   } catch (error) {
     console.log("thunk catch", error);
     toast.error("Une erreur s'est produite sur la récupération des fournisseurs", { autoClose: 3000 });
+    return error;
+  }
+});
+
+export const handleAlert = createAsyncThunk("gestion/handleAlert", async (data) => {
+  try {
+    const response = await handleAlertApi(data);
+    toast.success("Enregistrer !", { autoClose: 3000 });
+    return response;
+  } catch (error) {
+    console.log("thunk catch", error);
+    toast.error("Une erreur s'est produite à la création du rappel", { autoClose: 3000 });
+    return error;
+  }
+});
+
+export const getAlert = createAsyncThunk("gestion/getAlert", async () => {
+  try {
+    const response = await getAlertApi();
+
+    return response;
+  } catch (error) {
+    console.log("thunk catch", error);
+    toast.error("Une erreur s'est produite lors de la récupération des rappels", { autoClose: 3000 });
+    return error;
+  }
+});
+
+export const deleteAlert = createAsyncThunk("gestion/deleteAlert", async (id) => {
+
+  try {
+    const response = await deleteAlertApi(id);
+    toast.success("Suppression !", { autoClose: 3000 });
+    return id;
+  } catch (error) {
+    console.log("thunk catch", error);
+    toast.error("Une erreur s'est produite lors de la suppression du rappels", { autoClose: 3000 });
     return error;
   }
 });

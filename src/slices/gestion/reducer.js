@@ -15,19 +15,23 @@ import {
   getConstantes,
   handleConstantes,
   getEntityPeriodCount,
+  handleAlert,
+  getAlert,
+  deleteAlert,
 } from "./thunk";
 import { getInvoicePeriodCount } from "../thunks";
 
 export const initialState = {
   contacts: [],
   collaborateurs: [],
+  alerts: [],
   tva: null,
   constantes: null,
   error: {},
-  entityCountPeriod:{
-    'dateDebut':null,
-    'dateFin':null,
-    'pourcentage_gain_perte':0,
+  entityCountPeriod: {
+    'dateDebut': null,
+    'dateFin': null,
+    'pourcentage_gain_perte': 0,
   },
 };
 
@@ -231,7 +235,7 @@ const gestionSlice = createSlice({
           state.constantes.push(newConst);
         }
       }
-     
+
     });
 
     builder.addCase(handleConstantes.rejected, (state, action) => {
@@ -244,6 +248,30 @@ const gestionSlice = createSlice({
 
     builder.addCase(getInvoicePeriodCount.rejected, (state, action) => {
       state.error = action.payload || null;
+    });
+
+    builder.addCase(handleAlert.fulfilled, (state, action) => {
+      state.alerts = action.payload.data || null;
+    });
+
+    builder.addCase(handleAlert.rejected, (state, action) => {
+      // state.error = action.payload || null;
+    });
+   
+    builder.addCase(getAlert.fulfilled, (state, action) => {
+      state.alerts = action.payload.data || null;
+    });
+
+    builder.addCase(getAlert.rejected, (state, action) => {
+      state.error = action.payload || null;
+    });
+  
+    builder.addCase(deleteAlert.fulfilled, (state, action) => {
+      state.alerts = state.alerts.filter((a) => a.aec_id != action.payload) || null;
+    });
+
+    builder.addCase(deleteAlert.rejected, (state, action) => {
+      // state.error = action.payload || null;
     });
 
 
