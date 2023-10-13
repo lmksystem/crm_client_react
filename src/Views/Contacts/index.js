@@ -412,7 +412,7 @@ const Contacts = () => {
         />
         <Container fluid>
           <BreadCrumb title="Contacts" pageTitle="Gestion" />
-          <Row>
+          {/* <Row> */}
             <Col lg={12}>
               <Card>
                 <CardHeader>
@@ -452,7 +452,8 @@ const Contacts = () => {
                 </CardHeader>
               </Card>
             </Col>
-            <Row>
+            <Row >
+              
               <Col className="view-animate" xxl={show ? 9 : 12} >
                 <Card id="contactList">
                   <CardBody className="pt-0">
@@ -807,7 +808,7 @@ const Contacts = () => {
                 </Card>
               </div>
 
-            </Row>
+            {/* </Row> */}
           </Row>
         </Container>
       </div>
