@@ -511,14 +511,14 @@ const Collaborateurs = () => {
                   <div className="d-flex align-items-center flex-wrap gap-2">
                     <div className="flex-grow-1">
                       <button
-                        className="btn btn-info add-btn"
+                        className="btn btn-info add-btn d-flex flex-row  align-items-center"
                         onClick={() => {
                           setIsEdit(false);
                           toggle();
                         }}
                       >
-                        <i className="ri-add-fill me-1 align-bottom"></i>{" "}
-                        Ajouter un client / fournisseur
+                        <i className="ri-add-fill me-1 align-bottom "></i>
+                       <p className="p-0 m-0"> {" "}Ajouter un client / fournisseur</p> 
                       </button>
                     </div>
                     <div className="flex-shrink-0">

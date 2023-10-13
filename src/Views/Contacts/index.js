@@ -734,6 +734,7 @@ const Contacts = () => {
               <div id="start-anime">
                 <Card id="contact-view-detail">
                   <CardBody className="text-center">
+                  <div style={{ position: "absolute", right: 10, top: 5 }}><i onClick={() => setShow(false)} className="ri-close-fill" style={{ cursor: "pointer", fontSize: "20px" }}></i></div>
                     <div className="position-relative d-inline-block">
                       <img
                         src={api.API_URL + "v1/images/" + (info.image_src ? ("company/" + info.image_src) : "user-dummy-img.jpg")}
