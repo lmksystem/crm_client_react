@@ -12,8 +12,8 @@ import TwoColumnLayout from "./TwoColumnLayout";
 import { Container } from "reactstrap";
 import HorizontalLayout from "./HorizontalLayout";
 
-const Sidebar = ({ layoutType }) => {
-
+const Sidebar = ({ layoutType, leftSidebarType }) => {
+  console.log("leftSidebarType", leftSidebarType);
   useEffect(() => {
     var verticalOverlay = document.getElementsByClassName("vertical-overlay");
     if (verticalOverlay) {

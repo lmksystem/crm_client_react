@@ -92,7 +92,7 @@
 .navbar-light {
     .navbar-brand {
         .card-logo-dark {
-            display: none;
+            display: block;
         }
 
         .card-logo-light {
@@ -123,7 +123,7 @@
             }
 
             .card-logo-light {
-                display: none;
+                display: block;
             }
         }
     }
@@ -265,7 +265,7 @@
         &.is-sticky {
             .navbar-brand {
                 .card-logo-dark {
-                    display: none;
+                    display: block;
                 }
 
                 .card-logo-light {
