@@ -68,3 +68,6 @@ export * from "./recurrence/thunk";
 
 // Export
 export * from "./export/thunk";
+
+// Bank Account
+export * from "./bankAccount/thunk";

@@ -311,3 +311,9 @@ export const RECURRENCE = "/v1/recurrence";
 
 // recurrence
 export const EXPORT = "/v1/export";
+
+// Liste Bank
+export const LIST_BANK = "/v1/listBank";
+
+// Bank account
+export const BANK_ACCOUNT = "/v1/bankAccount";

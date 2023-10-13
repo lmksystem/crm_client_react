@@ -260,3 +260,16 @@ export const getRecurrenceOfEntity = ent_id => api.get(url.RECURRENCE + "/" +ent
 
 export const dowloadExport = (data) => api.get(url.EXPORT, data);
 
+
+
+/*************************/
+/*      Bank Account     */
+/*************************/
+
+
+export const getListBank = () => api.get(url.LIST_BANK)
+
+export const getAccountsBankUser = () => api.get(url.BANK_ACCOUNT)
+
+export const insertBankAccount = (data) => api.create(url.BANK_ACCOUNT,data)
+
