@@ -92,6 +92,7 @@ const TransactionBank = () => {
   const toggle = useCallback(() => {
     if (show) {
       setShow(false);
+      setAchatActif(null)
       setDoc(null);
       setAchatFilter({
         data: [],
@@ -161,6 +162,9 @@ const TransactionBank = () => {
       copy_achatActif.oldPrice =parseFloat(oldPriceAmount);
       copy_achatActif.newPrice = parseFloat(priceMatchAmount);
       dispatch(onUpdateMatchAmount(copy_achatActif));
+      setModal(false);
+      setDoc(null);
+
     },
   });
 
@@ -221,7 +225,7 @@ const TransactionBank = () => {
           return (
             <div className="d-flex align-items-center">
               <p className="p-0 m-0">
-                {cell.value != null ? cell.value + "€" : ""}
+                {cell.value != null ? (cell.row.original.tba_justify == 0 ? "0.00" : cell.value) + "€" : ""}
               </p>
             </div>
           );
@@ -235,7 +239,7 @@ const TransactionBank = () => {
 
         Cell: (cell) => {
           let styleCSS = {};
-          if (cell.row.original.tba_rp == 0) {
+          if (cell.row.original.tba_rp == 0 || cell.row.original.tba_justify == 0) {
             styleCSS = {
               width: "20px",
               height: "20px",
@@ -271,10 +275,10 @@ const TransactionBank = () => {
             };
           }
           return (
-            <div className="d-flex align-items-center">
+            <div className="d-flex align-items-center mx-4">
               <div style={styleCSS}>
                 {cell.row.original.tba_rp ==
-                  Math.abs(parseFloat(cell.row.original.tba_amount)) && (
+                  Math.abs(parseFloat(cell.row.original.tba_amount)) && cell.row.original.tba_justify == 1 && (
                   <i style={{ color: "red" }} className="las la-times"></i>
                 )}
               </div>
@@ -353,7 +357,6 @@ const TransactionBank = () => {
 
     return false;
   }
-  console.log(api.API_PDF)
 
   const filteredData = filterData();
   document.title = "Transactions bancaires | Countano";
