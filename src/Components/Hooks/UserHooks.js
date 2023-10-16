@@ -21,7 +21,7 @@ const useProfile = () => {
     setLoading(token ? false : true);
   }, []);
 
-console.log("tokezezzzzzzzzzzzzzzzn",token)
+// console.log("tokezezzzzzzzzzzzzzzzn",token)
   return { userProfile, loading,token };
 };
 

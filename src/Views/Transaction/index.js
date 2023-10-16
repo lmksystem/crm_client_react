@@ -98,7 +98,7 @@ const TransactionBank = () => {
         data: [],
         searchTerm: "",
       });
-      // setTransaction({});
+      setTransaction(null);
     } else {
       setShow(true);
     }
@@ -111,9 +111,10 @@ const TransactionBank = () => {
         tba_amount: transData.tba_amount,
         tba_justify: transData.tba_justify == 1 ? false : true,
         file_justify: transData.ado_file_name,
+        tba_rp: transData.tba_rp,
       });
     },
-    [toggle]
+    [toggle,achats,achatActif,transactions]
   );
 
   useEffect(() => {
@@ -121,6 +122,8 @@ const TransactionBank = () => {
       dispatch(onGetAchatLinkTransaction(transaction.id));
     }
   }, [transaction]);
+
+  
 
   useEffect(() => {
     if (achats) {
@@ -159,9 +162,14 @@ const TransactionBank = () => {
     }),
     onSubmit: (values) => {
       let copy_achatActif = {...achatActif};
+      console.log("transaction",transaction)
       copy_achatActif.oldPrice =parseFloat(oldPriceAmount);
       copy_achatActif.newPrice = parseFloat(priceMatchAmount);
+      copy_achatActif.tba_rp = parseFloat(transaction.tba_rp);
+      copy_achatActif.tba_amount= parseFloat(transaction.tba_amount);
       dispatch(onUpdateMatchAmount(copy_achatActif));
+
+      setAchatActif(null)
       setModal(false);
       setDoc(null);
 
@@ -538,10 +546,7 @@ const TransactionBank = () => {
                                     dispatch(
                                       onUpdateJustifyTransactionBank({
                                         tba_id: transaction.id,
-                                        tba_justify:
-                                          !transaction.tba_justify == false
-                                            ? 1
-                                            : 0,
+                                        tba_justify: !transaction.tba_justify == false ? 1 : 0,
                                       })
                                     );
                                     setTransaction({
@@ -633,10 +638,9 @@ const TransactionBank = () => {
                                                     onClick={(e) => {
                                                       e.stopPropagation();
                                                       setDoc(ach.ado_file_name);
+                                                      console.log("ach.aba_match_amount",ach.aba_match_amount);
                                                       setOldPriceAmount(ach.aba_match_amount);
-                                                      setPriceMatchAmount(
-                                                        ach.aba_match_amount
-                                                      );
+                                                      setPriceMatchAmount(ach.aba_match_amount);
                                                       setAchatActif(ach)
                                                       setModal(true);
                                                     }}
