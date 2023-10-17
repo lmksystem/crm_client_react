@@ -55,7 +55,7 @@ const BankAccount = () => {
       listBank: state.BankAccount.listBank,
       listAccountsBank: state.BankAccount.listAccountsBank,
     }));
-
+  const [isLoading,setIsLoading] = useState(false)
   const [modal, setModal] = useState(false);
   const [bankFilter, setBankFilter] = useState({
     data: [],
@@ -108,24 +108,30 @@ const BankAccount = () => {
             pageTitle="Banque / Achat"
           />
           <Row>
+
             <Modal
               id="showModal"
               isOpen={modal}
               toggle={() => {
-                setModal(false);
+                if(!isLoading){
+                  setModal(false);
+
+                }
               }}
               centered
             >
               <ModalHeader
                 toggle={() => {
+                  if(!isLoading){
                   setModal(false);
+                  }
                 }}
                 className="bg-soft-info p-3"
               >
                 Choisissez une banque
               </ModalHeader>
               <ModalBody>
-                <Row className="mt-1 d-flex flex-column">
+               {!isLoading && <Row className="mt-1 d-flex flex-column">
                   <Row className="mb-2">
                     <Col lg={12}>
                       <div>
@@ -147,6 +153,7 @@ const BankAccount = () => {
                             key={i}
                             className={"list-group-item-action"}
                             onClick={() => {
+                              setIsLoading(true)
                               dispatch(
                                 onInsertBankAccount({
                                   bac_instit_id: bankItem.id,
@@ -173,7 +180,10 @@ const BankAccount = () => {
                       })}
                     </ListGroup>
                   </SimpleBar>
-                </Row>
+                </Row> }
+
+                {isLoading && <Loader />}
+
               </ModalBody>
             </Modal>
             <Col className="view-animate" xxl={12}>
