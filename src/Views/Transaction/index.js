@@ -114,7 +114,7 @@ const TransactionBank = () => {
         tba_rp: transData.tba_rp,
       });
     },
-    [toggle,achats,achatActif,transactions]
+    [toggle,achats,transactions]
   );
 
   useEffect(() => {
@@ -162,16 +162,17 @@ const TransactionBank = () => {
     }),
     onSubmit: (values) => {
       let copy_achatActif = {...achatActif};
-      console.log("transaction",transaction)
       copy_achatActif.oldPrice =parseFloat(oldPriceAmount);
       copy_achatActif.newPrice = parseFloat(priceMatchAmount);
-      copy_achatActif.tba_rp = parseFloat(transaction.tba_rp);
+      if(!copy_achatActif.tba_rp){
+        copy_achatActif.tba_rp = parseFloat(transaction.tba_rp);
+      }
       copy_achatActif.tba_amount= parseFloat(transaction.tba_amount);
+      console.log("copy_achatActif est l'objet envoyé au back",copy_achatActif)
       dispatch(onUpdateMatchAmount(copy_achatActif));
-
-      setAchatActif(null)
+      setAchatActif(null);
       setModal(false);
-      setDoc(null);
+      // setDoc(null);
 
     },
   });
@@ -295,31 +296,9 @@ const TransactionBank = () => {
         },
       },
     ],
-    [transaction]
+    [achats,transactions]
   );
 
-  useEffect(() => {
-    if (show) {
-      setTimeout(() => {
-        document.getElementById("start-anime").classList.add("show");
-      }, 400);
-    } else {
-      document.getElementById("start-anime").classList.remove("show");
-    }
-  }, [show]);
-
-  useEffect(() => {
-    dispatch(
-      onGetTransactionBank({
-        dateDebut: perdiodeCalendar.start
-          ? moment(perdiodeCalendar.start).format("YYYY-MM-DD")
-          : null,
-        dateFin: perdiodeCalendar.end
-          ? moment(perdiodeCalendar.end).format("YYYY-MM-DD")
-          : null,
-      })
-    );
-  }, [dispatch, perdiodeCalendar, achats]);
 
 
   const handleSearchChange = (e) => {
@@ -367,6 +346,40 @@ const TransactionBank = () => {
   }
 
   const filteredData = filterData();
+
+  useEffect(() => {
+    if(transaction.id){
+      let searchNewTrans = transactions.filter((obj)=>{
+        return obj.tba_id == transaction.id
+      })
+      setTransaction(searchNewTrans[0])
+    }
+  }, [dispatch])
+  
+  useEffect(() => {
+    if (show) {
+      setTimeout(() => {
+        document.getElementById("start-anime").classList.add("show");
+      }, 400);
+    } else {
+      document.getElementById("start-anime").classList.remove("show");
+    }
+  }, [show]);
+
+  useEffect(() => {
+    dispatch(
+      onGetTransactionBank({
+        dateDebut: perdiodeCalendar.start
+          ? moment(perdiodeCalendar.start).format("YYYY-MM-DD")
+          : null,
+        dateFin: perdiodeCalendar.end
+          ? moment(perdiodeCalendar.end).format("YYYY-MM-DD")
+          : null,
+      })
+    );
+  }, [dispatch, perdiodeCalendar, achats]);
+
+
   document.title = "Transactions bancaires | Countano";
   return (
     <React.Fragment>
@@ -638,10 +651,9 @@ const TransactionBank = () => {
                                                     onClick={(e) => {
                                                       e.stopPropagation();
                                                       setDoc(ach.ado_file_name);
-                                                      console.log("ach.aba_match_amount",ach.aba_match_amount);
                                                       setOldPriceAmount(ach.aba_match_amount);
                                                       setPriceMatchAmount(ach.aba_match_amount);
-                                                      setAchatActif(ach)
+                                                      setAchatActif(ach);
                                                       setModal(true);
                                                     }}
                                                     className="btn btn-info d-flex align-items-center mt-2"
@@ -652,7 +664,6 @@ const TransactionBank = () => {
                                                     </p>
                                                   </button>
                                                 ) : null}
-                                                {}
                                               </div>
                                             </div>
                                           </ListGroupItem>

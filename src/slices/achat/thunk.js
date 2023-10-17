@@ -46,6 +46,7 @@ export const deleteAchat = createAsyncThunk("achat/deleteAchat", async (id) => {
 export const getAchatLinkTransaction = createAsyncThunk("achat/getAchatLinkTransaction", async (tba_id) => {
   try {
     const response = await getAchatLinkTransactionApi(tba_id);
+    // console.log("response getAchatLinkTransaction",response)
     return response;
   }
   catch (error) {
