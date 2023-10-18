@@ -24,6 +24,7 @@ import {
   FormFeedback,
   ListGroup,
   ListGroupItem,
+  Button,
 } from "reactstrap";
 
 import BreadCrumb from "../../Components/Common/BreadCrumb";
@@ -33,6 +34,7 @@ import DeleteModal from "../../Components/Common/DeleteModal";
 import {
   getListBank as onGetListBank,
   insertBankAccount as onInsertBankAccount,
+  getAccountBank as onGetAccountBank,
 } from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
@@ -55,7 +57,7 @@ const BankAccount = () => {
       listBank: state.BankAccount.listBank,
       listAccountsBank: state.BankAccount.listAccountsBank,
     }));
-  const [isLoading,setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
   const [modal, setModal] = useState(false);
   const [bankFilter, setBankFilter] = useState({
     data: [],
@@ -78,14 +80,8 @@ const BankAccount = () => {
 
   useEffect(() => {
     dispatch(onGetListBank());
+    dispatch(onGetAccountBank());
   }, [dispatch]);
-
-  // useEffect(() => {
-  //   if (!isEmpty(employees)) {
-  //     setEmployee(employees);
-  //     setIsEdit(false);
-  //   }
-  // }, [employees]);
 
   useEffect(() => {
     if (listBank) {
@@ -108,22 +104,20 @@ const BankAccount = () => {
             pageTitle="Banque / Achat"
           />
           <Row>
-
             <Modal
               id="showModal"
               isOpen={modal}
               toggle={() => {
-                if(!isLoading){
+                if (!isLoading) {
                   setModal(false);
-
                 }
               }}
               centered
             >
               <ModalHeader
                 toggle={() => {
-                  if(!isLoading){
-                  setModal(false);
+                  if (!isLoading) {
+                    setModal(false);
                   }
                 }}
                 className="bg-soft-info p-3"
@@ -131,59 +125,62 @@ const BankAccount = () => {
                 Choisissez une banque
               </ModalHeader>
               <ModalBody>
-               {!isLoading && <Row className="mt-1 d-flex flex-column">
-                  <Row className="mb-2">
-                    <Col lg={12}>
-                      <div>
-                        <input
-                          className="search form-control"
-                          placeholder="Chercher une banque"
-                          value={bankFilter.searchTerm}
-                          onChange={handleSearchChange}
-                        />
-                      </div>
-                    </Col>
-                  </Row>
-                  <SimpleBar className="d-flex " style={{ height: "442px" }}>
-                    <ListGroup className="list mb-0" flush>
-                      {filteredData?.map((bankItem, i) => {
-                        return (
-                          <ListGroupItem
-                            data-id="1"
-                            key={i}
-                            className={"list-group-item-action"}
-                            onClick={() => {
-                              setIsLoading(true)
-                              dispatch(
-                                onInsertBankAccount({
-                                  bac_instit_id: bankItem.id,
-                                  bac_logo: bankItem.logo,
-                                })
-                              );
-                            }}
-                          >
-                            <div className="d-flex flex-row align-items-center justify-content-between">
-                              <div className="d-flex flex-row align-items-center">
-                                <div className="w-25 p-3">
-                                  <img
-                                    src={bankItem.logo}
-                                    alt={`logo banque ${bankItem.name}`}
-                                    className="img-fluid"
-                                  />
+                {!isLoading && (
+                  <Row className="mt-1 d-flex flex-column">
+                    <Row className="mb-2">
+                      <Col lg={12}>
+                        <div>
+                          <input
+                            className="search form-control"
+                            placeholder="Chercher une banque"
+                            value={bankFilter.searchTerm}
+                            onChange={handleSearchChange}
+                          />
+                        </div>
+                      </Col>
+                    </Row>
+                    <SimpleBar className="d-flex " style={{ height: "442px" }}>
+                      <ListGroup className="list mb-0" flush>
+                        {filteredData?.map((bankItem, i) => {
+                          return (
+                            <ListGroupItem
+                              data-id="1"
+                              key={i}
+                              className={"list-group-item-action"}
+                              onClick={() => {
+                                setIsLoading(true);
+                                console.log(bankItem);
+                                dispatch(
+                                  onInsertBankAccount({
+                                    bac_instit_id: bankItem.id,
+                                    bac_logo: bankItem.logo,
+                                    bac_name: bankItem.name,
+                                  })
+                                );
+                              }}
+                            >
+                              <div className="d-flex flex-row align-items-center justify-content-between">
+                                <div className="d-flex flex-row align-items-center">
+                                  <div className="w-25 p-3">
+                                    <img
+                                      src={bankItem.logo}
+                                      alt={`logo banque ${bankItem.name}`}
+                                      className="img-fluid"
+                                    />
+                                  </div>
+                                  <p>{bankItem.name}</p>
                                 </div>
-                                <p>{bankItem.name}</p>
+                                <i></i>
                               </div>
-                              <i></i>
-                            </div>
-                          </ListGroupItem>
-                        );
-                      })}
-                    </ListGroup>
-                  </SimpleBar>
-                </Row> }
+                            </ListGroupItem>
+                          );
+                        })}
+                      </ListGroup>
+                    </SimpleBar>
+                  </Row>
+                )}
 
                 {isLoading && <Loader />}
-
               </ModalBody>
             </Modal>
             <Col className="view-animate" xxl={12}>
@@ -204,8 +201,6 @@ const BankAccount = () => {
                   </div>
                 </CardHeader>
                 <CardBody className="pt-0">
-                  {/* {!transaction.tba_justify && ( */}
-
                   <Col lg={12}>
                     <div>
                       <div id="users">
@@ -214,83 +209,47 @@ const BankAccount = () => {
                           className="mx-n3"
                         >
                           <ListGroup className="list mb-0" flush>
-                            {/* {filteredData?.map((ach) => {
-                                        return ( */}
-                            <ListGroupItem
-                              data-id="1"
-                              className={"list-group-item-action"}
-                            >
-                              <div className="d-flex flex-row align-items-center justify-content-between">
-                                <div className="d-flex flex-row align-items-center">
-                                  <div style={{ width: 100 }}>
-                                    <img
-                                      src={`https://cdn.nordigen.com/ais/CMB_CMBRFR2BXXX.png`}
-                                      // alt={`logo banque ${bankItem.name}`}
-                                      className="img-fluid"
-                                    />
+                            {listAccountsBank?.map((acc,i) => 
+                             
+                                <ListGroupItem
+                                  data-id="1"
+                                  key={i}
+                                  className={"list-group-item-action"}
+                                >
+                                  <div className="d-flex flex-row align-items-center justify-content-between">
+                                    <div className="d-flex flex-row align-items-center">
+                                      <div style={{ width: 100 }}>
+                                        <img
+                                          src={acc.bac_logo}
+                                          // alt={`logo banque ${bankItem.name}`}
+                                          className="img-fluid"
+                                        />
+                                      </div>
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          flexDirection: "column",
+                                          marginLeft: "5%",
+                                          width: "90%",
+                                        }}
+                                      >
+                                        <p>{acc.ba_name}</p>
+                                        <p style={{ fontWeight: "bolder" }}>
+                                          Numéro de compte :{" "}
+                                          {acc.bua_account_id}
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-primary">Mettre à jour</button>
                                   </div>
-                                  <div style={{ display:"flex",flexDirection:"column" ,marginLeft:"5%",width:"90%"}}>
-                                    <p>Crédit Mutuel du Sud-Ouest</p>
-                                    <p style={{ fontWeight:'bolder' }}>Numéro de compte : 41345938</p>
-                                  </div>
-                                  
-                                </div>
-                                <i></i>
-                              </div>
-                            </ListGroupItem>
-                            <ListGroupItem
-                              data-id="1"
-                              className={"list-group-item-action"}
-                            >
-                              <div className="d-flex flex-row align-items-center justify-content-between">
-                                <div className="d-flex flex-row align-items-center">
-                                  <div style={{ width: 100 }}>
-                                    <img
-                                      src={`https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png`}
-                                      // alt={`logo banque ${bankItem.name}`}
-                                      className="img-fluid"
-                                    />
-                                  </div>
-                                  <div style={{ display:"flex",flexDirection:"column" ,marginLeft:"5%",width:"90%"}}>
-                                    <p>Crédit Agricole de Normandie Seine</p>
-                                    <p style={{ fontWeight:'bolder' }}>Numéro de compte : 86063046</p>
-                                  </div>
-                                  
-                                </div>
-                                <i></i>
-                              </div>
-                            </ListGroupItem>
-                            <ListGroupItem
-                              data-id="1"
-                              className={"list-group-item-action"}
-                            >
-                              <div className="d-flex flex-row align-items-center justify-content-between">
-                                <div className="d-flex flex-row align-items-center">
-                                  <div style={{ width: 100 }}>
-                                    <img
-                                      src={`https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png`}
-                                      // alt={`logo banque ${bankItem.name}`}
-                                      className="img-fluid"
-                                    />
-                                  </div>
-                                  <div style={{ display:"flex",flexDirection:"column" ,marginLeft:"5%",width:"90%"}}>
-                                    <p>Crédit Agricole de Normandie Seine</p>
-                                    <p style={{ fontWeight:'bolder' }}>Numéro de compte : 86319531</p>
-                                  </div>
-                                  
-                                </div>
-                                <i></i>
-                              </div>
-                            </ListGroupItem>
-
-                            {/* );
-                                      })} */}
+                                </ListGroupItem>
+                            
+                          )}
                           </ListGroup>
                         </SimpleBar>
                       </div>
                     </div>
                   </Col>
-                  {/* )} */}
                   <ToastContainer closeButton={false} limit={1} />
                 </CardBody>
               </Card>

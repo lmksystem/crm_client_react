@@ -103,25 +103,29 @@ const TransactionBank = () => {
       setShow(true);
     }
   }, [show]);
+  
   const handleTransactionClick = useCallback(
     (arg) => {
       const transData = arg;
       setTransaction({
         id: transData.tba_id,
         tba_amount: transData.tba_amount,
-        tba_justify: transData.tba_justify == 1 ? false : true,
+        tba_justify: transData?.tba_justify == 1 ? false : true,
         file_justify: transData.ado_file_name,
         tba_rp: transData.tba_rp,
       });
+    dispatch(onGetAchatLinkTransaction(transData?.tba_id))
+
     },
-    [toggle,achats,transactions]
+
+    []
   );
 
-  useEffect(() => {
-    if (transaction.id) {
-      dispatch(onGetAchatLinkTransaction(transaction.id));
-    }
-  }, [transaction]);
+  // useEffect(() => {
+  //   if (transaction?.id) {
+  //     dispatch(onGetAchatLinkTransaction(transaction?.id));
+  //   }
+  // }, [transaction]);
 
   
 
@@ -140,7 +144,7 @@ const TransactionBank = () => {
     enableReinitialize: true,
 
     initialValues: {
-      nojustify: transaction && transaction.tba_justify === 1 ? true : false,
+      nojustify: transaction && transaction?.tba_justify === 1 ? true : false,
       file_justify: (transaction && transaction.ado_file_name) || "",
     },
     onSubmit: (values) => {
@@ -168,7 +172,6 @@ const TransactionBank = () => {
         copy_achatActif.tba_rp = parseFloat(transaction.tba_rp);
       }
       copy_achatActif.tba_amount= parseFloat(transaction.tba_amount);
-      console.log("copy_achatActif est l'objet envoyé au back",copy_achatActif)
       dispatch(onUpdateMatchAmount(copy_achatActif));
       setAchatActif(null);
       setModal(false);
@@ -234,7 +237,7 @@ const TransactionBank = () => {
           return (
             <div className="d-flex align-items-center">
               <p className="p-0 m-0">
-                {cell.value != null ? (cell.row.original.tba_justify == 0 ? "0.00" : cell.value) + "€" : ""}
+                {cell.value != null ? (cell.row.original?.tba_justify == 0 ? "0.00" : cell.value) + "€" : ""}
               </p>
             </div>
           );
@@ -248,7 +251,7 @@ const TransactionBank = () => {
 
         Cell: (cell) => {
           let styleCSS = {};
-          if (cell.row.original.tba_rp == 0 || cell.row.original.tba_justify == 0) {
+          if (cell.row.original.tba_rp == 0 || cell.row.original?.tba_justify == 0) {
             styleCSS = {
               width: "20px",
               height: "20px",
@@ -287,7 +290,7 @@ const TransactionBank = () => {
             <div className="d-flex align-items-center mx-4">
               <div style={styleCSS}>
                 {cell.row.original.tba_rp ==
-                  Math.abs(parseFloat(cell.row.original.tba_amount)) && cell.row.original.tba_justify == 1 && (
+                  Math.abs(parseFloat(cell.row.original.tba_amount)) && cell.row.original?.tba_justify == 1 && (
                   <i style={{ color: "red" }} className="las la-times"></i>
                 )}
               </div>
@@ -348,9 +351,9 @@ const TransactionBank = () => {
   const filteredData = filterData();
 
   useEffect(() => {
-    if(transaction.id){
+    if(transaction?.id){
       let searchNewTrans = transactions.filter((obj)=>{
-        return obj.tba_id == transaction.id
+        return obj.tba_id == transaction?.id
       })
       setTransaction(searchNewTrans[0])
     }
@@ -553,18 +556,18 @@ const TransactionBank = () => {
                                   role="switch"
                                   checked={
                                     transaction?.tba_justify ||
-                                    transaction.tba_justify == 1
+                                    transaction?.tba_justify == 1
                                   }
                                   onChange={() => {
                                     dispatch(
                                       onUpdateJustifyTransactionBank({
-                                        tba_id: transaction.id,
-                                        tba_justify: !transaction.tba_justify == false ? 1 : 0,
+                                        tba_id: transaction?.id,
+                                        tba_justify: !transaction?.tba_justify == false ? 1 : 0,
                                       })
                                     );
                                     setTransaction({
                                       ...transaction,
-                                      tba_justify: !transaction.tba_justify,
+                                      tba_justify: !transaction?.tba_justify,
                                     });
                                   }}
                                   onBlur={validation.handleBlur}
@@ -580,7 +583,7 @@ const TransactionBank = () => {
                           )}
                           {/* )} */}
 
-                          {!transaction.tba_justify && (
+                          {!transaction?.tba_justify && (
                             <Col lg={11}>
                               <div>
                                 <p className="text-muted">
