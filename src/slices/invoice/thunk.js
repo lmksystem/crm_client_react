@@ -52,7 +52,7 @@ export const createPdf = createAsyncThunk("invoice/createPdf", async (invoice) =
     return response;
   } catch (error) {
     console.log('erreur', error);
-    toast.error("Invoice Delete Failed", { autoClose: 3000 });
+    toast.error("Création du pdf echoué", { autoClose: 3000 });
     return error;
   }
 });

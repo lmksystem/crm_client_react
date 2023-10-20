@@ -6,7 +6,8 @@ import "react-toastify/dist/ReactToastify.css";
 import {
   getUser as getUserApi,
   createOrUpdateUser as createOrUpdateUserApi,
-  createOrUpdateUserAdmin as createOrUpdateUserAdminApi
+  createOrUpdateUserAdmin as createOrUpdateUserAdminApi,
+  deleteUser as deleteUserApi 
 } from "../../helpers/backend_helper";
 
 
@@ -35,6 +36,15 @@ export const createOrUpdateUser = createAsyncThunk("admin/createOrUpdateUser", (
 export const createOrUpdateUserAdmin = createAsyncThunk("admin/createOrUpdateUserAdmin", (data) => {
   try {
     const response = createOrUpdateUserAdminApi(data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+});
+
+export const deleteUser = createAsyncThunk("admin/deleteUser", (id) => {
+  try {
+    const response = deleteUserApi(id);
     return response;
   } catch (error) {
     return error;

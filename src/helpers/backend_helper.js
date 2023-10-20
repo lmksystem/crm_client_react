@@ -294,6 +294,8 @@ export const deleteAlert = (id) => api.delete(url.ALERT + "/" + id);
 
 export const getUser = () => api.get(url.ADMIN_USER);
 
+export const deleteUser = (id) => api.delete(url.ADMIN_USER + "/" + id);
+
 export const createOrUpdateUser = (data) => api.create(url.ADMIN_USER, data);
 
 export const createOrUpdateUserAdmin = (data) => api.create(url.ADMIN_USER_CREATE, data);
