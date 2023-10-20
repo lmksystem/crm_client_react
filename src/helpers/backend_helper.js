@@ -274,7 +274,9 @@ export const getListBank = () => api.get(url.LIST_BANK)
 
 export const getAccountsBankUser = () => api.get(url.BANK_ACCOUNT)
 
-export const insertBankAccount = (data) => api.create(url.BANK_ACCOUNT,data)
+export const insertBankAccount = (data) => api.create(url.BANK_ACCOUNT,data);
+
+export const getAccountBank = () => api.get(url.BANK_ACCOUNT+"/link")
 
 /*************************/
 /*          Alert        */

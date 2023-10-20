@@ -46,6 +46,7 @@ export const deleteAchat = createAsyncThunk("achat/deleteAchat", async (id) => {
 export const getAchatLinkTransaction = createAsyncThunk("achat/getAchatLinkTransaction", async (tba_id) => {
   try {
     const response = await getAchatLinkTransactionApi(tba_id);
+    // console.log("response getAchatLinkTransaction",response)
     return response;
   }
   catch (error) {
@@ -59,6 +60,7 @@ export const linkTransToAchat = createAsyncThunk(
   async (body) => {
     try {
       const response = await linkTransToAchatApi(body);
+      console.log(response)
       return response;
     } catch (error) {
       toast.error("Transaction Bank link Achat Update Failed", { autoClose: 3000 });
@@ -73,6 +75,7 @@ export const updateMatchAmount = createAsyncThunk(
   async (body) => {
     try {
       const response = await updateMatchAmountApi(body);
+      console.log(response)
       return response;
     } catch (error) {
       toast.error("Transaction Bank Match Amount Update  Failed", { autoClose: 3000 });

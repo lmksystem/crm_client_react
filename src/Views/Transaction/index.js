@@ -98,29 +98,36 @@ const TransactionBank = () => {
         data: [],
         searchTerm: "",
       });
-      // setTransaction({});
+      setTransaction(null);
     } else {
       setShow(true);
     }
   }, [show]);
+  
   const handleTransactionClick = useCallback(
     (arg) => {
       const transData = arg;
       setTransaction({
         id: transData.tba_id,
         tba_amount: transData.tba_amount,
-        tba_justify: transData.tba_justify == 1 ? false : true,
+        tba_justify: transData?.tba_justify == 1 ? false : true,
         file_justify: transData.ado_file_name,
+        tba_rp: transData.tba_rp,
       });
+    dispatch(onGetAchatLinkTransaction(transData?.tba_id))
+
     },
-    [toggle]
+
+    []
   );
 
-  useEffect(() => {
-    if (transaction.id) {
-      dispatch(onGetAchatLinkTransaction(transaction.id));
-    }
-  }, [transaction]);
+  // useEffect(() => {
+  //   if (transaction?.id) {
+  //     dispatch(onGetAchatLinkTransaction(transaction?.id));
+  //   }
+  // }, [transaction]);
+
+  
 
   useEffect(() => {
     if (achats) {
@@ -137,7 +144,7 @@ const TransactionBank = () => {
     enableReinitialize: true,
 
     initialValues: {
-      nojustify: transaction && transaction.tba_justify === 1 ? true : false,
+      nojustify: transaction && transaction?.tba_justify === 1 ? true : false,
       file_justify: (transaction && transaction.ado_file_name) || "",
     },
     onSubmit: (values) => {
@@ -161,9 +168,14 @@ const TransactionBank = () => {
       let copy_achatActif = {...achatActif};
       copy_achatActif.oldPrice =parseFloat(oldPriceAmount);
       copy_achatActif.newPrice = parseFloat(priceMatchAmount);
+      if(!copy_achatActif.tba_rp){
+        copy_achatActif.tba_rp = parseFloat(transaction.tba_rp);
+      }
+      copy_achatActif.tba_amount= parseFloat(transaction.tba_amount);
       dispatch(onUpdateMatchAmount(copy_achatActif));
+      setAchatActif(null);
       setModal(false);
-      setDoc(null);
+      // setDoc(null);
 
     },
   });
@@ -225,7 +237,7 @@ const TransactionBank = () => {
           return (
             <div className="d-flex align-items-center">
               <p className="p-0 m-0">
-                {cell.value != null ? (cell.row.original.tba_justify == 0 ? "0.00" : cell.value) + "€" : ""}
+                {cell.value != null ? (cell.row.original?.tba_justify == 0 ? "0.00" : cell.value) + "€" : ""}
               </p>
             </div>
           );
@@ -239,7 +251,7 @@ const TransactionBank = () => {
 
         Cell: (cell) => {
           let styleCSS = {};
-          if (cell.row.original.tba_rp == 0 || cell.row.original.tba_justify == 0) {
+          if (cell.row.original.tba_rp == 0 || cell.row.original?.tba_justify == 0) {
             styleCSS = {
               width: "20px",
               height: "20px",
@@ -278,7 +290,7 @@ const TransactionBank = () => {
             <div className="d-flex align-items-center mx-4">
               <div style={styleCSS}>
                 {cell.row.original.tba_rp ==
-                  Math.abs(parseFloat(cell.row.original.tba_amount)) && cell.row.original.tba_justify == 1 && (
+                  Math.abs(parseFloat(cell.row.original.tba_amount)) && cell.row.original?.tba_justify == 1 && (
                   <i style={{ color: "red" }} className="las la-times"></i>
                 )}
               </div>
@@ -287,7 +299,7 @@ const TransactionBank = () => {
         },
       },
     ],
-    [transaction]
+    [achats,transactions]
   );
 
   useEffect(() => {
@@ -359,6 +371,40 @@ const TransactionBank = () => {
   }
 
   const filteredData = filterData();
+
+  useEffect(() => {
+    if(transaction?.id){
+      let searchNewTrans = transactions.filter((obj)=>{
+        return obj.tba_id == transaction?.id
+      })
+      setTransaction(searchNewTrans[0])
+    }
+  }, [dispatch])
+  
+  useEffect(() => {
+    if (show) {
+      setTimeout(() => {
+        document.getElementById("start-anime").classList.add("show");
+      }, 400);
+    } else {
+      document.getElementById("start-anime").classList.remove("show");
+    }
+  }, [show]);
+
+  useEffect(() => {
+    dispatch(
+      onGetTransactionBank({
+        dateDebut: perdiodeCalendar.start
+          ? moment(perdiodeCalendar.start).format("YYYY-MM-DD")
+          : null,
+        dateFin: perdiodeCalendar.end
+          ? moment(perdiodeCalendar.end).format("YYYY-MM-DD")
+          : null,
+      })
+    );
+  }, [dispatch, perdiodeCalendar, achats]);
+
+
   document.title = "Transactions bancaires | Countano";
   return (
     <React.Fragment>
@@ -532,21 +578,18 @@ const TransactionBank = () => {
                                   role="switch"
                                   checked={
                                     transaction?.tba_justify ||
-                                    transaction.tba_justify == 1
+                                    transaction?.tba_justify == 1
                                   }
                                   onChange={() => {
                                     dispatch(
                                       onUpdateJustifyTransactionBank({
-                                        tba_id: transaction.id,
-                                        tba_justify:
-                                          !transaction.tba_justify == false
-                                            ? 1
-                                            : 0,
+                                        tba_id: transaction?.id,
+                                        tba_justify: !transaction?.tba_justify == false ? 1 : 0,
                                       })
                                     );
                                     setTransaction({
                                       ...transaction,
-                                      tba_justify: !transaction.tba_justify,
+                                      tba_justify: !transaction?.tba_justify,
                                     });
                                   }}
                                   onBlur={validation.handleBlur}
@@ -562,7 +605,7 @@ const TransactionBank = () => {
                           )}
                           {/* )} */}
 
-                          {!transaction.tba_justify && (
+                          {!transaction?.tba_justify && (
                             <Col lg={11}>
                               <div>
                                 <p className="text-muted">
@@ -634,10 +677,8 @@ const TransactionBank = () => {
                                                       e.stopPropagation();
                                                       setDoc(ach.ado_file_name);
                                                       setOldPriceAmount(ach.aba_match_amount);
-                                                      setPriceMatchAmount(
-                                                        ach.aba_match_amount
-                                                      );
-                                                      setAchatActif(ach)
+                                                      setPriceMatchAmount(ach.aba_match_amount);
+                                                      setAchatActif(ach);
                                                       setModal(true);
                                                     }}
                                                     className="btn btn-info d-flex align-items-center mt-2"
@@ -648,7 +689,6 @@ const TransactionBank = () => {
                                                     </p>
                                                   </button>
                                                 ) : null}
-                                                {}
                                               </div>
                                             </div>
                                           </ListGroupItem>
