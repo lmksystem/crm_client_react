@@ -25,7 +25,7 @@ export const getAccountBank = createAsyncThunk(
   async () => {
     try {
       const response = await getAccountBankApi();
-      console.log(response)
+      console.log("response",response)
       return response;
     } catch (error) {
       console.log(error)
