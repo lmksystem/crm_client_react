@@ -438,7 +438,7 @@ const Salary = () => {
                 </div>
                 <div className="flex-grow-1">
                   <button
-                    className="btn btn-info add-btn"
+                    className="btn btn-primary add-btn"
                     onClick={() => {
                       setModal(true);
                     }}

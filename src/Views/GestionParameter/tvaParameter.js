@@ -329,7 +329,7 @@ const TvaParameter = () => {
           <div className="d-flex align-items-center flex-wrap gap-2 ">
             <div className="d-flex flex-grow-1 justify-content-end">
               <button
-                className="btn btn-info add-btn"
+                className="btn btn-primary add-btn"
                 onClick={() => {
                   setModal(true);
                 }}

@@ -1,7 +1,4 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { Link } from "react-router-dom";
-import { isEmpty } from "lodash";
-
 import {
   Col,
   Container,
@@ -9,26 +6,14 @@ import {
   Card,
   CardHeader,
   CardBody,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  Label,
-  Input,
   Modal,
   ModalHeader,
   ModalBody,
-  Form,
-  ModalFooter,
-  Table,
-  FormFeedback,
   ListGroup,
   ListGroupItem,
-  Button,
 } from "reactstrap";
 
 import BreadCrumb from "../../Components/Common/BreadCrumb";
-import DeleteModal from "../../Components/Common/DeleteModal";
 
 //Import actions
 import {
@@ -38,11 +23,6 @@ import {
 } from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
-
-// Formik
-import * as Yup from "yup";
-import { useFormik } from "formik";
-
 import Loader from "../../Components/Common/Loader";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -98,7 +78,7 @@ const BankAccount = () => {
   return (
     <React.Fragment>
       <div className="page-content">
-        <Container fluid>
+        <Container fluid className="mx-0 gx-0">
           <BreadCrumb
             title="Mes comptes bancaires"
             pageTitle="Banque / Achat"
@@ -149,7 +129,6 @@ const BankAccount = () => {
                               className={"list-group-item-action"}
                               onClick={() => {
                                 setIsLoading(true);
-                                console.log(bankItem);
                                 dispatch(
                                   onInsertBankAccount({
                                     bac_instit_id: bankItem.id,
@@ -183,13 +162,13 @@ const BankAccount = () => {
                 {isLoading && <Loader />}
               </ModalBody>
             </Modal>
-            <Col className="view-animate" xxl={12}>
+            <Col xxl={12}>
               <Card id="contactList">
                 <CardHeader>
                   <div className="d-flex align-items-center flex-wrap gap-2">
                     <div className="flex-grow-1">
                       <button
-                        className="btn btn-info add-btn"
+                        className="btn btn-primary add-btn"
                         onClick={() => {
                           setModal(true);
                         }}
@@ -209,42 +188,55 @@ const BankAccount = () => {
                           className="mx-n3"
                         >
                           <ListGroup className="list mb-0" flush>
-                            {listAccountsBank?.map((acc,i) => 
-                             
-                                <ListGroupItem
-                                  data-id="1"
-                                  key={i}
-                                  className={"list-group-item-action"}
-                                >
-                                  <div className="d-flex flex-row align-items-center justify-content-between">
-                                    <div className="d-flex flex-row align-items-center">
-                                      <div style={{ width: 100 }}>
-                                        <img
-                                          src={acc.bac_logo}
-                                          // alt={`logo banque ${bankItem.name}`}
-                                          className="img-fluid"
-                                        />
-                                      </div>
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          flexDirection: "column",
-                                          marginLeft: "5%",
-                                          width: "90%",
-                                        }}
-                                      >
-                                        <p>{acc.ba_name}</p>
-                                        <p style={{ fontWeight: "bolder" }}>
-                                          Numéro de compte :{" "}
-                                          {acc.bua_account_id}
-                                        </p>
-                                      </div>
+                            {listAccountsBank?.map((acc, i) => (
+                              <ListGroupItem
+                                data-id="1"
+                                key={i}
+                                className={"list-group-item-action"}
+                              >
+                                <div className="d-flex flex-row align-items-center justify-content-between">
+                                  <div className="d-flex flex-row align-items-center">
+                                    <div style={{ width: 100 }}>
+                                      <img
+                                        src={acc.bac_logo}
+                                        // alt={`logo banque ${bankItem.name}`}
+                                        className="img-fluid"
+                                      />
                                     </div>
-                                    <button type="button" class="btn btn-outline-primary">Mettre à jour</button>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        marginLeft: "5%",
+                                        width: "90%",
+                                      }}
+                                    >
+                                      <p>{acc.bac_name}</p>
+                                      <p style={{ fontWeight: "bolder" }}>
+                                        Numéro de compte : {acc.bua_account_id}
+                                      </p>
+                                    </div>
                                   </div>
-                                </ListGroupItem>
-                            
-                          )}
+                                  <button
+                                    type="button"
+                                    class="btn btn-outline-primary"
+                                    onClick={() => {
+                                      dispatch(
+                                        onInsertBankAccount({
+                                          bac_instit_id: acc.bac_instit_id,
+                                          bac_logo: acc.bac_logo,
+                                          bac_name: acc.bac_name,
+                                          oldLinkId: acc.bua_bac_fk
+
+                                        })
+                                      );
+                                    }}
+                                  >
+                                    Mettre à jour
+                                  </button>
+                                </div>
+                              </ListGroupItem>
+                            ))}
                           </ListGroup>
                         </SimpleBar>
                       </div>

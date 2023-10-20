@@ -1,12 +1,50 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Col, Row } from "reactstrap";
 import { useProfile } from "../Hooks/UserHooks";
+import { getAccountBank as onGetAccountBank } from "../../slices/thunks";
+import { useSelector, useDispatch } from "react-redux";
+import * as moment from "moment";
 
 const BreadCrumb = ({ title, pageTitle }) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { listAccountsBank } = useSelector((state) => ({
+    listAccountsBank: state.BankAccount.listAccountsBank,
+  }));
   // navigate("/devis/liste");
-  const { userProfile } = useProfile()
+  const { userProfile } = useProfile();
+
+  const[dateExpired,setDateExpired] = useState(null);
+
+  function findClosestDateWithin15Days(dateArray=[]) {
+    // Obtenez la date actuelle
+    const currentDate = moment();
+    console.log(dateArray)
+    let closestDate = null;
+    let closestDifference = Infinity;
+    
+    for (const dateStr of dateArray) {
+      const dateObj = moment(dateStr);
+      const differenceInDays = currentDate.diff(dateObj, 'days');
+       console.log(differenceInDays)
+      if (differenceInDays >= -15 && differenceInDays <= 0 && Math.abs(differenceInDays) < closestDifference) {
+        closestDate = dateStr;
+      }
+    }
+    setDateExpired(closestDate)
+  }
+
+  useEffect(() => {
+    dispatch(onGetAccountBank()).then(()=>{
+      if(listAccountsBank){
+        let newArrayDate = listAccountsBank?.map((e)=> e.bac_date_expired) || [];
+        findClosestDateWithin15Days(newArrayDate)
+      }
+    
+    })
+  }, []);
+
   return (
     <React.Fragment>
       <Row>
@@ -26,9 +64,8 @@ const BreadCrumb = ({ title, pageTitle }) => {
         </Col>
       </Row>
       <Row>
-        <Col xs={12}>
-          {
-            userProfile.use_rank == 0 && 
+      { dateExpired!=null && <Col xs={12}>
+          {userProfile.use_rank == 0 && (
             <div
               style={{
                 color: "#721c24",
@@ -37,7 +74,7 @@ const BreadCrumb = ({ title, pageTitle }) => {
               }}
               className="alert d-sm-flex align-items-center justify-content-between "
             >
-              Veuillez mettre à jour vos comptes bancaires avant le 20/10/2023
+              Veuillez mettre à jour vos comptes bancaires avant le {dateExpired}
               <button
                 onClick={() => {
                   navigate("/bankaccount");
@@ -48,11 +85,10 @@ const BreadCrumb = ({ title, pageTitle }) => {
                 Accéder aux comptes
               </button>
             </div>
-          }
-
-        </Col>
+          )}
+        </Col>}
       </Row>
-    </React.Fragment >
+    </React.Fragment>
   );
 };
 

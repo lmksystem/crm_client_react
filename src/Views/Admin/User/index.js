@@ -120,7 +120,7 @@ const UserAdmin = () => {
             <Col>
               <Card>
                 <CardBody>
-                  <button className="btn btn-info add-btn" onClick={() => navigate('/admin/user/')}>
+                  <button className="btn btn-primary add-btn" onClick={() => navigate('/admin/user/')}>
                     <i className="ri-add-fill me-1 align-bottom"></i>
                     Ajouter une utilisateur
                   </button>
