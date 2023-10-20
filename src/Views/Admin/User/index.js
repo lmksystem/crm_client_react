@@ -70,6 +70,16 @@ const UserAdmin = () => {
         Header: "Email Entreprise",
         accessor: "com_email",
       },
+      {
+        Header: "Action",
+        Cell: (cell) => {
+          return (
+            <div>
+              <div onClick={() => console.log('ok')}><i style={{ fontSize: 15, color: "red" }} className="ri-delete-bin-fill"></i></div>
+            </div>
+          )
+        }
+      },
     ],
     []
   );
@@ -100,7 +110,8 @@ const UserAdmin = () => {
                     className="custom-header-css"
                     theadClass="text-muted text-uppercase"
                     SearchPlaceholder=''
-                    actionItem={navigateToEditForm}
+
+                  // actionItem={navigateToEditForm}
                   />
                 </CardBody>
               </Card>

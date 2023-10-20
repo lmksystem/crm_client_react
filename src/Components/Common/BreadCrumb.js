@@ -1,10 +1,12 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Col, Row } from "reactstrap";
+import { useProfile } from "../Hooks/UserHooks";
 
 const BreadCrumb = ({ title, pageTitle }) => {
   const navigate = useNavigate();
   // navigate("/devis/liste");
+  const { userProfile } = useProfile()
   return (
     <React.Fragment>
       <Row>
@@ -25,26 +27,32 @@ const BreadCrumb = ({ title, pageTitle }) => {
       </Row>
       <Row>
         <Col xs={12}>
-          <div
-            style={{ backgroundColor: "red" }}
-            className="d-sm-flex page-title-box  align-items-center justify-content-between "
-          >
-            <h5 className="text-white mx-2 my-0">
-              Veuillez mettre à jour vos comptes bancaires avant le 20/10/2023{" "}
-            </h5>
-            <button
-              onClick={() => {
-                navigate("/bankaccount");
+          {
+            userProfile.use_rank == 0 && 
+            <div
+              style={{
+                color: "#721c24",
+                backgroundColor: "#f8d7da",
+                borderColor: "#f5c6cb",
               }}
-              type="button"
-              class="btn btn-light my-3"
+              className="alert d-sm-flex align-items-center justify-content-between "
             >
-              Accéder aux comptes
-            </button>
-          </div>
+              Veuillez mettre à jour vos comptes bancaires avant le 20/10/2023
+              <button
+                onClick={() => {
+                  navigate("/bankaccount");
+                }}
+                type="button"
+                class="btn btn-light my-3"
+              >
+                Accéder aux comptes
+              </button>
+            </div>
+          }
+
         </Col>
       </Row>
-    </React.Fragment>
+    </React.Fragment >
   );
 };
 
