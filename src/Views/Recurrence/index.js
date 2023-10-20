@@ -330,7 +330,7 @@ const Recurrence = () => {
                   <Col lg={12}>
                     <div className="d-flex flex-grow-1 justify-content-start">
 
-                      <button className="btn btn-info add-btn" onClick={() => setOpenCreate(true)}>
+                      <button className="btn btn-primary add-btn" onClick={() => setOpenCreate(true)}>
                         <i className="ri-add-fill me-1 align-bottom"></i>
                         Ajouter une facturation récurrente
                       </button>
@@ -667,7 +667,7 @@ const Recurrence = () => {
             <ModalFooter>
               <div className="d-flex flex-grow-1 justify-content-end">
 
-                <button className="btn btn-info add-btn" type="submit">
+                <button className="btn btn-primary add-btn" type="submit">
                   <i className="ri-add-fill me-1 align-bottom"></i>
                   Ajouter une facturation récurrente
                 </button>

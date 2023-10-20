@@ -681,7 +681,7 @@ const TransactionBank = () => {
                                                       setAchatActif(ach);
                                                       setModal(true);
                                                     }}
-                                                    className="btn btn-info d-flex align-items-center mt-2"
+                                                    className="btn btn-primary d-flex align-items-center mt-2"
                                                   >
                                                     <i className="las la-eye mx-2"></i>
                                                     <p className="m-0 font-weight-bold">
