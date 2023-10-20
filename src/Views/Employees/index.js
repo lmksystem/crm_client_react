@@ -126,7 +126,7 @@ const Employees = () => {
           use_firstname: values["firstname"],
           use_email: values["email"],
           use_password: "none",
-          use_rank: 1,
+          use_rank: 2,
           usa_date_entree: values?.date_entree || null,
         };
 
