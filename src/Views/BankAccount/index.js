@@ -188,7 +188,12 @@ const BankAccount = () => {
                           className="mx-n3"
                         >
                           <ListGroup className="list mb-0" flush>
-                            {listAccountsBank?.map((acc, i) => (
+                            {listAccountsBank?.map((acc, i) => {
+                              console.log(acc)
+                              return(
+
+
+                              
                               <ListGroupItem
                                 data-id="1"
                                 key={i}
@@ -226,7 +231,7 @@ const BankAccount = () => {
                                           bac_instit_id: acc.bac_instit_id,
                                           bac_logo: acc.bac_logo,
                                           bac_name: acc.bac_name,
-                                          oldLinkId: acc.bua_bac_fk
+                                          oldLinkId: acc.bac_id
 
                                         })
                                       );
@@ -236,7 +241,8 @@ const BankAccount = () => {
                                   </button>
                                 </div>
                               </ListGroupItem>
-                            ))}
+                              )
+                            })}
                           </ListGroup>
                         </SimpleBar>
                       </div>
