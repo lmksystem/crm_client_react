@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 //Include Both Helper File with needed methods
 import {
   getCompany as getCompanyApi,
+  createOrUpdateCompany as createOrUpdateCompanyApi
 } from "../../helpers/backend_helper";
 
 
@@ -12,6 +13,16 @@ export const getCompany = createAsyncThunk("company/getCompany", async () => {
   try {
 
     const response = await getCompanyApi()
+    return response;
+  } catch (error) {
+    return error;
+  }
+})
+
+export const createOrUpdateCompany = createAsyncThunk("company/createOrUpdateCompany", async (data) => {
+  try { 
+    
+    const response = createOrUpdateCompanyApi(data)
     return response;
   } catch (error) {
     return error;

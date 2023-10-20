@@ -242,7 +242,7 @@ $value in $theme-colors {
   transition: all 400ms ease;
 }
 
-.show {
+.show-cus {
   flex: 3;
   display: block !important;
 }
@@ -258,4 +258,26 @@ $value in $theme-colors {
 .title-client {
   display: flex;
   justify-content: space-between;
+}
+
+
+.centerState {
+  left: 0;
+}
+
+.rightState {
+  left: 230%;
+}
+
+.leftState {
+  left: -230%;
+}
+
+.element {
+  transition-property: left;
+  transition-duration: 0.75s;
+}
+
+html {
+  overflow-x: hidden;
 }

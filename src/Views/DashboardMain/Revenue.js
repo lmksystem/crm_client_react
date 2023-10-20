@@ -38,7 +38,7 @@ const Revenue = ({perdiodeCalendar}) => {
       },
     ]
     setchartData(newArrayForGraph);
-    console.log(chartData)
+
   }, [perdiodeCalendar,transactionByMonth,devisByMonth,invoiceByMonth])
   
 

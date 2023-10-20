@@ -46,7 +46,7 @@ export function GlobalFilter({
 
   return (
     <React.Fragment>
-      <CardBody className="border border-dashed border-end-0 border-start-0">
+      <CardBody className="border border-dashed border-end-0 border-top-0 border-start-0">
         <form>
           <Row className="g-3">
             <Col>

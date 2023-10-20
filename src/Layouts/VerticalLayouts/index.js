@@ -115,6 +115,7 @@ const VerticalLayout = (props) => {
         let actiItems = items.filter((x) => x.classList.contains("active"));
 
         actiItems.forEach((item) => {
+            
             if (item.classList.contains("menu-link")) {
                 if (!item.classList.contains("active")) {
                     item.setAttribute("aria-expanded", false);
@@ -130,6 +131,7 @@ const VerticalLayout = (props) => {
                 item.setAttribute("aria-expanded", false);
             }
             item.classList.remove("active");
+
         });
     };
 

@@ -293,10 +293,10 @@ const TransactionBank = () => {
   useEffect(() => {
     if (show) {
       setTimeout(() => {
-        document.getElementById("start-anime").classList.add("show");
+        document.getElementById("start-anime").classList.add("show-cus");
       }, 400);
     } else {
-      document.getElementById("start-anime").classList.remove("show");
+      document.getElementById("start-anime").classList.remove("show-cus");
     }
   }, [show]);
 
