@@ -302,6 +302,28 @@ const TransactionBank = () => {
     [achats,transactions]
   );
 
+  useEffect(() => {
+    if (show) {
+      setTimeout(() => {
+        document.getElementById("start-anime").classList.add("show-cus");
+      }, 400);
+    } else {
+      document.getElementById("start-anime").classList.remove("show-cus");
+    }
+  }, [show]);
+
+  useEffect(() => {
+    dispatch(
+      onGetTransactionBank({
+        dateDebut: perdiodeCalendar.start
+          ? moment(perdiodeCalendar.start).format("YYYY-MM-DD")
+          : null,
+        dateFin: perdiodeCalendar.end
+          ? moment(perdiodeCalendar.end).format("YYYY-MM-DD")
+          : null,
+      })
+    );
+  }, [dispatch, perdiodeCalendar, achats]);
 
 
   const handleSearchChange = (e) => {

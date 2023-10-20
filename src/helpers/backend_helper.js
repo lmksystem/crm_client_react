@@ -6,7 +6,7 @@ import * as url from "./url_helper";
 const api = new APIClient();
 
 let item_value = JSON.parse(sessionStorage.getItem("authUser"));
-// console.log();
+
 /*************************/
 /*        Gestion        */
 /*************************/
@@ -134,7 +134,10 @@ export const updateJustifyTransactionBank = data => api.create(url.TRANSACTION_B
 /*************************/
 
 //get Company
-export const getCompany = () => api.get(url.GET_COMPANY);
+export const getCompany = () => api.get(url.COMPANY);
+
+// add or update company
+export const createOrUpdateCompany = (data) => api.post(url.COMPANY_2, data);
 
 // // add Company
 // export const addNewInvoice = invoice => api.create(url.ADD_NEW_INVOICE, invoice);
@@ -284,4 +287,15 @@ export const handleAlert = (data) => api.create(url.ALERT, data);
 export const getAlert = () => api.get(url.ALERT);
 
 export const deleteAlert = (id) => api.delete(url.ALERT + "/" + id);
+
+/*************************/
+/*          User         */
+/*************************/
+
+export const getUser = () => api.get(url.ADMIN_USER);
+
+export const createOrUpdateUser = (data) => api.create(url.ADMIN_USER, data);
+
+export const createOrUpdateUserAdmin = (data) => api.create(url.ADMIN_USER_CREATE, data);
+
 

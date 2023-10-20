@@ -20,9 +20,14 @@ export const loginUser = (user, history) => async (dispatch) => {
 
     if (data.user) {
       sessionStorage.setItem("authUser", JSON.stringify(data.user));
-      // console.log("data.user",data.user)
       dispatch(loginSuccess(data.user));
-      history('/dashboard')
+    
+      if (data.user.use_rank == 1) {
+        history('/admin')
+      } else {
+        history('/dashboard')
+      }
+
     } else {
       dispatch(apiError(data.error));
     }
@@ -42,29 +47,6 @@ export const logoutUser = () => async (dispatch) => {
   }
 };
 
-export const socialLogin = (data, history, type) => async (dispatch) => {
-  try {
-    let response;
-
-    if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
-      const fireBaseBackend = getFirebaseBackend();
-      response = fireBaseBackend.socialLoginUser(data, type);
-    } else {
-      response = postSocialLogin(data);
-    }
-
-    const socialdata = await response;
-
-    if (socialdata) {
-      sessionStorage.setItem("authUser", JSON.stringify(response));
-      dispatch(loginSuccess(response));
-      history('/dashboard')
-    }
-
-  } catch (error) {
-    dispatch(apiError(error));
-  }
-};
 
 export const resetLoginFlag = () => async (dispatch) => {
   try {

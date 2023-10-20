@@ -485,7 +485,7 @@ const Achats = () => {
   useEffect(() => {
     if (show) {
       setTimeout(() => {
-        document.getElementById("start-anime").classList.add("show");
+        document.getElementById("start-anime").classList.add("show-cus");
       }, 200);
     }
   }, []);

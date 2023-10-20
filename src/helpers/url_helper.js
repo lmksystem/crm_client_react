@@ -278,10 +278,8 @@ export const PDF = "/v1/pdf";
  */
 
 // Company
-export const GET_COMPANY = "/v1/user/company";
-export const ADD_NEW_COMPANY = "/v1/company";
-export const UPDATE_COMPANY = "/v1/company";
-export const DELETE_COMPANY = "/v1/company";
+export const COMPANY = "/v1/user/company";
+export const COMPANY_2 = "/v1/company";
 
 //LOGIN
 export const POST_LOGIN = "/v1/user/login";
@@ -319,3 +317,9 @@ export const LIST_BANK = "/v1/listBank";
 export const BANK_ACCOUNT = "/v1/bankAccount";
 // ALERT
 export const ALERT = "/v1/alert";
+
+// ALERT
+export const ADMIN_USER = "/v1/admin/user";
+
+// ALERT
+export const ADMIN_USER_CREATE = "/v1/admin/user/admin";

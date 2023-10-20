@@ -375,8 +375,10 @@ const Contacts = () => {
     if (show) {
       setTimeout(() => {
         document.getElementById('start-anime').classList.add("show")
-      }, 200);
-    }
+      }, 350);
+    } else {
+      document.getElementById('start-anime').classList.remove("show")
+    } 
   }, [show])
 
 

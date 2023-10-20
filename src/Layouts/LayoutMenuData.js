@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useProfile } from "../Components/Hooks/UserHooks";
 
 const Navdata = () => {
+  const { userProfile } = useProfile();
   const history = useNavigate();
   //state data
   const [isGestion, setIsGestion] = useState(false);
@@ -12,16 +14,7 @@ const Navdata = () => {
   const [isPaie, setIsPaie] = useState(false);
   const [isEmployee, setIsEmployee] = useState(false);
 
-  // Authentication
-  const [isSignIn, setIsSignIn] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [isPasswordReset, setIsPasswordReset] = useState(false);
-  const [isPasswordCreate, setIsPasswordCreate] = useState(false);
-  const [isLockScreen, setIsLockScreen] = useState(false);
-  const [isLogout, setIsLogout] = useState(false);
-  const [isSuccessMessage, setIsSuccessMessage] = useState(false);
-  const [isVerification, setIsVerification] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const [isUserAdmin, setIsUserAdmin] = useState(false);
 
   // Pages
   const [isProfile, setIsProfile] = useState(false);
@@ -30,30 +23,10 @@ const Navdata = () => {
   // Charts
   const [isApex, setIsApex] = useState(false);
 
-  // Multi Level
-  const [isLevel1, setIsLevel1] = useState(false);
-  const [isLevel2, setIsLevel2] = useState(false);
-
   const [iscurrentState, setIscurrentState] = useState("Dashboard");
 
-  function updateIconSidebar(e) {
-    // // document.querySelectorAll("#navbar-bar a[aria-expanded=true]").setAttribute("aria-expanded", "false")
-    // e.target.setAttribute('aria-expanded', "true");
-    // if (e && e.target && e.target.getAttribute("subitems")) {
-    //   const ul = document.getElementById("two-column-menu");
-    //   const iconItems = ul.querySelectorAll(".nav-icon.active");
-    //   let activeIconItems = [...iconItems];
-    //   activeIconItems.forEach((item) => {
-    //     item.classList.remove("active");
-    //     var id = item.getAttribute("subitems");
-    //     if (document.getElementById(id))
-    //       document.getElementById(id).classList.remove("show");
-    //   });
-    // }
-  }
-
   useEffect(() => {
-    document.body.classList.remove("twocolumn-panel");
+    // document.body.classList.add("twocolumn-panel");
 
     if (iscurrentState !== "Gestions") {
       setIsGestion(false);
@@ -75,6 +48,9 @@ const Navdata = () => {
     }
     if (iscurrentState !== "Employés") {
       setIsEmployee(false);
+    }
+    if (isUserAdmin !== "UserAdmin") {
+      setIsUserAdmin(false);
     }
   }, [
     history,
@@ -108,7 +84,6 @@ const Navdata = () => {
         e.preventDefault();
         setIsGestion(!isGestion);
         setIscurrentState("Gestions");
-        updateIconSidebar(e);
       },
       stateVariables: isGestion,
       subItems: [
@@ -141,7 +116,7 @@ const Navdata = () => {
         e.preventDefault();
         setIsFacture(!isFacture);
         setIscurrentState("Facturation");
-        updateIconSidebar(e);
+
       },
       stateVariables: isFacture,
       subItems: [
@@ -149,14 +124,12 @@ const Navdata = () => {
           id: "devis",
           label: "Devis",
           link: "/devis/liste",
-          isChildItem: false,
           parentId: "facturation",
         },
         {
           id: "invoices",
           label: "Factures",
           link: "/factures/liste",
-          isChildItem: false,
           parentId: "facturation",
         },
 
@@ -164,14 +137,12 @@ const Navdata = () => {
           id: "reglements",
           label: "Règlements",
           link: "/transaction/liste",
-          isChildItem: false,
           parentId: "facturation",
         },
         {
           id: "recurrence",
           label: "Récurrence",
           link: "/recurrence",
-          isChildItem: false,
           parentId: "facturation",
         },
       ],
@@ -185,7 +156,7 @@ const Navdata = () => {
         e.preventDefault();
         setIsComptability(!isComptability);
         setIscurrentState("Comptabilité");
-        updateIconSidebar(e);
+
       },
       stateVariables: isComptability,
       subItems: [
@@ -194,7 +165,7 @@ const Navdata = () => {
           label: "Export",
           link: "/export",
           isChildItem: false,
-          click: function (e) {},
+          click: function (e) { },
           parentId: "comptability",
         },
       ],
@@ -208,7 +179,7 @@ const Navdata = () => {
         e.preventDefault();
         setIsBanque(!isBanque);
         setIscurrentState("Banque");
-        updateIconSidebar(e);
+
       },
       stateVariables: isBanque,
       subItems: [
@@ -216,30 +187,18 @@ const Navdata = () => {
           id: "factures-achats",
           label: "Mes comptes bancaires",
           link: "/bankaccount",
-          isChildItem: false,
-          click: function (e) {
-            e.preventDefault();
-          },
           parentId: "banque",
         },
         {
           id: "transactions-bancaires",
           label: "Transactions bancaires",
           link: "/transaction/bank",
-          isChildItem: false,
-          click: function (e) {
-            e.preventDefault();
-          },
           parentId: "banque",
         },
         {
           id: "factures-achats",
           label: "Factures Achats",
           link: "/achat",
-          isChildItem: false,
-          click: function (e) {
-            e.preventDefault();
-          },
           parentId: "banque",
         },
       ],
@@ -253,7 +212,7 @@ const Navdata = () => {
         e.preventDefault();
         setIsRapport(!isRapport);
         setIscurrentState("Rapports");
-        updateIconSidebar(e);
+
       },
       stateVariables: isRapport,
       subItems: [],
@@ -267,7 +226,7 @@ const Navdata = () => {
         e.preventDefault();
         setIsEmployee(!isEmployee);
         setIscurrentState("Employés");
-        updateIconSidebar(e);
+
       },
       stateVariables: isEmployee,
       subItems: [
@@ -275,20 +234,12 @@ const Navdata = () => {
           id: "liste-employee",
           label: "Liste des employés",
           link: "/employees",
-          isChildItem: false,
-          click: function (e) {
-            e.preventDefault();
-          },
           parentId: "employee",
         },
         {
           id: "salaires",
           label: "Salaires",
           link: "/salary",
-          isChildItem: false,
-          click: function (e) {
-            e.preventDefault();
-          },
           parentId: "employee",
         },
       ],
@@ -300,6 +251,28 @@ const Navdata = () => {
       icon: "mdi mdi-cog-outline",
     },
   ];
-  return <React.Fragment>{menuItems}</React.Fragment>;
+
+  let menuItemsAdmin = [
+    {
+      id: "admin-dashboard",
+      label: "Admin",
+      link: "/admin",
+      icon: "mdi mdi-cog-outline",
+    },
+    {
+      id: "user-admin",
+      label: "Utilisateurs",
+      link: "/admin/users",
+      icon: "las la-address-book",
+      click: function (e) {
+        e.preventDefault();
+        setIsUserAdmin(!isUserAdmin);
+        setIscurrentState("UserAdmin");
+      },
+      stateVariables: isUserAdmin,
+    },
+  ]
+
+  return <React.Fragment>{userProfile.use_rank == 0 ? menuItems : menuItemsAdmin}</React.Fragment>;
 };
 export default Navdata;

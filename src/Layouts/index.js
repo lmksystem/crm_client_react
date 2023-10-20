@@ -71,7 +71,6 @@ const Layout = (props) => {
       leftSidebarImageType ||
       sidebarVisibilitytype
     ) {
-      console.log(leftSidebarType);
       window.dispatchEvent(new Event('resize'));
       dispatch(changeLeftsidebarViewType(leftSidebarViewType));
       dispatch(changeLeftsidebarSizeType(leftsidbarSizeType));

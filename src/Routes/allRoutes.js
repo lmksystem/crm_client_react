@@ -31,57 +31,80 @@ import Achats from "../Views/Achat";
 import BankAccount from "../Views/BankAccount";
 import Recurrence from "../Views/Recurrence";
 import Export from "../Views/Export";
+import DashboardAdmin from "../Views/Admin/DashboardAdmin";
+import UserAdmin from "../Views/Admin/User";
+import FormUser from "../Views/Admin/User/FormUser";
+import FinalisationAccount from "../Views/FinalisationAccount/FinalisationAccount";
+import Basic404 from "../Views/AuthenticationInner/Errors/Basic404";
+
 
 // import PdfPreview from "../Views/Pdf";
 
 
-const authProtectedRoutes = [
+const userRoute = [
   // MES ROUTE QUE JE GARDE
-  { path: "/contacts", component: <Contacts /> },
-  { path: "/client-fournisseur", component: <Collaborateurs /> },
-  { path: "/gestion/parametre", component: <GestionParameter /> },
-  { path: "/produits", component: <Products /> },
-  { path: "/dashboard", component: <DashboardMain /> },
+  { path: "/contacts", component: <Contacts />, rank: 0 },
+  { path: "/client-fournisseur", component: <Collaborateurs />, rank: 0 },
+  { path: "/gestion/parametre", component: <GestionParameter />, rank: 0 },
+  { path: "/produits", component: <Products />, rank: 0 },
+  { path: "/dashboard", component: <DashboardMain />, rank: 0 },
 
 
   // //Invoices
-  { path: "/factures/liste", component: <InvoiceList /> },
-  { path: "/factures/detail/:id", component: <InvoiceDetails /> },
-  { path: "/factures/creation", component: <InvoiceCreate /> },
+  { path: "/factures/liste", component: <InvoiceList />, rank: 0 },
+  { path: "/factures/detail/:id", component: <InvoiceDetails />, rank: 0 },
+  { path: "/factures/creation", component: <InvoiceCreate />, rank: 0 },
 
   // Devis
-  { path: "/devis/liste", component: <DevisList /> },
-  { path: "/devis/detail/:id", component: <DevisDetails /> },
-  { path: "/devis/creation", component: <DevisCreate /> },
-  { path: "/devis/edition/:id", component: <DevisCreate /> },
-  
+  { path: "/devis/liste", component: <DevisList />, rank: 0 },
+  { path: "/devis/detail/:id", component: <DevisDetails />, rank: 0 },
+  { path: "/devis/creation", component: <DevisCreate />, rank: 0 },
+  { path: "/devis/edition/:id", component: <DevisCreate />, rank: 0 },
+
   // Réglement - Transaction
-  { path: "/transaction/liste", component: <TransactionList /> },
+  { path: "/transaction/liste", component: <TransactionList />, rank: 0 },
 
   // Employees
-  { path: "/employees", component: <Employees /> },
-  { path: "/salary", component: <Salary /> },
+  { path: "/employees", component: <Employees />, rank: 0 },
+  { path: "/salary", component: <Salary />, rank: 0 },
 
   // Banque / Achat
 
-  { path: "/transaction/bank", component: <TransactionBank /> },
-  { path: "/achat", component: <Achats /> },
-  { path:'/bankaccount',component :<BankAccount/>},
-  
-  // Recurrence 
-  { path: "/recurrence", component: <Recurrence />},
- 
-  // comptability 
-  { path: "/export", component: <Export />},
+  { path: "/transaction/bank", component: <TransactionBank />, rank: 0 },
+  { path: "/achat", component: <Achats />, rank: 0 },
+  { path: '/bankaccount', component: <BankAccount />, rank: 0 },
 
-  
+  // Recurrence 
+  { path: "/recurrence", component: <Recurrence />, rank: 0 },
+
+  // comptability 
+  { path: "/export", component: <Export />, rank: 0 },
+
+
 
   {
     path: "/",
     exact: true,
     component: <Navigate to="/dashboard" />,
+    rank: 0
   },
 ];
+
+const adminRoute = [
+  { path: "/admin", component: <DashboardAdmin />, rank: 1 },
+
+  { path: "/admin/users", component: <UserAdmin />, rank: 1 },
+  
+  { path: "/admin/user/", component: <FormUser />, rank: 1 },
+
+  {
+    path: "/",
+    exact: true,
+    component: <Navigate to="/admin" />,
+    rank: 1
+  },
+]
+
 
 const publicRoutes = [
   // Authentication Page
@@ -89,10 +112,12 @@ const publicRoutes = [
   { path: "/login", component: <Login /> },
   { path: "/forgot-password", component: <ForgetPasswordPage /> },
   { path: "/register", component: <Register /> },
+  { path: "/finalisation-compte", component: <FinalisationAccount /> },
+  { path: "/erreur-404", component: <Basic404 /> },
 
 ];
 
-export { authProtectedRoutes, publicRoutes };
+export { userRoute, adminRoute, publicRoutes };
 
 
 

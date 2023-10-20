@@ -325,10 +325,10 @@ const Recurrence = () => {
           <Row>
             <Col lg={12}>
               <Card>
-                <CardHeader>
+                <div className="mx-3 mt-3">
 
                   <Col lg={12}>
-                    <div className="d-flex flex-grow-1 justify-content-end">
+                    <div className="d-flex flex-grow-1 justify-content-start">
 
                       <button className="btn btn-info add-btn" onClick={() => setOpenCreate(true)}>
                         <i className="ri-add-fill me-1 align-bottom"></i>
@@ -337,7 +337,7 @@ const Recurrence = () => {
                     </div>
 
                   </Col>
-                </CardHeader>
+                </div>
 
 
                 <CardBody className="pt-3">

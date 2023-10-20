@@ -71,6 +71,9 @@ import ExportReducer from "./export/reducer";
 //exportReducer
 import BankAccountReducer from "./bankAccount/reducer";
 
+//AdminReducer
+import AdminReducer from "./admin/reducer";
+
 
 
 import sessionStorage from "redux-persist/es/storage/session";
@@ -102,7 +105,8 @@ const appReducer = combineReducers({
   Achat: AchatReducer,
   Recurrence: RecurrenceReducer,
   Export: ExportReducer,
-  BankAccount:BankAccountReducer,
+  BankAccount: BankAccountReducer,
+  Admin: AdminReducer,
 
 });
 

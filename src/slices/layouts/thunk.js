@@ -38,7 +38,7 @@ export const changeLayout = (layout) => async (dispatch) => {
  */
 export const changeLayoutMode = (layoutMode) => async (dispatch) => {
     try {
-      console.log("----",layoutMode);
+ 
         changeHTMLAttribute("data-layout-mode", layoutMode);
         dispatch(changeLayoutModeAction(layoutMode));
     } catch (error) { }
