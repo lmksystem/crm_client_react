@@ -9,8 +9,8 @@ import moment from 'moment';
 import TableContainer from "../../../Components/Common/TableContainer";
 import { rounded } from "../../../utils/function";
 import { useNavigate } from "react-router-dom";
-
-
+import DeleteModal from "../../../Components/Common/DeleteModal";
+import { deleteUser as onDeleteUser } from "../../../slices/thunks"; 
 moment.locale('fr')
 
 const UserAdmin = () => {
@@ -18,6 +18,10 @@ const UserAdmin = () => {
   const { users } = useSelector((state) => ({
     users: state.Admin.users
   }))
+
+  //delete Company
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [userId, setUserId] = useState(null);
 
   const dispatch = useDispatch();
   let navigate = useNavigate();
@@ -57,7 +61,6 @@ const UserAdmin = () => {
         Header: "Date de création",
         accessor: "",
         Cell: (cell) => {
-          console.log(cell);
           return moment(cell.row.original.use_created).format('DD MMM YYYY')
         }
       },
@@ -75,7 +78,7 @@ const UserAdmin = () => {
         Cell: (cell) => {
           return (
             <div>
-              <div onClick={() => console.log('ok')}><i style={{ fontSize: 15, color: "red" }} className="ri-delete-bin-fill"></i></div>
+              <div onClick={() => onClickDelete(cell.row.original.use_id)}><i style={{ fontSize: 15, color: "red" }} className="ri-delete-bin-fill"></i></div>
             </div>
           )
         }
@@ -84,15 +87,35 @@ const UserAdmin = () => {
     []
   );
 
-  const navigateToEditForm = (row) => {
-    navigate('/admin/user/' + row.original.use_id)
-  }
+  // const navigateToEditForm = (row) => {
+  //   navigate('/admin/user/' + row.original.use_id)
+  // }
+
+  // Delete Data
+  const handleDeleteUser = () => {
+    if (userId) {
+      dispatch(onDeleteUser(userId));
+      setDeleteModal(false);
+    }
+  };
+
+  const onClickDelete = (id) => {
+    setUserId(id);
+    setDeleteModal(true);
+  };
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
           <BreadCrumb title="Utilisateurs" pageTitle="Countano" />
+
+          <DeleteModal
+            show={deleteModal}
+            onDeleteClick={handleDeleteUser}
+            onCloseClick={() => setDeleteModal(false)}
+          />
+
           <Row>
             <Col>
               <Card>

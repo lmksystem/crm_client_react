@@ -16,7 +16,7 @@ export const addNewTransaction = createAsyncThunk("invoice/addNewTransaction", a
     return response;
   }
   catch (error) {
-    toast.error("Invoice Delete Failed", { autoClose: 3000 });
+    toast.error("Erreur de creation de la transaction", { autoClose: 3000 });
     return error;
   }
 });
@@ -27,7 +27,7 @@ export const getTransaction = createAsyncThunk("invoice/getTransaction", async (
     return response;
   }
   catch (error) {
-    toast.error("Invoice Delete Failed", { autoClose: 3000 });
+    toast.error("Erreur de récupération de transaction", { autoClose: 3000 });
     return error;
   }
 });
@@ -38,7 +38,7 @@ export const sendInvocieByEmail = createAsyncThunk("invoice/sendInvocieByEmail",
     return response;
   }
   catch (error) {
-    toast.error("Invoice Delete Failed", { autoClose: 3000 });
+    toast.error("Erreur d'envoie de facture", { autoClose: 3000 });
     return error;
   }
 });
@@ -49,7 +49,7 @@ export const deleteTransaction = createAsyncThunk("invoice/deleteTransaction", a
     return response;
   }
   catch (error) {
-    toast.error("Invoice Delete Failed", { autoClose: 3000 });
+    toast.error("Erreur de suppression de transaction", { autoClose: 3000 });
     return error;
   }
 });
@@ -60,7 +60,7 @@ export const getTransactionList = createAsyncThunk("invoice/getTransactionList",
     return response;
   }
   catch (error) {
-    toast.error("Invoice Delete Failed", { autoClose: 3000 });
+    toast.error("Echec de récuperation de transaction", { autoClose: 3000 });
     return error;
   }
 });
