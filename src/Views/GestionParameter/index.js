@@ -71,7 +71,7 @@ const GestionParameter = () => {
       ) || { con_title: "Prefixe devis", con_value: "" },
       date_start_exercice: state.Gestion.constantes?.find(
         (cst) => cst?.con_title === "Date démarrage exercice"
-      ) || { con_title: "Date démarrage exercice", con_date: null },
+      ) || { con_title: "Date démarrage exercice", con_value: null },
       tva: state.Gestion.tva,
       constanteComp: state.Gestion.constantes,
       isTvaSuccess: state.Gestion.isTvaSuccess,
@@ -86,7 +86,7 @@ const GestionParameter = () => {
     initialValues: {
       prefixe_libelle_fac: prefix_facture?.con_value || "",
       prefixe_libelle_dev: prefix_devis?.con_value || "",
-      date_start_exercice: date_start_exercice?.con_date || null,
+      date_start_exercice: date_start_exercice?.con_value || null,
     },
     onSubmit: (values) => {
       let newPrefixeFacture = {
@@ -99,7 +99,7 @@ const GestionParameter = () => {
       };
       let newStartExercice = {
         ...date_start_exercice,
-        con_date: values.date_start_exercice,
+        con_value: values.date_start_exercice.toString(),
       };
 
       let newPrefixes = [newPrefixeFacture, newPrefixeDevis, newStartExercice];
