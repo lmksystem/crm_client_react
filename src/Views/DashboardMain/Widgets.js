@@ -62,6 +62,8 @@ const Widgets = () => {
       decimals: 2,
       prefix: "",
       suffix: "€",
+      separator:" ",
+      decimal:","
     },
     {
       id: 2,
@@ -155,7 +157,9 @@ const Widgets = () => {
                         separator={item.separator}
                         end={item.counter}
                         decimals={item.decimals}
+                        decimal={item.decimal}
                         duration={1}
+
                       />
                     </span>
                   </h4>

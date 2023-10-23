@@ -83,7 +83,8 @@ const Revenue = ({perdiodeCalendar}) => {
                     decimals={2}
                     end={transactionByMonth?.length>0?transactionByMonth.reduce((accumulateur, objet) => { return accumulateur + objet["somme_tra_value"];}, 0) :0 }
                     duration={1}
-                    separator={","}
+                    separator={" "}
+                    decimal=","
                   />
                 </h5>
                 <p className="text-muted mb-0">Total des ventes</p>

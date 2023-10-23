@@ -66,14 +66,14 @@ export function GlobalFilter({
               </div>
             </Col>
           {setPeriodeCalendar && perdiodeCalendar &&  <Col>
-            <div className="mt-lg-0">
-                <form action="#">
-                  <Row className="g-3 mb-0 align-items-center justify-content-end">
-                    <div className="col-sm-auto d-flex align-items-center">
+            {/* <div className="mt-lg-0"> */}
+                {/* <form action="#"> */}
+                  <Row className=" mb-0 align-items-center justify-content-end ">
+                    <div sty className="col-sm-auto d-flex align-items-center flex-row">
                       {flatpickrRef.current?.flatpickr?.selectedDates?.length >
                         0 && (
                         <i
-                          className="las la-calendar-times la-lg mx-3"
+                          className="las la-calendar-times la-lg me-3"
                           onClick={() => {
                             setPeriodeCalendar({
                               start: null,
@@ -84,10 +84,10 @@ export function GlobalFilter({
                           style={{ color: "red" }}
                         ></i>
                       )}
-                      <div className="input-group">
+                      {/* <div className="input-group"> */}
                         <Flatpickr
                           ref={flatpickrRef}
-                          className="form-control border-0 fs-13 dash-filter-picker shadow"
+                          className="form-control border-0 fs-13 dash-filter-picker shadow flex-row"
                           options={{
                             locale: "fr",
                             mode: "range",
@@ -122,10 +122,10 @@ export function GlobalFilter({
                           <i className="ri-calendar-2-line"></i>
                         </div>
                       </div>
-                    </div>
+                    {/* </div> */}
                   </Row>
-                </form>
-              </div>
+                {/* </form> */}
+              {/* </div> */}
             </Col>}
           </Row>
         </form>
