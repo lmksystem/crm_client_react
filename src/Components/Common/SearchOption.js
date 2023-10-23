@@ -61,7 +61,7 @@ const SearchOption = () => {
         <React.Fragment>
             <form className="app-search d-none d-md-block">
                 <div className="position-relative">
-                    <Input type="text" className="form-control" placeholder="Search..."
+                    <Input type="text" className="form-control" placeholder="Rechercher..."
                         id="search-options"
                         value={value}
                         onChange={e => {
