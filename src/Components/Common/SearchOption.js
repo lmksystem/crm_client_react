@@ -74,18 +74,18 @@ const SearchOption = () => {
                 <div className="dropdown-menu dropdown-menu-lg" id="search-dropdown">
                     <SimpleBar style={{ height: "320px" }}>
 
-                        <div className="dropdown-header">
+                        {/* <div className="dropdown-header">
                             <h6 className="text-overflow text-muted mb-0 text-uppercase">Recent Searches</h6>
-                        </div>
-
+                        </div> */}
+{/* 
                         <div className="dropdown-item bg-transparent text-wrap">
                             <Link to="/" className="btn btn-soft-secondary btn-sm btn-rounded">how to setup <i
                                 className="mdi mdi-magnify ms-1"></i></Link>
                             <Link to="/" className="btn btn-soft-secondary btn-sm btn-rounded">buttons <i
                                 className="mdi mdi-magnify ms-1"></i></Link>
-                        </div>
+                        </div> */}
 
-                        <div className="dropdown-header mt-2">
+                        {/* <div className="dropdown-header mt-2">
                             <h6 className="text-overflow text-muted mb-1 text-uppercase">Pages</h6>
                         </div>
 
@@ -105,11 +105,11 @@ const SearchOption = () => {
                         <Link to="#" className="dropdown-item notify-item">
                             <i className="ri-user-settings-line align-middle fs-18 text-muted me-2"></i>
                             <span>My account settings</span>
-                        </Link>
+                        </Link> */}
 
 
                         <div className="dropdown-header mt-2">
-                            <h6 className="text-overflow text-muted mb-2 text-uppercase">Members</h6>
+                            <h6 className="text-overflow text-muted mb-2 text-uppercase">Clients / Fournisseurs</h6>
                         </div>
 
                         <div className="notification-list">
@@ -119,7 +119,7 @@ const SearchOption = () => {
                                     <img src={image2} className="me-3 rounded-circle avatar-xs" alt="user-pic" />
                                     <div className="flex-1">
                                         <h6 className="m-0">Angela Bernier</h6>
-                                        <span className="fs-11 mb-0 text-muted">Manager</span>
+                                        <span className="fs-11 mb-0 text-muted">Fournisseur</span>
                                     </div>
                                 </div>
                             </Link>
@@ -129,7 +129,7 @@ const SearchOption = () => {
                                     <img src={image3} className="me-3 rounded-circle avatar-xs" alt="user-pic" />
                                     <div className="flex-1">
                                         <h6 className="m-0">David Grasso</h6>
-                                        <span className="fs-11 mb-0 text-muted">Web Designer</span>
+                                        <span className="fs-11 mb-0 text-muted">Client</span>
                                     </div>
                                 </div>
                             </Link>
@@ -139,17 +139,17 @@ const SearchOption = () => {
                                     <img src={image5} className="me-3 rounded-circle avatar-xs" alt="user-pic" />
                                     <div className="flex-1">
                                         <h6 className="m-0">Mike Bunch</h6>
-                                        <span className="fs-11 mb-0 text-muted">React Developer</span>
+                                        <span className="fs-11 mb-0 text-muted">Prospect</span>
                                     </div>
                                 </div>
                             </Link>
                         </div>
                     </SimpleBar>
 
-                    <div className="text-center pt-3 pb-1">
+                    {/* <div className="text-center pt-3 pb-1">
                         <Link to="/pages-search-results" className="btn btn-primary btn-sm">View All Results <i
                             className="ri-arrow-right-line ms-1"></i></Link>
-                    </div>
+                    </div> */}
                 </div>
             </form>
         </React.Fragment>

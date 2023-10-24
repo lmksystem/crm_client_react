@@ -35,7 +35,8 @@ export function GlobalFilter({
   globalFilter,
   setGlobalFilter,
   perdiodeCalendar ,
-  setPeriodeCalendar
+  setPeriodeCalendar,
+  selectFilter
 }) {
   const [value, setValue] = React.useState(globalFilter);
   const flatpickrRef = useRef();
@@ -64,7 +65,26 @@ export function GlobalFilter({
                 />
                 <i className="bx bx-search-alt search-icon"></i>
               </div>
+      {   selectFilter &&  <div className={"search-box d-inline-block"}>
+              <Input
+                    type="select"
+                    className="form-select mb-0"
+                    value={selectFilter.value}
+                    onChange={selectFilter.handleChange}
+                    // onBlur={validation.handleBlur}
+                  >
+                    <option  value={"null"}>
+                     Filtrer par {selectFilter.by}
+                    </option>
+                    {selectFilter?.data.map((e, i) => (
+                      <option key={i} value={e.value}>
+                        {e.value}
+                      </option>
+                    ))}
+                  </Input>
+              </div>}
             </Col>
+
           {setPeriodeCalendar && perdiodeCalendar &&  <Col>
             {/* <div className="mt-lg-0"> */}
                 {/* <form action="#"> */}
@@ -168,7 +188,7 @@ const TableContainer = ({
   actionItem,
   setPeriodeCalendar,
   perdiodeCalendar,
-
+  selectFilter,
 }) => {
   const {
     getTableProps,
@@ -258,6 +278,7 @@ const TableContainer = ({
             isTaskListFilter={isTaskListFilter}
             setPeriodeCalendar={setPeriodeCalendar}
             perdiodeCalendar={perdiodeCalendar}
+            selectFilter={selectFilter}
           />
         )}
         
