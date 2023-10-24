@@ -88,7 +88,7 @@ const AlertParametrage = () => {
 
         </Col>
 
-        <div className="mx-auto d-flex" w lg={12}>
+        <div className="mx-auto d-flex" lg={12}>
           <div className="m-2">
             <button
               onClick={(e) => {
@@ -102,7 +102,7 @@ const AlertParametrage = () => {
                 })
               }}
 
-              className="btn btn-primary"
+              className="btn btn-secondary"
               id="add-btn"
             >
               + Ajouter

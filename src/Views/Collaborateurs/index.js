@@ -511,7 +511,7 @@ const Collaborateurs = () => {
                   <div className="d-flex align-items-center flex-wrap gap-2">
                     <div className="flex-grow-1">
                       <button
-                        className="btn btn-primary add-btn d-flex flex-row  align-items-center"
+                        className="btn btn-secondary add-btn d-flex flex-row  align-items-center"
                         onClick={() => {
                           setIsEdit(false);
                           toggle();

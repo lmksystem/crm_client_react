@@ -601,7 +601,7 @@ const InvoiceCreate = () => {
                                 placeholder="Nom complet"
                                 invalid={validation.errors?.contact?.fco_cus_name && validation.touched?.contact?.fco_cus_name ? true : false}
                               />
-                              <button onClick={toggle} className="btn btn-primary" type="button" id="button-addon2">+</button>
+                              <button onClick={toggle} className="btn btn-secondary" type="button" id="button-addon2">+</button>
                               {/* {showCollabDiv &&
                                 <datalist id="list-company" style={{ display: "block", position: 'absolute', backgroundColor: 'white', width: "100%", border: "0.5px solid #dddddd", zIndex: 5000, height: "auto", maxHeight: "400px", overflowY: "scroll" }} >
                                   {collaborateurs.filter(e => e.ent_name.includes(validation.values.contact.fco_cus_name)).map((c, i) => {
@@ -840,7 +840,7 @@ const InvoiceCreate = () => {
                                     onChange={validation.handleChange}
                                     required
                                   />
-                                  <button onClick={() => { toggleModalProduct(); setSelectedLigne(i) }} className="btn btn-primary" type="button" id="button-addon2">+</button>
+                                  <button onClick={() => { toggleModalProduct(); setSelectedLigne(i) }} className="btn btn-secondary" type="button" id="button-addon2">+</button>
 
                                 </div>
                                 <Input
@@ -880,7 +880,7 @@ const InvoiceCreate = () => {
                                     onChange={(e) => { handleChangeValue(e, i); }}
                                     onBlur={validation.handleBlur}
                                   />
-                                  <Label className="btn btn-primary btn-input-group">ht</Label>
+                                  <Label className="btn btn-secondary btn-input-group">ht</Label>
                                 </div>
                                 <div className="input-group  mt-2">
                                   <Input
@@ -894,7 +894,7 @@ const InvoiceCreate = () => {
                                     onBlur={validation.handleBlur}
                                     readOnly
                                   />
-                                  <Label className="btn btn-primary btn-input-group">ttc</Label>
+                                  <Label className="btn btn-secondary btn-input-group">ttc</Label>
                                 </div>
                               </td>
                               <td>
@@ -908,7 +908,7 @@ const InvoiceCreate = () => {
                                     value={validation.values?.ligne[i]?.fli_pourcent_remise || ""}
                                     onChange={(e) => handleChangeValue(e, i)}
                                     onBlur={validation.handleBlur} />
-                                  <Label className="btn btn-primary btn-input-group">%</Label>
+                                  <Label className="btn btn-secondary btn-input-group">%</Label>
                                 </div>
                               </td>
                               <td>
@@ -944,7 +944,7 @@ const InvoiceCreate = () => {
                                     value={"€" + rounded(validation.values?.ligne[i]?.fli_total_ht, 2)}
                                     readOnly
                                   />
-                                  <Label className="btn btn-primary btn-input-group">ht</Label>
+                                  <Label className="btn btn-secondary btn-input-group">ht</Label>
                                 </div>
                                 <div className="input-group mt-2">
                                   <Input
@@ -954,7 +954,7 @@ const InvoiceCreate = () => {
                                     value={"€" + rounded(validation.values?.ligne[i]?.fli_total_ttc, 2)}
                                     readOnly
                                   />
-                                  <Label className="btn btn-primary btn-input-group">ttc</Label>
+                                  <Label className="btn btn-secondary btn-input-group">ttc</Label>
                                 </div>
                               </td>
                               <td className="product-removal text-end">

@@ -251,7 +251,7 @@ const InvoiceDetails = () => {
                               <th scope="col">Description</th>
                               <th scope="col" className="text-end">Montant</th>
                               <th className="text-end">
-                                <button onClick={() => setAddActifView(() => true)} className="d-print-none btn btn-primary btn-icon " style={{ width: "25px", height: "25px" }} >+</button>
+                                <button onClick={() => setAddActifView(() => true)} className="d-print-none btn btn-secondary btn-icon " style={{ width: "25px", height: "25px" }} >+</button>
                               </th>
                             </tr>
                           </thead>
@@ -366,7 +366,7 @@ const InvoiceDetails = () => {
                                 ) : null}
                               </Col>
                               <Col lg={4}>
-                                <button type="submit" className="mx-2 btn btn-primary">Enregistrer</button>
+                                <button type="submit" className="mx-2 btn btn-secondary">Enregistrer</button>
                                 <button type="button" onClick={(e) => { e.preventDefault(); setAddActifView(() => false) }} className="btn btn-danger">Annuler</button>
                               </Col>
                             </Row>
@@ -379,7 +379,7 @@ const InvoiceDetails = () => {
                     <div className="hstack gap-2 justify-content-end d-print-none mt-4">
                       <button to="#" onClick={printInvoice} className="btn btn-success"><i className="ri-printer-line align-bottom me-1"></i> Imprimer</button>
                       <button disabled={!invoice.doc ? true : false} onClick={() => setShowConfirmModal(true)} className="btn btn-success"><i className="ri-send-plane-fill align-bottom me-1"></i> Envoyer</button>
-                      <button disabled={!invoice.doc ? true : false} onClick={() => handleGeneratePdf()} className="btn btn-primary"><i className="ri-download-2-line align-bottom me-1"></i> Télécharger</button>
+                      <button disabled={!invoice.doc ? true : false} onClick={() => handleGeneratePdf()} className="btn btn-secondary"><i className="ri-download-2-line align-bottom me-1"></i> Télécharger</button>
                     </div>
                   </CardBody>
                 </Col>

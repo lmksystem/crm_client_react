@@ -108,16 +108,8 @@ const Salary = () => {
   };
 
   // Créez un objet pour organiser les données par mois
-  const moisDonnees = {};
-
+  const [moisDonnees, setMoisDonnee] = useState({});
   function MoisComponent() {
-    salaries?.forEach((item) => {
-      const moisNom = moisIndices[item?.mois];
-      if (!moisDonnees[moisNom]) {
-        moisDonnees[moisNom] = [];
-      }
-      moisDonnees[moisNom].push(item);
-    });
     // Affichez tous les mois de l'année, même ceux sans données
     return (
       <div>
@@ -373,7 +365,7 @@ const Salary = () => {
         },
       },
     ],
-    [handleSalaryClick, checkedAll, salaries]
+    [handleSalaryClick, checkedAll, salaries,moisDonnees]
   );
 
   //Récupération des employés pour le select du formulaire
@@ -383,7 +375,18 @@ const Salary = () => {
 
   useEffect(() => {
     if (dateFormat?.length > 3) {
-      dispatch(onGetSalary(dateFormat));
+      dispatch(onGetSalary(dateFormat)).then(() => {
+        let moisData = {};
+        for (let index = 0; index < salaries.length; index++) {
+          const element = salaries[index];
+          const moisNom = moisIndices[element?.mois];
+          if (!moisData[moisNom]) {
+            moisData[moisNom] = [];
+          }
+          moisData[moisNom].push(element);
+        }
+        setMoisDonnee(moisData);
+      });
     }
   }, [dispatch, dateFormat, salary]);
 
@@ -409,7 +412,32 @@ const Salary = () => {
           <BreadCrumb title="Salaires" pageTitle="Employés" />
           <Row>
             <Col className="d-flex  justify-content-between" lg={12}>
-              <div className="mb-3">
+              <div className="flex-grow-1">
+                <button
+                  className="btn btn-secondary add-btn"
+                  onClick={() => {
+                    setModal(true);
+                  }}
+                >
+                  <i className="ri-add-fill me-1 align-bottom"></i> Ajouter un
+                  salaire
+                </button>
+              </div>
+              <div className="d-flex justify-content-end align-items-center flex-wrap gap-5 mb-2">
+                <div className="flex-shrink-0 mr-8">
+                  <div className="hstack text-nowrap gap-2">
+                    {isMultiDeleteButton && (
+                      <button
+                        className="btn btn-danger"
+                        onClick={() => setDeleteModalMulti(true)}
+                      >
+                        <i className="ri-delete-bin-2-line"></i>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="mb-3 me-4">
                 <Cleave
                   placeholder="Annéee"
                   options={{
@@ -423,31 +451,6 @@ const Salary = () => {
                   className="form-control"
                 />
               </div>
-              <div className="d-flex justify-content-end align-items-center flex-wrap gap-5 me-4 mb-2">
-                <div className="flex-shrink-0 mr-8">
-                  <div className="hstack text-nowrap gap-2">
-                    {isMultiDeleteButton && (
-                      <button
-                        className="btn btn-danger"
-                        onClick={() => setDeleteModalMulti(true)}
-                      >
-                        <i className="ri-delete-bin-2-line"></i>
-                      </button>
-                    )}
-                  </div>
-                </div>
-                <div className="flex-grow-1">
-                  <button
-                    className="btn btn-primary add-btn"
-                    onClick={() => {
-                      setModal(true);
-                    }}
-                  >
-                    <i className="ri-add-fill me-1 align-bottom"></i> Ajouter un
-                    salaire
-                  </button>
-                </div>
-              </div>
             </Col>
 
             <Row>
@@ -455,26 +458,11 @@ const Salary = () => {
                 <Card id="contactList">
                   <CardBody className="pt-0">
                     <Row>
-                      <Col lg={2}>
-                        {dateFormat.length > 3 && (
-                          <ListGroup className=" mt-3">
-                            <ListGroupItem
-                              tag="a"
-                              to="#"
-                              className="list-group-item-action active"
-                            >
-                              {dateFormat}
-                            </ListGroupItem>
-                            {MoisComponent()}
-                          </ListGroup>
-                        )}
-                      </Col>
                       <Col lg={10} className="px-4">
                         {dateFormat?.length > 3 && dateMonthChoice && (
                           <div>
                             {isSalarySuccess ? (
                               <TableContainer
-                                
                                 columns={columns}
                                 data={moisDonnees[dateMonthChoice] || []}
                                 isGlobalFilter={true}
@@ -490,6 +478,20 @@ const Salary = () => {
                               <Loader error={error} />
                             )}
                           </div>
+                        )}
+                      </Col>
+                      <Col lg={2}>
+                        {dateFormat.length > 3 && (
+                          <ListGroup className=" mt-3">
+                            <ListGroupItem
+                              tag="a"
+                              to="#"
+                              className="list-group-item-action active"
+                            >
+                              {dateFormat}
+                            </ListGroupItem>
+                            {MoisComponent()}
+                          </ListGroup>
                         )}
                       </Col>
                     </Row>

@@ -321,7 +321,7 @@ const Recurrence = () => {
         />
 
         <Container fluid>
-          <BreadCrumb title="Produit" pageTitle="Gestion" />
+          <BreadCrumb title="Récurrence" pageTitle="Facturation" />
           <Row>
             <Col lg={12}>
               <Card>
@@ -330,7 +330,7 @@ const Recurrence = () => {
                   <Col lg={12}>
                     <div className="d-flex flex-grow-1 justify-content-start">
 
-                      <button className="btn btn-primary add-btn" onClick={() => setOpenCreate(true)}>
+                      <button className="btn btn-secondary add-btn" onClick={() => setOpenCreate(true)}>
                         <i className="ri-add-fill me-1 align-bottom"></i>
                         Ajouter une facturation récurrente
                       </button>
@@ -475,7 +475,7 @@ const Recurrence = () => {
                       required
                       invalid={validation.errors?.recurrence_data?.rec_ent_fk && validation.touched?.recurrence_data?.rec_ent_fk ? true : false}
                     />
-                    <button onClick={() => { toggleModalClient(); }} className="btn btn-primary" type="button" id="button-addon2">+</button>
+                    <button onClick={() => { toggleModalClient(); }} className="btn btn-secondary" type="button" id="button-addon2">+</button>
                     {validation.errors?.recurrence_data?.rec_ent_fk && validation.touched?.recurrence_data?.rec_ent_fk ? (
                       <FormFeedback type="invalid">{validation.errors?.recurrence_data?.rec_ent_fk}</FormFeedback>
                     ) : null}
@@ -585,7 +585,7 @@ const Recurrence = () => {
                 <Col lg={6}>
                   <div>
                     <Label htmlFor="pro_name-field" className="form-label"                      >
-                      <button onClick={() => { toggleModalProduct(); }} className="btn btn-primary" type="button" id="button-addon2">+ Ajouter des produits</button>
+                      <button onClick={() => { toggleModalProduct(); }} className="btn btn-secondary" type="button" id="button-addon2">+ Ajouter des produits</button>
                     </Label>
                   </div>
                 </Col>
@@ -647,7 +647,7 @@ const Recurrence = () => {
                           />
 
 
-                          <label className="btn btn-primary btn-input-group form-label">€</label>
+                          <label className="btn btn-secondary btn-input-group form-label">€</label>
                         </div>
 
                       </div>
@@ -667,7 +667,7 @@ const Recurrence = () => {
             <ModalFooter>
               <div className="d-flex flex-grow-1 justify-content-end">
 
-                <button className="btn btn-primary add-btn" type="submit">
+                <button className="btn btn-secondary add-btn" type="submit">
                   <i className="ri-add-fill me-1 align-bottom"></i>
                   Ajouter une facturation récurrente
                 </button>
@@ -762,7 +762,7 @@ const Recurrence = () => {
           <ModalFooter>
             <div className="hstack gap-2 justify-content-end">
               <button type="button" className="btn btn-light" onClick={() => { setOpenList(false); }} > Fermer </button>
-              <button type="submit" className="btn btn-success" id="add-btn" > Séléctionner </button>
+              {/* <button type="submit" className="btn btn-success" id="add-btn" > Séléctionner </button> */}
             </div>
           </ModalFooter>
 

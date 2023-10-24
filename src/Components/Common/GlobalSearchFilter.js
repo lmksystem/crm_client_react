@@ -89,7 +89,7 @@ const CustomersGlobalFilter = () => {
             <div>
               <button
                 type="button"
-                className="btn btn-primary w-100"
+                className="btn btn-secondary w-100"
               >
                 {" "}
                 <i className="ri-equalizer-fill me-2 align-bottom"></i>
@@ -190,7 +190,7 @@ const OrderGlobalFilter = () => {
 
       <Col sm={4} className="col-xxl-1">
         <div>
-          <button type="button" className="btn btn-primary w-100">
+          <button type="button" className="btn btn-secondary w-100">
             {" "}
             <i className="ri-equalizer-fill me-1 align-bottom"></i>
             Filters
@@ -624,7 +624,7 @@ const TicketsListGlobalFilter = () => {
         </div>
       </Col>
       <Col xxl={1} sm={4}>
-        <button type="button" className="btn btn-primary w-100"> <i className="ri-equalizer-fill me-1 align-bottom"></i>
+        <button type="button" className="btn btn-secondary w-100"> <i className="ri-equalizer-fill me-1 align-bottom"></i>
           Filters
         </button>
       </Col>
@@ -678,7 +678,7 @@ const TaskListGlobalFilter = () => {
         </div>
       </div>
       <div className="col-xxl-1 col-sm-4">
-        <button type="button" className="btn btn-primary w-100"> <i className="ri-equalizer-fill me-1 align-bottom"></i>
+        <button type="button" className="btn btn-secondary w-100"> <i className="ri-equalizer-fill me-1 align-bottom"></i>
           Filters
         </button>
       </div>

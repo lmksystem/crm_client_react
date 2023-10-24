@@ -195,7 +195,7 @@ const InvoiceList = () => {
       <div className="page-content">
 
         <Container fluid>
-          <BreadCrumb title="Factures" pageTitle="Liste" />
+          <BreadCrumb title="Factures" pageTitle="Facturation" />
           <h3>Statistiques de l'année</h3>
           <Row>
             {invoiceWidgets?.map((widget,i) => {

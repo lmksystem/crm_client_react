@@ -112,7 +112,7 @@ const HorizontalLayout = (props) => {
                                         to={item.link ? item.link : "/#"}
                                         data-bs-toggle="collapse"
                                     >
-                                        <i className={item.icon}></i> <span data-key="t-apps">{props.t(item.label)}</span>
+                                        <i className={item.icon}></i> <span data-key="t-apps" style={{ fontWeight:'bolder' }}>{props.t(item.label)}</span>
                                     </Link>
                                     <Collapse
                                         className={item.id === "baseUi" && item.subItems.length > 13 ? "menu-dropdown mega-dropdown-menu" : "menu-dropdown"}
@@ -128,7 +128,7 @@ const HorizontalLayout = (props) => {
                                                                 <Col lg={4}>
                                                                     <ul className="nav nav-sm flex-column">
                                                                         <li className="nav-item">
-                                                                            <Link to={item.subItems[key].link} className="nav-link">{item.subItems[key].label}</Link>
+                                                                            <Link to={item.subItems[key].link}  className="nav-link">{item.subItems[key].label}</Link>
                                                                         </li>
                                                                     </ul>
                                                                 </Col>
@@ -136,7 +136,7 @@ const HorizontalLayout = (props) => {
                                                                 <Col lg={4}>
                                                                     <ul className="nav nav-sm flex-column">
                                                                         <li className="nav-item">
-                                                                            <Link to={item.subItems[key].link} className="nav-link">{item.subItems[key].label}</Link>
+                                                                            <Link to={item.subItems[key].link}  className="nav-link">{item.subItems[key].label}</Link>
                                                                         </li>
                                                                     </ul>
                                                                 </Col>
@@ -156,6 +156,7 @@ const HorizontalLayout = (props) => {
                                                                 <Link
                                                                     to={subItem.link ? subItem.link : "/#"}
                                                                     className="nav-link"
+                                                                    
                                                                 >
                                                                     {props.t(subItem.label)}
                                                                 </Link>

@@ -3,10 +3,7 @@ import React, {
   useState,
   useCallback,
   useMemo,
-  useRef,
 } from "react";
-import { Link } from "react-router-dom";
-import { isEmpty, set } from "lodash";
 import * as moment from "moment";
 import { api } from "../../config";
 // import process from "process";
@@ -752,7 +749,7 @@ const TransactionBank = () => {
                                                       setAchatActif(ach);
                                                       setModal(true);
                                                     }}
-                                                    className="btn btn-primary d-flex align-items-center mt-2"
+                                                    className="btn btn-secondary d-flex align-items-center mt-2"
                                                   >
                                                     <i className="las la-eye mx-2"></i>
                                                     <p className="m-0 font-weight-bold">

@@ -195,7 +195,7 @@ const Profile = () => {
                       <div className="mt-4 justify-content-end">
                         <button
                           type="submit"
-                          className="btn btn-primary"
+                          className="btn btn-secondary"
                           id="add-btn"
                         >
                           {" "}

@@ -122,7 +122,7 @@ const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
                                             <div className="input-group">
                                                 <input type="text" className="form-control" placeholder="Search ..."
                                                     aria-label="Recipient's username" />
-                                                <button className="btn btn-primary" type="submit"><i
+                                                <button className="btn btn-secondary" type="submit"><i
                                                     className="mdi mdi-magnify"></i></button>
                                             </div>
                                         </div>

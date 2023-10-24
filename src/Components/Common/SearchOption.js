@@ -147,7 +147,7 @@ const SearchOption = () => {
                     </SimpleBar>
 
                     {/* <div className="text-center pt-3 pb-1">
-                        <Link to="/pages-search-results" className="btn btn-primary btn-sm">View All Results <i
+                        <Link to="/pages-search-results" className="btn btn-secondary btn-sm">View All Results <i
                             className="ri-arrow-right-line ms-1"></i></Link>
                     </div> */}
                 </div>

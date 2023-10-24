@@ -11,46 +11,24 @@ import {
   Container,
   Row,
   Card,
-  CardHeader,
   CardBody,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
   Label,
   Input,
-  Modal,
-  ModalHeader,
-  ModalBody,
   Form,
-  ModalFooter,
-  Table,
-  FormFeedback,
 } from "reactstrap";
-import Select from "react-select";
 
 import BreadCrumb from "../../Components/Common/BreadCrumb";
-import DeleteModal from "../../Components/Common/DeleteModal";
 
 //Import actions
 import {
-  getTva as onGetTva,
-  addNewTva as onAddNewTva,
-  updateTva as onUpdateTva,
-  deleteTva as onDeleteTva,
-  getConstantes as onGetConstantes,
   handleConstantes as onHandleConstantes,
 } from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
-import TableContainer from "../../Components/Common/TableContainer";
 
 // Formik
-import * as Yup from "yup";
 import { useFormik } from "formik";
 
-import Loader from "../../Components/Common/Loader";
-import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // Export Modal
@@ -199,13 +177,13 @@ const GestionParameter = () => {
                             type="date"
                             onChange={constanteForm.handleChange}
                             onBlur={constanteForm.handleBlur}
-                            value={constanteForm.values.date_start_exercice || null}
+                            value={constanteForm?.values?.date_start_exercice || ""}
 
                           />
                         </div>
                       </Col>
                     </Row>
-                    <Row className="mx-auto" w lg={12}>
+                    <Row className="mx-auto" lg={12}>
                       <div className="m-2">
                         <button
                           type="submit"

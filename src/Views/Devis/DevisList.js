@@ -222,7 +222,7 @@ const DevisList = () => {
         />
 
         <Container fluid>
-          <BreadCrumb title="Devis" pageTitle="Liste" />
+          <BreadCrumb title="Devis" pageTitle="Facturation" />
           <h3>Statistiques de l'année</h3>
           <Row>
             {devisWidgets?.map((widget, i) => {
