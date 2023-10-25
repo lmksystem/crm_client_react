@@ -153,6 +153,8 @@ const Collaborateurs = () => {
       ent_siren: (collaborateur && collaborateur.ent_siren) || "",
       ent_methode_payment:
         (collaborateur && collaborateur.ent_methode_payment) || "",
+      ent_tva_intracom:
+        (collaborateur && collaborateur.ent_tva_intracom) || "",
       type: {
         // { eti_removed: 1 } permet au backend de savoir si il doit l'inserrer ou non  (1 : non / 0: oui)
         client: (collaborateur && collaborateur.type?.client) || {
@@ -185,6 +187,7 @@ const Collaborateurs = () => {
       ent_iban: Yup.string(),
       ent_siren: Yup.string(),
       ent_methode_payment: Yup.string(),
+      ent_tva_intracom:Yup.string().matches(/^[A-Za-z]{2}[0-9]{9}$/, 'Le champ doit contenir 2 lettres suivies de 9 chiffres.'),
     }),
 
     onSubmit: (values) => {
@@ -204,6 +207,8 @@ const Collaborateurs = () => {
         ent_iban: values.ent_iban,
         ent_siren: values.ent_siren,
         ent_methode_payment: values.ent_methode_payment,
+        ent_tva_intracom: values.ent_tva_intracom,
+
       };
 
       const company_type = {
@@ -253,6 +258,7 @@ const Collaborateurs = () => {
         ent_iban: collaborateur.ent_iban,
         ent_siren: collaborateur.ent_siren,
         ent_methode_payment: collaborateur.ent_methode_payment,
+        ent_tva_intracom: collaborateur.ent_tva_intracom,
         type: {
           client: collaborateur.type.client,
           prospect: collaborateur.type.prospect,
@@ -1160,7 +1166,43 @@ const Collaborateurs = () => {
                               ) : null}
                             </div>
                           </Col>
-
+                          <Col lg={6}>
+                            <div>
+                              <Label
+                                htmlFor="ent_tva_intracom-field"
+                                className="form-label"
+                              >
+                                TVA INTRACOM
+                              </Label>
+                              <Input
+                                name="ent_tva_intracom"
+                                id="ent_tva_intracom-field"
+                                className="form-control"
+                                placeholder="Entrer TVA Intracom"
+                                type="text"
+                                // validate={{
+                                //   required: { value: true },
+                                // }}
+                                onChange={validation.handleChange}
+                                onBlur={validation.handleBlur}
+                                value={
+                                  validation.values.ent_tva_intracom || ""
+                                }
+                                invalid={
+                                  validation.touched.ent_tva_intracom &&
+                                  validation.errors.ent_tva_intracom
+                                    ? true
+                                    : false
+                                }
+                              />
+                              {validation.touched.ent_tva_intracom &&
+                              validation.errors.ent_tva_intracom ? (
+                                <FormFeedback type="invalid">
+                                  {validation.errors.ent_tva_intracom}
+                                </FormFeedback>
+                              ) : null}
+                            </div>
+                          </Col>
                           <Label
                             htmlFor="ent_info-field"
                             className="form-label"
