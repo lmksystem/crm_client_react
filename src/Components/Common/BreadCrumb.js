@@ -5,6 +5,7 @@ import { useProfile } from "../Hooks/UserHooks";
 import { getAccountBank as onGetAccountBank } from "../../slices/thunks";
 import { useSelector, useDispatch } from "react-redux";
 import * as moment from "moment";
+import FluidText from "./FluidText";
 
 const BreadCrumb = ({ title, pageTitle }) => {
   const dispatch = useDispatch();
@@ -46,7 +47,8 @@ const BreadCrumb = ({ title, pageTitle }) => {
       <Row>
         <Col xs={12}>
           <div className="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 className="mb-sm-0">{title}</h4>
+            {/* <h4 className="mb-sm-0">{title}</h4> */}
+            <FluidText title={title}/>
 
             <div className="page-title-right">
               <ol className="breadcrumb m-0">
