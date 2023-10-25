@@ -18,11 +18,11 @@ import 'moment/locale/fr'  // without this line it didn't work
 
 moment.locale('fr')
 
-const WidgetCountUp = ({ data, type }) => {
+const WidgetCountUp = ({ data, type, xl = 3, md = 6 }) => {
 
   return (
     <React.Fragment>
-      <Col xl={3} md={6}>
+      <Col xl={xl} md={md}>
         <Card className="card-animate">
           <CardBody>
             <div className="d-flex align-items-center">

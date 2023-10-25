@@ -5,26 +5,23 @@ import { useSelector } from 'react-redux';
 //import images
 import avatar1 from "../../assets/images/users/avatar-1.jpg";
 import { Link } from 'react-router-dom';
+import { useProfile } from '../Hooks/UserHooks';
 
 const ProfileDropdown = () => {
 
-  const { user } = useSelector(state => ({
-    user: state.Profile.user,
-  }));
+  const { userProfile } = useProfile();
 
-  const [userName, setUserName] = useState("Admin");
+  // useEffect(() => {
+  //   if (sessionStorage.getItem("authUser")) {
+  //     const obj = JSON.parse(sessionStorage.getItem("authUser"));
+  //     if (false) {
+  //       setUserName(process.env.REACT_APP_DEFAULTAUTH === "fake" ? obj.username === undefined ? user.first_name ? user.first_name : obj.data.first_name : "Admin" || "Admin" :
+  //         process.env.REACT_APP_DEFAULTAUTH === "firebase" ? obj.providerData[0].email : "Admin"
+  //       );
+  //     }
 
-  useEffect(() => {
-    if (sessionStorage.getItem("authUser")) {
-      const obj = JSON.parse(sessionStorage.getItem("authUser"));
-      if (false) {
-        setUserName(process.env.REACT_APP_DEFAULTAUTH === "fake" ? obj.username === undefined ? user.first_name ? user.first_name : obj.data.first_name : "Admin" || "Admin" :
-          process.env.REACT_APP_DEFAULTAUTH === "firebase" ? obj.providerData[0].email : "Admin"
-        );
-      }
-
-    }
-  }, [userName, user]);
+  //   }
+  // }, [userName, user]);
 
   //Dropdown Toggle
   const [isProfileDropdown, setIsProfileDropdown] = useState(false);
@@ -39,20 +36,20 @@ const ProfileDropdown = () => {
             <img className="rounded-circle header-profile-user" src={avatar1}
               alt="Header Avatar" />
             <span className="text-start ms-xl-2">
-              <span className="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{userName}</span>
-              <span className="d-none d-xl-block ms-1 fs-13 text-muted user-name-sub-text">Founder</span>
+              <span className="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{userProfile.use_firstname}</span>
+              <span className="d-none d-xl-block ms-1 fs-13 text-muted user-name-sub-text"></span>
             </span>
           </span>
         </DropdownToggle>
         <DropdownMenu className="dropdown-menu-end">
-          <h6 className="dropdown-header">Bienvenue {userName}!</h6>
+          <h6 className="dropdown-header">Bienvenue {userProfile.use_firstname}!</h6>
           <DropdownItem className='p-0'>
             <Link to={process.env.PUBLIC_URL + "/profile"} className="dropdown-item">
               <i className="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
               <span className="align-middle">Profil</span>
             </Link>
           </DropdownItem>
-{/*          
+          {/*          
           <DropdownItem className='p-0'>
             <Link to={process.env.PUBLIC_URL + "/auth-lockscreen-basic"} className="dropdown-item">
               <i

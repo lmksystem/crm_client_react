@@ -47,7 +47,7 @@ export const updateInvoice = createAsyncThunk("invoice/updateInvoice", async (da
 
 export const createPdf = createAsyncThunk("invoice/createPdf", async (invoice) => {
   try {
-    const response = await createPdfApi(invoice);
+    const response = createPdfApi(invoice);
 
     return response;
   } catch (error) {
