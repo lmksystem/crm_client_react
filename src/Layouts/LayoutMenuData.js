@@ -207,7 +207,7 @@ const Navdata = () => {
       id: "rapports",
       label: "Rapports - WIP",
       icon: "las la-file-alt",
-      link: "/#",
+      link: "/rapports",
       click: function (e) {
         e.preventDefault();
         setIsRapport(!isRapport);
@@ -215,7 +215,7 @@ const Navdata = () => {
 
       },
       stateVariables: isRapport,
-      subItems: [],
+      // subItems: [],
     },
     {
       id: "employee",

@@ -20,18 +20,22 @@ import ConfirmModal from "../../Components/Common/ConfirmModal";
 import DeleteModal from "../../Components/Common/DeleteModal";
 import { ToastContainer } from "react-toastify";
 import SimpleBar from "simplebar-react";
-const axios = new APIClient();
+import axios from "axios";
+
+// const axios = new APIClient();
 
 const InvoiceDetails = () => {
   document.title = "Détail facture | Countano";
 
   let { id } = useParams();
 
-  const { invoice,  transactions } = useSelector((state) => ({
+  const { invoices, transactions } = useSelector((state) => ({
     invoice: state.Invoice.invoices.find((f) => f.header.fen_id == id),
+    invoices: state.Invoice.invoices,
     transactions: state.Transaction.transactions.filter((t) => t.tra_fen_fk == id)
   }));
 
+  const [invoice, setInvoice] = useState(invoices.find((f) => f.header.fen_id == id));
   const [addActifView, setAddActifView] = useState(false);
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -42,6 +46,11 @@ const InvoiceDetails = () => {
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    if (invoices?.length > 0) {
+      setInvoice(invoices.find((f) => f.header.fen_id == id))
+    }
+  }, [invoices])
 
 
   //Print the Invoice
@@ -49,14 +58,23 @@ const InvoiceDetails = () => {
     window.print();
   };
 
-  const handleGeneratePdf = () => {
-    if (invoice && invoice.doc?.fdo_file_name) {
-      downloadPdf()
-    }
-  };
-
   const downloadPdf = () => {
-    window.open(`${api.API_URL}/v1/pdf/download/facture/${invoice.header.fen_com_fk}/${invoice.header.fen_date_create}/${invoice.doc.fdo_file_name}`, 'download');
+    // window.open(`${api.API_URL}/v1/pdf/download/facture/${invoice.header.fen_com_fk}/${invoice.header.fen_date_create}/${invoice.doc.fdo_file_name}`, 'download');
+    axios.get(`${api.API_URL}/v1/pdf/download/facture/${invoice.header.fen_id}`, {
+      mode: 'no-cors',
+      responseType: 'blob'
+    }).then((response) => {
+      try {
+        let elm = document.createElement('a');  // CREATE A LINK ELEMENT IN DOM
+        elm.href = URL.createObjectURL(response);  // SET LINK ELEMENTS CONTENTS
+        elm.setAttribute('download', invoice.header.fen_num_fac + ".pdf"); // SET ELEMENT CREATED 'ATTRIBUTE' TO DOWNLOAD, FILENAME PARAM AUTOMATICALLY
+        elm.click();                             // TRIGGER ELEMENT TO DOWNLOAD
+        elm.remove();
+      }
+      catch (err) {
+        console.log(err);
+      }
+    });
   }
 
   const validation = useFormik({
@@ -92,12 +110,6 @@ const InvoiceDetails = () => {
   }
 
   useEffect(() => {
-    if (!invoice.doc) {
-      dispatch(createPdf(invoice.header.fen_id))
-    }
-  }, [invoice])
-
-  useEffect(() => {
     if (nbTransaction != transactions.length) {
       setNbTransaction(transactions.length);
       let dataInvoiceUpdate = rounded(transactions.reduce((previousValue, currentValue) => parseFloat(previousValue) - parseFloat(currentValue.tra_value), parseFloat(invoice.header.fen_total_ttc)), 2);
@@ -114,7 +126,17 @@ const InvoiceDetails = () => {
     <div className="page-content">
       <Container fluid>
         <BreadCrumb className="d-print-none" title="Facture détaillée" pageTitle="Factures" />
-        <ConfirmModal title={'Êtes-vous sûr ?'} text={"Êtes-vous sûr de vouloir envoyer la facture ?"} show={showConfirmModal} onCloseClick={() => setShowConfirmModal(false)} onActionClick={() => sendInvoiceByEmail()} />
+        <ConfirmModal title={'Êtes-vous sûr ?'} text={"Êtes-vous sûr de vouloir envoyer la facture ?"} show={showConfirmModal} onCloseClick={() => setShowConfirmModal(false)} onActionClick={() => {
+          sendInvoiceByEmail()
+          // if (!invoice.doc) {
+          //   dispatch(createPdf(invoice.header.fen_id)).then(() => {
+              
+          //   })
+          // } else {
+          //   sendInvoiceByEmail()
+          // }
+
+        }} />
         <DeleteModal show={showModalDelete} onCloseClick={() => setShowModalDelete(false)} onDeleteClick={() => { deletetransaction() }} />
         <Row className="justify-content-center">
           <Col xxl={9}>
@@ -259,9 +281,9 @@ const InvoiceDetails = () => {
 
                             {transactions.length > 0 && transactions.map((element, index) => {
                               return (
-                                <tr key={index}>
+                                <tr key={index + 1}>
                                   <td>
-                                    #{index}
+                                    #{index +1 }
                                   </td>
 
                                   <td>
@@ -378,8 +400,8 @@ const InvoiceDetails = () => {
 
                     <div className="hstack gap-2 justify-content-end d-print-none mt-4">
                       <button to="#" onClick={printInvoice} className="btn btn-success"><i className="ri-printer-line align-bottom me-1"></i> Imprimer</button>
-                      <button disabled={!invoice.doc ? true : false} onClick={() => setShowConfirmModal(true)} className="btn btn-success"><i className="ri-send-plane-fill align-bottom me-1"></i> Envoyer</button>
-                      <button disabled={!invoice.doc ? true : false} onClick={() => handleGeneratePdf()} className="btn btn-secondary"><i className="ri-download-2-line align-bottom me-1"></i> Télécharger</button>
+                      <button onClick={() => setShowConfirmModal(true)} className="btn btn-success"><i className="ri-send-plane-fill align-bottom me-1"></i> Envoyer</button>
+                      <button onClick={() => downloadPdf()}  className="btn btn-secondary"><i className="ri-download-2-line align-bottom me-1"></i> Télécharger</button>
                     </div>
                   </CardBody>
                 </Col>

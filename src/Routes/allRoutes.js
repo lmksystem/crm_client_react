@@ -36,6 +36,7 @@ import UserAdmin from "../Views/Admin/User";
 import FormUser from "../Views/Admin/User/FormUser";
 import FinalisationAccount from "../Views/FinalisationAccount/FinalisationAccount";
 import Basic404 from "../Views/AuthenticationInner/Errors/Basic404";
+import Rapport from "../Views/Rapports";
 import Profile from "../Views/Admin/User/Profile";
 
 
@@ -78,6 +79,9 @@ const userRoute = [
 
   // Recurrence 
   { path: "/recurrence", component: <Recurrence />, rank: 0 },
+  
+  // Rapport 
+  { path: "/rapports", component: <Rapport />, rank: 0 },
 
   // comptability 
   { path: "/export", component: <Export />, rank: 0 },

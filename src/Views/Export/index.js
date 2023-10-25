@@ -15,7 +15,7 @@ import InvoiceChart from "./InvoiceChart";
 moment.updateLocale('en')
 
 const Export = () => {
-  document.title = "Accueil | Countano";
+  document.title = "Export | Countano";
 
   const dispatch = useDispatch();
 
@@ -122,7 +122,7 @@ const Export = () => {
 
                         </div>
                       </Col>
-                      <Col lg={6}>
+                      <Col lg={6} className="d-flex justify-content-end">
                         <button onClick={(e) => { e.preventDefault(); download(); }} className="btn btn-secondary">Télécharger les exports</button>
                       </Col>
                     </Row>

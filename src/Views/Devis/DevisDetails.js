@@ -17,13 +17,14 @@ import {
   SendDevisByEmail as onSendDevisByEmail
 } from "../../slices/thunks";
 import ConfirmModal from "../../Components/Common/ConfirmModal";
+import axios from "axios";
 
 const DevisDetails = () => {
   document.title = "Détail facture | Countano";
 
   let { id } = useParams();
 
-  const { devis, etatDevis,devisList } = useSelector((state) => ({
+  const { devis, etatDevis, devisList } = useSelector((state) => ({
     devis: state.Devis.devisList.find((d) => d.header.den_id == id),
     devisList: state.Devis.devisList,
     etatDevis: state.Devis.etatDevis
@@ -49,14 +50,29 @@ const DevisDetails = () => {
   };
 
   const downloadPdf = () => {
-    window.open(`${api.API_URL}/v1/pdf/download/devis/${devis.header.den_com_fk}/${devis.header.den_date_create}/${devis.doc.ddo_file_name}`, 'download');
+    // window.open(`${api.API_URL}/v1/pdf/download/facture/${invoice.header.fen_com_fk}/${invoice.header.fen_date_create}/${invoice.doc.fdo_file_name}`, 'download');
+    axios.get(`${api.API_URL}/v1/pdf/download/devis/${devis.header.den_id}`, {
+      mode: 'no-cors',
+      responseType: 'blob'
+    }).then((response) => {
+      try {
+        let elm = document.createElement('a');  // CREATE A LINK ELEMENT IN DOM
+        elm.href = URL.createObjectURL(response);  // SET LINK ELEMENTS CONTENTS
+        elm.setAttribute('download', devis.header.den_num + ".pdf"); // SET ELEMENT CREATED 'ATTRIBUTE' TO DOWNLOAD, FILENAME PARAM AUTOMATICALLY
+        elm.click();                             // TRIGGER ELEMENT TO DOWNLOAD
+        elm.remove();
+      }
+      catch (err) {
+        console.log(err);
+      }
+    });
   }
 
-  useEffect(() => {
-    if (!devis.doc) {
-      dispatch(createPdfDevis(devis.header.den_id))
-    }
-  }, [devis])
+  // useEffect(() => {
+  //   if (!devis.doc) {
+  //     dispatch(createPdfDevis(devis.header.den_id))
+  //   }
+  // }, [devis])
 
 
   const handleDeleteDevis = (id) => {
@@ -218,8 +234,10 @@ const DevisDetails = () => {
                       <Link to={`/devis/edition/${devis.header.den_id}`} state={devis} className="btn btn-success"><i className="ri-ball-pen-line align-bottom me-1"></i> Editer</Link>
                       <Link onClick={() => setShowConfirmModal(true)} className="btn btn-success"><i className="ri-send-plane-fill align-bottom me-1"></i> Envoyer</Link>
                       <Link to="#" onClick={printInvoice} className="btn btn-success"><i className="ri-printer-line align-bottom me-1"></i> Imprimer</Link>
-                      <Link onClick={() => handleGeneratePdf()} className="btn btn-secondary"><i className="ri-download-2-line align-bottom me-1"></i> Télécharger</Link>
+                    
+                      <Link onClick={() => downloadPdf()}  className="btn btn-secondary"><i className="ri-download-2-line align-bottom me-1"></i> Télécharger</Link>
                       <Link to={'/factures/creation'} state={{ den_id: devis.header.den_id }} className="btn btn-secondary"><i className="ri-file-copy-2-fill align-bottom me-1"></i> Facture</Link>
+                    
                       <Link onClick={() => setDeleteModal(true)} state={devis} className="btn btn-danger"><i className="ri-ball-pen-line align-bottom me-1"></i> Supprimer</Link>
                     </div>
                   </CardBody>

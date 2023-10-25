@@ -36,19 +36,6 @@ const ProfileDropdown = () => {
   useEffect(() => {
     if (sessionStorage.getItem("authUser")) {
       const obj = JSON.parse(sessionStorage.getItem("authUser"));
-      if (false) {
-        setUserName(
-          process.env.REACT_APP_DEFAULTAUTH === "fake"
-            ? obj.username === undefined
-              ? user.first_name
-                ? user.first_name
-                : obj.data.first_name
-              : "Admin" || "Admin"
-            : process.env.REACT_APP_DEFAULTAUTH === "firebase"
-            ? obj.providerData[0].email
-            : "Admin"
-        );
-      }
     }
   }, [userName]);
 
