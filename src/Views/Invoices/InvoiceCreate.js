@@ -1173,7 +1173,7 @@ const InvoiceCreate = () => {
                             ...validation.values,
                             ligne: validation.values.ligne.map((l, lingeIndex) => { return selectedLigne == lingeIndex ? newData : l })
                           })
-
+                          toggleModalProduct()
                         }}
                         key={key}
                       >
