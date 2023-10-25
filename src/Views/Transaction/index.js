@@ -201,7 +201,6 @@ const TransactionBank = () => {
         accessor: "bua_account_id",
         filterable: false,
         Cell: (cell) => {
-          console.log(cell.row.original);
           return (
             <div className="d-flex align-items-center">
               <p className="p-0 m-0">
@@ -332,7 +331,7 @@ const TransactionBank = () => {
         filterable: false,
       },
     ],
-    [transactions]
+    [transactions,achatEvol]
   );
 
   const handleSearchChange = (e) => {
@@ -419,7 +418,7 @@ const TransactionBank = () => {
           : null,
       })
     );
-  }, [dispatch, perdiodeCalendar, isFilterBy]);
+  }, [dispatch, perdiodeCalendar, isFilterBy,achats]);
 
   useEffect(() => {
     if (isFilterBy != "null") {
@@ -441,13 +440,14 @@ const TransactionBank = () => {
   useEffect(() => {
     // console.log("je charge achats")
     if (transaction.id && transaction.tba_rp && achats) {
+   
       let found = achats.find((achatA) => achatA.aba_tba_fk == transaction.id);
       if (found) {
         let copyArrayTTD = [...TTD];
         let newRR = copyArrayTTD?.map((e) => {
           let copyObj = { ...e };
           if (found?.tba_id == e?.tba_id) {
-            copyObj.tba_rp = found.tba_rp.toFixed(2);
+            copyObj.tba_rp = parseFloat(found.tba_rp).toFixed(2);
           }
           return copyObj;
         });

@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 // import { addNewTransaction, deleteTransaction, getTransaction, getTransactionByMonth, getTransactionList, getTransactionPricePeriode } from "./thunk";
 import { toast } from "react-toastify";
 import moment from "moment";
-import { getTransactionBank, getTransactionBankAchat, linkTransToAchat, updateJustifyTransactionBank } from "./thunk";
+import { getTransactionBank, getTransactionBankAchat, updateJustifyTransactionBank } from "./thunk";
 moment.locale("fr");
 
 export const initialState = {
