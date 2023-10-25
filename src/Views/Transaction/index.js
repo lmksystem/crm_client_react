@@ -437,27 +437,6 @@ const TransactionBank = () => {
     }
   }, [transactions, isFilterBy]);
 
-  useEffect(() => {
-    // console.log("je charge achats")
-    if (transaction.id && transaction.tba_rp && achats) {
-   
-      let found = achats.find((achatA) => achatA.aba_tba_fk == transaction.id);
-      if (found) {
-        let copyArrayTTD = [...TTD];
-        let newRR = copyArrayTTD?.map((e) => {
-          let copyObj = { ...e };
-          if (found?.tba_id == e?.tba_id) {
-            copyObj.tba_rp = parseFloat(found.tba_rp).toFixed(2);
-          }
-          return copyObj;
-        });
-        setTTD(newRR);
-      }
-
-      // console.log(newMapping)
-    }
-  }, [achats]);
-
   document.title = "Transactions bancaires | Countano";
   return (
     <React.Fragment>
