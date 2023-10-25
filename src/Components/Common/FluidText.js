@@ -51,7 +51,7 @@ const FluidText = ({ title }) => {
   };
 
   const colorTextBase =document.documentElement.getAttribute("data-layout-mode") === "dark" ? "#ced4da" :"#004d85";
-  console.log("colorTextBase",colorTextBase)
+
   return (
     <div className='d-flex justify-content-center'>
       <h4 style={{ color: colorTextBase }} className='m-0 p-0'>{initialText}</h4>

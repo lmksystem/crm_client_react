@@ -18,6 +18,11 @@ const salarySlice = createSlice({
     builder.addCase(createUpdateSalary.fulfilled, (state, action) => {
       toast.success('Ajout réussie', { autoClose: 3000 })
       state.isSalarySuccess = true;
+      state.salaries = state.salaries.map(sal =>
+        sal.sal_id == action.payload.data.sal_id
+          ? { ...sal, ...action.payload.data }
+          : sal
+      );
       state.salaries.push(action.payload.data);
     });
     builder.addCase(createUpdateSalary.rejected, (state, action) => {

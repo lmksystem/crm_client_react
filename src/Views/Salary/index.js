@@ -197,6 +197,21 @@ const Salary = () => {
       toggle();
     },
   });
+  useEffect(() => {
+    if (dateFormat?.length > 3 && salaries) {
+        let moisData = {};
+        for (let index = 0; index < salaries.length; index++) {
+          const element = salaries[index];
+          const moisNom = moisIndices[element?.mois];
+          if (!moisData[moisNom]) {
+            moisData[moisNom] = [];
+          }
+          moisData[moisNom].push(element);
+        }
+        setMoisDonnee(moisData);
+    }
+  }, [salaries])
+  
 
   // Update Data Salaire
   const handleSalaryClick = useCallback(
