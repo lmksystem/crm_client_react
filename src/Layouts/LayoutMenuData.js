@@ -204,8 +204,8 @@ const Navdata = () => {
       ],
     },
     {
-      id: "rapports",
-      label: "Rapports - WIP",
+      id: "report",
+      label: "reports - WIP",
       icon: "las la-file-alt",
       link: "/rapports",
       click: function (e) {

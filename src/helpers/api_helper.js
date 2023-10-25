@@ -62,7 +62,7 @@ class APIClient {
   get = (url, params) => {
     let response;
     let paramKeys = [];
-
+    console.log("params",params);
     if (params) {
       Object.keys(params).map(key => {
         paramKeys.push(key + '=' + params[key]);
@@ -70,6 +70,7 @@ class APIClient {
       });
 
       const queryString = paramKeys && paramKeys.length ? paramKeys.join('&') : "";
+   
       response = axios.get(`${url}?${queryString}`, params);
     } else {
       response = axios.get(`${url}`, params);

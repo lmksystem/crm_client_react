@@ -71,5 +71,9 @@ export * from "./export/thunk";
 
 // Bank Account
 export * from "./bankAccount/thunk";
+
 // Admin
 export * from "./admin/thunk";
+
+// Admin
+export * from "./report/thunk";

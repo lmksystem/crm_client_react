@@ -304,3 +304,10 @@ export const createOrUpdateUser = (data) => api.create(url.ADMIN_USER, data);
 export const createOrUpdateUserAdmin = (data) => api.create(url.ADMIN_USER_CREATE, data);
 
 
+/*************************/
+/*        report         */
+/*************************/
+
+export const getReportData = (data) => api.get(url.REPORT, data);
+
+

@@ -74,6 +74,9 @@ import BankAccountReducer from "./bankAccount/reducer";
 //AdminReducer
 import AdminReducer from "./admin/reducer";
 
+//AdminReducer
+import ReportReducer from "./report/reducer";
+
 
 
 import sessionStorage from "redux-persist/es/storage/session";
@@ -107,6 +110,7 @@ const appReducer = combineReducers({
   Export: ExportReducer,
   BankAccount: BankAccountReducer,
   Admin: AdminReducer,
+  Report: ReportReducer,
 
 });
 
