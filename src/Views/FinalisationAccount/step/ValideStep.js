@@ -16,8 +16,8 @@ const ValideStep = ({ position, handleSubmit }) => {
         <CardBody className="p-4">
 
           <div className="text-center mt-2">
-            <h5 className="text-primary">Félicitaion !</h5>
-            <p className="text-muted">Génial il ne vous reste plus cas valider !</p>
+            <h5 className="text-primary">Félicitation !</h5>
+            <p className="text-muted">Génial il ne vous reste plus qu'à valider !</p>
           </div>
           {/* {error && error ? (<Alert color="danger"> {error} </Alert>) : null} */}
           <div className="p-2 mt-4 d-flex justify-content-center">
@@ -26,7 +26,7 @@ const ValideStep = ({ position, handleSubmit }) => {
               setIsExploding(true); setLoading(true); setTimeout(() => {
                 handleSubmit();
               }, 800);
-            }} className='btn btn-primary'> {loading ? <Spinner size="sm" className='me-2'> Loading... </Spinner> : "Valider et commencer !"}</button>
+            }} className='btn btn-secondary'> {loading ? <Spinner size="sm" className='me-2'> Loading... </Spinner> : "Valider et commencer !"}</button>
 
           </div>
         </CardBody>

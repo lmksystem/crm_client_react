@@ -3,10 +3,7 @@ import React, {
   useState,
   useCallback,
   useMemo,
-  useRef,
 } from "react";
-import { Link } from "react-router-dom";
-import { isEmpty } from "lodash";
 import * as moment from "moment";
 import { api } from "../../config";
 // import process from "process";
@@ -34,7 +31,7 @@ import {
   getAchatLinkTransaction as onGetAchatLinkTransaction,
   updateJustifyTransactionBank as onUpdateJustifyTransactionBank,
   linkTransToAchat as onLinkTransToAchat,
-  updateMatchAmount as onUpdateMatchAmount
+  updateMatchAmount as onUpdateMatchAmount,
 } from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
@@ -48,7 +45,6 @@ import Loader from "../../Components/Common/Loader";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SimpleBar from "simplebar-react";
-import { use } from "echarts";
 import { useProfile } from "../../Components/Hooks/UserHooks";
 
 const TransactionBank = () => {
@@ -75,8 +71,8 @@ const TransactionBank = () => {
   const [transaction, setTransaction] = useState({});
   const [doc, setDoc] = useState(null);
   const [priceMatchAmount, setPriceMatchAmount] = useState(0);
-  const [oldPriceAmount,setOldPriceAmount] = useState(0);
-  const [achatActif,setAchatActif] = useState(null);
+  const [oldPriceAmount, setOldPriceAmount] = useState(0);
+  const [achatActif, setAchatActif] = useState(null);
 
   const [show, setShow] = useState(false);
   const [modal, setModal] = useState(false);
@@ -89,10 +85,41 @@ const TransactionBank = () => {
     (ele) => ele.type == "assoc" || (ele.old == 1 && ele.type !== "dissoc")
   );
 
+  const [isFilterBy, setIsFilterBy] = useState("null");
+  const filterAccounts = {
+    by: "compte bancaire",
+    handleChange: (e) => {
+      setIsFilterBy(e.target.value);
+    },
+    data: transactions
+      ? transactions
+          ?.filter((transaction, index, self) => {
+            return (
+              index ===
+              self.findIndex(
+                (t) => t.bua_account_id === transaction.bua_account_id
+              )
+            );
+          })
+          .map((e) => {
+            let tabVal = [];
+            tabVal.push({ value: e.bua_account_id });
+            if (e.bua_libelle?.length > 0) {
+              tabVal.push({ value: e.bua_libelle });
+            }
+            return tabVal;
+          }).reduce((acc, tableau) => {
+            return acc.concat(tableau);
+          }, [])
+      : [],
+    value: isFilterBy,
+  };
+
+  const [TTD, setTTD] = useState([]);
   const toggle = useCallback(() => {
     if (show) {
       setShow(false);
-      setAchatActif(null)
+      setAchatActif(null);
       setDoc(null);
       setAchatFilter({
         data: [],
@@ -103,7 +130,7 @@ const TransactionBank = () => {
       setShow(true);
     }
   }, [show]);
-  
+
   const handleTransactionClick = useCallback(
     (arg) => {
       const transData = arg;
@@ -114,29 +141,11 @@ const TransactionBank = () => {
         file_justify: transData.ado_file_name,
         tba_rp: transData.tba_rp,
       });
-    dispatch(onGetAchatLinkTransaction(transData?.tba_id))
-
+      dispatch(onGetAchatLinkTransaction(transData?.tba_id));
     },
 
     []
   );
-
-  // useEffect(() => {
-  //   if (transaction?.id) {
-  //     dispatch(onGetAchatLinkTransaction(transaction?.id));
-  //   }
-  // }, [transaction]);
-
-  
-
-  useEffect(() => {
-    if (achats) {
-      setAchatFilter({
-        data: achats,
-        searchTerm: "",
-      });
-    }
-  }, [achats]);
 
   // validation
   const validation = useFormik({
@@ -147,9 +156,7 @@ const TransactionBank = () => {
       nojustify: transaction && transaction?.tba_justify === 1 ? true : false,
       file_justify: (transaction && transaction.ado_file_name) || "",
     },
-    onSubmit: (values) => {
-
-    },
+    onSubmit: (values) => {},
   });
 
   const matchAmount = useFormik({
@@ -165,21 +172,19 @@ const TransactionBank = () => {
       ),
     }),
     onSubmit: (values) => {
-      let copy_achatActif = {...achatActif};
-      copy_achatActif.oldPrice =parseFloat(oldPriceAmount);
+      let copy_achatActif = { ...achatActif };
+      copy_achatActif.oldPrice = parseFloat(oldPriceAmount);
       copy_achatActif.newPrice = parseFloat(priceMatchAmount);
-      if(!copy_achatActif.tba_rp){
+      if (!copy_achatActif.tba_rp) {
         copy_achatActif.tba_rp = parseFloat(transaction.tba_rp);
       }
-      copy_achatActif.tba_amount= parseFloat(transaction.tba_amount);
+      copy_achatActif.tba_amount = parseFloat(transaction.tba_amount);
       dispatch(onUpdateMatchAmount(copy_achatActif));
       setAchatActif(null);
       setModal(false);
       // setDoc(null);
-
     },
   });
-
   // Column
   const columns = useMemo(
     () => [
@@ -192,15 +197,25 @@ const TransactionBank = () => {
         },
       },
       {
-        Header: "Date",
-        accessor: "tba_bkg_date",
+        Header: "Libellé / N° compte ",
+        accessor: "bua_account_id",
         filterable: false,
+        Cell: (cell) => {
+          console.log(cell.row.original);
+          return (
+            <div className="d-flex align-items-center">
+              <p className="p-0 m-0">
+                {cell.value != null
+                  ? (cell.row.original?.bua_libelle
+                      ? cell.row.original?.bua_libelle + " / "
+                      : "") + cell.value
+                  : ""}
+              </p>
+            </div>
+          );
+        },
       },
-      {
-        Header: "Description",
-        accessor: "tba_desc",
-        filterable: false,
-      },
+
       {
         Header: "Débit",
         accessor: "tba_debit",
@@ -237,7 +252,11 @@ const TransactionBank = () => {
           return (
             <div className="d-flex align-items-center">
               <p className="p-0 m-0">
-                {cell.value != null ? (cell.row.original?.tba_justify == 0 ? "0.00" : cell.value) + "€" : ""}
+                {cell.value != null
+                  ? (cell.row.original?.tba_justify == 0
+                      ? "0.00"
+                      : cell.value) + "€"
+                  : ""}
               </p>
             </div>
           );
@@ -251,7 +270,10 @@ const TransactionBank = () => {
 
         Cell: (cell) => {
           let styleCSS = {};
-          if (cell.row.original.tba_rp == 0 || cell.row.original?.tba_justify == 0) {
+          if (
+            cell.row.original.tba_rp == 0 ||
+            cell.row.original?.tba_justify == 0
+          ) {
             styleCSS = {
               width: "20px",
               height: "20px",
@@ -290,41 +312,28 @@ const TransactionBank = () => {
             <div className="d-flex align-items-center mx-4">
               <div style={styleCSS}>
                 {cell.row.original.tba_rp ==
-                  Math.abs(parseFloat(cell.row.original.tba_amount)) && cell.row.original?.tba_justify == 1 && (
-                  <i style={{ color: "red" }} className="las la-times"></i>
-                )}
+                  Math.abs(parseFloat(cell.row.original.tba_amount)) &&
+                  cell.row.original?.tba_justify == 1 && (
+                    <i style={{ color: "red" }} className="las la-times"></i>
+                  )}
               </div>
             </div>
           );
         },
       },
+      {
+        Header: "Date",
+        accessor: "tba_bkg_date",
+        filterable: false,
+      },
+      {
+        Header: "Description",
+        accessor: "tba_desc",
+        filterable: false,
+      },
     ],
-    [achats,transactions]
+    [transactions]
   );
-
-  useEffect(() => {
-    if (show) {
-      setTimeout(() => {
-        document.getElementById("start-anime").classList.add("show-cus");
-      }, 400);
-    } else {
-      document.getElementById("start-anime").classList.remove("show-cus");
-    }
-  }, [show]);
-
-  useEffect(() => {
-    dispatch(
-      onGetTransactionBank({
-        dateDebut: perdiodeCalendar.start
-          ? moment(perdiodeCalendar.start).format("YYYY-MM-DD")
-          : null,
-        dateFin: perdiodeCalendar.end
-          ? moment(perdiodeCalendar.end).format("YYYY-MM-DD")
-          : null,
-      })
-    );
-  }, [dispatch, perdiodeCalendar, achats]);
-
 
   const handleSearchChange = (e) => {
     const { value } = e.target;
@@ -357,7 +366,7 @@ const TransactionBank = () => {
 
   function isSelected(id) {
     let obj = achatFilter?.data?.find((item) => item.ach_id === id);
-    
+
     if (obj) {
       if (
         (obj.old === 1 && obj.type != "disoc") ||
@@ -373,21 +382,29 @@ const TransactionBank = () => {
   const filteredData = filterData();
 
   useEffect(() => {
-    if(transaction?.id){
-      let searchNewTrans = transactions.filter((obj)=>{
-        return obj.tba_id == transaction?.id
-      })
-      setTransaction(searchNewTrans[0])
+    if (achats) {
+      setAchatFilter({
+        data: achats,
+        searchTerm: "",
+      });
     }
-  }, [dispatch])
-  
+  }, [achats]);
+  useEffect(() => {
+    if (transaction?.id) {
+      let searchNewTrans = transactions.filter((obj) => {
+        return obj.tba_id == transaction?.id;
+      });
+      setTransaction(searchNewTrans[0]);
+    }
+  }, [dispatch]);
+
   useEffect(() => {
     if (show) {
       setTimeout(() => {
-        document.getElementById("start-anime").classList.add("show");
+        document.getElementById("start-anime").classList.add("show-cus");
       }, 400);
     } else {
-      document.getElementById("start-anime").classList.remove("show");
+      document.getElementById("start-anime").classList.remove("show-cus");
     }
   }, [show]);
 
@@ -402,8 +419,44 @@ const TransactionBank = () => {
           : null,
       })
     );
-  }, [dispatch, perdiodeCalendar, achats]);
+  }, [dispatch, perdiodeCalendar, isFilterBy]);
 
+  useEffect(() => {
+    if (isFilterBy != "null") {
+      let transFiltered = transactions
+        ?.filter((tra) => {
+          return (
+            tra.bua_account_id === isFilterBy || tra.bua_libelle === isFilterBy
+          );
+        })
+        .map((tra) => tra);
+      setTTD(transFiltered);
+      setShow(false);
+      setTransaction(null);
+    } else {
+      setTTD(transactions);
+    }
+  }, [transactions, isFilterBy]);
+
+  useEffect(() => {
+    // console.log("je charge achats")
+    if (transaction.id && transaction.tba_rp && achats) {
+      let found = achats.find((achatA) => achatA.aba_tba_fk == transaction.id);
+      if (found) {
+        let copyArrayTTD = [...TTD];
+        let newRR = copyArrayTTD?.map((e) => {
+          let copyObj = { ...e };
+          if (found?.tba_id == e?.tba_id) {
+            copyObj.tba_rp = found.tba_rp.toFixed(2);
+          }
+          return copyObj;
+        });
+        setTTD(newRR);
+      }
+
+      // console.log(newMapping)
+    }
+  }, [achats]);
 
   document.title = "Transactions bancaires | Countano";
   return (
@@ -461,7 +514,9 @@ const TransactionBank = () => {
                               className="form-control"
                               placeholder="Entrer un montant associé"
                               type="number"
-                              onChange={(e)=>{setPriceMatchAmount(e.target.value )}}
+                              onChange={(e) => {
+                                setPriceMatchAmount(e.target.value);
+                              }}
                               onBlur={matchAmount.handleBlur}
                               value={matchAmount.values.amount || ""}
                               invalid={
@@ -479,7 +534,7 @@ const TransactionBank = () => {
                             ) : null}
                           </div>
                         </Col>
-                        <Col className="d-flex align-items-end"  lg={4}>
+                        <Col className="d-flex align-items-end" lg={4}>
                           <button
                             type="submit"
                             className="btn btn-success"
@@ -495,7 +550,12 @@ const TransactionBank = () => {
                     <iframe
                       style={{ width: "100%", height: 550 }}
                       lg={12}
-                      src={!process.env.NODE_ENV || process.env.NODE_ENV === 'development' ?`${api.API_URL}/v1/achat/doc/${doc}`:`${api.API_PDF}/${userProfile.use_com_fk}/achat/${doc}` }
+                      src={
+                        !process.env.NODE_ENV ||
+                        process.env.NODE_ENV === "development"
+                          ? `${api.API_URL}/v1/achat/doc/${doc}`
+                          : `${api.API_PDF}/${userProfile.use_com_fk}/achat/${doc}`
+                      }
                       title={doc}
                     ></iframe>
                   </Col>
@@ -509,7 +569,7 @@ const TransactionBank = () => {
                     {isTransactionBankSuccess ? (
                       <TableContainer
                         columns={columns}
-                        data={transactions || []}
+                        data={TTD || []}
                         perdiodeCalendar={perdiodeCalendar}
                         setPeriodeCalendar={setterDate}
                         actionItem={(row) => {
@@ -527,6 +587,7 @@ const TransactionBank = () => {
                         theadClass="table-light"
                         isContactsFilter={true}
                         SearchPlaceholder="Recherche..."
+                        selectFilter={filterAccounts}
                       />
                     ) : (
                       <Loader error={error} />
@@ -551,7 +612,7 @@ const TransactionBank = () => {
                     <i className="las la-chevron-circle-left la-2x m-2"></i>
                   </div>
 
-                  <CardBody className="text-center">
+                  <CardBody className="text-center d-flex flex-column">
                     <h5 className=" mb-1">Détail transaction</h5>
                   </CardBody>
                   <CardBody>
@@ -584,7 +645,10 @@ const TransactionBank = () => {
                                     dispatch(
                                       onUpdateJustifyTransactionBank({
                                         tba_id: transaction?.id,
-                                        tba_justify: !transaction?.tba_justify == false ? 1 : 0,
+                                        tba_justify:
+                                          !transaction?.tba_justify == false
+                                            ? 1
+                                            : 0,
                                       })
                                     );
                                     setTransaction({
@@ -676,12 +740,16 @@ const TransactionBank = () => {
                                                     onClick={(e) => {
                                                       e.stopPropagation();
                                                       setDoc(ach.ado_file_name);
-                                                      setOldPriceAmount(ach.aba_match_amount);
-                                                      setPriceMatchAmount(ach.aba_match_amount);
+                                                      setOldPriceAmount(
+                                                        ach.aba_match_amount
+                                                      );
+                                                      setPriceMatchAmount(
+                                                        ach.aba_match_amount
+                                                      );
                                                       setAchatActif(ach);
                                                       setModal(true);
                                                     }}
-                                                    className="btn btn-primary d-flex align-items-center mt-2"
+                                                    className="btn btn-secondary d-flex align-items-center mt-2"
                                                   >
                                                     <i className="las la-eye mx-2"></i>
                                                     <p className="m-0 font-weight-bold">

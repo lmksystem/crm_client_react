@@ -33,9 +33,9 @@ const NotificationDropdown = () => {
             <Dropdown isOpen={isNotificationDropdown} toggle={toggleNotificationDropdown} className="topbar-head-dropdown ms-1 header-item">
                 <DropdownToggle type="button" tag="button" className="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle">
                     <i className='bx bx-bell fs-22'></i>
-                    <span
+                    {/* <span
                         className="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger">3<span
-                            className="visually-hidden">unread messages</span></span>
+                            className="visually-hidden">unread messages</span></span> */}
                 </DropdownToggle>
                 <DropdownMenu className="dropdown-menu-lg dropdown-menu-end p-0">
                     <div className="dropdown-head bg-primary bg-pattern rounded-top">
@@ -45,7 +45,7 @@ const NotificationDropdown = () => {
                                     <h6 className="m-0 fs-16 fw-semibold text-white"> Notifications </h6>
                                 </Col>
                                 <div className="col-auto dropdown-tabs">
-                                    <span className="badge badge-soft-light fs-13"> 4 New</span>
+                                    {/* <span className="badge badge-soft-light fs-13"> 4 New</span> */}
                                 </div>
                             </Row>
                         </div>
@@ -58,7 +58,8 @@ const NotificationDropdown = () => {
                                         className={classnames({ active: activeTab === '1' })}
                                         onClick={() => { toggleTab('1'); }}
                                     >
-                                        All (4)
+                                       Toutes
+                                         {/* (4) */}
                                     </NavLink>
                                 </NavItem>
                                 <NavItem>
@@ -76,7 +77,7 @@ const NotificationDropdown = () => {
                                         className={classnames({ active: activeTab === '3' })}
                                         onClick={() => { toggleTab('3'); }}
                                     >
-                                        Alerts
+                                        Alertes
                                     </NavLink>
                                 </NavItem>
                             </Nav>
@@ -87,7 +88,7 @@ const NotificationDropdown = () => {
                     <TabContent activeTab={activeTab}>
                         <TabPane tabId="1" className="py-2 ps-2">
                             <SimpleBar style={{ maxHeight: "300px" }} className="pe-2">
-                                <div className="text-reset notification-item d-block dropdown-item position-relative">
+                                {/* <div className="text-reset notification-item d-block dropdown-item position-relative">
                                     <div className="d-flex">
                                         <div className="avatar-xs me-3">
                                             <span className="avatar-title bg-soft-info text-info rounded-circle fs-16">
@@ -185,14 +186,14 @@ const NotificationDropdown = () => {
                                 <div className="my-3 text-center">
                                     <button type="button" className="btn btn-soft-success waves-effect waves-light">View
                                         All Notifications <i className="ri-arrow-right-line align-middle"></i></button>
-                                </div>
+                                </div> */}
                             </SimpleBar>
 
                         </TabPane>
 
                         <TabPane tabId="2" className="py-2 ps-2">
                             <SimpleBar style={{ maxHeight: "300px" }} className="pe-2">
-                                <div className="text-reset notification-item d-block dropdown-item">
+                                {/* <div className="text-reset notification-item d-block dropdown-item">
                                     <div className="d-flex">
                                         <img src={avatar3}
                                             className="me-3 rounded-circle avatar-xs" alt="user-pic" />
@@ -284,16 +285,16 @@ const NotificationDropdown = () => {
                                 <div className="my-3 text-center">
                                     <button type="button" className="btn btn-soft-success waves-effect waves-light">View
                                         All Messages <i className="ri-arrow-right-line align-middle"></i></button>
-                                </div>
+                                </div> */}
                             </SimpleBar>
                         </TabPane>
                         <TabPane tabId="3" className="p-4">
-                            <div className="w-25 w-sm-50 pt-3 mx-auto">
+                            {/* <div className="w-25 w-sm-50 pt-3 mx-auto">
                                 <img src={bell} className="img-fluid" alt="user-pic" />
                             </div>
                             <div className="text-center pb-5 mt-2">
                                 <h6 className="fs-18 fw-semibold lh-base">Hey! You have no any notifications </h6>
-                            </div>
+                            </div> */}
                         </TabPane>
                     </TabContent>
                 </DropdownMenu>

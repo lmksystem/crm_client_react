@@ -20,6 +20,7 @@ import {
   getListBank as onGetListBank,
   insertBankAccount as onInsertBankAccount,
   getAccountBank as onGetAccountBank,
+  insertAccountLinkToBank as onInsertAccountLinkToBank
 } from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
@@ -27,6 +28,7 @@ import Loader from "../../Components/Common/Loader";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SimpleBar from "simplebar-react";
+import ItemBank from "./ItemBank";
 
 const BankAccount = () => {
   const dispatch = useDispatch();
@@ -168,7 +170,7 @@ const BankAccount = () => {
                   <div className="d-flex align-items-center flex-wrap gap-2">
                     <div className="flex-grow-1">
                       <button
-                        className="btn btn-primary add-btn"
+                        className="btn btn-secondary add-btn"
                         onClick={() => {
                           setModal(true);
                         }}
@@ -188,55 +190,11 @@ const BankAccount = () => {
                           className="mx-n3"
                         >
                           <ListGroup className="list mb-0" flush>
-                            {listAccountsBank?.map((acc, i) => (
-                              <ListGroupItem
-                                data-id="1"
-                                key={i}
-                                className={"list-group-item-action"}
-                              >
-                                <div className="d-flex flex-row align-items-center justify-content-between">
-                                  <div className="d-flex flex-row align-items-center">
-                                    <div style={{ width: 100 }}>
-                                      <img
-                                        src={acc.bac_logo}
-                                        // alt={`logo banque ${bankItem.name}`}
-                                        className="img-fluid"
-                                      />
-                                    </div>
-                                    <div
-                                      style={{
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        marginLeft: "5%",
-                                        width: "90%",
-                                      }}
-                                    >
-                                      <p>{acc.bac_name}</p>
-                                      <p style={{ fontWeight: "bolder" }}>
-                                        Numéro de compte : {acc.bua_account_id}
-                                      </p>
-                                    </div>
-                                  </div>
-                                  <button
-                                    type="button"
-                                    class="btn btn-outline-primary"
-                                    onClick={() => {
-                                      dispatch(
-                                        onInsertBankAccount({
-                                          bac_instit_id: acc.bac_instit_id,
-                                          bac_logo: acc.bac_logo,
-                                          bac_name: acc.bac_name,
-                                          oldLinkId: acc.bua_bac_fk
-
-                                        })
-                                      );
-                                    }}
-                                  >
-                                    Mettre à jour
-                                  </button>
-                                </div>
-                              </ListGroupItem>
-                            ))}
+                            {listAccountsBank?.map((acc, i) => {
+                              return (
+                               <ItemBank item={acc} key={i} />
+                              );
+                            })}
                           </ListGroup>
                         </SimpleBar>
                       </div>

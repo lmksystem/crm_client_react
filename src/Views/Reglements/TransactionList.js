@@ -52,7 +52,7 @@ import Select from "react-select";
 moment.locale('fr')
 
 const TransactionList = () => {
-  document.title = "Règlements | Countano";
+  document.title = "Encaissements | Countano";
 
   const dispatch = useDispatch();
 
@@ -227,20 +227,14 @@ const TransactionList = () => {
     });
 
     setChartData(transactionByMount)
-  }, [transactionsList])
-
-  // useEffect(() => {
-  //   if (invoices) {
-  //     setInvoicesList(invoices)
-  //   }
-  // }, [invoices])
-
+  }, [transactionsList]);
+  
   return (
     <React.Fragment>
       <div className="page-content">
 
         <Container fluid>
-          <BreadCrumb title="Règlements" pageTitle="Facturation" />
+          <BreadCrumb title="Encaissements" pageTitle="Facturation" />
           <h3>Statistiques de l'année</h3>
           <Row>
             <div xl={12}>

@@ -123,7 +123,7 @@ const Export = () => {
                         </div>
                       </Col>
                       <Col lg={6} className="d-flex justify-content-end">
-                        <button onClick={(e) => { e.preventDefault(); download(); }} className="btn btn-primary">Télécharger les exports</button>
+                        <button onClick={(e) => { e.preventDefault(); download(); }} className="btn btn-secondary">Télécharger les exports</button>
                       </Col>
                     </Row>
                   </div>

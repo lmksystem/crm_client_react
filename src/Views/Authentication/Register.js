@@ -216,10 +216,10 @@ const Register = () => {
                                                     </div>
 
                                                     <div>
-                                                        <button type="button" className="btn btn-primary btn-icon waves-effect waves-light"><i className="ri-facebook-fill fs-16"></i></button>{" "}
+                                                        <button type="button" className="btn btn-secondary btn-icon waves-effect waves-light"><i className="ri-facebook-fill fs-16"></i></button>{" "}
                                                         <button type="button" className="btn btn-danger btn-icon waves-effect waves-light"><i className="ri-google-fill fs-16"></i></button>{" "}
                                                         <button type="button" className="btn btn-dark btn-icon waves-effect waves-light"><i className="ri-github-fill fs-16"></i></button>{" "}
-                                                        <button type="button" className="btn btn-primary btn-icon waves-effect waves-light"><i className="ri-twitter-fill fs-16"></i></button>
+                                                        <button type="button" className="btn btn-secondary btn-icon waves-effect waves-light"><i className="ri-twitter-fill fs-16"></i></button>
                                                     </div>
                                                 </div>
                                             </Form>

@@ -374,10 +374,10 @@ const Contacts = () => {
   useEffect(() => {
     if (show) {
       setTimeout(() => {
-        document.getElementById('start-anime').classList.add("show")
+        document.getElementById('start-anime').classList.add("show-cus")
       }, 350);
     } else {
-      document.getElementById('start-anime').classList.remove("show")
+      document.getElementById('start-anime').classList.remove("show-cus")
     } 
   }, [show])
 
@@ -421,13 +421,12 @@ const Contacts = () => {
                   <div className="d-flex align-items-center flex-wrap gap-2">
                     <div className="flex-grow-1">
                       <button
-                        className="btn btn-primary add-btn"
+                        className="btn btn-secondary add-btn"
                         onClick={() => {
                           setModal(true);
                         }}
                       >
-                        <i className="ri-add-fill me-1 align-bottom"></i> Ajouter
-                        Contact
+                        <i className="ri-add-fill me-1 align-bottom"></i> Ajouter un contact
                       </button>
                     </div>
                     <div className="flex-shrink-0">

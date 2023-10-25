@@ -143,7 +143,7 @@ const VerticalLayout = (props) => {
                     <React.Fragment key={key}>
                         {/* Main Header */}
                         {item['isHeader'] ?
-                            <li className="menu-title"><span data-key="t-menu">{props.t(item.label)}</span></li>
+                            <li className="menu-title"><span data-key="t-menu" >{props.t(item.label)}</span></li>
                             : (
                                 (item.subItems ? (
                                     <li className="nav-item">
@@ -153,7 +153,7 @@ const VerticalLayout = (props) => {
                                             to={item.link ? item.link : "/#"}
                                             data-bs-toggle="collapse"
                                         >
-                                            <i className={item.icon}></i> <span data-key="t-apps">{props.t(item.label)}</span>
+                                            <i className={item.icon}></i> <span data-key="t-apps" style={{ fontWeight:'bolder' }}>{props.t(item.label)}</span>
                                         </Link>
                                         <Collapse
                                             className="menu-dropdown"
@@ -236,7 +236,7 @@ const VerticalLayout = (props) => {
                                         <Link
                                             className="nav-link menu-link"
                                             to={item.link ? item.link : "/#"}>
-                                            <i className={item.icon}></i> <span>{props.t(item.label)}</span>
+                                            <i className={item.icon}></i> <span style={{ fontWeight:'bolder' }}>{props.t(item.label)}</span>
                                         </Link>
                                     </li>
                                 ))

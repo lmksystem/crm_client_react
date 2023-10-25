@@ -192,6 +192,7 @@ export const handleConstantes = createAsyncThunk("gestion/handleConstantes", asy
     let arrayResponse = [];
     for (let index = 0; index < constantes.length; index++) {
       const newConst = constantes[index];
+      // if()
       let reponse = await handleConstantesApi(newConst);
       arrayResponse.push(reponse.data)
     }

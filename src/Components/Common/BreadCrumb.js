@@ -12,7 +12,6 @@ const BreadCrumb = ({ title, pageTitle }) => {
   const { listAccountsBank } = useSelector((state) => ({
     listAccountsBank: state.BankAccount.listAccountsBank,
   }));
-  // navigate("/devis/liste");
   const { userProfile } = useProfile();
 
   const[dateExpired,setDateExpired] = useState(null);
@@ -20,14 +19,11 @@ const BreadCrumb = ({ title, pageTitle }) => {
   function findClosestDateWithin15Days(dateArray=[]) {
     // Obtenez la date actuelle
     const currentDate = moment();
-    console.log(dateArray)
     let closestDate = null;
     let closestDifference = Infinity;
-    
     for (const dateStr of dateArray) {
       const dateObj = moment(dateStr);
       const differenceInDays = currentDate.diff(dateObj, 'days');
-       console.log(differenceInDays)
       if (differenceInDays >= -15 && differenceInDays <= 0 && Math.abs(differenceInDays) < closestDifference) {
         closestDate = dateStr;
       }

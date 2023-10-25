@@ -4,10 +4,10 @@ import { Card, CardBody, Col } from "reactstrap";
 
 import { useSelector } from "react-redux";
 import moment from "moment";
+import FeatherIcon from "feather-icons-react/build/FeatherIcon";
 moment.locale("fr");
 
 const Widgets = () => {
-
   const {
     transactionsPeriodPrice,
     devisCountPeriod,
@@ -19,7 +19,6 @@ const Widgets = () => {
     invoiceCountPeriod: state.Invoice.invoiceCountPeriod,
     entityCountPeriod: state.Gestion.entityCountPeriod,
   }));
-
 
   function constructWidgetDetails(label, value) {
     if (label === "badge" && value) {
@@ -58,10 +57,12 @@ const Widgets = () => {
       percentage: transactionsPeriodPrice?.pourcentage_gain_perte || 0,
       counter: transactionsPeriodPrice?.ventes_courantes || 0,
       bgcolor: "primary",
-      icon: "bx bx-dollar-circle",
       decimals: 2,
       prefix: "",
       suffix: "€",
+      separator: " ",
+      decimal: ",",
+      icon:"dollar-sign"
     },
     {
       id: 2,
@@ -78,11 +79,11 @@ const Widgets = () => {
       percentage: devisCountPeriod?.pourcentage_gain_perte || 0,
       counter: devisCountPeriod?.nb_devis_annee_courante || 0,
       bgcolor: "primary",
-      icon: "bx bx-shopping-bag",
       decimals: 0,
       prefix: "",
       suffix: "",
       separator: " ",
+      icon:"clipboard"
     },
     {
       id: 3,
@@ -99,10 +100,10 @@ const Widgets = () => {
       percentage: invoiceCountPeriod?.pourcentage_gain_perte || 0,
       counter: invoiceCountPeriod?.nb_invoice_annee_courante || 0,
       bgcolor: "primary",
-      icon: "bx bx-user-circle",
       decimals: 0,
       prefix: "",
       suffix: "",
+      icon:"file-text"
     },
     {
       id: 4,
@@ -116,10 +117,10 @@ const Widgets = () => {
         "badgeClass",
         entityCountPeriod?.pourcentage_gain_perte
       ),
+      icon:"users",
       percentage: entityCountPeriod?.pourcentage_gain_perte || 0,
       counter: entityCountPeriod?.nb_entity_annee_courante || 0,
       bgcolor: "primary",
-      icon: "bx bx-wallet",
       decimals: 0,
     },
   ];
@@ -155,11 +156,20 @@ const Widgets = () => {
                         separator={item.separator}
                         end={item.counter}
                         decimals={item.decimals}
+                        decimal={item.decimal}
                         duration={1}
                       />
                     </span>
                   </h4>
                 </div>
+               {item?.icon && <div className="avatar-sm flex-shrink-0">
+                  <span className="avatar-title bg-light rounded fs-3">
+                    <FeatherIcon
+                      icon={item.icon}
+                      className="text-success icon-dual-success"
+                    />
+                  </span>
+                </div>}
               </div>
             </CardBody>
           </Card>

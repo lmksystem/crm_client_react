@@ -4,6 +4,7 @@ import {
   getAccountsBankUser as getAccountsBankUserApi,
   insertBankAccount as insertBankAccountApi,
   getAccountBank as getAccountBankApi,
+  insertAccountLinkToBank as insertAccountLinkToBankApi
 } from "../../helpers/backend_helper";
 import { toast } from "react-toastify";
 
@@ -25,7 +26,6 @@ export const getAccountBank = createAsyncThunk(
   async () => {
     try {
       const response = await getAccountBankApi();
-      console.log("response",response)
       return response;
     } catch (error) {
       console.log(error)
@@ -58,6 +58,21 @@ export const insertBankAccount = createAsyncThunk(
       if (response.data.link) {
         window.location.replace(response.data.link);
       }
+      return response;
+    } catch (error) {
+      toast.error("Bank Account Post Failed", { autoClose: 3000 });
+      return error;
+    }
+  }
+);
+
+
+export const insertAccountLinkToBank= createAsyncThunk(
+  "bankAccount/insertAccountLinkToBank",
+  async (body) => {
+    try {
+      const response = await insertAccountLinkToBankApi(body);
+      toast.success("Libellé mis à jour", { autoClose: 3000 });
       return response;
     } catch (error) {
       toast.error("Bank Account Post Failed", { autoClose: 3000 });

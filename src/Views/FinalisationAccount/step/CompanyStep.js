@@ -46,7 +46,7 @@ const CompanyStep = ({ handleCompany, setStep, step, position }) => {
           </div>
           <div className="text-center mt-2">
 
-            <p className="text-muted">Maintenant créer votre entreprise !</p>
+            <p className="text-muted">Maintenant créez votre entreprise !</p>
           </div>
           {/* {error && error ? (<Alert color="danger"> {error} </Alert>) : null} */}
           <div className="p-2 mt-4">
@@ -117,7 +117,7 @@ const CompanyStep = ({ handleCompany, setStep, step, position }) => {
 
                 </Col>
                 <Col lg={3} className="mb-3">
-                  <Label htmlFor="email" className="form-label">Code postale</Label>
+                  <Label htmlFor="email" className="form-label">Code postal</Label>
                   <Input
                     name="com_cp"
                     className="form-control"

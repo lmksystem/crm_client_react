@@ -362,7 +362,7 @@ const Employees = () => {
                   <div className="d-flex align-items-center flex-wrap gap-2">
                     <div className="flex-grow-1">
                       <button
-                        className="btn btn-primary add-btn"
+                        className="btn btn-secondary add-btn"
                         onClick={() => {
                           setModal(true);
                         }}

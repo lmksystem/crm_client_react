@@ -135,7 +135,7 @@ const Navdata = () => {
 
         {
           id: "reglements",
-          label: "Règlements",
+          label: "Encaissements",
           link: "/transaction/liste",
           parentId: "facturation",
         },

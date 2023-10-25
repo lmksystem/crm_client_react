@@ -37,6 +37,7 @@ import FormUser from "../Views/Admin/User/FormUser";
 import FinalisationAccount from "../Views/FinalisationAccount/FinalisationAccount";
 import Basic404 from "../Views/AuthenticationInner/Errors/Basic404";
 import Rapport from "../Views/Rapports";
+import Profile from "../Views/Admin/User/Profile";
 
 
 // import PdfPreview from "../Views/Pdf";
@@ -49,6 +50,7 @@ const userRoute = [
   { path: "/gestion/parametre", component: <GestionParameter />, rank: 0 },
   { path: "/produits", component: <Products />, rank: 0 },
   { path: "/dashboard", component: <DashboardMain />, rank: 0 },
+
 
 
   // //Invoices
@@ -107,6 +109,9 @@ const adminRoute = [
     component: <Navigate to="/admin" />,
     rank: 1
   },
+
+  { path: "/profile", component: <Profile />, rank: 1 },
+
 ]
 
 
