@@ -138,7 +138,7 @@ const DevisDetails = () => {
                         <h6 className="text-muted text-uppercase fw-semibold mb-3">Information Client</h6>
                         <p className="fw-medium mb-2" id="billing-name">{devis.contact.dco_cus_name}</p>
                         <p className="text-muted mb-1" id="billing-address-line-1">{devis.contact.dco_cus_address}</p>
-                        <p className="text-muted mb-1" id="billing-address-line-1">{devis.dco_cus_cp}, {devis.contact.dco_cus_city}</p>
+                        <p className="text-muted mb-1" id="billing-address-line-1">{devis.contact.dco_cus_cp}, {devis.contact.dco_cus_city}</p>
                         <p className="text-muted mb-1"><span>Téléphone: </span><span id="billing-phone-no">{devis.contact.dco_cus_phone}</span></p>
                         <p className="text-muted mb-0"><span>Email: </span><span id="billing-tax-no">{devis.contact.dco_cus_email}</span> </p>
                       </Col>

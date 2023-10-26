@@ -3,7 +3,6 @@ import {
   getTransactionBank as getTransactionBankApi,
   getTransactionBankAchat as getTransactionBankAchatApi,
   updateJustifyTransactionBank as updateJustifyTransactionBankApi,
-  linkTransToAchat as linkTransToAchatApi,
 } from "../../helpers/backend_helper";
 import { toast } from "react-toastify";
 

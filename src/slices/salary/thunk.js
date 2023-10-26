@@ -33,7 +33,8 @@ export const getSalary = createAsyncThunk("salary/getSalary", async (year) => {
 
 export const deleteSalary = createAsyncThunk("salary/deleteSalary", async (id) => {
   try {
-    const response = deleteSalaryApi(id);
+    const response = await deleteSalaryApi(id);
+    console.log("response salary Delete",response)
     return response;
   }
   catch (error) {
