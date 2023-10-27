@@ -38,6 +38,7 @@ import FinalisationAccount from "../Views/FinalisationAccount/FinalisationAccoun
 import Basic404 from "../Views/AuthenticationInner/Errors/Basic404";
 import Reports from "../Views/reports";
 import Profile from "../Views/Admin/User/Profile";
+import CompanyProfil from "../Views/Company";
 
 
 // import PdfPreview from "../Views/Pdf";
@@ -87,6 +88,7 @@ const userRoute = [
   { path: "/export", component: <Export />, rank: 0 },
 
 
+  { path: "/company/profile", component: <CompanyProfil />, rank: 0  },
 
   {
     path: "/",
@@ -94,6 +96,7 @@ const userRoute = [
     component: <Navigate to="/dashboard" />,
     rank: 0
   },
+
 ];
 
 const adminRoute = [
@@ -102,6 +105,8 @@ const adminRoute = [
   { path: "/admin/users", component: <UserAdmin />, rank: 1 },
   
   { path: "/admin/user/", component: <FormUser />, rank: 1 },
+  
+  { path: "/profile", component: <Profile />, rank: 1 },
 
   {
     path: "/",
@@ -110,7 +115,6 @@ const adminRoute = [
     rank: 1
   },
 
-  { path: "/profile", component: <Profile />, rank: 1 },
 
 ]
 

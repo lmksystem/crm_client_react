@@ -5,7 +5,6 @@ import {
   DropdownMenu,
   DropdownToggle,
 } from "reactstrap";
-import { useSelector } from "react-redux";
 
 //import images
 import avatar1 from "../../assets/images/users/avatar-1.jpg";
@@ -77,11 +76,17 @@ const ProfileDropdown = () => {
           <h6 className="dropdown-header">
             Bienvenue {userProfile?.use_firstname} !
           </h6>
-          {userProfile.use_rank == 1 && (
+          {userProfile.use_rank != 2  && (
             <DropdownItem className="p-0">
               <span
                 onClick={() => {
-                  navigate("/profile");
+                  if(userProfile.use_rank ==0){
+                    navigate("/company/profile");
+
+                  }else if(userProfile.use_rank==1){
+                    navigate("/profile");
+
+                  }
                 }}
                 className="dropdown-item"
               >

@@ -27,6 +27,13 @@ const CompanyStep = ({ handleCompany, setStep, step, position }) => {
     },
 
     validationSchema: Yup.object({
+      com_name: Yup.string().required("Veuillez entrer un nom d'entreprise"),
+      com_adresse: Yup.string().required("Veuillez entrer une adresse"),
+      com_ville: Yup.string().required("Veuillez entrer une ville"),
+      com_cp: Yup.string().required("Veuillez entrer un code postal"),
+      com_email: Yup.string().required("Veuillez entrer un email"),
+      com_phone: Yup.string().required("Veuillez entrer un numéro de téléphone"),
+
 
     }),
 
@@ -216,7 +223,7 @@ const CompanyStep = ({ handleCompany, setStep, step, position }) => {
                   <Input
                     name="com_conv_name"
                     className="form-control"
-                    placeholder="Entrer un mot de passe"
+                    placeholder="Entrer un nom de convention"
                     type={"text"}
                     onChange={validation.handleChange}
                     onBlur={validation.handleBlur}
@@ -235,7 +242,7 @@ const CompanyStep = ({ handleCompany, setStep, step, position }) => {
                   <Input
                     name="com_conv_num"
                     className="form-control"
-                    placeholder="Entrer un mot de passe"
+                    placeholder="Entrer un numéro de convention"
                     type={"text"}
                     onChange={validation.handleChange}
                     onBlur={validation.handleBlur}

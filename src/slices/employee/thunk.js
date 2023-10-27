@@ -9,48 +9,38 @@ import {
   deleteEmployee as deleteEmployeeApi,
 } from "../../helpers/backend_helper";
 
-
-
-
-export const getEmployees = createAsyncThunk("employee/getEmployees", async () => {
+export const getEmployees = createAsyncThunk(
+  "employee/getEmployees",
+  async () => {
     try {
       const response = await getEmployeesApi();
       return response;
     } catch (error) {
       return error;
     }
-  });
+  }
+);
 
-
-  export const createUpdateEmployee = createAsyncThunk("employee/createUpdateEmployee", async (data) => {
+export const createUpdateEmployee = createAsyncThunk(
+  "employee/createUpdateEmployee",
+  async (data) => {
     try {
       const response = await createUpdateEmployeeApi(data);
       return response;
     } catch (error) {
       return error;
     }
-  });
+  }
+);
 
-
-  
-  export const deleteEmployee = createAsyncThunk("employee/deleteEmployee", async (id) => {
+export const deleteEmployee = createAsyncThunk(
+  "employee/deleteEmployee",
+  async (id) => {
     try {
-      console.log("id deleteEmployee",id)
       const response = await deleteEmployeeApi(id);
-      console.log(response.data)
       return response.data.use_id;
     } catch (error) {
       return error;
     }
-  });
-
-
-//   export const createEmployee = createAsyncThunk("employee/getEmployees", async () => {
-//     try {
-//       const response = await getEmployeesApi();
-//       return response;
-//     } catch (error) {
-//       return error;
-//     }
-//   });
-  
+  }
+);

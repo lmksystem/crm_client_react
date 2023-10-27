@@ -174,7 +174,7 @@ const FormUser = () => {
                             name="use_email"
                             id="use_email-field"
                             className="form-control"
-                            placeholder="Entrer un prénom"
+                            placeholder="Entrer un email"
                             type="text"
                             validate={{
                               required: { value: true },

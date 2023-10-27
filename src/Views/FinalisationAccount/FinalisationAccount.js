@@ -19,7 +19,7 @@ import { createOrUpdateUser as onCreateOrUpdateUser, createOrUpdateCompany as on
 import ValideStep from './step/ValideStep';
 
 const FinalisationAccount = (props) => {
-  document.title = "Finaliser creation de compte | Countano";
+  document.title = "Finaliser création de compte | Countano";
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

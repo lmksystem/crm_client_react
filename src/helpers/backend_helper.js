@@ -139,6 +139,10 @@ export const getCompany = () => api.get(url.COMPANY);
 // add or update company
 export const createOrUpdateCompany = (data) => api.post(url.COMPANY_2, data);
 
+// just updateCompany
+export const updateCompany = (data) => api.post(url.COMPANY_2+"/update", data);
+
+
 // // add Company
 // export const addNewInvoice = invoice => api.create(url.ADD_NEW_INVOICE, invoice);
 

@@ -40,7 +40,7 @@ const Index = () => {
               <Route
                 path={route.path}
                 element={
-                  <AdminProtected rank={route.rank}>
+                  <AdminProtected rank={route.rank} adminRouteIndex={adminRoute[idx]}>
                     <VerticalLayout>{route.component}</VerticalLayout>
                   </AdminProtected>
                 }
