@@ -46,10 +46,11 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SimpleBar from "simplebar-react";
 import { useProfile } from "../../Components/Hooks/UserHooks";
+import { getLoggedinUser } from "../../helpers/api_helper";
 
 const TransactionBank = () => {
   const dispatch = useDispatch();
-  const { userProfile } = useProfile();
+  const  userProfile = getLoggedinUser();
   const { isTransactionBankSuccess, error, transactions, achats } = useSelector(
     (state) => ({
       isTransactionBankSuccess: state.TransactionBank.isTransactionBankSuccess,

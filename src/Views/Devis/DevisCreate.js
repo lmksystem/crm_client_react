@@ -343,7 +343,6 @@ const InvoiceCreate = () => {
 
   useEffect(() => {
     if (validation && state && Object.keys(state).length > 0) {
-      console.log("state", state);
       validation.setValues(state);
     }
 

@@ -62,7 +62,7 @@ class APIClient {
   get = (url, params) => {
     let response;
     let paramKeys = [];
-    console.log("params",params);
+    // console.log("params",params);
     if (params) {
       Object.keys(params).map(key => {
         paramKeys.push(key + '=' + params[key]);

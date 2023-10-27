@@ -35,8 +35,9 @@ export const getEmployees = createAsyncThunk("employee/getEmployees", async () =
   
   export const deleteEmployee = createAsyncThunk("employee/deleteEmployee", async (id) => {
     try {
+      console.log("id deleteEmployee",id)
       const response = await deleteEmployeeApi(id);
-      // console.log()
+      console.log(response.data)
       return response.data.use_id;
     } catch (error) {
       return error;

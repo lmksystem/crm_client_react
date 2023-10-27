@@ -6,6 +6,7 @@ import { getAccountBank as onGetAccountBank } from "../../slices/thunks";
 import { useSelector, useDispatch } from "react-redux";
 import * as moment from "moment";
 import FluidText from "./FluidText";
+import { getLoggedinUser } from "../../helpers/api_helper";
 
 const BreadCrumb = ({ title, pageTitle }) => {
   const dispatch = useDispatch();
@@ -13,8 +14,7 @@ const BreadCrumb = ({ title, pageTitle }) => {
   const { listAccountsBank } = useSelector((state) => ({
     listAccountsBank: state.BankAccount.listAccountsBank,
   }));
-  const { userProfile } = useProfile();
-
+  const userProfile = getLoggedinUser();
   const[dateExpired,setDateExpired] = useState(null);
 
   function findClosestDateWithin15Days(dateArray=[]) {

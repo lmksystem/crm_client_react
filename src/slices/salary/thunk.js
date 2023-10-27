@@ -12,7 +12,6 @@ export const createUpdateSalary = createAsyncThunk("salary/createUpdateSalary", 
     return response;
   }
   catch (error) {
-    console.log("error createUpdateSalary",error)
     toast.error("Salary Post Failed", { autoClose: 3000 });
     return error;
   }
@@ -21,7 +20,6 @@ export const createUpdateSalary = createAsyncThunk("salary/createUpdateSalary", 
 export const getSalary = createAsyncThunk("salary/getSalary", async (year) => {
   try {
     const response = await getSalaryApi(year);
-    console.log(response)
     return response;
   }
   catch (error) {
@@ -34,7 +32,6 @@ export const getSalary = createAsyncThunk("salary/getSalary", async (year) => {
 export const deleteSalary = createAsyncThunk("salary/deleteSalary", async (id) => {
   try {
     const response = await deleteSalaryApi(id);
-    console.log("response salary Delete",response)
     return response;
   }
   catch (error) {

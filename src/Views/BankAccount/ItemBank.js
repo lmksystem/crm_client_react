@@ -34,10 +34,10 @@ const ItemBank = ({ item }) => {
             </Col>
           </Col>
          {item.bua_account_id?.length>0 && <Col xs={12}>
-            <div class="input-group ">
+            <div className="input-group ">
               <input
                 type="text"
-                class="form-control"
+                className="form-control"
                 placeholder="Libellé personnalisé"
                 aria-label="Libellé personnalisé"
                 value={libelle}
@@ -45,7 +45,7 @@ const ItemBank = ({ item }) => {
                   setLibelle(e.target.value);
                 }}
               />
-              <div class="input-group-append">
+              <div className="input-group-append">
                 <button
                   onClick={() => {
                     dispatch(

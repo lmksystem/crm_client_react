@@ -208,7 +208,7 @@ export const getEmployees = () => api.get(url.EMPLOYEES+'/employees');
 
 export const createUpdateEmployee = data => api.create(url.EMPLOYEES,data);
 
-export const deleteEmployee = use_id => api.delete(url.EMPLOYEES + "/delete/" + use_id);
+export const deleteEmployee = (use_id) => api.delete(url.EMPLOYEES + "/" + use_id);
 
 
 
