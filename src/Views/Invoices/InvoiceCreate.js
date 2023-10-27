@@ -317,7 +317,7 @@ const InvoiceCreate = () => {
         validation.setValues({ ...validation.values, ligne: [...validation.values.ligne].map((l) => i == index ? updatingLine : l) })
       }
     });
-    
+
     let header = handleHeaderValue(lignesData);
     validation.setValues({ ...validation.values, header: header });
   }
@@ -368,13 +368,14 @@ const InvoiceCreate = () => {
       })
     }
   }, [company, prefix_facture])
+  
 
   return (
     <div className="page-content">
       <Container fluid>
         <BreadCrumb title="Création facture" pageTitle="Factures" />
         <Row className="justify-content-center">
-          <Col xxl={9}>
+          <Col xl={12} xxl={9}>
             <Card>
               <Form
                 onSubmit={(e) => {
@@ -863,8 +864,9 @@ const InvoiceCreate = () => {
                                   }}
                                   options={tvaList || []}
                                   value={tvaList && tvaList.find((tva) => tva.value == validation.values.ligne[i].fli_tva)}
-                                  id="choices-payment-currency"
-                                  className="form-selectborder-0 bg-light"
+                                  id="choices-tva"
+                                  placeholder="Tva"
+                                  className=" bg-light"
                                 />
                               </td>
                               <td>
@@ -941,7 +943,7 @@ const InvoiceCreate = () => {
                                     className="form-control bg-light border-0 product-line-price"
                                     id="productPrice-1"
                                     placeholder="€0.00"
-                                    value={"€" + rounded(validation.values?.ligne[i]?.fli_total_ht, 2)}
+                                    value={rounded(validation.values?.ligne[i]?.fli_total_ht, 2) + "€"}
                                     readOnly
                                   />
                                   <Label className="btn btn-secondary btn-input-group">ht</Label>
@@ -951,7 +953,7 @@ const InvoiceCreate = () => {
                                     type="text"
                                     className="form-control bg-light border-0 product-line-price"
                                     placeholder="€0.00"
-                                    value={"€" + rounded(validation.values?.ligne[i]?.fli_total_ttc, 2)}
+                                    value={rounded(validation.values?.ligne[i]?.fli_total_ttc, 2) + "€"}
                                     readOnly
                                   />
                                   <Label className="btn btn-secondary btn-input-group">ttc</Label>

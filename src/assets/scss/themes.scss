@@ -281,3 +281,22 @@ $value in $theme-colors {
 html {
   overflow-x: hidden;
 }
+
+.product .input-group {
+  flex-wrap: nowrap;
+}
+.product #choices-tva {
+  max-width: 100px;
+}
+
+.product td{
+  min-width: 120px;
+}
+
+.product td:nth-child(2){
+  min-width: 220px;
+}
+
+.product .product-removal {
+  min-width: 50px!important;
+}

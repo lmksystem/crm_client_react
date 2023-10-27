@@ -18,6 +18,7 @@ import {
 } from "../../slices/thunks";
 import ConfirmModal from "../../Components/Common/ConfirmModal";
 import axios from "axios";
+import FeatherIcon from "feather-icons-react/build/FeatherIcon";
 
 const DevisDetails = () => {
   document.title = "Détail facture | Countano";
@@ -157,7 +158,7 @@ const DevisDetails = () => {
                         <h5 className="fs-14 mb-0"><span id="devis-date">{moment(devis.header.den_date_valid).format('L')}</span> <small className="text-muted" id="devis-time"></small></h5>
                       </Col>
                       <Col lg={3} className="col-6">
-                        <p className="text-muted mb-2 text-uppercase fw-semibold">état</p>
+                        <p className="text-muted mb-2 text-uppercase fw-semibold">état <FeatherIcon onClick={() => { }} className={"mx-2"} size={13} icon={'edit-2'}></FeatherIcon></p>
                         <span className="badge badge-soft-success fs-11" id="payment-status">{etatDevis?.find((d) => d.det_id == devis.header.den_etat)?.det_name}</span>
                       </Col>
                       <Col lg={3} className="col-6">
@@ -234,10 +235,10 @@ const DevisDetails = () => {
                       <Link to={`/devis/edition/${devis.header.den_id}`} state={devis} className="btn btn-success"><i className="ri-ball-pen-line align-bottom me-1"></i> Editer</Link>
                       <Link onClick={() => setShowConfirmModal(true)} className="btn btn-success"><i className="ri-send-plane-fill align-bottom me-1"></i> Envoyer</Link>
                       <Link to="#" onClick={printInvoice} className="btn btn-success"><i className="ri-printer-line align-bottom me-1"></i> Imprimer</Link>
-                    
-                      <Link onClick={() => downloadPdf()}  className="btn btn-secondary"><i className="ri-download-2-line align-bottom me-1"></i> Télécharger</Link>
+
+                      <Link onClick={() => downloadPdf()} className="btn btn-secondary"><i className="ri-download-2-line align-bottom me-1"></i> Télécharger</Link>
                       <Link to={'/factures/creation'} state={{ den_id: devis.header.den_id }} className="btn btn-secondary"><i className="ri-file-copy-2-fill align-bottom me-1"></i> Facture</Link>
-                    
+
                       <Link onClick={() => setDeleteModal(true)} state={devis} className="btn btn-danger"><i className="ri-ball-pen-line align-bottom me-1"></i> Supprimer</Link>
                     </div>
                   </CardBody>
