@@ -20,10 +20,11 @@ import LightDark from '../Components/Common/LightDark';
 import { changeSidebarVisibility } from '../slices/thunks';
 import { useSelector, useDispatch } from "react-redux";
 import { useProfile } from '../Components/Hooks/UserHooks';
+import { getLoggedinUser } from '../helpers/api_helper';
 
 const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
     const dispatch = useDispatch();
-    const { userProfile } = useProfile();
+    const  userProfile = getLoggedinUser();
     
     const { sidebarVisibilitytype } = useSelector(state => ({
         sidebarVisibilitytype: state.Layout.sidebarVisibilitytype,
@@ -107,7 +108,7 @@ const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
                             </button>
 
 
-                          {userProfile?.use_rank ===0 &&  <SearchOption />}
+                          {userProfile?.use_rank === 0 &&  <SearchOption />}
                         </div>
 
                         <div className="d-flex align-items-center">

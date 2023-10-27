@@ -131,7 +131,6 @@ const Collaborateurs = () => {
     setIsEdit(false);
     toggle();
   };
-  console.log("state ", collaborateur);
   // validation
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
