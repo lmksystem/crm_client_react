@@ -508,6 +508,7 @@ const Recurrence = () => {
                       name="recurrence_data.rec_date_echeance"
                       id="date-field"
                       className="form-control"
+                      min={moment().add(1, "day").format('YYYY-MM-DD')}
                       placeholder="Selectionnez une date"
                       onBlur={validation.handleBlur}
                       onChange={validation.handleChange}

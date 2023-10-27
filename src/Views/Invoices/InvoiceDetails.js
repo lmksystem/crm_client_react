@@ -130,7 +130,7 @@ const InvoiceDetails = () => {
           sendInvoiceByEmail()
           // if (!invoice.doc) {
           //   dispatch(createPdf(invoice.header.fen_id)).then(() => {
-              
+
           //   })
           // } else {
           //   sendInvoiceByEmail()
@@ -283,7 +283,7 @@ const InvoiceDetails = () => {
                               return (
                                 <tr key={index + 1}>
                                   <td>
-                                    #{index +1 }
+                                    #{index + 1}
                                   </td>
 
                                   <td>
@@ -387,9 +387,13 @@ const InvoiceDetails = () => {
                                   <FormFeedback type="invalid">{validation.errors?.tra_value}</FormFeedback>
                                 ) : null}
                               </Col>
-                              <Col lg={4}>
-                                <button type="submit" className="mx-2 btn btn-secondary">Enregistrer</button>
-                                <button type="button" onClick={(e) => { e.preventDefault(); setAddActifView(() => false) }} className="btn btn-danger">Annuler</button>
+                              <Col lg={4} className="d-flex">
+                                <div className="w-50 pr-1">
+                                  <button type="submit" className=" px-2 btn btn-secondary w-100">Enregistrer</button>
+                                </div>
+                                <div className="w-50 ps-1">
+                                  <button type="button" onClick={(e) => { e.preventDefault(); setAddActifView(() => false) }} className="btn btn-danger w-100">Annuler</button>
+                                </div>
                               </Col>
                             </Row>
                             : ""
@@ -401,7 +405,7 @@ const InvoiceDetails = () => {
                     <div className="hstack gap-2 justify-content-end d-print-none mt-4">
                       <button to="#" onClick={printInvoice} className="btn btn-success"><i className="ri-printer-line align-bottom me-1"></i> Imprimer</button>
                       <button onClick={() => setShowConfirmModal(true)} className="btn btn-success"><i className="ri-send-plane-fill align-bottom me-1"></i> Envoyer</button>
-                      <button onClick={() => downloadPdf()}  className="btn btn-secondary"><i className="ri-download-2-line align-bottom me-1"></i> Télécharger</button>
+                      <button onClick={() => downloadPdf()} className="btn btn-secondary"><i className="ri-download-2-line align-bottom me-1"></i> Télécharger</button>
                     </div>
                   </CardBody>
                 </Col>
