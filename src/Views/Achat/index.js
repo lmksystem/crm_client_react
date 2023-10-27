@@ -356,6 +356,13 @@ const Achats = () => {
         Header: "Montant",
         accessor: "ach_total_amount",
         filterable: false,
+        Cell: (cell) => {
+        return (
+          <div className="d-flex align-items-center">
+            <div >{cell.row.original.ach_type == "Charge"?"- ":"+ "}{cell.row.original.ach_total_amount}</div>
+          </div>
+        );
+        }
       },
       {
         Header: "Reste à pointer",

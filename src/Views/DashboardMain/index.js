@@ -82,7 +82,6 @@ const DashboardMain = () => {
     }));
   }, [perdiodeCalendar]);
 
-  console.log("okokokok");
   return (
     <React.Fragment>
       <div className="page-content">

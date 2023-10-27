@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {  createOrUpdateCompany, getCompany, updateCompany } from './thunk';
+import { toast } from "react-toastify";
 
 export const initialState = {
   company: {},
@@ -37,6 +38,7 @@ const companySlice = createSlice({
 
     builder.addCase(updateCompany.fulfilled, (state, action) => {
       state.company = action.payload.data;
+      toast.success("Mise à jour d'entrerpise résussie", { autoClose: 3000 })
       state.isCompanySuccess = true;
 
     });

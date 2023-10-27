@@ -140,7 +140,7 @@ export const getCompany = () => api.get(url.COMPANY);
 export const createOrUpdateCompany = (data) => api.post(url.COMPANY_2, data);
 
 // just updateCompany
-export const updateCompany = (data) => api.post(url.COMPANY_2+"/update", data);
+export const updateCompany = (data) => api.create(url.COMPANY_2+"/update", data);
 
 
 // // add Company

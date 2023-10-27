@@ -709,10 +709,10 @@ const TransactionBank = () => {
                                               </div>
                                               <div className="flex-shrink-0 d-flex flex-md-column align-items-end">
                                                 <div>
-                                                  € -
+                                                  {ach.ach_type=="Charge" ?"- ":"+ "}
                                                   {isSelected(ach.ach_id)
                                                     ? ach.aba_match_amount
-                                                    : ach.ach_rp}
+                                                    : ach.ach_rp} € 
                                                 </div>
                                                 {isSelected(ach.ach_id) ? (
                                                   <button

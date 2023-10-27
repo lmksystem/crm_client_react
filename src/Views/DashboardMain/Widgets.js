@@ -126,7 +126,7 @@ const Widgets = () => {
   ];
   return (
     <React.Fragment>
-      {ecomWidgets.map((item, key) => (
+      {ecomWidgets?.map((item, key) => (
         <Col xl={3} md={6} key={key}>
           <Card className="card-animate">
             <CardBody>

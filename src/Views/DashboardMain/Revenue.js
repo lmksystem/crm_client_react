@@ -17,9 +17,9 @@ const Revenue = ({perdiodeCalendar}) => {
 
   }));
   useEffect(() => {
-    const tableauTransaction = transactionByMonth.map(objet => objet["somme_tra_value"]);
-    const tableauDevis = devisByMonth.map(objet => objet["count_devis"]);
-    const tableauInvoice = invoiceByMonth.map(objet => objet["count_invoice"]);
+    const tableauTransaction = transactionByMonth?.map(objet => objet["somme_tra_value"]);
+    const tableauDevis = devisByMonth?.map(objet => objet["count_devis"]);
+    const tableauInvoice = invoiceByMonth?.map(objet => objet["count_invoice"]);
     const newArrayForGraph = [
       {
         name:"Devis",

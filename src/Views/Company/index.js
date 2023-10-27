@@ -15,7 +15,11 @@ import BreadCrumb from "../../Components/Common/BreadCrumb";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { getCompany as onGetCompany ,updateCompany as onUpdateCompany} from "../../slices/thunks";
+import {
+  getCompany as onGetCompany,
+  updateCompany as onUpdateCompany,
+} from "../../slices/thunks";
+import { ToastContainer } from "react-toastify";
 
 const CompanyProfil = () => {
   const dispatch = useDispatch();
@@ -23,25 +27,24 @@ const CompanyProfil = () => {
   const { companyredux, error } = useSelector((state) => ({
     companyredux: state?.Company?.company,
   }));
-  const[company,setCompany]= useState({});
+  const [company, setCompany] = useState({});
 
   useEffect(() => {
     dispatch(onGetCompany());
   }, []);
 
   useEffect(() => {
-    console.log("company",company);
-    console.log("companyredux",companyredux)
-    if(companyredux?.length>0){
-        setCompany(companyredux[0])
-
+    console.log("company", company);
+    console.log("companyredux", companyredux);
+    if (companyredux?.length > 0) {
+      setCompany(companyredux[0]);
     }
   }, [companyredux]);
 
   const validation = useFormik({
     enableReinitialize: true,
     initialValues: {
-    //   com_name: company?.com_id || 0,
+      com_id: company?.com_id,
       com_name: company?.com_name || "",
       com_adresse: company?.com_adresse || "",
       com_ville: company?.com_ville || "",
@@ -55,22 +58,25 @@ const CompanyProfil = () => {
     },
 
     validationSchema: Yup.object({
-        com_name: Yup.string().required("Veuillez entrer un nom d'entreprise"),
-        com_adresse: Yup.string().required("Veuillez entrer une adresse"),
-        com_ville: Yup.string().required("Veuillez entrer une ville"),
-        com_cp: Yup.string().required("Veuillez entrer un code postal"),
-        com_email: Yup.string().required("Veuillez entrer un email"),
-        com_phone: Yup.string().required("Veuillez entrer un numéro de téléphone"),
-
+      com_name: Yup.string().required("Veuillez entrer un nom d'entreprise"),
+      com_adresse: Yup.string().required("Veuillez entrer une adresse"),
+      com_ville: Yup.string().required("Veuillez entrer une ville"),
+      com_cp: Yup.string().required("Veuillez entrer un code postal"),
+      com_email: Yup.string().required("Veuillez entrer un email"),
+      com_phone: Yup.string().required(
+        "Veuillez entrer un numéro de téléphone"
+      ),
     }),
 
     onSubmit: (values) => {
-      dispatch(onUpdateCompany(values))
+        
+      dispatch(onUpdateCompany(values));
     },
   });
   return (
     <React.Fragment>
       <div className="page-content">
+      <ToastContainer closeButton={false} limit={1} />
         <Container fluid>
           <BreadCrumb title="Entreprise" pageTitle="Profil" />
         </Container>
