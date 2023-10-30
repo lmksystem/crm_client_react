@@ -76,6 +76,9 @@ const Achats = () => {
 
   const [filesSelected, setFilesSelected] = useState([]);
 
+  const [facsExist, setFacsExist] = useState([]);
+
+
   const [transFilter, setTransFilter] = useState({
     data: [],
     searchTerm: "",
@@ -89,10 +92,16 @@ const Achats = () => {
 
   const [modal, setModal] = useState(false);
 
+
+  function setInfosModal() {
+    setFilesSelected([]);
+    setFacsExist([]);
+  }
+
   const toggle = useCallback(() => {
     if (modal) {
       if (!isEdit) {
-        setFilesSelected([]);
+        setInfosModal();
       }
       setAchat({});
       setTransFilter({
@@ -125,31 +134,75 @@ const Achats = () => {
     initialValues: {
       type: "",
       files: filesSelected,
+      facturesExist:facsExist,
     },
     validationSchema: Yup.object({
       type: Yup.string().required("Veuillez choisir un type"),
-      files: Yup.array()
-        .min(1)
-        .required("Veuillez choisir un/plusieurs fichier(s)"),
+      // files: Yup.array()
+      //   .min(1)
+      //   .required("Veuillez choisir un/plusieurs fichier(s)"),
     }),
     onSubmit: (values) => {
       if (!isEdit) {
-        FileService.uploadFile(values.files).then((res) => {
-          if (res.fileName) {
-            const newAchat = {
-              ach_type: values.type,
-              files: res.fileName,
-            };
-            // save new Achat
-            dispatch(onCreateUpdateAchat(newAchat));
-          }
-        });
+
+        if(values?.files?.length> 0){
+          FileService.uploadFile(values.files).then((res) => {
+            if (res.fileName) {
+              const newAchat = {
+                ach_type: values.type,
+                files: res.fileName,
+              };
+              // save new Achat
+              dispatch(onCreateUpdateAchat(newAchat));
+            }
+          });
+        }else if(values?.facturesExist?.length>0){
+          FileService.copyFiles(values?.facturesExist).then((res) => {
+            let arrayUpdateAchat =[];
+            for (let index = 0; index < res.data.length; index++) {
+              const element = res.data[index];
+              console.log(element)
+              let newAchat ={
+                ach_ent_fk:element.header.fen_ent_fk,
+                ach_date_create: element.header.fen_date_create.slice(0,10),
+                ach_date_expired: element.header.fen_date_expired,
+                ach_categorie: element.header.fen_sujet,
+                ach_total_amount:parseFloat(element.header.fen_total_ttc),
+                ach_rp:parseFloat(element.header.fen_total_ttc),
+                ach_total_tva:parseFloat(element.header.fen_total_tva),
+                ado_file_name:element.newFileCopy,
+                ach_type:"Revenu",
+                ach_lib:"",
+                ach_num:"",
+                ach_met:"",
+              }
+              arrayUpdateAchat.push(newAchat);
+            }
+            let objectDispatching ={
+              invoices:arrayUpdateAchat
+            }
+            dispatch(onCreateUpdateAchat(objectDispatching));
+          
+          });
+        }else{
+          console.log("iefifj,i")
+        }
+       
 
         createAchats.resetForm();
       }
       toggle();
     },
   });
+
+  function isFilesUse(){
+    if( createAchats.values.facturesExist.length>0){
+      return false
+    }else{
+
+    }
+   
+  }
 
   // validation
   const validation = useFormik({
