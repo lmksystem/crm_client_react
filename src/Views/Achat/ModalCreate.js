@@ -52,7 +52,19 @@ const ModalCreate = ({
     setTransFilter({ ...transFilter, searchTerm: value });
   };
   const filterData = (arrayTrans) => {
-    return arrayTrans?.data?.filter((item) => {
+    let newArrayFiltred = arrayTrans.data?.map((traItem)=>{
+      if(achat.type=="Revenu" && parseFloat(traItem.tba_amount) >0 ){
+        return traItem
+      }else if(achat.type=="Charge" && parseFloat(traItem.tba_amount) < 0){
+        return traItem
+
+      }else{
+        return{}
+      }
+    })
+
+
+    return newArrayFiltred?.filter((item) => {
       // Définissez ici les propriétés sur lesquelles vous souhaitez effectuer la recherche
       const searchFields = [
         item?.tba_amount,
@@ -480,6 +492,7 @@ const ModalCreate = ({
                     <SimpleBar style={{ height: "150px" }} className="mx-n3">
                       <ListGroup className="list mb-0" flush>
                         {filteredData?.map((tra,i) => {
+                          console.log(tra)
                           return (
                             <ListGroupItem
                               key={i}
@@ -499,7 +512,7 @@ const ModalCreate = ({
                                     {isSelected(tra.tba_id) ? (
                                       <i className="las la-link"></i>
                                     ) : null}
-                                    {tra.tba_ref}
+                                    {tra.bua_libelle?.length >0 ? tra?.bua_libelle : tra?.bua_account_id}
                                   </h5>
                                   <p
                                     className="born timestamp text-muted mb-0"

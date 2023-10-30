@@ -240,6 +240,7 @@ const Achats = () => {
         justificatif: achatH.ado_file_name,
         entity: achatH.ach_ent_fk,
         rp: achatH?.ach_rp,
+        type:achatH?.ach_type,
       });
       setIsEdit(true);
       toggle();
