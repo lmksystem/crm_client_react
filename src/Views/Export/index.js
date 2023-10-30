@@ -80,7 +80,7 @@ const Export = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb title="Export" pageTitle="Countano" />
+          <BreadCrumb title="Export" pageTitle="Comptabilité" />
           <Row>
             <Col lg={12}>
               <form action="#" className="mb-2">

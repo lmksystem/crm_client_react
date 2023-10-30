@@ -538,7 +538,7 @@ const Collaborateurs = () => {
                         )}
 
                         <button
-                          className="btn btn-soft-primary"
+                          className="btn btn-success"
                           onClick={() => setIsExportCSV(true)}
                         >
                           Export

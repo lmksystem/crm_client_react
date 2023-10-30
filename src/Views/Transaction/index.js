@@ -352,6 +352,8 @@ const TransactionBank = () => {
   };
   const filterData = () => {
     let newArrayFiltred = achatFilter?.data?.map((achatItem) => {
+      console.log(achatItem)
+      console.log(transaction)
       if (
         parseFloat(transaction.tba_amount) > 0 &&
         achatItem.ach_type == "Revenu"
