@@ -5,7 +5,7 @@ import { Card, CardBody } from "reactstrap";
 
 const InvoiceChart = ({ dataColors, series }) => {
   const linechartcustomerColors = getChartColorsArray(dataColors);
-
+  // console.log("series",series)
   function abregerSomme(somme) {
     if (somme < 500) {
       return somme.toString() + "€";

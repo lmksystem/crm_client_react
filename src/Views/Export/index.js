@@ -58,8 +58,9 @@ const Export = () => {
       const invoice = selectedInvoice[index];
       let month = moment(invoice.header.fen_date_create).month();
 
-      data[month] += invoice.header.fen_total_ttc
+      data[month] += parseFloat(invoice.header.fen_total_ttc).toFixed(2)
     }
+    console.log("data getDateByMonth",data)
     setDataChart(data)
 
   }
