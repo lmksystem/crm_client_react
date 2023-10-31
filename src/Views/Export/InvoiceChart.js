@@ -85,6 +85,11 @@ const InvoiceChart = ({ dataColors, series }) => {
         lines: {
           show: false,
         },
+        labels: {
+          formatter: function (value) {
+            return value.toFixed(2); // Formater les valeurs à deux chiffres après la virgule
+          }
+        }
       },
       padding: {
         top: 0,
