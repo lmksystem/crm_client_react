@@ -102,9 +102,9 @@ const Reports = () => {
           <Row>
             <div className="d-flex mb-2 justify-content-end" >
               <div className="input-group" style={{ width: "24em" }}>
-                <button onClick={() => { console.log("moins"); setDate(() => date.add(-1, "year")) }} className="btn btn-soft-primary"><FeatherIcon icon={'arrow-left'}></FeatherIcon> </button>
+                <button onClick={() => { console.log("moins"); setDate((date) => moment(date).add(-1, "year")) }} className="btn btn-soft-primary"><FeatherIcon icon={'arrow-left'}></FeatherIcon> </button>
                 <Input className="form-control text-center" value={date.format('YYYY')} disabled onChange={checkValue} maxLength={4} type="text"></Input>
-                <button onClick={() => { console.log("plus"); setDate(() => date.add(1, "year")) }} className="btn btn-soft-primary"><FeatherIcon icon={'arrow-right'}></FeatherIcon></button>
+                <button onClick={() => { console.log("plus"); setDate((date) => moment(date).add(1, "year")) }} className="btn btn-soft-primary"><FeatherIcon icon={'arrow-right'}></FeatherIcon></button>
               </div>
             </div>
             <WidgetCountUp xl={6} data={{ name: "Revenu Total", icon: "arrow-up-right", total: report?.revenus?.dataGraph.reduce((accumulator, currentValue) => (accumulator + currentValue), 0), nb: report?.revenus?.nb_facture, text: "factures payées" }} type={''}></WidgetCountUp>

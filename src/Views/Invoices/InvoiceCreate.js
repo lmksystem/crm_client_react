@@ -47,10 +47,17 @@ import { rounded } from "../../utils/function";
 import { api } from "../../config";
 import moment from "moment";
 import { APIClient } from "../../helpers/api_helper";
+import ConfirmModal from "../../Components/Common/ConfirmModal";
+import {
+  sendInvocieByEmail as onSendInvocieByEmail
+} from "../../slices/thunks";
+import { getImage } from "../../utils/getImages";
 
 let axios = new APIClient()
 
 const InvoiceCreate = () => {
+  document.title = "Création facture | Countano";
+
   const { collaborateurs, company, tva, products, prefix_facture } = useSelector((state) => ({
     prefix_facture: state.Gestion.constantes?.find(
       (cst) => cst.con_title === "Prefixe facture"
@@ -78,10 +85,11 @@ const InvoiceCreate = () => {
 
   const [modalProduct, setModalProduct] = useState(false);
 
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [image, setImage] = useState(false);
+
 
   const tvaList = tva?.map((e) => ({ id: e.tva_id, label: e.tva_value + "%", value: e.tva_value }));
-
-
 
   const initialValueLigne = {
     fli_name: "",
@@ -122,7 +130,10 @@ const InvoiceCreate = () => {
     dispatch(onGetConstantes());
   }, []);
 
-  document.title = "Création facture | Countano";
+  const sendInvoiceByEmail = (id) => {
+    dispatch(onSendInvocieByEmail(id));
+    setShowConfirmModal(false);
+  }
 
   const validation = useFormik({
     enableReinitialize: true,
@@ -188,12 +199,7 @@ const InvoiceCreate = () => {
 
     }),
     onSubmit: (values) => {
-      values.header.fen_solde_du = values.header.fen_total_ttc;
-      dispatch(onAddNewInvoice(values)).then(() => {
-        history("/factures/liste");
-        validation.resetForm();
-      });
-
+      setShowConfirmModal(true);
     },
   });
 
@@ -368,18 +374,42 @@ const InvoiceCreate = () => {
       })
     }
   }, [company, prefix_facture])
-  
+
+  const submitFormData = (sendEmail) => {
+    validation.values.header.fen_solde_du = validation.values.header.fen_total_ttc;
+    dispatch(onAddNewInvoice({ invoice: validation.values, send: sendEmail })).then(() => {
+      history("/factures/liste");
+      validation.resetForm();
+    });
+
+  }
+
+  useEffect(() => {
+    let path = (company.com_id + "/" + company.com_logo).replaceAll('/', " ")
+    getImage(path).then((response) => {
+      setImage("data:image/png;base64," + response)
+    })
+  }, [])
+
 
   return (
     <div className="page-content">
       <Container fluid>
         <BreadCrumb title="Création facture" pageTitle="Factures" />
+        <ConfirmModal title={'Envoyer ?'} text={"Voulez-vous envoyer la facture ?"} textClose="Non" show={showConfirmModal}
+          onCloseClick={() => {
+            setShowConfirmModal(false);
+            submitFormData(false);
+          }}
+          onActionClick={() => {
+            setShowConfirmModal(false);
+            submitFormData(true);
+          }} />
         <Row className="justify-content-center">
           <Col xl={12} xxl={9}>
             <Card>
               <Form
                 onSubmit={(e) => {
-                  console.log("submit ");
                   e.preventDefault();
                   validation.handleSubmit();
                   return false;
@@ -391,25 +421,16 @@ const InvoiceCreate = () => {
                   <Row>
                     <Col lg={6} className="d-flex">
                       <div className="profile-user mx-auto  mb-3">
-                        <Input
-                          id="profile-img-file-input"
-                          type="file"
-                          className="profile-img-file-input"
-                        />
                         <Label for="profile-img-file-input" className="d-block">
                           <span
                             className="overflow-hidden border border-dashed d-flex align-items-center justify-content-center rounded"
                             style={{ height: "60px", width: "256px" }}
                           >
                             <img
-                              src={logoDark}
+                              src={image}
                               className="card-logo card-logo-dark user-profile-image img-fluid"
                               alt="logo dark"
-                            />
-                            <img
-                              src={logoLight}
-                              className="card-logo card-logo-light user-profile-image img-fluid"
-                              alt="logo light"
+                              width="260"
                             />
 
                           </span>

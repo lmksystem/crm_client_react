@@ -8,6 +8,7 @@ import {
   createOrUpdateCompany as createOrUpdateCompanyApi,
   updateCompany as updateCompanyApi,
 } from "../../helpers/backend_helper";
+import { updateLogo } from "./reducer";
 
 export const getCompany = createAsyncThunk(
   "company/getCompany",
@@ -45,3 +46,7 @@ export const updateCompany = createAsyncThunk(
   }
 );
 
+export const updateLogoAction = (data) => async (dispatch) => {
+  dispatch(updateLogo(data))
+  
+}

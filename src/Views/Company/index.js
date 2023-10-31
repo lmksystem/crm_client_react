@@ -10,6 +10,7 @@ import {
   FormFeedback,
   Input,
   Button,
+  CardHeader,
 } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import * as Yup from "yup";
@@ -18,8 +19,14 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getCompany as onGetCompany,
   updateCompany as onUpdateCompany,
+  updateLogoAction as onUpdateLogoAction
 } from "../../slices/thunks";
 import { ToastContainer } from "react-toastify";
+import axios from "axios";
+import { api } from "../../config";
+import { getImage } from "../../utils/getImages";
+
+
 
 const CompanyProfil = () => {
   const dispatch = useDispatch();
@@ -28,18 +35,13 @@ const CompanyProfil = () => {
     companyredux: state?.Company?.company,
   }));
   const [company, setCompany] = useState({});
+  const [image, setImage] = useState();
 
   useEffect(() => {
     dispatch(onGetCompany());
   }, []);
 
-  useEffect(() => {
-    console.log("company", company);
-    console.log("companyredux", companyredux);
-    if (companyredux?.length > 0) {
-      setCompany(companyredux[0]);
-    }
-  }, [companyredux]);
+
 
   const validation = useFormik({
     enableReinitialize: true,
@@ -69,20 +71,84 @@ const CompanyProfil = () => {
     }),
 
     onSubmit: (values) => {
-        
+
       dispatch(onUpdateCompany(values));
     },
   });
+
+  const onSelectFile = e => {
+
+    const url = '/v1/company/logo';
+    const formData = new FormData();
+    console.log(e.target.files[0]);
+    formData.append('file', e.target.files[0]);
+    const config = {
+      headers: {
+        'content-type': 'multipart/form-data'
+      }
+    };
+
+    axios.post(url, formData, config).then((response) => {
+
+      dispatch(onUpdateLogoAction(response.data.com_logo));
+    })
+  }
+  console.log(companyredux);
+  useEffect(() => {
+    if (companyredux?.length > 0) {
+      setCompany(companyredux[0]);
+      let path = (companyredux[0].com_id + "/" + companyredux[0].com_logo).replaceAll('/', " ")
+      getImage(path).then((response) => {
+        setImage("data:image/png;base64," + response)
+      })
+    }
+  }, [companyredux]);
+
   return (
     <React.Fragment>
       <div className="page-content">
-      <ToastContainer closeButton={false} limit={1} />
+        <ToastContainer closeButton={false} limit={1} />
         <Container fluid>
           <BreadCrumb title="Entreprise" pageTitle="Profil" />
         </Container>
 
         <Card>
+          <CardHeader>
+            <Row>
+              <Col lg={12} className="d-flex">
+                <div className="profile-user mx-auto  mb-3">
+                  <Input
+                    id="profile-img-file-input"
+                    type="file"
+                    className="profile-img-file-input"
+                    onChange={(e) => onSelectFile(e)}
+                  />
+                  <Label for="profile-img-file-input" className="d-block">
+                    <span
+                      className="overflow-hidden border border-dashed d-flex align-items-center justify-content-center rounded"
+                      style={{ height: "90px", width: "356px" }}
+                    >
+                      {company.com_logo
+                        ? <img
+                          src={image}
+                          className="card-logo user-profile-image img-fluid"
+                          alt="logo light"
+                          width="260"
+                        />
+                        : <i className="text-muted position-absolute">Cliquer ici pour ajouter votre logo</i>
+
+                      }
+                    </span>
+                  </Label>
+
+                </div>
+
+
+              </Col>
+            </Row>
+          </CardHeader>
           <CardBody>
+
             <Form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -130,13 +196,13 @@ const CompanyProfil = () => {
                     value={validation.values.com_adresse || ""}
                     invalid={
                       validation.touched.com_adresse &&
-                      validation.errors.com_adresse
+                        validation.errors.com_adresse
                         ? true
                         : false
                     }
                   />
                   {validation.touched.com_adresse &&
-                  validation.errors.com_adresse ? (
+                    validation.errors.com_adresse ? (
                     <FormFeedback type="invalid">
                       {validation.errors.com_adresse}
                     </FormFeedback>
@@ -156,13 +222,13 @@ const CompanyProfil = () => {
                     value={validation.values.com_ville || ""}
                     invalid={
                       validation.touched.com_ville &&
-                      validation.errors.com_ville
+                        validation.errors.com_ville
                         ? true
                         : false
                     }
                   />
                   {validation.touched.com_ville &&
-                  validation.errors.com_ville ? (
+                    validation.errors.com_ville ? (
                     <FormFeedback type="invalid">
                       {validation.errors.com_ville}
                     </FormFeedback>
@@ -206,13 +272,13 @@ const CompanyProfil = () => {
                     value={validation.values.com_email || ""}
                     invalid={
                       validation.touched.com_email &&
-                      validation.errors.com_email
+                        validation.errors.com_email
                         ? true
                         : false
                     }
                   />
                   {validation.touched.com_email &&
-                  validation.errors.com_email ? (
+                    validation.errors.com_email ? (
                     <FormFeedback type="invalid">
                       {validation.errors.com_email}
                     </FormFeedback>
@@ -232,13 +298,13 @@ const CompanyProfil = () => {
                     value={validation.values.com_phone || ""}
                     invalid={
                       validation.touched.com_phone &&
-                      validation.errors.com_phone
+                        validation.errors.com_phone
                         ? true
                         : false
                     }
                   />
                   {validation.touched.com_phone &&
-                  validation.errors.com_phone ? (
+                    validation.errors.com_phone ? (
                     <FormFeedback type="invalid">
                       {validation.errors.com_phone}
                     </FormFeedback>
@@ -282,13 +348,13 @@ const CompanyProfil = () => {
                     value={validation.values.com_siren || ""}
                     invalid={
                       validation.touched.com_siren &&
-                      validation.errors.com_siren
+                        validation.errors.com_siren
                         ? true
                         : false
                     }
                   />
                   {validation.touched.com_siren &&
-                  validation.errors.com_siren ? (
+                    validation.errors.com_siren ? (
                     <FormFeedback type="invalid">
                       {validation.errors.com_siren}
                     </FormFeedback>
@@ -308,13 +374,13 @@ const CompanyProfil = () => {
                     value={validation.values.com_conv_name || ""}
                     invalid={
                       validation.touched.com_conv_name &&
-                      validation.errors.com_conv_name
+                        validation.errors.com_conv_name
                         ? true
                         : false
                     }
                   />
                   {validation.touched.com_conv_name &&
-                  validation.errors.com_conv_name ? (
+                    validation.errors.com_conv_name ? (
                     <FormFeedback type="invalid">
                       {validation.errors.com_conv_name}
                     </FormFeedback>
@@ -334,13 +400,13 @@ const CompanyProfil = () => {
                     value={validation.values.com_conv_num || ""}
                     invalid={
                       validation.touched.com_conv_num &&
-                      validation.errors.com_conv_num
+                        validation.errors.com_conv_num
                         ? true
                         : false
                     }
                   />
                   {validation.touched.com_conv_num &&
-                  validation.errors.com_conv_num ? (
+                    validation.errors.com_conv_num ? (
                     <FormFeedback type="invalid">
                       {validation.errors.com_conv_num}
                     </FormFeedback>
@@ -362,7 +428,7 @@ const CompanyProfil = () => {
           </CardBody>
         </Card>
       </div>
-    </React.Fragment>
+    </React.Fragment >
   );
 };
 

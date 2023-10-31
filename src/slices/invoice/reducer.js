@@ -48,7 +48,7 @@ const InvoiceSlice = createSlice({
     });
 
     builder.addCase(addNewInvoice.rejected, (state, action) => {
-      state.error = action.payload.error || null;
+      state.error = action.payload?.data.error || null;
     });
 
     builder.addCase(updateInvoice.fulfilled, (state, action) => {
