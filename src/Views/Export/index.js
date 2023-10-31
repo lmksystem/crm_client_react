@@ -53,19 +53,16 @@ const Export = () => {
 
   const getDateByMonth = () => {
     let data = new Array(12).fill(0);
-
+  
     for (let index = 0; index < selectedInvoice.length; index++) {
       const invoice = selectedInvoice[index];
       let month = moment(invoice.header.fen_date_create).month();
-      console.log("invoice.header.fen_total_ttc",invoice.header.fen_total_ttc)
-      data[month] += parseFloat(invoice.header.fen_total_ttc).toFixed(2);
-      console.log("data[month]",data[month])
-
+      console.log("invoice.header.fen_total_ttc", invoice.header.fen_total_ttc);
+      data[month] += parseFloat(invoice.header.fen_total_ttc); // Ne pas utiliser toFixed(2) ici
+      console.log("data[month]", data[month]);
     }
-    console.log("data getDateByMonth",data)
-    setDataChart(data)
-
-  }
+    setDataChart(data);
+  };
 
   useEffect(() => {
     dispatch(onGetInvoices());
