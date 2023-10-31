@@ -105,7 +105,7 @@ const InvoiceChart = ({ dataColors, series }) => {
       y: [
         {
           formatter: function (y) {
-            return y + "€";
+            return abregerSomme(y);
           },
         },
       ],

@@ -18,6 +18,10 @@ import "react-toastify/dist/ReactToastify.css";
 import SimpleBar from "simplebar-react";
 import Dropzone from "react-dropzone";
 import DropFileComponents from "./DropFileComponent";
+import {
+  getInvoices as onGetInvoices,
+} from "../../slices/thunks";
+import { useDispatch, useSelector } from "react-redux";
 
 const ModalCreate = ({
   validation,
@@ -36,7 +40,12 @@ const ModalCreate = ({
   transFilter, 
   setTransFilter
 }) => {
+  const dispatch = useDispatch();
+  const [factures,setFactures] =useState([])
+  const { invoices } = useSelector((state) => ({
+    invoices: state.Invoice.invoices,
 
+  }));
   function isSelected(id){
     let obj = transFilter?.data?.find((item) => item.tba_id === id );
     if(obj){
@@ -47,12 +56,57 @@ const ModalCreate = ({
    
     return false
   }
+
+ function isInvoiceSelected(invoice_id){
+  let obj = createAchats?.values?.facturesExist?.find((item) => item.header.fen_id === invoice_id );
+    if(obj){
+      return true
+    }
+   
+    return false
+ }
+
+//  function handleAcceptedFiles(files) {
+//   let copyValues = {...values];
+//   // let newArray = copyValues?.files?.concat(files);
+//   setValues({...values,facturesExist:newArray});
+// }
+
+// function deleteByIndex(index) {
+//   let temporyArrayForDelete = {...values};
+//   temporyArrayForDelete.files.splice(index, 1);
+//   setValues({...values,files:temporyArrayForDelete.files});
+
+// }
+ const handleFacture  = (invoice) => {
+  let newArray = [...filesSelected.facturesExist];
+  let findIsInvoiceSelect = newArray.find(e=> e.header.fen_id == invoice.header.fen_id)
+  if(findIsInvoiceSelect){
+    let index = newArray.findIndex(e=> e.header.fen_id == invoice.header.fen_id)
+    newArray.splice(index, 1);
+  }else{
+    newArray.push(invoice);
+  }
+  setFilesSelected({...filesSelected,facturesExist:newArray});
+ }
   const handleSearchChange = (e) => {
     const { value } = e.target;
     setTransFilter({ ...transFilter, searchTerm: value });
   };
   const filterData = (arrayTrans) => {
-    return arrayTrans?.data?.filter((item) => {
+    let newArrayFiltred = arrayTrans.data?.map((traItem)=>{
+      if(achat.type=="Revenu" && parseFloat(traItem.tba_amount) >0 ){
+        return traItem
+      }else if(achat.type=="Charge" && parseFloat(traItem.tba_amount) < 0){
+        return traItem
+
+      }else{
+        return{}
+      }
+    })
+
+
+    return newArrayFiltred?.filter((item) => {
       // Définissez ici les propriétés sur lesquelles vous souhaitez effectuer la recherche
       const searchFields = [
         item?.tba_amount,
@@ -112,6 +166,15 @@ const ModalCreate = ({
     },
   ];
 
+useEffect(() => {
+  if(!isEdit && createAchats.values.type =="Revenu" && filesSelected?.files?.length<1){
+    dispatch(onGetInvoices()).then(()=>{
+      console.log("invoices",invoices);
+      let totalInvoices = invoices.filter((fac)=> fac.doc !=null);
+      setFactures(totalInvoices)
+    })
+  }
+}, [filesSelected,createAchats.values.type])
 
   
   useEffect(() => {
@@ -187,6 +250,48 @@ const ModalCreate = ({
                   ) : null}
                 </div>
               </Col>
+              {  createAchats.values.type =="Revenu" && filesSelected?.files?.length<1 && <Col lg={12}>
+
+                    <div>
+                      <h5>Choisir des factures existantes</h5>
+                    </div>
+                    <SimpleBar style={{ height: "150px" }} className="mx-n3">
+                      <ListGroup className="list mb-0" flush>
+                        {factures?.map((fac,i) => {
+                          return (
+                            <ListGroupItem
+                              key={i}
+                              className={` ${
+                                isInvoiceSelected(fac.header.fen_id)
+                                  ? "bg-light text-grey tit"
+                                  : ""
+                              }`}
+                              onClick={() => {
+                                handleFacture(fac);
+                              }}
+                              data-id="1"
+                            >
+                              <div className={`d-flex justify-content-between`}>
+                              <div className="d-flex  flex-column">
+                                <p style={{ fontWeight:"bolder" }}  className="p-0 m-0 font-weight-bold">{fac.contact.fco_name}</p>
+                                <p className="p-0 m-0">{fac.header.fen_date_create.slice(0,10) }</p>
+                              
+                              </div>
+                              <div>
+                                  <p style={{ fontWeight:"bolder" }} className="p-0 m-0">{parseFloat(fac.header.fen_total_ttc).toFixed(2)}€ TTC</p>
+                                </div>
+                                
+                              
+                              </div>
+                            </ListGroupItem>
+                          );
+                        })}
+                      </ListGroup>
+                    </SimpleBar>
+                  </Col>      
+
+              }
+          {filesSelected.facturesExist?.length <1 &&
               <Col lg={12}>
                 <DropFileComponents
                   setValues={setFilesSelected}
@@ -195,7 +300,7 @@ const ModalCreate = ({
                   errors={createAchats.errors.files}
 
                 />
-              </Col>
+              </Col>}
             </Row>
           )}
           {isEdit && (
@@ -480,6 +585,7 @@ const ModalCreate = ({
                     <SimpleBar style={{ height: "150px" }} className="mx-n3">
                       <ListGroup className="list mb-0" flush>
                         {filteredData?.map((tra,i) => {
+                          console.log(tra)
                           return (
                             <ListGroupItem
                               key={i}
@@ -499,7 +605,7 @@ const ModalCreate = ({
                                     {isSelected(tra.tba_id) ? (
                                       <i className="las la-link"></i>
                                     ) : null}
-                                    {tra.tba_ref}
+                                    {tra.bua_libelle?.length >0 ? tra?.bua_libelle : tra?.bua_account_id}
                                   </h5>
                                   <p
                                     className="born timestamp text-muted mb-0"

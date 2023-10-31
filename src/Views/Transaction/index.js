@@ -1,9 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  useMemo,
-} from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import * as moment from "moment";
 import { api } from "../../config";
 // import process from "process";
@@ -50,7 +45,7 @@ import { getLoggedinUser } from "../../helpers/api_helper";
 
 const TransactionBank = () => {
   const dispatch = useDispatch();
-  const  userProfile = getLoggedinUser();
+  const userProfile = getLoggedinUser();
   const { isTransactionBankSuccess, error, transactions, achats } = useSelector(
     (state) => ({
       isTransactionBankSuccess: state.TransactionBank.isTransactionBankSuccess,
@@ -88,7 +83,7 @@ const TransactionBank = () => {
 
   const [isFilterBy, setIsFilterBy] = useState("null");
   const filterAccounts = {
-    by: "compte bancaire",
+    by: " n° de compte ou libellé",
     handleChange: (e) => {
       setIsFilterBy(e.target.value);
     },
@@ -109,7 +104,8 @@ const TransactionBank = () => {
               tabVal.push({ value: e.bua_libelle });
             }
             return tabVal;
-          }).reduce((acc, tableau) => {
+          })
+          .reduce((acc, tableau) => {
             return acc.concat(tableau);
           }, [])
       : [],
@@ -265,8 +261,8 @@ const TransactionBank = () => {
 
       {
         Header: "Association",
-        // accessor: "tba_assoc",
-        filterable: false,
+        accessor: "tba_assoc",
+        filterable: true,
 
         Cell: (cell) => {
           let styleCSS = {};
@@ -332,7 +328,7 @@ const TransactionBank = () => {
         filterable: false,
       },
     ],
-    [transactions,achatEvol]
+    [transactions, achatEvol]
   );
 
   const handleSearchChange = (e) => {
@@ -355,7 +351,25 @@ const TransactionBank = () => {
     setAchatEvol(!achatEvol);
   };
   const filterData = () => {
-    return achatFilter?.data?.filter((item) => {
+    let newArrayFiltred = achatFilter?.data?.map((achatItem) => {
+      console.log(achatItem)
+      console.log(transaction)
+      if (
+        parseFloat(transaction.tba_amount) > 0 &&
+        achatItem.ach_type == "Revenu"
+      ) {
+        return achatItem;
+      } else if (
+        parseFloat(transaction.tba_amount) < 0 &&
+        achatItem.ach_type == "Charge"
+      ) {
+        return achatItem;
+      } else {
+        return {};
+      }
+    });
+
+    return newArrayFiltred?.filter((item) => {
       // Définissez ici les propriétés sur lesquelles vous souhaitez effectuer la recherche
       const searchFields = [item.ach_lib, item.ach_rp, item.ach_date_create];
       return searchFields.some((field) =>
@@ -419,7 +433,7 @@ const TransactionBank = () => {
           : null,
       })
     );
-  }, [dispatch, perdiodeCalendar, isFilterBy,achats]);
+  }, [dispatch, perdiodeCalendar, isFilterBy, achats]);
 
   useEffect(() => {
     if (isFilterBy != "null") {
@@ -430,11 +444,44 @@ const TransactionBank = () => {
           );
         })
         .map((tra) => tra);
+      let tempProps = JSON.parse(JSON.stringify(transFiltered));
+
+      transFiltered = tempProps.map((tra) => {
+        if (tra.tba_rp == Math.abs(parseFloat(tra.tba_amount))) {
+          tra.tba_assoc = 0;
+        } else if (tra.tba_rp == 0 || tra.tba_justify == 0) {
+          tra.tba_assoc = 2;
+        } else if (
+          tra.tba_rp < Math.abs(parseFloat(tra.tba_amount)) &&
+          tra.tba_rp > 0
+        ) {
+          tra.tba_assoc = 1;
+        } else {
+          tra.tba_assoc = -1;
+        }
+        return tra;
+      });
       setTTD(transFiltered);
       setShow(false);
       setTransaction(null);
     } else {
-      setTTD(transactions);
+      let tempProps = JSON.parse(JSON.stringify(transactions));
+      let newArrayTraAssoc = tempProps?.map((tra) => {
+        if (tra.tba_rp == Math.abs(parseFloat(tra.tba_amount))) {
+          tra.tba_assoc = 0;
+        } else if (tra.tba_rp == 0 || tra.tba_justify == 0) {
+          tra.tba_assoc = 2;
+        } else if (
+          tra.tba_rp < Math.abs(parseFloat(tra.tba_amount)) &&
+          tra.tba_rp > 0
+        ) {
+          tra.tba_assoc = 1;
+        } else {
+          tra.tba_assoc = -1;
+        }
+        return tra;
+      });
+      setTTD(newArrayTraAssoc);
     }
   }, [transactions, isFilterBy]);
 
@@ -709,10 +756,13 @@ const TransactionBank = () => {
                                               </div>
                                               <div className="flex-shrink-0 d-flex flex-md-column align-items-end">
                                                 <div>
-                                                  {ach.ach_type=="Charge" ?"- ":"+ "}
+                                                  {ach.ach_type == "Charge"
+                                                    ? "- "
+                                                    : "+ "}
                                                   {isSelected(ach.ach_id)
                                                     ? ach.aba_match_amount
-                                                    : ach.ach_rp} € 
+                                                    : ach.ach_rp}{" "}
+                                                  €
                                                 </div>
                                                 {isSelected(ach.ach_id) ? (
                                                   <button

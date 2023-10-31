@@ -327,7 +327,7 @@ const TvaParameter = () => {
       <Card>
         <CardHeader>
           <div className="d-flex align-items-center flex-wrap gap-2 ">
-            <div className="d-flex flex-grow-1 justify-content-end">
+            <div className="d-flex flex-grow-1 justify-content-start">
               <button
                 className="btn btn-secondary add-btn"
                 onClick={() => {

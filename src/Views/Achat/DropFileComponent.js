@@ -84,7 +84,10 @@ function DropFileComponents({
           {"Veuillez choisir un/plusieurs fichier(s)"}
         </FormFeedback>
       ) : null}
-      <div
+      {
+        values?.files?.length>0 &&
+
+        <div
         style={{
           height: "200px",
           overflow: "auto",
@@ -134,6 +137,9 @@ function DropFileComponents({
           </div>
         ))}
       </div>
+
+      }
+     
     </div>
   );
 }
