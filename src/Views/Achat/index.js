@@ -504,7 +504,7 @@ const Achats = () => {
                   const achatData = cellProps.row.original;
                   onClickDelete(achatData);
                 }}
-                className="ri-delete-bin-fill align-bottom me-2 text-muted"
+                className="ri-delete-bin-fill align-bottom me-2 text-danger"
               ></i>
             </div>
           );

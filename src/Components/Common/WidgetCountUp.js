@@ -27,7 +27,7 @@ const WidgetCountUp = ({ data, type, xl = 3, md = 6 }) => {
           <CardBody>
             <div className="d-flex align-items-center">
               <div className="flex-grow-1">
-                <p className="text-uppercase fw-medium text-muted mb-0">
+                <p style={{ color:"#ff9f00" }}  className="text-uppercase fw-medium  mb-0">
                   {type} {data.name}
                 </p>
               </div>

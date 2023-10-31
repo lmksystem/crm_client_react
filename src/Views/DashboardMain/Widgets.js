@@ -132,7 +132,7 @@ const Widgets = () => {
             <CardBody>
               <div className="d-flex align-items-center">
                 <div className="flex-grow-1 overflow-hidden">
-                  <p className="text-uppercase fw-medium text-muted text-truncate mb-0">
+                  <p className="text-uppercase fw-medium text-truncate mb-0" style={{ color:"#ff9f00" }} >
                     {item.label}
                   </p>
                 </div>

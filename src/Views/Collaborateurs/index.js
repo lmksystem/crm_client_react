@@ -417,7 +417,7 @@ const Collaborateurs = () => {
                     setShow(true);
                   }}
                 >
-                  <i className="ri-eye-fill align-bottom text-muted"></i>
+                  <i className="ri-eye-fill align-bottom text-primary"></i>
                 </Link>
               </li>
               <li className="list-inline-item" title="Edit">
@@ -428,7 +428,7 @@ const Collaborateurs = () => {
                     handleCompanyClick(collaborateur);
                   }}
                 >
-                  <i className="ri-pencil-fill align-bottom text-muted"></i>
+                  <i className="ri-pencil-fill align-bottom text-primary"></i>
                 </Link>
               </li>
               <li className="list-inline-item" title="Delete">
@@ -439,7 +439,7 @@ const Collaborateurs = () => {
                   }}
                   to="#"
                 >
-                  <i className="ri-delete-bin-fill align-bottom text-muted"></i>
+                  <i className="ri-delete-bin-fill align-bottom text-danger"></i>
                 </Link>
               </li>
             </ul>
