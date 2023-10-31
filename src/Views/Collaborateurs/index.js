@@ -1272,7 +1272,7 @@ const Collaborateurs = () => {
                     <div style={{ position: "absolute", right: 10, top: 5 }}><i onClick={() => setShow(false)} className="ri-close-fill" style={{ cursor: "pointer", fontSize: "20px" }}></i></div>
                     <div className="position-relative d-inline-block">
                       <img
-                        src={api.API_URL + "v1/images/user-dummy-img.jpg"}
+                        src={api.API_URL + "/v1/images/user-dummy-img.jpg"}
                         alt=""
                         className="avatar-lg rounded-circle img-thumbnail"
                       />

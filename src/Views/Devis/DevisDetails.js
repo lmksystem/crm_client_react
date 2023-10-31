@@ -19,16 +19,18 @@ import {
 import ConfirmModal from "../../Components/Common/ConfirmModal";
 import axios from "axios";
 import FeatherIcon from "feather-icons-react/build/FeatherIcon";
+import { getImage } from "../../utils/getImages";
 
 const DevisDetails = () => {
   document.title = "Détail facture | Countano";
 
   let { id } = useParams();
 
-  const { devis, etatDevis, devisList } = useSelector((state) => ({
+  const { devis, etatDevis, devisList, company } = useSelector((state) => ({
     devis: state.Devis.devisList.find((d) => d.header.den_id == id),
     devisList: state.Devis.devisList,
-    etatDevis: state.Devis.etatDevis
+    etatDevis: state.Devis.etatDevis,
+    company: state.Company.company[0]
   }));
 
   const dispatch = useDispatch();
@@ -38,6 +40,8 @@ const DevisDetails = () => {
   const [deleteModal, setDeleteModal] = useState(false);
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+  const [image, setImage] = useState();
 
   //Print the state
   const printInvoice = () => {
@@ -89,6 +93,14 @@ const DevisDetails = () => {
     setShowConfirmModal(false);
   }
 
+
+  useEffect(() => {
+    let path = (company.com_id + "/" + company.com_logo).replaceAll('/', " ")
+    getImage(path).then((response) => {
+      setImage("data:image/png;base64," + response)
+    })
+  }, [])
+
   if (!devis) {
     return null;
   }
@@ -113,7 +125,7 @@ const DevisDetails = () => {
                   <CardHeader className="border-bottom border-bottom-dashed">
                     <div className="d-flex">
                       <div className="flex-grow-1 d-flex align-items-center">
-                        <img src={"https://fakeimg.pl/750x300/"} className="card-logo card-logo-dark" alt="logo dark" height="140" />
+                        <img src={image} className="card-logo card-logo-dark" alt="logo dark" width="260" />
 
                       </div>
                       <div className="flex-shrink-0 mt-sm-0 mt-3">

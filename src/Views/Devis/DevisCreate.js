@@ -46,6 +46,7 @@ import { rounded } from "../../utils/function";
 import { api } from "../../config";
 import moment from "moment";
 import { allstatusDevis } from "../../common/data/devisList";
+import { getImage } from "../../utils/getImages";
 
 
 const InvoiceCreate = () => {
@@ -73,6 +74,8 @@ const InvoiceCreate = () => {
   const [selectedLigne, setSelectedLigne] = useState(null);
 
   const [modalProduct, setModalProduct] = useState(false);
+
+  const [image, setImage] = useState("");
 
   const tvaList = tva?.map((e) => ({ id: e.tva_id, label: e.tva_value + "%", value: e.tva_value }));
 
@@ -150,7 +153,7 @@ const InvoiceCreate = () => {
         den_total_ttc: 0,
         den_total_tva: 0,
         den_total_remise: 0,
-        den_num:(prefix_devis?.con_value ?prefix_devis?.con_value:"")+company?.com_nb_dev,
+        den_num: (prefix_devis?.con_value ? prefix_devis?.con_value : "") + company?.com_nb_dev,
         den_note: ""
       },
       ligne: []
@@ -341,11 +344,18 @@ const InvoiceCreate = () => {
 
   // }, [validation.values.ligne])
 
+
+  useEffect(() => {
+    let path = (company.com_id + "/" + company.com_logo).replaceAll('/', " ")
+    getImage(path).then((response) => {
+      setImage("data:image/png;base64," + response)
+    })
+  }, [])
+
   useEffect(() => {
     if (validation && state && Object.keys(state).length > 0) {
       validation.setValues(state);
     }
-
   }, [])
 
 
@@ -370,27 +380,17 @@ const InvoiceCreate = () => {
                   <Row>
                     <Col lg={6} className="d-flex">
                       <div className="profile-user mx-auto  mb-3">
-                        <Input
-                          id="profile-img-file-input"
-                          type="file"
-                          className="profile-img-file-input"
-                        />
                         <Label for="profile-img-file-input" className="d-block">
                           <span
                             className="overflow-hidden border border-dashed d-flex align-items-center justify-content-center rounded"
                             style={{ height: "60px", width: "256px" }}
                           >
                             <img
-                              src={logoDark}
-                              className="card-logo card-logo-dark user-profile-image img-fluid"
+                              src={image}
+                              className="card-logo user-profile-image img-fluid"
                               alt="logo dark"
+                              width="260"
                             />
-                            <img
-                              src={logoLight}
-                              className="card-logo card-logo-light user-profile-image img-fluid"
-                              alt="logo light"
-                            />
-
                           </span>
 
                         </Label>

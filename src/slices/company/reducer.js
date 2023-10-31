@@ -1,19 +1,23 @@
-import { createSlice } from "@reduxjs/toolkit";
-import {  createOrUpdateCompany, getCompany, updateCompany } from './thunk';
+import { createSlice, current } from "@reduxjs/toolkit";
+import { createOrUpdateCompany, getCompany, updateCompany } from './thunk';
 import { toast } from "react-toastify";
 
 export const initialState = {
   company: {},
   error: {},
-  isCompanySuccess:false,
-  isCompanyCreated:false,
+  isCompanySuccess: false,
+  isCompanyCreated: false,
 
 };
 
 const companySlice = createSlice({
   name: "Company",
   initialState,
-  reducers: {},
+  reducers: {
+    updateLogo(state, action) {
+      state.company[0].com_logo = action.payload;
+    },
+  },
   extraReducers: (builder) => {
 
     builder.addCase(getCompany.fulfilled, (state, action) => {
@@ -29,11 +33,11 @@ const companySlice = createSlice({
     });
 
     builder.addCase(createOrUpdateCompany.fulfilled, (state, action) => {
-  
+
     });
 
     builder.addCase(createOrUpdateCompany.rejected, (state, action) => {
-  
+
     });
 
     builder.addCase(updateCompany.fulfilled, (state, action) => {
@@ -45,10 +49,12 @@ const companySlice = createSlice({
 
     builder.addCase(updateCompany.rejected, (state, action) => {
       state.error = action.payload.error || null;
-  
+
     });
 
   },
 });
+
+export const { updateLogo } = companySlice.actions
 
 export default companySlice.reducer;

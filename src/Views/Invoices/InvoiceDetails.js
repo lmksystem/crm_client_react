@@ -21,6 +21,7 @@ import DeleteModal from "../../Components/Common/DeleteModal";
 import { ToastContainer } from "react-toastify";
 import SimpleBar from "simplebar-react";
 import axios from "axios";
+import { getImage } from "../../utils/getImages";
 
 // const axios = new APIClient();
 
@@ -29,7 +30,8 @@ const InvoiceDetails = () => {
 
   let { id } = useParams();
 
-  const { invoices, transactions } = useSelector((state) => ({
+  const { invoices, transactions, company } = useSelector((state) => ({
+    company: state?.Company?.company,
     invoice: state.Invoice.invoices.find((f) => f.header.fen_id == id),
     invoices: state.Invoice.invoices,
     transactions: state.Transaction.transactions.filter((t) => t.tra_fen_fk == id)
@@ -43,12 +45,17 @@ const InvoiceDetails = () => {
   const [showModalDelete, setShowModalDelete] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [nbTransaction, setNbTransaction] = useState(transactions.length);
+  const [image, setImage] = useState(transactions.length);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (invoices?.length > 0) {
       setInvoice(invoices.find((f) => f.header.fen_id == id))
+      let path = (company[0].com_id + "/" + company[0].com_logo).replaceAll('/', " ")
+      getImage(path).then((response) => {
+        setImage("data:image/png;base64," + response)
+      })
     }
   }, [invoices])
 
@@ -149,7 +156,7 @@ const InvoiceDetails = () => {
                     <div>
                       <Row>
                         <Col lg={8} className="flex-grow-1 d-flex">
-                          <img src={"https://fakeimg.pl/600x300/"} className="card-logo card-logo-dark" alt="logo dark" height="140" />
+                          <img src={image} className="card-logo card-logo-dark" alt="logo dark" width="260" />
                         </Col>
                         <Col lg={4} className="flex-shrink-0 mt-lg-0 mt-3">
                           {/* <h6><span className="text-muted fw-normal">Legal Registration No:</span><span id="legal-register-no">987654</span></h6> */}

@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { Modal, ModalBody } from "reactstrap";
 
-const ConfirmModal = ({ title, text, show, onActionClick, onCloseClick }) => {
+const ConfirmModal = ({ title, text, show, onActionClick, onCloseClick, textClose = "Fermer" }) => {
   return (
     <Modal isOpen={show} toggle={onCloseClick} centered={true}>
       <ModalBody className="py-3 px-5">
@@ -28,7 +28,7 @@ const ConfirmModal = ({ title, text, show, onActionClick, onCloseClick }) => {
             data-bs-dismiss="modal"
             onClick={onCloseClick}
           >
-            Fermer
+            {textClose}
           </button>
           <button
             type="button"

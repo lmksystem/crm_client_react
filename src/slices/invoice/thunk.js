@@ -22,9 +22,10 @@ export const getInvoices = createAsyncThunk("invoice/getInvoices", async () => {
   }
 });
 
-export const addNewInvoice = createAsyncThunk("invoice/addNewInvoice", async (invoice) => {
+export const addNewInvoice = createAsyncThunk("invoice/addNewInvoice", async (data) => {
   try {
-    const response = addNewInvoiceApi(invoice);
+    const response = await addNewInvoiceApi(data)
+    
     toast.success("Invoice Added Successfully", { autoClose: 3000 });
     return response;
   } catch (error) {
@@ -35,7 +36,7 @@ export const addNewInvoice = createAsyncThunk("invoice/addNewInvoice", async (in
 
 export const updateInvoice = createAsyncThunk("invoice/updateInvoice", async (data) => {
   try {
-    console.log("update invoice");
+
     const response = updateInvoiceApi(data.fen_id, data.fen_solde_du);
 
     return response;
@@ -69,7 +70,7 @@ export const getWidgetInvoices = createAsyncThunk("invoice/getWidgetInvoices", a
   }
 });
 
-export const getInvoicePeriodCount= createAsyncThunk("invoice/getInvoicePeriodCount", async (data) => {
+export const getInvoicePeriodCount = createAsyncThunk("invoice/getInvoicePeriodCount", async (data) => {
   try {
     const response = getInvoicePeriodCountApi(data);
     return response;
@@ -82,9 +83,9 @@ export const getInvoicePeriodCount= createAsyncThunk("invoice/getInvoicePeriodCo
 
 export const getInvoiceByMonth = createAsyncThunk("invoice/getInvoiceByMonth", async (data) => {
   try {
-    const response =await getInvoiceByMonthApi(data);
+    const response = await getInvoiceByMonthApi(data);
     return response;
-  } 
+  }
   catch (error) {
     console.log("thunk catch", error);
     toast.error("Invoice Read Failed", { autoClose: 3000 });
