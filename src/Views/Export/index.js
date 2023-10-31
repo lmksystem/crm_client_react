@@ -61,7 +61,8 @@ const Export = () => {
       data[month] += parseFloat(invoice.header.fen_total_ttc); // Ne pas utiliser toFixed(2) ici
       console.log("data[month]", data[month]);
     }
-    setDataChart(data);
+    const formattedData = data.map(value => parseFloat(parseFloat(value).toFixed(2)));
+    setDataChart(formattedData);
   };
 
   useEffect(() => {
