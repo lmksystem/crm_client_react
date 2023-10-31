@@ -195,15 +195,7 @@ const Achats = () => {
     },
   });
 
-  function isFilesUse(){
-    if( createAchats.values.facturesExist.length>0){
-      return false
-    }else{
-
-    }
-   
-  }
-
+  
   // validation
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
