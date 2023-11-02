@@ -330,7 +330,7 @@ const InvoiceListGlobalSearch = ({ origneData, data, setData, value }) => {
     }
 
     if (isDate) {
-      newData = newData.filter((e) => isDate.includes(e.header.fen_date_create))
+      newData = newData.filter((e) => isDate.includes(e.header.fen_date_expired))
     }
 
     if (isEtat) {
@@ -438,7 +438,7 @@ const DevisListGlobalSearch = ({ origneData, data, setData, value }) => {
     }
 
     if (isDate) {
-      newData = newData.filter((e) => isDate.includes(e.header.den_date_create))
+      newData = newData.filter((e) => isDate.includes(e.header.den_date_valid))
     }
 
     if (isEtat) {

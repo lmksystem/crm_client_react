@@ -43,6 +43,7 @@ const DevisDetails = () => {
   const [activeChange, setActiveChange] = useState(false);
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showConfirmModal2, setShowConfirmModal2] = useState(false);
 
   const [image, setImage] = useState();
 
@@ -51,14 +52,7 @@ const DevisDetails = () => {
     window.print();
   };
 
-  const handleGeneratePdf = () => {
-    if (devis && devis.doc.ddo_file_name) {
-      downloadPdf()
-    }
-  };
-
   const downloadPdf = () => {
-    // window.open(`${api.API_URL}/v1/pdf/download/facture/${invoice.header.fen_com_fk}/${invoice.header.fen_date_create}/${invoice.doc.fdo_file_name}`, 'download');
     axios.get(`${api.API_URL}/v1/pdf/download/devis/${devis.header.den_id}`, {
       mode: 'no-cors',
       responseType: 'blob'
@@ -94,9 +88,22 @@ const DevisDetails = () => {
     setShowConfirmModal(false);
   }
 
+  const checkFactureAlreadyCreated = () => {
+    axios.get('/v1/checkFactureFromDevisExist?den_id=' + devis.header.den_id).then((response) => {
+      let isExist = response.data;
+      if (isExist) {
+        setShowConfirmModal2(true);
+      } else {
+        redirectToInvoice()
+      }
+    })
+  }
+
+  const redirectToInvoice = () => {
+    navigate('/factures/creation', { state: { den_id: devis.header.den_id } })
+  }
 
   useEffect(() => {
-    console.log(company);
     if (company) {
       let path = (company.com_id + "/" + company.com_logo).replaceAll('/', " ")
       getImage(path).then((response) => {
@@ -128,6 +135,7 @@ const DevisDetails = () => {
       <Container fluid>
         <BreadCrumb className="d-print-none" title="Devis détaillé" pageTitle="Devis" />
         <ConfirmModal title={'Êtes-vous sûr ?'} text={"Êtes-vous sûr de vouloir envoyer le devis ?"} show={showConfirmModal} onCloseClick={() => setShowConfirmModal(false)} onActionClick={() => sendDevisByEmail()} />
+        <ConfirmModal title={'Êtes-vous sûr ?'} text={"Ce devis à déjà été converti en facture, voulez-vous recommencer ?"} show={showConfirmModal2} onCloseClick={() => setShowConfirmModal2(false)} onActionClick={() => { redirectToInvoice() }} />
         <DeleteModal
           show={deleteModal}
           onDeleteClick={() => { handleDeleteDevis(devis.header.den_id) }}
@@ -288,9 +296,9 @@ const DevisDetails = () => {
                       <Link to="#" onClick={printInvoice} className="btn btn-success"><i className="ri-printer-line align-bottom me-1"></i> Imprimer</Link>
 
                       <Link onClick={() => downloadPdf()} className="btn btn-secondary"><i className="ri-download-2-line align-bottom me-1"></i> Télécharger</Link>
-                      <Link to={'/factures/creation'} state={{ den_id: devis.header.den_id }} className="btn btn-secondary"><i className="ri-file-copy-2-fill align-bottom me-1"></i> Facture</Link>
+                      <Link onClick={() => { checkFactureAlreadyCreated(); }} /*to={'/factures/creation'}*/ state={{ den_id: devis.header.den_id }} className="btn btn-secondary"><i className="ri-file-copy-2-fill align-bottom me-1"></i> Facture</Link>
 
-                      <Link onClick={() => setDeleteModal(true)} state={devis} className="btn btn-danger"><i className="ri-ball-pen-line align-bottom me-1"></i> Supprimer</Link>
+                      <Link onClick={() => { setDeleteModal(true) }} state={devis} className="btn btn-danger"><i className="ri-ball-pen-line align-bottom me-1"></i> Supprimer</Link>
                     </div>
                   </CardBody>
                 </Col>

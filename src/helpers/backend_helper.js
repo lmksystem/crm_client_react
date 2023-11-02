@@ -81,7 +81,7 @@ export const getWidgetInvoices = () => api.get(url.INVOICES + "/widgets");
 export const addNewInvoice = (data) => api.create(url.INVOICES, data);
 
 // update Invoice
-export const updateInvoice = (fen_id, data) => api.update(url.INVOICES + '/' + fen_id, { fen_solde_du: data });
+export const updateInvoice = (fen_id, data) => api.update(url.INVOICES + '/' + fen_id, data);
 
 // create pdf Invoice
 export const createPdf = invoice => api.get(url.PDF + '/facture/' + invoice);
@@ -94,6 +94,9 @@ export const getInvoicePeriodCount = data => api.get(url.INVOICES + "/invoice_pe
 
 // get invoice par mois par annéee
 export const getInvoiceByMonth = data => api.get(url.INVOICES + '/byMonth/' + data.year);
+
+// get invoice etat
+export const getEtatInvoice = () => api.get('/v1/facture/etat');
 
 
 /*************************/

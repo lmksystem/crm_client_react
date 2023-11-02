@@ -40,8 +40,8 @@ const DevisList = () => {
 
   const dispatch = useDispatch();
 
-  const { devisWidgets, devis, isDevisSuccess, error, etatDevis } = useSelector((state) => ({
-    devis: state.Devis.devisList,
+  const { devisWidgets, devisRedux, isDevisSuccess, error, etatDevis } = useSelector((state) => ({
+    devisRedux: state.Devis.devisList,
     isDevisSuccess: state.Devis.isDevisSuccess,
     error: state.Devis.error,
     devisWidgets: state.Devis.widgets,
@@ -55,6 +55,7 @@ const DevisList = () => {
   const [customFiltered, setCustomFiltered] = useState(null);
 
   const [devisList, setDevisList] = useState([]);
+  const [devis, setDevis] = useState([]);
 
   useEffect(() => {
     if (devis) {
@@ -203,6 +204,11 @@ const DevisList = () => {
     ],
     [checkedAll, dispatch]
   );
+
+  useEffect(() => {
+    setDevis(devisRedux);
+  }, [devisRedux])
+
 
   return (
     <React.Fragment>

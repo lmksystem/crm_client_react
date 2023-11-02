@@ -50,6 +50,8 @@ const WidgetCountUp = ({ data, type, xl = 3, md = 6 }) => {
                     end={data.total}
                     duration={1}
                     className="counter-value"
+                    separator={" "}
+                    decimal={","}
                   />
                 </h4>
                 <span className="badge bg-warning me-1">

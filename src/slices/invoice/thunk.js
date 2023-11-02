@@ -11,6 +11,7 @@ import {
   getWidgetInvoices as getWidgetInvoicesApi,
   getInvoicePeriodCount as getInvoicePeriodCountApi,
   getInvoiceByMonth as getInvoiceByMonthApi,
+  getEtatInvoice as getEtatInvoiceApi
 } from "../../helpers/backend_helper";
 
 export const getInvoices = createAsyncThunk("invoice/getInvoices", async () => {
@@ -37,7 +38,7 @@ export const addNewInvoice = createAsyncThunk("invoice/addNewInvoice", async (da
 export const updateInvoice = createAsyncThunk("invoice/updateInvoice", async (data) => {
   try {
 
-    const response = updateInvoiceApi(data.fen_id, data.fen_solde_du);
+    const response = updateInvoiceApi(data.fen_id, data);
 
     return response;
   } catch (error) {
@@ -88,6 +89,17 @@ export const getInvoiceByMonth = createAsyncThunk("invoice/getInvoiceByMonth", a
   }
   catch (error) {
     console.log("thunk catch", error);
+    toast.error("Invoice Read Failed", { autoClose: 3000 });
+    return error;
+  }
+});
+
+export const getEtatInvoice = createAsyncThunk("invoice/getEtatInvoice", async () => {
+  try {
+    const response = await getEtatInvoiceApi();
+    return response;
+  }
+  catch (error) {
     toast.error("Invoice Read Failed", { autoClose: 3000 });
     return error;
   }

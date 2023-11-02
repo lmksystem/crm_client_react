@@ -435,7 +435,7 @@ const Contacts = () => {
                           onClick={() => setDeleteModalMulti(true)}
                         ><i className="ri-delete-bin-2-line"></i></button>}
 
-                        <button className="btn btn-success" onClick={() => setIsExportCSV(true)}>Export</button>
+                        <button className="btn btn-soft-success" onClick={() => setIsExportCSV(true)}>Export</button>
 
                         {/* <UncontrolledDropdown>
                           <DropdownToggle
