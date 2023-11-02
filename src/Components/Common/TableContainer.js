@@ -291,9 +291,10 @@ const TableContainer = ({
             {headerGroups.map((headerGroup) => (
               <tr className={trClass} key={headerGroup.id}  {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
-                  <th key={column.id} className={thClass} {...column.getSortByToggleProps()}>
-                    {column.render("Header")}
+                  <th key={column.id} className={thClass}  {...column.getSortByToggleProps()}>
+                    <p style={{ color:"#00a34c" }} className="m-0">{column.render("Header")}
                     {generateSortingIndicator(column)}
+                    </p>
                     {/* <Filter column={column} /> */}
                   </th>
                 ))}

@@ -309,7 +309,7 @@ const Contacts = () => {
           return (
             <ul className="list-inline hstack gap-2 mb-0">
               <li className="list-inline-item edit" title="Call">
-                <Link to={`tel:${info.epe_phone}`} className="text-muted d-inline-block">
+                <Link to={`tel:${info.epe_phone}`} className="text-primary d-inline-block">
                   <i className="ri-phone-line fs-16"></i>
                 </Link>
               </li>
@@ -326,7 +326,7 @@ const Contacts = () => {
                     <DropdownItem className="dropdown-item" href="#"
                       onClick={() => { const contactData = cellProps.row.original; setInfo(contactData); setShow(true); }}
                     >
-                      <i className="ri-eye-fill align-bottom me-2 text-muted"></i>{" "}
+                      <i className="ri-eye-fill align-bottom me-2 text-primary"></i>{" "}
                       Voir
                     </DropdownItem>
                     <DropdownItem
@@ -339,7 +339,7 @@ const Contacts = () => {
                         handleContactClick(contactData);
                       }}
                     >
-                      <i className="ri-pencil-fill align-bottom me-2 text-muted"></i>{" "}
+                      <i className="ri-pencil-fill align-bottom me-2 text-primary"></i>{" "}
                       Modifier
                     </DropdownItem>
                     <DropdownItem
@@ -347,7 +347,7 @@ const Contacts = () => {
                       href="#"
                       onClick={() => { const contactData = cellProps.row.original; onClickDelete(contactData); }}
                     >
-                      <i className="ri-delete-bin-fill align-bottom me-2 text-muted"></i>{" "}
+                      <i className="ri-delete-bin-fill align-bottom me-2 text-danger "></i>{" "}
                       Supprimer
                     </DropdownItem>
                   </DropdownMenu>

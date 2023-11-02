@@ -180,12 +180,12 @@ const TransactionList = () => {
         },
 
         {
-          Header: "EMAIL",
+          Header: "Email",
           accessor: "ent_email",
           filterable: false,
         },
         {
-          Header: "DATE",
+          Header: "Date",
           accessor: "tra_date",
           Cell: (cell) => (
             <>
@@ -209,6 +209,17 @@ const TransactionList = () => {
           accessor: "fen_num_fac",
           Cell: (cell) => {
             return (cell.row.original.tra_fen_fk && <Link to={`/factures/detail/${cell.row.original.tra_fen_fk}`} className="fw-medium link-primary">Voir la facture ( ID : {cell.row.original.fen_num_fac} ) </Link>) || "";
+          },
+        },
+        {
+          Header: "",
+          accessor: "tra_desc",
+          Cell: (cell) => {
+           return(
+            <>
+            <div className="d-flex align-items-center ">{cell.row.original.tra_desc.length>0 &&<i className="la-lg las la-sticky-note mx-3 text-primary"></i> }</div>
+            </>
+           )
           },
         },
 

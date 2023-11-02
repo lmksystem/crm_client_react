@@ -257,7 +257,7 @@ const Recurrence = () => {
 
                   }}
                 >
-                  <i className="ri-eye-fill align-bottom text-muted"></i>
+                  <i className="ri-eye-fill align-bottom text-primary"></i>
                 </Link>
               </li>
             </ul>
