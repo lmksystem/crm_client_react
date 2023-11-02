@@ -12,7 +12,8 @@ import {
   addNewTransaction as onAddNewTransaction,
   sendInvocieByEmail as onSendInvocieByEmail,
   deleteTransaction as onDeleteTransaction,
-  updateInvoice as onUpdateInvoice
+  updateInvoice as onUpdateInvoice,
+  getCompany as onGetCompany
 } from '../../slices/thunks'
 import { api } from "../../config";
 import { rounded } from "../../utils/function";
@@ -52,10 +53,6 @@ const InvoiceDetails = () => {
   useEffect(() => {
     if (invoices?.length > 0) {
       setInvoice(invoices.find((f) => f.header.fen_id == id))
-      let path = (company[0].com_id + "/" + company[0].com_logo).replaceAll('/', " ")
-      getImage(path).then((response) => {
-        setImage("data:image/png;base64," + response)
-      })
     }
   }, [invoices])
 
@@ -117,12 +114,27 @@ const InvoiceDetails = () => {
   }
 
   useEffect(() => {
+    dispatch(onGetCompany());
+  }, [])
+  
+
+  useEffect(() => {
     if (nbTransaction != transactions.length) {
       setNbTransaction(transactions.length);
       let dataInvoiceUpdate = rounded(transactions.reduce((previousValue, currentValue) => parseFloat(previousValue) - parseFloat(currentValue.tra_value), parseFloat(invoice.header.fen_total_ttc)), 2);
       dispatch(onUpdateInvoice({ fen_id: invoice.header.fen_id, fen_solde_du: dataInvoiceUpdate }));
     }
   }, [transactions])
+
+  useEffect(() => {
+    if (company[0]) {
+      let path = (company[0].com_id + "/" + company[0].com_logo).replaceAll('/', " ")
+      getImage(path).then((response) => {
+        setImage("data:image/png;base64," + response);
+      })
+    }
+
+  }, [company])
 
 
   if (!invoice) {

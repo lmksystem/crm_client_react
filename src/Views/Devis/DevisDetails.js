@@ -2,32 +2,29 @@ import React, { useEffect, useRef, useState } from "react";
 import { CardBody, Row, Col, Card, Table, CardHeader, Container } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { Link, useNavigate, useParams } from "react-router-dom";
-
-import logoDark from "../../assets/images/logo_countano.png";
 import { useDispatch, useSelector } from "react-redux";
-import { createPdfDevis } from "../../slices/thunks";
 import moment from "moment";
 import { api } from "../../config";
-import { APIClient } from "../../helpers/api_helper";
-import { saveAs } from 'file-saver'
 import { rounded } from "../../utils/function";
 import DeleteModal from "../../Components/Common/DeleteModal";
 import {
   deleteDevis as onDeleteDevis,
-  SendDevisByEmail as onSendDevisByEmail
+  SendDevisByEmail as onSendDevisByEmail,
+  getCompany as onGetCompany,
+  updateDevis as onUpdateDevis
 } from "../../slices/thunks";
 import ConfirmModal from "../../Components/Common/ConfirmModal";
 import axios from "axios";
 import FeatherIcon from "feather-icons-react/build/FeatherIcon";
 import { getImage } from "../../utils/getImages";
+import Select from "react-select";
 
 const DevisDetails = () => {
-  document.title = "Détail facture | Countano";
+  document.title = "Détail devis | Countano";
 
   let { id } = useParams();
 
-  const { devis, etatDevis, devisList, company } = useSelector((state) => ({
-    devis: state.Devis.devisList.find((d) => d.header.den_id == id),
+  const { etatDevis, devisList, company } = useSelector((state) => ({
     devisList: state.Devis.devisList,
     etatDevis: state.Devis.etatDevis,
     company: state.Company.company[0]
@@ -37,7 +34,13 @@ const DevisDetails = () => {
 
   const navigate = useNavigate();
 
+  const [devis, setDevis] = useState();
+
   const [deleteModal, setDeleteModal] = useState(false);
+
+  const [selectedEtat, setSelectedEtat] = useState();
+
+  const [activeChange, setActiveChange] = useState(false);
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
@@ -73,11 +76,9 @@ const DevisDetails = () => {
     });
   }
 
-  // useEffect(() => {
-  //   if (!devis.doc) {
-  //     dispatch(createPdfDevis(devis.header.den_id))
-  //   }
-  // }, [devis])
+  useEffect(() => {
+    dispatch(onGetCompany());
+  }, [])
 
 
   const handleDeleteDevis = (id) => {
@@ -95,11 +96,28 @@ const DevisDetails = () => {
 
 
   useEffect(() => {
-    let path = (company.com_id + "/" + company.com_logo).replaceAll('/', " ")
-    getImage(path).then((response) => {
-      setImage("data:image/png;base64," + response)
-    })
-  }, [])
+    console.log(company);
+    if (company) {
+      let path = (company.com_id + "/" + company.com_logo).replaceAll('/', " ")
+      getImage(path).then((response) => {
+        setImage("data:image/png;base64," + response)
+      })
+    }
+  }, [company])
+
+  useEffect(() => {
+    if (devisList) {
+      console.log(devisList?.find((d) => d?.header?.den_id == id));
+      setDevis(devisList?.find((d) => d?.header?.den_id == id))
+    }
+  }, [devisList])
+
+  useEffect(() => {
+    if (devis) {
+      setSelectedEtat(etatDevis?.find((d) => d.det_id == devis?.header.den_etat)?.det_name)
+    }
+  }, [devis])
+
 
   if (!devis) {
     return null;
@@ -157,12 +175,13 @@ const DevisDetails = () => {
                       </Col>
                     </Row>
                   </CardBody>
+
                 </Col>
                 <Col lg={12}>
                   <CardBody className="border-bottom border-bottom-dashed p-4">
                     <Row className="g-3">
                       <Col lg={3} className="col-6">
-                        <p className="text-muted mb-2 text-uppercase fw-semibold">Facture N°</p>
+                        <p className="text-muted mb-2 text-uppercase fw-semibold">Devis N°</p>
                         <h5 className="fs-14 mb-0"><span id="devis-no">{devis.header.den_num}</span></h5>
                       </Col>
                       <Col lg={3} className="col-6">
@@ -170,8 +189,28 @@ const DevisDetails = () => {
                         <h5 className="fs-14 mb-0"><span id="devis-date">{moment(devis.header.den_date_valid).format('L')}</span> <small className="text-muted" id="devis-time"></small></h5>
                       </Col>
                       <Col lg={3} className="col-6">
-                        <p className="text-muted mb-2 text-uppercase fw-semibold">état <FeatherIcon onClick={() => { }} className={"mx-2"} size={13} icon={'edit-2'}></FeatherIcon></p>
-                        <span className="badge badge-soft-success fs-11" id="payment-status">{etatDevis?.find((d) => d.det_id == devis.header.den_etat)?.det_name}</span>
+                        <p className="text-muted mb-2 text-uppercase fw-semibold">état <FeatherIcon onClick={() => { setActiveChange(() => !activeChange) }} className={"mx-2 cursor-pointer"} size={13} icon={'edit-2'}></FeatherIcon></p>
+                        {activeChange ?
+                          <select
+                            defaultValue={devis.header.den_etat}
+                            onChange={(e) => {
+                              let devisHeaderCopy = { ...devis.header }
+                              devisHeaderCopy.den_etat = e.target.value
+                              dispatch(onUpdateDevis(devisHeaderCopy))
+                              setSelectedEtat(etatDevis?.find((d) => d.det_id == e.target.value)?.det_name)
+                              setActiveChange(() => false);
+                            }}
+                            className="form-select"
+                          >
+                            {etatDevis.map((e) => {
+                              console.log(devis.header.den_etat == e.det_id);
+                              return <option value={e.det_id}>{e.det_name}</option>
+                            })}
+                          </select>
+                          :
+                          <span className="badge badge-soft-success fs-11" id="payment-status">{selectedEtat}</span>
+                        }
+
                       </Col>
                       <Col lg={3} className="col-6">
                         <p className="text-muted mb-2 text-uppercase fw-semibold">Total</p>

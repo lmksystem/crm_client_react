@@ -6,12 +6,12 @@ export const initialState = {
   widgets: [],
   error: {},
   etatDevis: [],
-  devisCountPeriod:{
-    'dateDebut':null,
-    'dateFin':null,
-    'pourcentage_gain_perte':0,
+  devisCountPeriod: {
+    'dateDebut': null,
+    'dateFin': null,
+    'pourcentage_gain_perte': 0,
   },
-  devisByMonth:[],
+  devisByMonth: [],
 };
 
 
@@ -89,7 +89,7 @@ const devisSlice = createSlice({
     builder.addCase(getDevisWidgets.rejected, (state, action) => {
       state.error = action.payload || null;
     });
- 
+
     builder.addCase(getEtatDevis.fulfilled, (state, action) => {
       state.etatDevis = action.payload.data;
     });
@@ -111,6 +111,15 @@ const devisSlice = createSlice({
       state.devisByMonth = action.payload.data
     });
     builder.addCase(getDevisByMonth.rejected, (state, action) => {
+      console.log("errors");
+      state.error = action.payload || "Erreur lors de la recupération !"
+    });
+
+    builder.addCase(updateDevis.fulfilled, (state, action) => {
+      console.log(action.payload.data);
+      state.devisList = state.devisList.map((d) => (d.header.den_id == action.payload.data.den_id ? { ...d, header: action.payload.data } : d))
+    });
+    builder.addCase(updateDevis.rejected, (state, action) => {
       console.log("errors");
       state.error = action.payload || "Erreur lors de la recupération !"
     });
