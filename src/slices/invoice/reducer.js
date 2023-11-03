@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getInvoices, addNewInvoice, updateInvoice, createPdf, getWidgetInvoices, getInvoicePeriodCount, getInvoiceByMonth } from './thunk';
+import { getInvoices, addNewInvoice, updateInvoice, createPdf, getWidgetInvoices, getInvoicePeriodCount, getInvoiceByMonth, getEtatInvoice } from './thunk';
 import { sendInvocieByEmail } from "../thunks";
 import { toast } from "react-toastify";
 export const initialState = {
   invoices: [],
+  invoiceEtat: [],
   widgets: [],
   error: {},
   invoiceCountPeriod: {
@@ -52,17 +53,16 @@ const InvoiceSlice = createSlice({
     });
 
     builder.addCase(updateInvoice.fulfilled, (state, action) => {
-      toast.success("Solde mis à jour", { autoClose: 3000 });
-
+      toast.success("Facture mise à jour", { autoClose: 3000 });
       state.invoices = state.invoices.map((i) =>
         i.header.fen_id == action.payload.data.fen_id
-          ? { ...i, header: { ...i.header, fen_solde_du: action.payload.data.fen_solde_du, fet_name: action.payload.data.fet_name } }
+          ? { ...i, header: { ...i.header, ...action.payload.data } }
           : i
       )
     });
 
     builder.addCase(updateInvoice.rejected, (state, action) => {
-      toast.error("Erreur de mise à jour solde", { autoClose: 3000 });
+      toast.error("Erreur de mise à jour", { autoClose: 3000 });
       state.error = action.payload.error || null;
     });
 
@@ -107,6 +107,15 @@ const InvoiceSlice = createSlice({
     builder.addCase(getInvoiceByMonth.rejected, (state, action) => {
       console.log("errors");
       state.error = action.payload || "Erreur lors de la recupération !"
+    });
+
+    builder.addCase(getEtatInvoice.fulfilled, (state, action) => {
+      state.invoiceEtat = action.payload.data
+    });
+
+    builder.addCase(getEtatInvoice.rejected, (state, action) => {
+
+      state.error = action.payload || "Erreur lors de la recupération des états !"
     });
   }
 });

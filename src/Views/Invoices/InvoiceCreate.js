@@ -350,7 +350,7 @@ const InvoiceCreate = () => {
   }, [validation.values.ligne])
 
   useEffect(() => {
-
+    console.log(state);
     if (state && state.den_id && company && prefix_facture) {
       axios.get('/v1/invoiceFromDevis/' + state.den_id).then((response) => {
         let data = response.data;

@@ -12,7 +12,9 @@ import {
   addNewTransaction as onAddNewTransaction,
   sendInvocieByEmail as onSendInvocieByEmail,
   deleteTransaction as onDeleteTransaction,
-  updateInvoice as onUpdateInvoice
+  updateInvoice as onUpdateInvoice,
+  getCompany as onGetCompany,
+  getEtatInvoice as onGetEtatInvoice
 } from '../../slices/thunks'
 import { api } from "../../config";
 import { rounded } from "../../utils/function";
@@ -22,6 +24,7 @@ import { ToastContainer } from "react-toastify";
 import SimpleBar from "simplebar-react";
 import axios from "axios";
 import { getImage } from "../../utils/getImages";
+import FeatherIcon from "feather-icons-react/build/FeatherIcon";
 
 // const axios = new APIClient();
 
@@ -30,9 +33,9 @@ const InvoiceDetails = () => {
 
   let { id } = useParams();
 
-  const { invoices, transactions, company } = useSelector((state) => ({
+  const { invoices, transactions, company, etat } = useSelector((state) => ({
     company: state?.Company?.company,
-    invoice: state.Invoice.invoices.find((f) => f.header.fen_id == id),
+    etat: state.Invoice.invoiceEtat,
     invoices: state.Invoice.invoices,
     transactions: state.Transaction.transactions.filter((t) => t.tra_fen_fk == id)
   }));
@@ -47,17 +50,20 @@ const InvoiceDetails = () => {
   const [nbTransaction, setNbTransaction] = useState(transactions.length);
   const [image, setImage] = useState(transactions.length);
 
+  const [activeChange, setActiveChange] = useState(false);
+  const [selectedEtat, setSelectedEtat] = useState(false);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (invoices?.length > 0) {
-      setInvoice(invoices.find((f) => f.header.fen_id == id))
-      let path = (company[0].com_id + "/" + company[0].com_logo).replaceAll('/', " ")
-      getImage(path).then((response) => {
-        setImage("data:image/png;base64," + response)
-      })
+      setInvoice(invoices.find((f) => f.header.fen_id == id));
     }
   }, [invoices])
+
+  useEffect(() => {
+    setSelectedEtat(etat?.find((d) => d.fet_id == invoice?.header.fen_etat)?.fet_name);
+  }, [invoice])
 
 
   //Print the Invoice
@@ -117,12 +123,28 @@ const InvoiceDetails = () => {
   }
 
   useEffect(() => {
+    dispatch(onGetCompany());
+    dispatch(onGetEtatInvoice());
+  }, [])
+
+
+  useEffect(() => {
     if (nbTransaction != transactions.length) {
       setNbTransaction(transactions.length);
       let dataInvoiceUpdate = rounded(transactions.reduce((previousValue, currentValue) => parseFloat(previousValue) - parseFloat(currentValue.tra_value), parseFloat(invoice.header.fen_total_ttc)), 2);
-      dispatch(onUpdateInvoice({ fen_id: invoice.header.fen_id, fen_solde_du: dataInvoiceUpdate }));
+      dispatch(onUpdateInvoice({ fen_id: invoice.header.fen_id, fen_solde_du: dataInvoiceUpdate, fen_etat: dataInvoiceUpdate <= 0 ? "1" : "2" }));
     }
   }, [transactions])
+
+  useEffect(() => {
+    if (company[0]) {
+      let path = (company[0].com_id + "/" + company[0].com_logo).replaceAll('/', " ")
+      getImage(path).then((response) => {
+        setImage("data:image/png;base64," + response);
+      })
+    }
+
+  }, [company])
 
 
   if (!invoice) {
@@ -133,18 +155,8 @@ const InvoiceDetails = () => {
     <div className="page-content">
       <Container fluid>
         <BreadCrumb className="d-print-none" title="Facture détaillée" pageTitle="Factures" />
-        <ConfirmModal title={'Êtes-vous sûr ?'} text={"Êtes-vous sûr de vouloir envoyer la facture ?"} show={showConfirmModal} onCloseClick={() => setShowConfirmModal(false)} onActionClick={() => {
-          sendInvoiceByEmail()
-          // if (!invoice.doc) {
-          //   dispatch(createPdf(invoice.header.fen_id)).then(() => {
-
-          //   })
-          // } else {
-          //   sendInvoiceByEmail()
-          // }
-
-        }} />
-        <DeleteModal show={showModalDelete} onCloseClick={() => setShowModalDelete(false)} onDeleteClick={() => { deletetransaction() }} />
+        <ConfirmModal title={'Êtes-vous sûr ?'} text={"Êtes-vous sûr de vouloir envoyer la facture ?"} show={showConfirmModal} onCloseClick={() => setShowConfirmModal(false)} onActionClick={() => sendInvoiceByEmail()} />
+        <DeleteModal show={showModalDelete} onCloseClick={() => setShowModalDelete(false)} onDeleteClick={() => deletetransaction()} />
         <Row className="justify-content-center">
           <Col xxl={9}>
             {/* <Preview id={'jsx-template'}> */}
@@ -199,8 +211,30 @@ const InvoiceDetails = () => {
                         <h5 className="fs-14 mb-0"><span id="invoice-date">{moment(invoice.header.fen_date_expired).format('L')}</span> <small className="text-muted" id="invoice-time"></small></h5>
                       </Col>
                       <Col lg={3} className="col-6">
-                        <p className="text-muted mb-2 text-uppercase fw-semibold">état paiement</p>
-                        <span className="badge badge-soft-success fs-11" id="payment-status">{invoice.header.fet_name}</span>
+                        <p className="text-muted mb-2 text-uppercase fw-semibold">état paiement<FeatherIcon onClick={() => { setActiveChange(() => !activeChange) }} className={"mx-2 cursor-pointer"} size={13} icon={'edit-2'}></FeatherIcon></p>
+                        {activeChange ?
+
+                          <select
+                            defaultValue={invoice.header.fen_etat}
+                            onChange={(e) => {
+                              let invoiceHeaderCopy = { ...invoice.header }
+                              invoiceHeaderCopy.den_etat = e.target.value
+                              console.log(e.target.value);
+                              dispatch(onUpdateInvoice({ fen_id: invoice.header.fen_id, fen_etat: e.target.value }));
+                              setSelectedEtat(etat?.find((d) => d.fet_id == e.target.value)?.fet_name)
+                              setActiveChange(() => false);
+                            }}
+                            className="form-select"
+                          >
+                            {etat.map((e) => {
+
+                              return <option value={e.fet_id}>{e.fet_name}</option>
+                            })}
+                          </select>
+                          :
+                          <span className="badge badge-soft-success fs-11" id="payment-status">{selectedEtat}</span>
+                        }
+
                       </Col>
                       <Col lg={3} className="col-6">
                         <p className="text-muted mb-2 text-uppercase fw-semibold">Total</p>
@@ -280,7 +314,7 @@ const InvoiceDetails = () => {
                               <th scope="col">Description</th>
                               <th scope="col" className="text-end">Montant</th>
                               <th className="text-end">
-                                <button onClick={() => setAddActifView(() => true)} className="d-print-none btn btn-secondary btn-icon " style={{ width: "25px", height: "25px" }} >+</button>
+                                <button disabled={invoice?.header.fen_etat == 1 ? true : false} onClick={() => setAddActifView(() => true)} className="d-print-none btn btn-secondary btn-icon " style={{ width: "25px", height: "25px" }} >+</button>
                               </th>
                             </tr>
                           </thead>
@@ -303,7 +337,7 @@ const InvoiceDetails = () => {
                                     {element.tra_value}€
                                   </td>
                                   <td width={40}>
-                                    <button onClick={() => { setShowModalDelete(() => true); setSelectedId(element.tra_id); }} className="btn btn-danger btn-icon " style={{ width: "25px", height: "25px" }} >
+                                    <button disabled={invoice?.header.fen_etat == 1 ? true : false} onClick={() => { setShowModalDelete(() => true); setSelectedId(element.tra_id); }} className="btn btn-danger btn-icon " style={{ width: "25px", height: "25px" }} >
                                       <div style={{ position: "absolute", transform: "rotate(45deg)" }}>+</div>
                                     </button>
                                   </td>
