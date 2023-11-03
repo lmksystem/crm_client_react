@@ -104,7 +104,7 @@ const DevisDetails = () => {
   }
 
   useEffect(() => {
-    console.log(company && company.com_logo);
+
     if (company && company.com_logo) {
       let path = (company.com_id + "/" + company.com_logo).replaceAll('/', " ")
       getImage(path).then((response) => {

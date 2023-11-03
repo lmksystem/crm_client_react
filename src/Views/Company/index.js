@@ -138,12 +138,15 @@ const CompanyProfil = () => {
   }
 
   useEffect(() => {
-    if (companyredux?.length > 0 && companyredux[0].com_logo) {
+    if (companyredux?.length > 0) {
       setCompany(companyredux[0]);
-      let path = (companyredux[0].com_id + "/" + companyredux[0].com_logo).replaceAll('/', " ")
-      getImage(path).then((response) => {
-        setImage("data:image/png;base64," + response)
-      })
+      
+      if (companyredux[0].com_logo) {
+        let path = (companyredux[0].com_id + "/" + companyredux[0].com_logo).replaceAll('/', " ")
+        getImage(path).then((response) => {
+          setImage("data:image/png;base64," + response)
+        })
+      }
     }
   }, [companyredux]);
 
