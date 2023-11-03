@@ -21,7 +21,8 @@ import {
   getEntityPeriodCount as getEntityPeriodCountApi,
   handleAlert as handleAlertApi,
   getAlert as getAlertApi,
-  deleteAlert as deleteAlertApi
+  deleteAlert as deleteAlertApi,
+  getInvoices as getInvoicesApi,
 } from "../../helpers/backend_helper";
 
 // Gestion
@@ -82,6 +83,23 @@ export const getCollaborateurs = createAsyncThunk("gestion/getCollaborateurs", a
   }
 });
 
+export const getDetailsCollabo = createAsyncThunk("gestion/getDetailsCollabo", async (item) => {
+  try {
+    let response ={};
+    response.infoBase = item;
+    const InvoicesCollabo  = await getInvoicesApi({dateDebut:null,dateFin:null});
+    console.log("InvoicesCollabo",InvoicesCollabo?.data)
+    let InvoicesByCollabo =InvoicesCollabo?.data?.filter((inv)=> inv.header.fen_ent_fk == item.ent_id) ||[];
+    response.invoices = InvoicesByCollabo ;
+    // const EmailsCollabo = getEmailApi();
+    // response.emails =EmailsCollabo || [];
+    return response;
+  } catch (error) {
+    return error;
+  }
+});
+
+
 export const addNewCollaborateur = createAsyncThunk("gestion/addNewCollaborateur", async (collabo) => {
   try {
     const response = await addNewCollaborateurApi(collabo)
@@ -125,6 +143,8 @@ export const onAddNewClientCompta = createAsyncThunk("gestion/onAddNewClientComp
     toast.error("Collaborateur Deleted Failed", { autoClose: 3000 });
     return error;
   }
+
+  
 });
 
 

@@ -39,6 +39,7 @@ import Basic404 from "../Views/AuthenticationInner/Errors/Basic404";
 import Reports from "../Views/reports";
 import Profile from "../Views/Admin/User/Profile";
 import CompanyProfil from "../Views/Company";
+import CollaboDetails from "../Views/Collaborateurs/CollaboDetails";
 
 
 // import PdfPreview from "../Views/Pdf";
@@ -48,10 +49,10 @@ const userRoute = [
   // MES ROUTE QUE JE GARDE
   { path: "/contacts", component: <Contacts />, rank: 0 },
   { path: "/client-fournisseur", component: <Collaborateurs />, rank: 0 },
+  { path: "/client-fournisseur/detail", component: <CollaboDetails />, rank: 0 },
   { path: "/gestion/parametre", component: <GestionParameter />, rank: 0 },
   { path: "/produits", component: <Products />, rank: 0 },
   { path: "/dashboard", component: <DashboardMain />, rank: 0 },
-
 
 
   // //Invoices
