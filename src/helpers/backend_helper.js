@@ -27,6 +27,8 @@ export const deleteContact = contact => api.delete(url.DELETE_CONTACT + '/' + co
 
 // get Collaborateurs
 export const getCollaborateurs = () => api.get(url.GET_COLLABORATEUR);
+// get Details Collaborateur 
+export const getDetailsCollabo = (ent_id) => api.get(url.GET_COLLABORATEUR +'/' + ent_id);
 // add Collaborateurs
 export const addNewCollaborateur = collabo => api.create(url.ADD_NEW_COLLABORATEUR, collabo);
 // update Collaborateurs

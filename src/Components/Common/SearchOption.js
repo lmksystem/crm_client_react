@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Input } from 'reactstrap';
 import SimpleBar from "simplebar-react";
-import { getCollaborateurs as onGetCollaborateurs } from "../../slices/thunks";
+import { getCollaborateurs as onGetCollaborateurs,getDetailsCollabo as onGetDetailsCollabo } from "../../slices/thunks";
 import { useDispatch, useSelector } from 'react-redux';
 
 const SearchOption = () => {
@@ -11,6 +11,7 @@ const SearchOption = () => {
     const { collaborateurs } = useSelector((state) => ({
         collaborateurs: state.Gestion.collaborateurs,
     }));
+    const navigate = useNavigate();
 
     
     useEffect(() => {
@@ -70,6 +71,15 @@ const SearchOption = () => {
         collabo?.ent_name?.toLowerCase().includes(searchValue)
     );
 
+    const handleCollaborateur = (item) => {
+        if(item && item.ent_id){
+            dispatch(onGetDetailsCollabo(item));
+            navigate("/client-fournisseur/detail");
+            setSearchValue("");
+        }
+        return
+    }
+
     return (
         <React.Fragment>
             <form className="app-search d-none d-md-block">
@@ -81,6 +91,7 @@ const SearchOption = () => {
                         placeholder="Rechercher..."
                         value={searchValue}
                         onInput={handleSearch}
+                        autoComplete="off"
                     />
                     <span className="mdi mdi-magnify search-widget-icon"></span>
                     <span className="mdi mdi-close-circle search-widget-icon search-widget-icon-close d-none" id="search-close-options"></span>
@@ -93,14 +104,14 @@ const SearchOption = () => {
                         <div className="notification-list">
                             {
                                 filteredCollaborateurs.map((collabo, index) => (
-                                    <Link to="#" className="dropdown-item notify-item py-2" key={index}>
+                                    <div onClick={()=>{handleCollaborateur(collabo);}} className="dropdown-item notify-item py-2" key={index}>
                                         <div className="d-flex">
                                             <div className="flex-1">
                                                 <h6 className="m-0">{collabo?.ent_firstname} {collabo?.ent_lastname}</h6>
                                                 <h6 className="m-0">{collabo?.ent_name}</h6>
                                             </div>
                                         </div>
-                                    </Link>
+                                    </div>
                                 ))
                             }
                         </div>

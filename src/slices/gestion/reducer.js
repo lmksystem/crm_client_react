@@ -18,12 +18,14 @@ import {
   handleAlert,
   getAlert,
   deleteAlert,
+  getDetailsCollabo,
 } from "./thunk";
 import { getInvoicePeriodCount } from "../thunks";
 
 export const initialState = {
   contacts: [],
   collaborateurs: [],
+  collaboDetails:{},
   alerts: [],
   tva: null,
   constantes: null,
@@ -124,7 +126,6 @@ const gestionSlice = createSlice({
     });
 
     builder.addCase(updateCollaborateur.fulfilled, (state, action) => {
-      // console.log("paylaod", action.payload);
       state.collaborateurs = state.collaborateurs.map((collaborateur) =>
         collaborateur.ent_id == action.payload.ent_id
           ? action.payload
@@ -153,6 +154,13 @@ const gestionSlice = createSlice({
       state.error = action.payload?.data || null;
       state.isTvaDelete = false;
       state.isTvaDeleteFail = true;
+    });
+    builder.addCase(getDetailsCollabo.fulfilled, (state, action) => {
+      state.collaboDetails = action.payload;
+    });
+
+    builder.addCase(getDetailsCollabo.rejected, (state, action) => {
+      state.error = action.payload|| null;
     });
 
     // TVA
