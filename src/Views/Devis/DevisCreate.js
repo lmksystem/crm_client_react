@@ -346,10 +346,12 @@ const InvoiceCreate = () => {
 
 
   useEffect(() => {
-    let path = (company.com_id + "/" + company.com_logo).replaceAll('/', " ")
-    getImage(path).then((response) => {
-      setImage("data:image/png;base64," + response)
-    })
+    if (company && company.com_logo) {
+      let path = (company.com_id + "/" + company.com_logo).replaceAll('/', " ")
+      getImage(path).then((response) => {
+        setImage("data:image/png;base64," + response)
+      })
+    }
   }, [])
 
   useEffect(() => {

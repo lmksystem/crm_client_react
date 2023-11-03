@@ -15,9 +15,9 @@ const BreadCrumb = ({ title, pageTitle }) => {
     listAccountsBank: state.BankAccount.listAccountsBank,
   }));
   const userProfile = getLoggedinUser();
-  const[dateExpired,setDateExpired] = useState(null);
+  const [dateExpired, setDateExpired] = useState(null);
 
-  function findClosestDateWithin15Days(dateArray=[]) {
+  function findClosestDateWithin15Days(dateArray = []) {
     // Obtenez la date actuelle
     const currentDate = moment();
     let closestDate = null;
@@ -33,12 +33,12 @@ const BreadCrumb = ({ title, pageTitle }) => {
   }
 
   useEffect(() => {
-    dispatch(onGetAccountBank()).then(()=>{
-      if(listAccountsBank){
-        let newArrayDate = listAccountsBank?.map((e)=> e.bac_date_expired) || [];
+    dispatch(onGetAccountBank()).then(() => {
+      if (listAccountsBank) {
+        let newArrayDate = listAccountsBank?.map((e) => e.bac_date_expired) || [];
         findClosestDateWithin15Days(newArrayDate)
       }
-    
+
     })
   }, []);
 
@@ -48,7 +48,7 @@ const BreadCrumb = ({ title, pageTitle }) => {
         <Col xs={12}>
           <div className="page-title-box d-sm-flex align-items-center justify-content-between">
             {/* <h4 className="mb-sm-0">{title}</h4> */}
-            <FluidText title={title}/>
+            <FluidText title={title} />
 
             <div className="page-title-right">
               <ol className="breadcrumb m-0">
@@ -62,7 +62,7 @@ const BreadCrumb = ({ title, pageTitle }) => {
         </Col>
       </Row>
       <Row>
-      { dateExpired!=null && <Col xs={12}>
+        {dateExpired != null && <Col xs={12}>
           {userProfile.use_rank == 0 && (
             <div
               style={{
@@ -72,7 +72,7 @@ const BreadCrumb = ({ title, pageTitle }) => {
               }}
               className="alert d-sm-flex align-items-center justify-content-between "
             >
-              Veuillez mettre à jour vos comptes bancaires avant le {dateExpired}
+              Veuillez mettre à jour vos comptes bancaires avant le {moment(dateExpired).format('D MMM YYYY')}
               <button
                 onClick={() => {
                   navigate("/bankaccount");

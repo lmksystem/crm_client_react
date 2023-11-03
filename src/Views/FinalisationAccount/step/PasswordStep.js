@@ -11,7 +11,7 @@ import { useFormik } from "formik";
 
 import axios from 'axios';
 
-const PasswordStep = ({ handlePassword, setStep, step, position, isAdmin }) => {
+const PasswordStep = ({ handlePassword, setStep, step, position, shipNextStep }) => {
   let isStep = 1;
 
   const [passwordShow, setPasswordShow] = useState(false);
@@ -32,7 +32,7 @@ const PasswordStep = ({ handlePassword, setStep, step, position, isAdmin }) => {
     }),
 
     onSubmit: (values) => {
-      setStep(step + (isAdmin ? 2 : 1))
+      setStep(step + (shipNextStep ? 2 : 1))
       handlePassword(values.newpassword);
     }
   })
