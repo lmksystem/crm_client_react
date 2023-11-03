@@ -350,7 +350,7 @@ const InvoiceCreate = () => {
   }, [validation.values.ligne])
 
   useEffect(() => {
-    console.log(state);
+    console.log("------",state);
     if (state && state.den_id && company && prefix_facture) {
       axios.get('/v1/invoiceFromDevis/' + state.den_id).then((response) => {
         let data = response.data;
@@ -383,7 +383,7 @@ const InvoiceCreate = () => {
     });
 
   }
-
+  
   useEffect(() => {
     if (company && company.com_logo) {
       let path = (company.com_id + "/" + company.com_logo).replaceAll('/', " ")
