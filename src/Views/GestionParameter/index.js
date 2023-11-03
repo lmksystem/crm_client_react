@@ -64,7 +64,7 @@ const GestionParameter = () => {
     initialValues: {
       prefixe_libelle_fac: prefix_facture?.con_value || "",
       prefixe_libelle_dev: prefix_devis?.con_value || "",
-      date_start_exercice: date_start_exercice?.con_value || null,
+      date_start_exercice: date_start_exercice?.con_value || "",
     },
     onSubmit: (values) => {
       let newPrefixeFacture = {
@@ -77,7 +77,7 @@ const GestionParameter = () => {
       };
       let newStartExercice = {
         ...date_start_exercice,
-        con_value: values.date_start_exercice.toString(),
+        con_value: values?.date_start_exercice? values?.date_start_exercice.toString() : "",
       };
 
       let newPrefixes = [newPrefixeFacture, newPrefixeDevis, newStartExercice];
