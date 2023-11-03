@@ -1,9 +1,10 @@
 import { createSlice, current } from "@reduxjs/toolkit";
-import { createOrUpdateCompany, getCompany, updateCompany } from './thunk';
+import { addLicense, createOrUpdateCompany, deleteLicense, getCompany, getLicense, updateCompany } from './thunk';
 import { toast } from "react-toastify";
 
 export const initialState = {
   company: {},
+  license: [],
   error: {},
   isCompanySuccess: false,
   isCompanyCreated: false,
@@ -50,6 +51,33 @@ const companySlice = createSlice({
     builder.addCase(updateCompany.rejected, (state, action) => {
       state.error = action.payload.error || null;
 
+    });
+
+    builder.addCase(addLicense.fulfilled, (state, action) => {
+
+      state.license.push(action.payload.data);
+      toast.success("Ajout d'un utilisateur résussie", { autoClose: 3000 })
+    });
+
+    builder.addCase(addLicense.rejected, (state, action) => {
+      state.error = action.payload.error || null;
+
+    });
+
+    builder.addCase(getLicense.fulfilled, (state, action) => {
+      state.license = action.payload.data;
+    });
+
+    builder.addCase(getLicense.rejected, (state, action) => {
+      state.error = action.payload.error || null;
+    });
+   
+    builder.addCase(deleteLicense.fulfilled, (state, action) => {
+      state.license = action.payload.data;
+    });
+
+    builder.addCase(deleteLicense.rejected, (state, action) => {
+      state.error = action.payload.error || null;
     });
 
   },

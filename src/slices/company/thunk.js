@@ -7,6 +7,9 @@ import {
   getCompany as getCompanyApi,
   createOrUpdateCompany as createOrUpdateCompanyApi,
   updateCompany as updateCompanyApi,
+  addLicense as addLicenseApi,
+  getLicense as getLicenseApi,
+  deleteLicense as deleteLicenseApi
 } from "../../helpers/backend_helper";
 import { updateLogo } from "./reducer";
 
@@ -46,7 +49,34 @@ export const updateCompany = createAsyncThunk(
   }
 );
 
+export const addLicense = createAsyncThunk("company/addLicense", (data) => {
+  try {
+    const response = addLicenseApi(data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+});
+
+export const getLicense = createAsyncThunk("company/getLicense", () => {
+  try {
+    const response = getLicenseApi();
+    return response;
+  } catch (error) {
+    return error;
+  }
+});
+
+export const deleteLicense = createAsyncThunk("company/deleteLicense", (id) => {
+  try {
+    const response = deleteLicenseApi(id);
+    return response;
+  } catch (error) {
+    return error;
+  }
+});
+
 export const updateLogoAction = (data) => async (dispatch) => {
   dispatch(updateLogo(data))
-  
+
 }

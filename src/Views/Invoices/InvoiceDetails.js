@@ -48,7 +48,7 @@ const InvoiceDetails = () => {
   const [showModalDelete, setShowModalDelete] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [nbTransaction, setNbTransaction] = useState(transactions.length);
-  const [image, setImage] = useState(transactions.length);
+  const [image, setImage] = useState("");
 
   const [activeChange, setActiveChange] = useState(false);
   const [selectedEtat, setSelectedEtat] = useState(false);
@@ -137,7 +137,7 @@ const InvoiceDetails = () => {
   }, [transactions])
 
   useEffect(() => {
-    if (company[0]) {
+    if (company[0] && company[0].com_logo) {
       let path = (company[0].com_id + "/" + company[0].com_logo).replaceAll('/', " ")
       getImage(path).then((response) => {
         setImage("data:image/png;base64," + response);

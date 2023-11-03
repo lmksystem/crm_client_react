@@ -86,7 +86,7 @@ const InvoiceCreate = () => {
   const [modalProduct, setModalProduct] = useState(false);
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [image, setImage] = useState(false);
+  const [image, setImage] = useState("");
 
 
   const tvaList = tva?.map((e) => ({ id: e.tva_id, label: e.tva_value + "%", value: e.tva_value }));
@@ -385,10 +385,12 @@ const InvoiceCreate = () => {
   }
 
   useEffect(() => {
-    let path = (company.com_id + "/" + company.com_logo).replaceAll('/', " ")
-    getImage(path).then((response) => {
-      setImage("data:image/png;base64," + response)
-    })
+    if (company && company.com_logo) {
+      let path = (company.com_id + "/" + company.com_logo).replaceAll('/', " ")
+      getImage(path).then((response) => {
+        setImage("data:image/png;base64," + response)
+      })
+    } 
   }, [])
 
 
@@ -429,7 +431,7 @@ const InvoiceCreate = () => {
                             <img
                               src={image}
                               className="card-logo card-logo-dark user-profile-image img-fluid"
-                              alt="logo dark"
+                              alt="logo"
                               width="260"
                             />
 

@@ -45,7 +45,7 @@ const DevisDetails = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showConfirmModal2, setShowConfirmModal2] = useState(false);
 
-  const [image, setImage] = useState();
+  const [image, setImage] = useState("");
 
   //Print the state
   const printInvoice = () => {
@@ -104,7 +104,8 @@ const DevisDetails = () => {
   }
 
   useEffect(() => {
-    if (company) {
+    console.log(company && company.com_logo);
+    if (company && company.com_logo) {
       let path = (company.com_id + "/" + company.com_logo).replaceAll('/', " ")
       getImage(path).then((response) => {
         setImage("data:image/png;base64," + response)

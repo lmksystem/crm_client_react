@@ -145,6 +145,15 @@ export const createOrUpdateCompany = (data) => api.post(url.COMPANY_2, data);
 // just updateCompany
 export const updateCompany = (data) => api.create(url.COMPANY_2 + "/update", data);
 
+// update Company
+export const addLicense = (data) => api.create("/v1/user/license", data);
+
+// get License
+export const getLicense = () => api.get("/v1/user/license");
+
+// delete License
+export const deleteLicense = (id) => api.delete("/v1/user/license/" + id);
+
 
 // // add Company
 // export const addNewInvoice = invoice => api.create(url.ADD_NEW_INVOICE, invoice);
