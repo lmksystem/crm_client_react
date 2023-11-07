@@ -177,7 +177,7 @@ const GestionParameter = () => {
                             type="date"
                             onChange={constanteForm.handleChange}
                             onBlur={constanteForm.handleBlur}
-                            value={constanteForm?.values?.date_start_exercice || ""}
+                            value={constanteForm?.values?.date_start_exercice|| ""}
 
                           />
                         </div>
