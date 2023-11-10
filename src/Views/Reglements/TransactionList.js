@@ -258,7 +258,7 @@ const TransactionList = () => {
               <Card id="invoiceList">
                 <CardHeader className="border-0">
                   <div className="d-flex flex-column">
-                    <h5 className="card-title mb-3 flex-grow-1">Transactions</h5>
+                    <h5 className="card-title mb-3 flex-grow-1">Encaissements</h5>
                     <div className="flex-shrink-0">
                       <div className='d-flex gap-2 flex-wrap'>
                         <button

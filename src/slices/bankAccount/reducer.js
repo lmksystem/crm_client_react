@@ -22,6 +22,7 @@ const bankAccountSlice = createSlice({
     });
     builder.addCase(getListBank.rejected, (state, action) => {
       state.isBankAccountSuccess = false;
+      state.listBank=[];
       state.error = action.payload || "Erreur lors de la recupération !";
     });
     builder.addCase(insertBankAccount.fulfilled, (state, action) => {

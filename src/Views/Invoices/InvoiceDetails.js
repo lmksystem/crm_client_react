@@ -202,11 +202,15 @@ const InvoiceDetails = () => {
                 <Col lg={12}>
                   <CardBody className="border-bottom border-bottom-dashed p-4">
                     <Row className="g-3">
-                      <Col lg={3} className="col-6">
+                      <Col lg={2} className="col-6">
                         <p className="text-muted mb-2 text-uppercase fw-semibold">Facture N°</p>
                         <h5 className="fs-14 mb-0"><span id="invoice-no">{invoice.header.fen_num_fac}</span></h5>
                       </Col>
-                      <Col lg={3} className="col-6">
+                      <Col lg={2} className="col-6">
+                        <p className="text-muted mb-2 text-uppercase fw-semibold">Date de création</p>
+                        <h5 className="fs-14 mb-0"><span id="invoice-date">{moment(invoice.header.fen_date_create).format('L')}</span> <small className="text-muted" id="invoice-time"></small></h5>
+                      </Col>
+                      <Col lg={2} className="col-6">
                         <p className="text-muted mb-2 text-uppercase fw-semibold">Date d'échéance</p>
                         <h5 className="fs-14 mb-0"><span id="invoice-date">{moment(invoice.header.fen_date_expired).format('L')}</span> <small className="text-muted" id="invoice-time"></small></h5>
                       </Col>

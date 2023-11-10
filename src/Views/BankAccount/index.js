@@ -11,16 +11,17 @@ import {
   ModalBody,
   ListGroup,
   ListGroupItem,
+  Input,
 } from "reactstrap";
 
 import BreadCrumb from "../../Components/Common/BreadCrumb";
-
+import paysData from "../../Components/constants/paysISO.json";
 //Import actions
 import {
   getListBank as onGetListBank,
   insertBankAccount as onInsertBankAccount,
   getAccountBank as onGetAccountBank,
-  insertAccountLinkToBank as onInsertAccountLinkToBank
+  insertAccountLinkToBank as onInsertAccountLinkToBank,
 } from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
@@ -41,6 +42,8 @@ const BankAccount = () => {
     }));
   const [isLoading, setIsLoading] = useState(false);
   const [modal, setModal] = useState(false);
+  const [pays, setPays] = useState("");
+
   const [bankFilter, setBankFilter] = useState({
     data: [],
     searchTerm: "",
@@ -61,12 +64,27 @@ const BankAccount = () => {
   const filteredData = filterData(bankFilter);
 
   useEffect(() => {
-    dispatch(onGetListBank());
     dispatch(onGetAccountBank());
   }, [dispatch]);
 
   useEffect(() => {
-    if (listBank) {
+    if(pays?.length>0){
+      setBankFilter({
+        data:  [],
+        searchTerm: "",
+      });
+      dispatch(onGetListBank(pays)); 
+    }else{
+      setBankFilter({
+        data:  [],
+        searchTerm: "",
+      });
+    }
+  }, [dispatch,pays])
+  
+
+  useEffect(() => {
+    if (listBank && pays?.length>0 ) {
       setBankFilter({
         data: listBank || [],
         searchTerm: "",
@@ -122,6 +140,24 @@ const BankAccount = () => {
                       </Col>
                     </Row>
                     <SimpleBar className="d-flex " style={{ height: "442px" }}>
+                      <Input
+                        type="select"
+                        className="form-select mb-0"
+                        value={pays}
+                        onChange={(e)=>{setPays(e.target.value)}}
+                        // onBlur={createAchats.handleBlur}
+                        name="type"
+                        id="type-field"
+                      >
+                        <option disabled={true} value={""}>
+                          Choisir un pays
+                        </option>
+                        {paysData?.pays?.map((e, i) => (
+                          <option key={i} value={e.iso}>
+                            {e.nom}
+                          </option>
+                        ))}
+                      </Input>
                       <ListGroup className="list mb-0" flush>
                         {filteredData?.map((bankItem, i) => {
                           return (
@@ -191,9 +227,7 @@ const BankAccount = () => {
                         >
                           <ListGroup className="list mb-0" flush>
                             {listAccountsBank?.map((acc, i) => {
-                              return (
-                               <ItemBank item={acc} key={i} />
-                              );
+                              return <ItemBank item={acc} key={i} />;
                             })}
                           </ListGroup>
                         </SimpleBar>

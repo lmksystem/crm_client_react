@@ -10,9 +10,9 @@ import { toast } from "react-toastify";
 
 export const getListBank = createAsyncThunk(
   "bankAccount/getListBank",
-  async () => {
+  async (pays) => {
     try {
-      const response = await getListBankApi();
+      const response = await getListBankApi(pays);
       return response;
     } catch (error) {
       toast.error("List Bank Read Failed", { autoClose: 3000 });

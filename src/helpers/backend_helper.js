@@ -288,7 +288,7 @@ export const dowloadExport = (data) => api.get(url.EXPORT, data);
 /*************************/
 
 
-export const getListBank = () => api.get(url.LIST_BANK)
+export const getListBank = (pays) => api.get(url.LIST_BANK+"/"+pays)
 
 export const getAccountsBankUser = () => api.get(url.BANK_ACCOUNT)
 

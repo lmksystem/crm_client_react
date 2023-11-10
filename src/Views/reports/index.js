@@ -25,7 +25,7 @@ const Reports = () => {
   const [date, setDate] = useState(moment());
 
   let data = [{
-    name: 'Revenues',
+    name: 'Revenus',
     data: report?.revenus?.dataGraph || []
   }, {
     name: 'Dépenses',
@@ -107,8 +107,8 @@ const Reports = () => {
                 <button onClick={() => { console.log("plus"); setDate((date) => moment(date).add(1, "year")) }} className="btn btn-soft-primary"><FeatherIcon icon={'arrow-right'}></FeatherIcon></button>
               </div>
             </div>
-            <WidgetCountUp xl={6} data={{ name: "Revenu Total", icon: "arrow-up-right", total: report?.revenus?.dataGraph.reduce((accumulator, currentValue) => (accumulator + currentValue), 0), nb: report?.revenus?.nb_facture, text: "factures payées" }} type={''}></WidgetCountUp>
-            <WidgetCountUp xl={6} data={{ name: "Dépense Totale", icon: "arrow-down-right", total: report?.charges?.dataGraph.reduce((accumulator, currentValue) => (accumulator + currentValue), 0), nb: report?.charges?.nb_charge, text: "Nombre de charge comprise" }} type={''}></WidgetCountUp>
+            <WidgetCountUp xl={6} data={{ name: "Revenus Totaux", icon: "arrow-up-right", total: report?.revenus?.dataGraph.reduce((accumulator, currentValue) => (accumulator + currentValue), 0), nb: report?.revenus?.nb_facture, text: "Ventes perçues" }} type={''}></WidgetCountUp>
+            <WidgetCountUp xl={6} data={{ name: "Dépenses Totales", icon: "arrow-down-right", total: report?.charges?.dataGraph.reduce((accumulator, currentValue) => (accumulator + currentValue), 0), nb: report?.charges?.nb_charge, text: "Charges et frais dépensés" }} type={''}></WidgetCountUp>
             {/* <WidgetCountUp xl={4} data={{ name: "", icon: "", total: 0 }} type={''}></WidgetCountUp> */}
             <div>
 
