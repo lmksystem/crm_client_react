@@ -45,7 +45,7 @@ export const sendInvocieByEmail = createAsyncThunk("invoice/sendInvocieByEmail",
 
 export const deleteTransaction = createAsyncThunk("invoice/deleteTransaction", async (id) => {
   try {
-    const response = deleteTransactionApi(id);
+    const response =await deleteTransactionApi(id);
     return response;
   }
   catch (error) {

@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-// import { addNewTransaction, deleteTransaction, getTransaction, getTransactionByMonth, getTransactionList, getTransactionPricePeriode } from "./thunk";
 import { toast } from "react-toastify";
 import moment from "moment";
 import { getTransactionBank, getTransactionBankAchat, updateJustifyTransactionBank } from "./thunk";
