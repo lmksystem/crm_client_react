@@ -15,6 +15,9 @@ const CollaboDetails = ({}) => {
   const { collaboDetails } = useSelector((state) => ({
     collaboDetails: state.Gestion.collaboDetails,
   }));
+  //5 derniers emails
+
+  //5 factures
 
   // useEffect(()=>{
   //     dispatch(onGetDetailsCollabo())
@@ -31,6 +34,24 @@ const CollaboDetails = ({}) => {
           {collaboDetails && (
             <Row>
               <Col lg={6}>
+                <Card>
+                   <p>{collaboDetails?.infoBase?.ent_firstname}</p>
+                   <p>{collaboDetails?.infoBase?.ent_lastname}</p>
+                   <p>{collaboDetails?.infoBase?.ent_name}</p>
+                   <p>{collaboDetails?.infoBase?.ent_adresse}{collaboDetails?.infoBase?.ent_ville && ", "+collaboDetails?.infoBase?.ent_ville} {collaboDetails?.infoBase?.ent_cp && collaboDetails?.infoBase?.ent_cp} {collaboDetails?.infoBase?.ent_pays && collaboDetails?.infoBase?.ent_pays}</p>
+                   <p>{collaboDetails?.infoBase?.ent_email}</p>
+                   <p>{collaboDetails?.infoBase?.ent_phone}</p>
+                </Card>
+              </Col>
+              <Col lg={6}>
+                <Card>
+                   <p>{collaboDetails?.infoBase?.ent_firstname}</p>
+                   <p>{collaboDetails?.infoBase?.ent_lastname}</p>
+                   <p>{collaboDetails?.infoBase?.ent_name}</p>
+                   <p>{collaboDetails?.infoBase?.ent_adresse}{collaboDetails?.infoBase?.ent_ville && ", "+collaboDetails?.infoBase?.ent_ville} {collaboDetails?.infoBase?.ent_cp && collaboDetails?.infoBase?.ent_cp} {collaboDetails?.infoBase?.ent_pays && collaboDetails?.infoBase?.ent_pays}</p>
+                   <p>{collaboDetails?.infoBase?.ent_email}</p>
+                   <p>{collaboDetails?.infoBase?.ent_phone}</p>
+                </Card>
                 <Card>
                    <p>{collaboDetails?.infoBase?.ent_firstname}</p>
                    <p>{collaboDetails?.infoBase?.ent_lastname}</p>

@@ -23,10 +23,22 @@ export const getListBank = createAsyncThunk(
 
 export const getAccountBank = createAsyncThunk(
   "bankAccount/getAccountBank",
-  async () => {
+  async (insertHandle="null") => {
     try {
-      const response = await getAccountBankApi();
-      return response;
+      if(insertHandle=="insert"){
+        return toast.promise(
+          getAccountBankApi(insertHandle),
+          {
+            pending: 'Récupération des données bancaires',
+            success: 'Données bancaires récupérées',
+            error: 'Echec de la récupération'
+          }
+      )
+        }else{
+          const response = await getAccountBankApi(insertHandle);
+          return response;
+
+        }
     } catch (error) {
       console.log(error)
       toast.error("List Account Bank User Read Failed", { autoClose: 3000 });

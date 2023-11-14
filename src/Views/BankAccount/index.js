@@ -64,7 +64,7 @@ const BankAccount = () => {
   const filteredData = filterData(bankFilter);
 
   useEffect(() => {
-    dispatch(onGetAccountBank());
+    dispatch(onGetAccountBank("null"));
   }, [dispatch]);
 
   useEffect(() => {
@@ -167,6 +167,7 @@ const BankAccount = () => {
                               className={"list-group-item-action"}
                               onClick={() => {
                                 setIsLoading(true);
+                                console.log(bankItem)
                                 dispatch(
                                   onInsertBankAccount({
                                     bac_instit_id: bankItem.id,

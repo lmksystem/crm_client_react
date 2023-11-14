@@ -89,7 +89,7 @@ const Navdata = () => {
       subItems: [
         {
           id: "clients-fournisseurs",
-          label: "Cliens / Fournisseurs",
+          label: "Clients / Fournisseurs",
           link: "/client-fournisseur",
           parentId: "gestion",
         },

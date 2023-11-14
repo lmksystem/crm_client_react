@@ -5,6 +5,7 @@ import { Col, Row, ListGroupItem } from "reactstrap";
 import {
   insertBankAccount as onInsertBankAccount,
   insertAccountLinkToBank as onInsertAccountLinkToBank,
+  getAccountBank as onGetAccountBank,
 } from "../../slices/thunks";
 //redux
 import { useDispatch } from "react-redux";
@@ -18,7 +19,7 @@ const ItemBank = ({ item }) => {
   return (
     <ListGroupItem data-id="1" className={"list-group-item-action"}>
       <Row lg={12} xs={12}>
-        <Col md={8} xs={12} className="row">
+        <Col md={6} xs={12} className="row">
           <Col xs={2} md={1} style={{ minWidth: 95, maxWidth: 120 }}>
             <img src={item.bac_logo} className="img-fluid" />
           </Col>
@@ -33,39 +34,41 @@ const ItemBank = ({ item }) => {
               </p>
             </Col>
           </Col>
-         {item.bua_account_id?.length>0 && <Col xs={12}>
-            <div className="input-group ">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Libellé personnalisé"
-                aria-label="Libellé personnalisé"
-                value={libelle}
-                onChange={(e) => {
-                  setLibelle(e.target.value);
-                }}
-              />
-              <div className="input-group-append">
-                <button
-                  onClick={() => {
-                    dispatch(
-                      onInsertAccountLinkToBank({
-                        bua_account_id: item.bua_account_id,
-                        bua_libelle: libelle,
-                      })
-                    );
+          {item.bua_account_id?.length > 0 && (
+            <Col xs={12}>
+              <div className="input-group ">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Libellé personnalisé"
+                  aria-label="Libellé personnalisé"
+                  value={libelle}
+                  onChange={(e) => {
+                    setLibelle(e.target.value);
                   }}
-                  class="btn btn-outline-success"
-                  type="button"
-                >
-                  <i className=" las la-check"></i>
-                </button>
+                />
+                <div className="input-group-append">
+                  <button
+                    onClick={() => {
+                      dispatch(
+                        onInsertAccountLinkToBank({
+                          bua_account_id: item.bua_account_id,
+                          bua_libelle: libelle,
+                        })
+                      );
+                    }}
+                    class="btn btn-outline-success"
+                    type="button"
+                  >
+                    <i className=" las la-check"></i>
+                  </button>
+                </div>
               </div>
-            </div>
-          </Col>}
+            </Col>
+          )}
         </Col>
-        <Col md={4} xs={12} className="row my-4">
-          <Col xs={6} md={12} className="d-flex justify-content-center">
+        <Col md={4} xs={12} className="row my-4 d-flex justify-content-center">
+          <Col xs={12} md={6} className="d-flex justify-content-center flex-column">
             <button
               type="button"
               class={`btn ${
@@ -86,8 +89,6 @@ const ItemBank = ({ item }) => {
             >
               Mettre à jour
             </button>
-          </Col>
-          <Col xs={6} md={12} className="d-flex justify-content-center">
             <p
               className="m-0"
               style={{
@@ -102,7 +103,32 @@ const ItemBank = ({ item }) => {
                 : "Veuillez vous mettre à jour avec cette banque"}{" "}
             </p>
           </Col>
+          {/* <Col xs={3} md={6} className="d-flex justify-content-center">
+          
+          </Col> */}
         </Col>
+        {item.bua_account_id?.length > 0 && (
+          <Col md={2} xs={12} className="row my-4 d-flex justify-content-center">
+            <Col xs={12} md={12} className="d-flex justify-content-center">
+              <button
+                type="button"
+                class={`btn ${
+                  item.bua_account_id?.length > 0
+                    ? " btn-outline-primary"
+                    : "btn-outline-danger"
+                }`}
+                onClick={() => {
+                  dispatch(onGetAccountBank("insert"))
+                }}
+              >
+                Charger mes transactions
+              </button>
+            </Col>
+            <Col xs={3} md={6} className="d-flex justify-content-center">
+    
+            </Col>
+          </Col>
+        )}
       </Row>
     </ListGroupItem>
   );

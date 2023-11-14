@@ -33,7 +33,7 @@ const BreadCrumb = ({ title, pageTitle }) => {
   }
 
   useEffect(() => {
-    dispatch(onGetAccountBank()).then(() => {
+    dispatch(onGetAccountBank("null")).then(() => {
       if (listAccountsBank) {
         let newArrayDate = listAccountsBank?.map((e) => e.bac_date_expired) || [];
         findClosestDateWithin15Days(newArrayDate)

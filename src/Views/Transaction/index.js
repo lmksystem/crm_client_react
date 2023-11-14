@@ -445,14 +445,14 @@ const TransactionBank = () => {
         })
         .map((tra) => tra);
       let tempProps = JSON.parse(JSON.stringify(transFiltered));
-
-      transFiltered = tempProps.map((tra) => {
-        if (tra.tba_rp == Math.abs(parseFloat(tra.tba_amount))) {
+        // console.log(tempProps)
+      transFiltered = tempProps?.map((tra) => {
+        if (tra.tba_rp == Math.abs(parseFloat(tra?.tba_amount))) {
           tra.tba_assoc = 0;
         } else if (tra.tba_rp == 0 || tra.tba_justify == 0) {
           tra.tba_assoc = 2;
         } else if (
-          tra.tba_rp < Math.abs(parseFloat(tra.tba_amount)) &&
+          tra.tba_rp < Math.abs(parseFloat(tra?.tba_amount)) &&
           tra.tba_rp > 0
         ) {
           tra.tba_assoc = 1;
@@ -462,17 +462,17 @@ const TransactionBank = () => {
         return tra;
       });
       setTTD(transFiltered);
-      setShow(false);
-      setTransaction(null);
+      // setShow(false);
+      // setTransaction(null);
     } else {
       let tempProps = JSON.parse(JSON.stringify(transactions));
       let newArrayTraAssoc = tempProps?.map((tra) => {
-        if (tra.tba_rp == Math.abs(parseFloat(tra.tba_amount))) {
+        if (tra.tba_rp == Math.abs(parseFloat(tra?.tba_amount))) {
           tra.tba_assoc = 0;
         } else if (tra.tba_rp == 0 || tra.tba_justify == 0) {
           tra.tba_assoc = 2;
         } else if (
-          tra.tba_rp < Math.abs(parseFloat(tra.tba_amount)) &&
+          tra.tba_rp < Math.abs(parseFloat(tra?.tba_amount)) &&
           tra.tba_rp > 0
         ) {
           tra.tba_assoc = 1;
