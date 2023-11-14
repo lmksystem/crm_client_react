@@ -436,6 +436,9 @@ const TransactionBank = () => {
   }, [dispatch, perdiodeCalendar, isFilterBy, achats]);
 
   useEffect(() => {
+    if(transactions){
+      
+    }
     if (isFilterBy != "null") {
       let transFiltered = transactions
         ?.filter((tra) => {
@@ -462,10 +465,10 @@ const TransactionBank = () => {
         return tra;
       });
       setTTD(transFiltered);
-      // setShow(false);
+      setShow(false);
       // setTransaction(null);
     } else {
-      let tempProps = JSON.parse(JSON.stringify(transactions));
+      let tempProps = JSON.parse(JSON?.stringify(transactions));
       let newArrayTraAssoc = tempProps?.map((tra) => {
         if (tra.tba_rp == Math.abs(parseFloat(tra?.tba_amount))) {
           tra.tba_assoc = 0;

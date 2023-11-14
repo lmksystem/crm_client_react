@@ -152,7 +152,7 @@ const DevisDetails = () => {
                   <CardHeader className="border-bottom border-bottom-dashed">
                     <div className="d-flex">
                       <div className="flex-grow-1 d-flex align-items-center">
-                        <img src={image} className="card-logo card-logo-dark" alt="logo dark" width="260" />
+                     { image &&  <img src={image} className="card-logo card-logo-dark" alt="logo dark" width="260" />}
 
                       </div>
                       <div className="flex-shrink-0 mt-sm-0 mt-3">

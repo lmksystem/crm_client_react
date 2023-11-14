@@ -423,12 +423,14 @@ const InvoiceCreate = () => {
                   <Row>
                     <Col lg={6} className="d-flex">
                       <div className="profile-user mx-auto  mb-3">
+                      {image &&
                         <Label for="profile-img-file-input" className="d-block">
+                          
                           <span
                             className="overflow-hidden border border-dashed d-flex align-items-center justify-content-center rounded"
                             style={{ height: "60px", width: "256px" }}
                           >
-                            <img
+                           <img
                               src={image}
                               className="card-logo card-logo-dark user-profile-image img-fluid"
                               alt="logo"
@@ -438,7 +440,7 @@ const InvoiceCreate = () => {
                           </span>
 
                         </Label>
-
+                      }
                       </div>
 
 

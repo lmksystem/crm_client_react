@@ -168,7 +168,7 @@ const InvoiceDetails = () => {
                     <div>
                       <Row>
                         <Col lg={8} className="flex-grow-1 d-flex">
-                          <img src={image} className="card-logo card-logo-dark" alt="logo dark" width="260" />
+                        {image && <img src={image} className="card-logo card-logo-dark" alt="logo dark" width="260" />}
                         </Col>
                         <Col lg={4} className="flex-shrink-0 mt-lg-0 mt-3">
                           {/* <h6><span className="text-muted fw-normal">Legal Registration No:</span><span id="legal-register-no">987654</span></h6> */}
