@@ -328,4 +328,9 @@ export const createOrUpdateUserAdmin = (data) => api.create(url.ADMIN_USER_CREAT
 
 export const getReportData = (data) => api.get(url.REPORT, data);
 
+/*************************/
+/*         email         */
+/*************************/
+
+export const getEmail = () => api.get(url.EMAIL);
 

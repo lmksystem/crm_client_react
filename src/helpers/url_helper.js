@@ -326,3 +326,6 @@ export const ADMIN_USER_CREATE = "/v1/admin/user/admin";
 
 // ALERT
 export const REPORT = "/v1/rapport";
+
+// EMAIL
+export const EMAIL = "/v1/email";

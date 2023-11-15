@@ -40,7 +40,13 @@ export const initialState = {
 const gestionSlice = createSlice({
   name: "gestion",
   initialState,
-  reducers: {},
+  reducers: {
+    deleteOneAlert: (state, action) => {
+      const indexASupprimer = action.payload; // L'index de l'élément à supprimer
+      const newArray = state.alerts.filter((_, index) => index !== indexASupprimer);
+      state.alerts = newArray;
+    },
+  },
   extraReducers: (builder) => {
     // GESTION
     builder.addCase(getContacts.fulfilled, (state, action) => {
@@ -282,25 +288,7 @@ const gestionSlice = createSlice({
       // state.error = action.payload || null;
     });
 
-
-    // builder.addCase(updateTva.fulfilled, (state, action) => {
-
-    //   state.tva = state.tva.map(t =>
-    //     t.tva_id == action.payload.tva_id
-    //       ? action.payload
-    //       : t
-    //   );
-    //   state.isCollaborateurCreated = true;
-    //   state.isTvaAdd = true;
-    //   state.isTvaAddFail = false;
-    // });
-
-    // builder.addCase(updateTva.rejected, (state, action) => {
-    //   state.error = action.payload?.data || null;
-    //   state.isTvaUpdate = false;
-    //   state.isTvaUpdateFail = true;
-    // });
   },
 });
-
+export const { deleteOneAlert } = gestionSlice.actions;
 export default gestionSlice.reducer;

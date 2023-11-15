@@ -68,15 +68,17 @@ import RecurrenceReducer from "./recurrence/reducer";
 //exportReducer
 import ExportReducer from "./export/reducer";
 
-//exportReducer
+//BankAccounReducer
 import BankAccountReducer from "./bankAccount/reducer";
 
 //AdminReducer
 import AdminReducer from "./admin/reducer";
 
-//AdminReducer
+//ReportReducer
 import ReportReducer from "./report/reducer";
 
+//EmailReducer
+import EmailReducer from "./email/reducer";
 
 
 import sessionStorage from "redux-persist/es/storage/session";
@@ -111,6 +113,7 @@ const appReducer = combineReducers({
   BankAccount: BankAccountReducer,
   Admin: AdminReducer,
   Report: ReportReducer,
+  Email:EmailReducer,
 
 });
 

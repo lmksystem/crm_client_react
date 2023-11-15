@@ -91,13 +91,6 @@ const InvoiceList = () => {
   const columns = useMemo(
     () => [
       {
-        Header: <input type="checkbox" id="checkBoxAll" className="form-check-input" onClick={() => checkedAll()} />,
-        Cell: (cellProps) => {
-          return <input type="checkbox" className="invoiceCheckBox form-check-input" value={cellProps.row.original.header.fen_id} onChange={() => {/*deleteCheckbox()*/ }} />;
-        },
-        id: '#',
-      },
-      {
         Header: "ID",
         accessor: "header.fen_id",
         filterable: false,
