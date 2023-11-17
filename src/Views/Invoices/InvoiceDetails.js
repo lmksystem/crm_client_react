@@ -172,10 +172,13 @@ const InvoiceDetails = () => {
                         </Col>
                         <Col lg={4} className="flex-shrink-0 mt-lg-0 mt-3">
                           {/* <h6><span className="text-muted fw-normal">Legal Registration No:</span><span id="legal-register-no">987654</span></h6> */}
-                          <h6><span className="text-muted fw-normal">Email: </span><span id="email">{invoice.contact.fco_email}</span></h6>
-                          <h6><span className="text-muted fw-normal">Téléphone:</span>{invoice.contact.fco_phone}</h6>
-                          <h6><span className="text-muted fw-normal">Address: </span><span id="email">{invoice.contact.fco_address}, {invoice.contact.fco_city}</span></h6>
-                          <h6><span className="text-muted fw-normal">code postal:</span>{invoice.contact.fco_cp}</h6>
+                          <h6><span className="text-muted fw-normal">Email : </span><span id="email">{invoice.contact.fco_email}</span></h6>
+                          <h6><span className="text-muted fw-normal">Téléphone : </span>{invoice.contact.fco_phone}</h6>
+                          <h6><span className="text-muted fw-normal">Adresse : </span><span id="email">{invoice.contact.fco_address}, {invoice.contact.fco_city}</span></h6>
+                          <h6><span className="text-muted fw-normal">Code postal : </span>{invoice.contact.fco_cp}</h6>
+                          <h6><span className="text-muted fw-normal">Compte Bancaire : </span>{invoice.header.fen_num_bank}</h6>
+                          <h6><span className="text-muted fw-normal">Numéro TVA : </span>{invoice.header.fen_num_tva}</h6>
+
 
                           {/* <h6 className="mb-0"><span className="text-muted fw-normal">Contact No: </span><span id="contact-no"> +(01) 234 6789</span></h6> */}
                         </Col>
