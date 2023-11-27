@@ -581,7 +581,8 @@ const TransactionBank = () => {
                       src={
                         !process.env.NODE_ENV ||
                         process.env.NODE_ENV === "development"
-                          ? `${api.API_URL}/v1/achat/doc/${doc}`
+                        // : `${api.API_PDF}/${userProfile.use_com_fk}/achat/${doc}`
+                          ? `${api.API_URL}/v1/achat/doc/${doc}/${userProfile.use_com_fk}`
                           : `${api.API_PDF}/${userProfile.use_com_fk}/achat/${doc}`
                       }
                       title={doc}

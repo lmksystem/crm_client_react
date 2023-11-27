@@ -22,8 +22,14 @@ import "react-toastify/dist/ReactToastify.css";
 import SimpleBar from "simplebar-react";
 import Dropzone from "react-dropzone";
 import DropFileComponents from "./DropFileComponent";
-import { getInvoices as onGetInvoices,getCategorieAchat as onGetCategorieAchat} from "../../slices/thunks";
+import {
+  getInvoices as onGetInvoices,
+  getCategorieAchat as onGetCategorieAchat,
+} from "../../slices/thunks";
 import { useDispatch, useSelector } from "react-redux";
+import { api } from "../../config";
+import { getLoggedinUser } from "../../helpers/api_helper";
+
 
 const ModalCreate = ({
   validation,
@@ -44,9 +50,12 @@ const ModalCreate = ({
 }) => {
   const dispatch = useDispatch();
   const [factures, setFactures] = useState([]);
-  const { invoices ,categories} = useSelector((state) => ({
+  const [doc, setDoc] = useState(null);
+  const userProfile = getLoggedinUser();
+  console.log(userProfile)
+  const { invoices, categories } = useSelector((state) => ({
     invoices: state.Invoice.invoices,
-    categories :state.Achat.categories
+    categories: state.Achat.categories,
   }));
   function isSelected(id) {
     let obj = transFilter?.data?.find((item) => item.tba_id === id);
@@ -184,13 +193,18 @@ const ModalCreate = ({
     }
   }, [transactions]);
 
-
   useEffect(() => {
-      dispatch(onGetCategorieAchat());
+    dispatch(onGetCategorieAchat());
   }, []);
 
   return (
-    <Modal id="showModal" isOpen={modal} toggle={toggle} centered>
+    <Modal
+      style={{ maxWidth: isEdit ? "90%" : "auto" }}
+      id="showModal"
+      isOpen={modal}
+      toggle={toggle}
+      centered
+    >
       <ModalHeader className="bg-soft-info p-3" toggle={toggle}>
         {!!isEdit
           ? "Modifier le détail de l'achat"
@@ -318,350 +332,393 @@ const ModalCreate = ({
             </Row>
           )}
           {isEdit && (
-            <Row className="g-3">
+            <Row>
               <Col lg={6}>
-                <div>
-                  <Label htmlFor="montant-field" className="form-label">
-                    Montant Total (TVA inclus)
-                  </Label>
-                  <Input
-                    name="montant"
-                    id="montant-field"
-                    className="form-control"
-                    placeholder="Entrer le montant total"
-                    type="number"
-                    onChange={validation.handleChange}
-                    onBlur={validation.handleBlur}
-                    value={validation.values.montant || ""}
-                    invalid={
-                      validation.touched.montant && validation.errors.montant
-                        ? true
-                        : false
-                    }
-                  />
-                  {validation.touched.montant && validation.errors.montant ? (
-                    <FormFeedback type="invalid">
-                      {validation.errors.montant}
-                    </FormFeedback>
-                  ) : null}
-                </div>
-              </Col>
-              <Col lg={6}>
-                <div>
-                  <Label htmlFor="tva-field" className="form-label">
-                    Total TVA
-                  </Label>
-                  <Input
-                    name="tva"
-                    id="tva-field"
-                    className="form-control"
-                    placeholder="Entrer le total TVA"
-                    type="number"
-                    onChange={validation.handleChange}
-                    onBlur={validation.handleBlur}
-                    value={validation.values.tva || ""}
-                    invalid={
-                      validation.touched.tva && validation.errors.tva
-                        ? true
-                        : false
-                    }
-                  />
-                  {validation.touched.tva && validation.errors.tva ? (
-                    <FormFeedback type="invalid">
-                      {validation.errors.tva}
-                    </FormFeedback>
-                  ) : null}
-                </div>
-              </Col>
+                <Row className="g-3">
+                  <Col lg={6}>
+                    <div>
+                      <Label htmlFor="montant-field" className="form-label">
+                        Montant Total (TVA inclus)
+                      </Label>
+                      <Input
+                        name="montant"
+                        id="montant-field"
+                        className="form-control"
+                        placeholder="Entrer le montant total"
+                        type="number"
+                        onChange={validation.handleChange}
+                        onBlur={validation.handleBlur}
+                        value={validation.values.montant || ""}
+                        invalid={
+                          validation.touched.montant &&
+                          validation.errors.montant
+                            ? true
+                            : false
+                        }
+                      />
+                      {validation.touched.montant &&
+                      validation.errors.montant ? (
+                        <FormFeedback type="invalid">
+                          {validation.errors.montant}
+                        </FormFeedback>
+                      ) : null}
+                    </div>
+                  </Col>
+                  <Col lg={6}>
+                    <div>
+                      <Label htmlFor="tva-field" className="form-label">
+                        Total TVA
+                      </Label>
+                      <Input
+                        name="tva"
+                        id="tva-field"
+                        className="form-control"
+                        placeholder="Entrer le total TVA"
+                        type="number"
+                        onChange={validation.handleChange}
+                        onBlur={validation.handleBlur}
+                        value={validation.values.tva || ""}
+                        invalid={
+                          validation.touched.tva && validation.errors.tva
+                            ? true
+                            : false
+                        }
+                      />
+                      {validation.touched.tva && validation.errors.tva ? (
+                        <FormFeedback type="invalid">
+                          {validation.errors.tva}
+                        </FormFeedback>
+                      ) : null}
+                    </div>
+                  </Col>
 
-              <Col lg={6}>
-                <div>
-                  <Label htmlFor="libelle-field" className="form-label">
-                    Libellé
-                  </Label>
-                  <Input
-                    name="libelle"
-                    id="libelle-field"
-                    className="form-control"
-                    placeholder="Entrer un libellé"
-                    type="text"
-                    onChange={validation.handleChange}
-                    onBlur={validation.handleBlur}
-                    value={validation.values.libelle || ""}
-                    invalid={
-                      validation.touched.libelle && validation.errors.libelle
-                        ? true
-                        : false
-                    }
-                  />
-                  {validation.touched.libelle && validation.errors.libelle ? (
-                    <FormFeedback type="invalid">
-                      {validation.errors.libelle}
-                    </FormFeedback>
-                  ) : null}
-                </div>
-              </Col>
-              <Col lg={6}>
-                <div>
-                  <Label htmlFor="categorie-field" className="form-label">
-                    Catégorie
-                  </Label>
-                  <UncontrolledDropdown className="input-group">
-                    <Input
-                      type="text"
-                      name="categorie"
-                      className="form-control"
-                      placeholder="Entrer une catégorie"
-                      onChange={validation.handleChange}
-                      onBlur={validation.handleBlur}
-                      value={validation.values.categorie || ""}
-                      invalid={
-                        validation.touched.categorie &&
-                        validation.errors.categorie
-                          ? true
-                          : false
-                      }
-                    />
-                    <DropdownToggle
-                      tag="button"
-                      className="btn btn-success"
-                      type="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      <i className="mdi mdi-chevron-down"></i>
-                    </DropdownToggle>
-                    <DropdownMenu className="dropdown-menu-end">
-                      {categories?.map((itemCat,i)=>{
-                        return(
-                          <li onClick={()=>{validation.setValues({...validation.values,categorie:itemCat?.ach_categorie})}} key={i}>
-                          <DropdownItem>{itemCat?.ach_categorie}</DropdownItem>
-                        </li>
-                        )
-                      })}
-                     
-                    </DropdownMenu>
-                  </UncontrolledDropdown>
-                  {validation.touched.categorie &&
-                  validation.errors.categorie ? (
-                    <FormFeedback type="invalid">
-                      {validation.errors.categorie}
-                    </FormFeedback>
-                  ) : null}
-                </div>
-              </Col>
-              <Col lg={6}>
-                <div>
-                  <Label htmlFor="dateAchat-field" className="form-label">
-                    Date d'achat
-                  </Label>
-                  <Input
-                    name="dateAchat"
-                    id="dateAchat-field"
-                    className="form-control"
-                    placeholder="Entrer une méthode"
-                    type="date"
-                    onChange={validation.handleChange}
-                    onBlur={validation.handleBlur}
-                    value={validation.values.dateAchat || ""}
-                    invalid={
-                      validation.touched.dateAchat &&
-                      validation.errors.dateAchat
-                        ? true
-                        : false
-                    }
-                  />
-                  {validation.touched.dateAchat &&
-                  validation.errors.dateAchat ? (
-                    <FormFeedback type="invalid">
-                      {validation.errors.dateAchat}
-                    </FormFeedback>
-                  ) : null}
-                </div>
-              </Col>
-              <Col lg={6}>
-                <div>
-                  <Label htmlFor="dateEcheance-field" className="form-label">
-                    Date d'échéance
-                  </Label>
-                  <Input
-                    name="dateEcheance"
-                    id="dateEcheance-field"
-                    className="form-control"
-                    placeholder="Entrer une catégorie"
-                    type="date"
-                    onChange={validation.handleChange}
-                    onBlur={validation.handleBlur}
-                    value={validation.values.dateEcheance || ""}
-                    invalid={
-                      validation.touched.dateEcheance &&
-                      validation.errors.dateEcheance
-                        ? true
-                        : false
-                    }
-                  />
-                  {validation.touched.dateEcheance &&
-                  validation.errors.dateEcheance ? (
-                    <FormFeedback type="invalid">
-                      {validation.errors.dateEcheance}
-                    </FormFeedback>
-                  ) : null}
-                </div>
-              </Col>
+                  <Col lg={6}>
+                    <div>
+                      <Label htmlFor="libelle-field" className="form-label">
+                        Libellé
+                      </Label>
+                      <Input
+                        name="libelle"
+                        id="libelle-field"
+                        className="form-control"
+                        placeholder="Entrer un libellé"
+                        type="text"
+                        onChange={validation.handleChange}
+                        onBlur={validation.handleBlur}
+                        value={validation.values.libelle || ""}
+                        invalid={
+                          validation.touched.libelle &&
+                          validation.errors.libelle
+                            ? true
+                            : false
+                        }
+                      />
+                      {validation.touched.libelle &&
+                      validation.errors.libelle ? (
+                        <FormFeedback type="invalid">
+                          {validation.errors.libelle}
+                        </FormFeedback>
+                      ) : null}
+                    </div>
+                  </Col>
+                  <Col lg={6}>
+                    <div>
+                      <Label htmlFor="categorie-field" className="form-label">
+                        Catégorie
+                      </Label>
+                      <UncontrolledDropdown className="input-group">
+                        <Input
+                          type="text"
+                          name="categorie"
+                          className="form-control"
+                          placeholder="Entrer une catégorie"
+                          onChange={validation.handleChange}
+                          onBlur={validation.handleBlur}
+                          value={validation.values.categorie || ""}
+                          invalid={
+                            validation.touched.categorie &&
+                            validation.errors.categorie
+                              ? true
+                              : false
+                          }
+                        />
+                        <DropdownToggle
+                          tag="button"
+                          className="btn btn-success"
+                          type="button"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                        >
+                          <i className="mdi mdi-chevron-down"></i>
+                        </DropdownToggle>
+                        <DropdownMenu className="dropdown-menu-end">
+                          {categories?.map((itemCat, i) => {
+                            return (
+                              <li
+                                onClick={() => {
+                                  validation.setValues({
+                                    ...validation.values,
+                                    categorie: itemCat?.ach_categorie,
+                                  });
+                                }}
+                                key={i}
+                              >
+                                <DropdownItem>
+                                  {itemCat?.ach_categorie}
+                                </DropdownItem>
+                              </li>
+                            );
+                          })}
+                        </DropdownMenu>
+                      </UncontrolledDropdown>
+                      {validation.touched.categorie &&
+                      validation.errors.categorie ? (
+                        <FormFeedback type="invalid">
+                          {validation.errors.categorie}
+                        </FormFeedback>
+                      ) : null}
+                    </div>
+                  </Col>
+                  <Col lg={6}>
+                    <div>
+                      <Label htmlFor="dateAchat-field" className="form-label">
+                        Date d'achat
+                      </Label>
+                      <Input
+                        name="dateAchat"
+                        id="dateAchat-field"
+                        className="form-control"
+                        placeholder="Entrer une méthode"
+                        type="date"
+                        onChange={validation.handleChange}
+                        onBlur={validation.handleBlur}
+                        value={validation.values.dateAchat || ""}
+                        invalid={
+                          validation.touched.dateAchat &&
+                          validation.errors.dateAchat
+                            ? true
+                            : false
+                        }
+                      />
+                      {validation.touched.dateAchat &&
+                      validation.errors.dateAchat ? (
+                        <FormFeedback type="invalid">
+                          {validation.errors.dateAchat}
+                        </FormFeedback>
+                      ) : null}
+                    </div>
+                  </Col>
+                  <Col lg={6}>
+                    <div>
+                      <Label
+                        htmlFor="dateEcheance-field"
+                        className="form-label"
+                      >
+                        Date d'échéance
+                      </Label>
+                      <Input
+                        name="dateEcheance"
+                        id="dateEcheance-field"
+                        className="form-control"
+                        placeholder="Entrer une catégorie"
+                        type="date"
+                        onChange={validation.handleChange}
+                        onBlur={validation.handleBlur}
+                        value={validation.values.dateEcheance || ""}
+                        invalid={
+                          validation.touched.dateEcheance &&
+                          validation.errors.dateEcheance
+                            ? true
+                            : false
+                        }
+                      />
+                      {validation.touched.dateEcheance &&
+                      validation.errors.dateEcheance ? (
+                        <FormFeedback type="invalid">
+                          {validation.errors.dateEcheance}
+                        </FormFeedback>
+                      ) : null}
+                    </div>
+                  </Col>
 
-              <Col lg={6}>
-                <div>
-                  <Label htmlFor="numero-field" className="form-label">
-                    Numéro d'achat
-                  </Label>
-                  <Input
-                    name="numero"
-                    id="numero-field"
-                    className="form-control"
-                    placeholder="Entrer un numéro"
-                    type="text"
-                    onChange={validation.handleChange}
-                    onBlur={validation.handleBlur}
-                    value={validation.values.numero || ""}
-                    invalid={
-                      validation.touched.numero && validation.errors.numero
-                        ? true
-                        : false
-                    }
-                  />
-                  {validation.touched.numero && validation.errors.numero ? (
-                    <FormFeedback type="invalid">
-                      {validation.errors.numero}
-                    </FormFeedback>
-                  ) : null}
-                </div>
-              </Col>
-              <Col lg={6}>
-                <div>
-                  <Label htmlFor="methode-field" className="form-label">
-                    Méthode
-                  </Label>
-                  <Input
-                    name="methode"
-                    id="methode-field"
-                    className="form-control"
-                    placeholder="Entrer une méthode"
-                    type="text"
-                    onChange={validation.handleChange}
-                    onBlur={validation.handleBlur}
-                    value={validation.values.methode || ""}
-                    invalid={
-                      validation.touched.methode && validation.errors.methode
-                        ? true
-                        : false
-                    }
-                  />
-                  {validation.touched.methode && validation.errors.methode ? (
-                    <FormFeedback type="invalid">
-                      {validation.errors.methode}
-                    </FormFeedback>
-                  ) : null}
-                </div>
-              </Col>
-              <Col lg={12}>
-                <div>
-                  <Label htmlFor="entity-field" className="form-label">
-                    Client/Fournisseur
-                  </Label>
+                  <Col lg={6}>
+                    <div>
+                      <Label htmlFor="numero-field" className="form-label">
+                        Numéro d'achat
+                      </Label>
+                      <Input
+                        name="numero"
+                        id="numero-field"
+                        className="form-control"
+                        placeholder="Entrer un numéro"
+                        type="text"
+                        onChange={validation.handleChange}
+                        onBlur={validation.handleBlur}
+                        value={validation.values.numero || ""}
+                        invalid={
+                          validation.touched.numero && validation.errors.numero
+                            ? true
+                            : false
+                        }
+                      />
+                      {validation.touched.numero && validation.errors.numero ? (
+                        <FormFeedback type="invalid">
+                          {validation.errors.numero}
+                        </FormFeedback>
+                      ) : null}
+                    </div>
+                  </Col>
+                  <Col lg={6}>
+                    <div>
+                      <Label htmlFor="methode-field" className="form-label">
+                        Méthode
+                      </Label>
+                      <Input
+                        name="methode"
+                        id="methode-field"
+                        className="form-control"
+                        placeholder="Entrer une méthode"
+                        type="text"
+                        onChange={validation.handleChange}
+                        onBlur={validation.handleBlur}
+                        value={validation.values.methode || ""}
+                        invalid={
+                          validation.touched.methode &&
+                          validation.errors.methode
+                            ? true
+                            : false
+                        }
+                      />
+                      {validation.touched.methode &&
+                      validation.errors.methode ? (
+                        <FormFeedback type="invalid">
+                          {validation.errors.methode}
+                        </FormFeedback>
+                      ) : null}
+                    </div>
+                  </Col>
+                  <Col lg={12}>
+                    <div>
+                      <Label htmlFor="entity-field" className="form-label">
+                        Client/Fournisseur
+                      </Label>
 
-                  <Input
-                    type="select"
-                    className="form-select mb-0"
-                    invalid={
-                      validation.touched.entity && validation.errors.entity
-                        ? true
-                        : false
-                    }
-                    value={validation.values.entity}
-                    onChange={validation.handleChange}
-                    onBlur={validation.handleBlur}
-                    name="entity"
-                    id="entity-field"
-                  >
-                    <option disabled={false} value={""}>
-                      Choisissez client/fournisseur
-                    </option>
-                    {collaborateurs.map((e, i) => (
-                      <option key={i} value={e.ent_id}>
-                        {e.ent_name}
-                      </option>
-                    ))}
-                  </Input>
-                  {validation.touched.entity && validation.errors.entity ? (
-                    <FormFeedback type="invalid">
-                      {validation.errors.entity}
-                    </FormFeedback>
-                  ) : null}
-                </div>
-              </Col>
-              <Col lg={12}>
-                <div>
-                  <p className="text-muted">
-                    Associer une/plusieurs transaction(s) à l'achat
-                  </p>
-                  <div id="users">
-                    <Row className="mb-2">
-                      <Col lg={12}>
-                        <div>
-                          <input
-                            className="search form-control"
-                            placeholder="Chercher une transaction"
-                            value={transFilter.searchTerm}
-                            onChange={handleSearchChange}
-                          />
-                        </div>
-                      </Col>
-                    </Row>
+                      <Input
+                        type="select"
+                        className="form-select mb-0"
+                        invalid={
+                          validation.touched.entity && validation.errors.entity
+                            ? true
+                            : false
+                        }
+                        value={validation.values.entity}
+                        onChange={validation.handleChange}
+                        onBlur={validation.handleBlur}
+                        name="entity"
+                        id="entity-field"
+                      >
+                        <option disabled={false} value={""}>
+                          Choisissez client/fournisseur
+                        </option>
+                        {collaborateurs.map((e, i) => (
+                          <option key={i} value={e.ent_id}>
+                            {e.ent_name}
+                          </option>
+                        ))}
+                      </Input>
+                      {validation.touched.entity && validation.errors.entity ? (
+                        <FormFeedback type="invalid">
+                          {validation.errors.entity}
+                        </FormFeedback>
+                      ) : null}
+                    </div>
+                  </Col>
+                  <Col lg={12}>
+                    <div>
+                      <p className="text-muted">
+                        Associer une/plusieurs transaction(s) à l'achat
+                      </p>
+                      <div id="users">
+                        <Row className="mb-2">
+                          <Col lg={12}>
+                            <div>
+                              <input
+                                className="search form-control"
+                                placeholder="Chercher une transaction"
+                                value={transFilter.searchTerm}
+                                onChange={handleSearchChange}
+                              />
+                            </div>
+                          </Col>
+                        </Row>
 
-                    <SimpleBar style={{ height: "150px" }} className="mx-n3">
-                      <ListGroup className="list mb-0" flush>
-                        {filteredData?.map((tra, i) => {
-                          return (
-                            <ListGroupItem
-                              key={i}
-                              className={` ${
-                                isSelected(tra.tba_id)
-                                  ? "bg-light text-grey tit"
-                                  : ""
-                              }`}
-                              onClick={() => {
-                                handleTransaction(tra);
-                              }}
-                              data-id="1"
-                            >
-                              <div className={`d-flex`}>
-                                <div className="flex-grow-1">
-                                  <h5 className="fs-13 mb-1 text-dark">
-                                    {isSelected(tra.tba_id) ? (
-                                      <i className="las la-link"></i>
-                                    ) : null}
-                                    {tra.bua_libelle?.length > 0
-                                      ? tra?.bua_libelle
-                                      : tra?.bua_account_id}
-                                  </h5>
-                                  <p
-                                    className="born timestamp text-muted mb-0"
-                                    data-timestamp="12345"
-                                  >
-                                    {tra.tba_bkg_date}
-                                  </p>
-                                </div>
-                                <div className="flex-shrink-0">
-                                  <div>€ {tra.tba_amount}</div>
-                                </div>
-                              </div>
-                            </ListGroupItem>
-                          );
-                        })}
-                      </ListGroup>
-                    </SimpleBar>
-                  </div>
-                </div>
+                        <SimpleBar
+                          style={{ height: "150px" }}
+                          className="mx-n3"
+                        >
+                          <ListGroup className="list mb-0" flush>
+                            {filteredData?.map((tra, i) => {
+                              return (
+                                <ListGroupItem
+                                  key={i}
+                                  className={` ${
+                                    isSelected(tra.tba_id)
+                                      ? "bg-light text-grey tit"
+                                      : ""
+                                  }`}
+                                  onClick={() => {
+                                    handleTransaction(tra);
+                                  }}
+                                  data-id="1"
+                                >
+                                  <div className={`d-flex`}>
+                                    <div className="flex-grow-1">
+                                      <h5 className="fs-13 mb-1 text-dark">
+                                        {isSelected(tra.tba_id) ? (
+                                          <i className="las la-link"></i>
+                                        ) : null}
+                                        {tra.bua_libelle?.length > 0
+                                          ? tra?.bua_libelle
+                                          : tra?.bua_account_id}
+                                      </h5>
+                                      <h5 className="fs-13 mb-1 text-dark">
+                                        {tra?.tba_desc?.length > 0
+                                          ? tra?.tba_desc
+                                          : ""}
+                                      </h5>
+                                      <p
+                                        className="born timestamp text-muted mb-0"
+                                        data-timestamp="12345"
+                                      >
+                                        {tra.tba_bkg_date}
+                                      </p>
+                                    </div>
+                                    <div className="flex-shrink-0">
+                                      <div>€ {tra.tba_amount}</div>
+                                    </div>
+                                  </div>
+                                </ListGroupItem>
+                              );
+                            })}
+                          </ListGroup>
+                        </SimpleBar>
+                      </div>
+                    </div>
+                  </Col>
+                </Row>
+              </Col>
+              <Col lg={6}>
+                <iframe
+                  style={{ width: "100%", height: 550 }}
+                  lg={12}
+                  src={
+                    !process.env.NODE_ENV ||
+                    process.env.NODE_ENV === "development"
+                      ? `${api.API_URL}/v1/achat/doc/${achat.justificatif}/${userProfile.use_com_fk}`
+                      : `${api.API_PDF}/${userProfile.use_com_fk}/achat/${achat.justificatif}`
+                  }
+                  title={achat.justificatif}
+                ></iframe>
               </Col>
             </Row>
           )}
