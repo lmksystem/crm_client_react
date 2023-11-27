@@ -1,11 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import moment from "moment";
-import { createUpdateAchat, deleteAchat, getAchat, getAchatLinkTransaction, linkTransToAchat, updateMatchAmount } from "./thunk";
+import { createUpdateAchat, deleteAchat, getAchat, getAchatLinkTransaction, getCategorieAchat, linkTransToAchat, updateMatchAmount } from "./thunk";
 moment.locale('fr')
 
 export const initialState = {
   achats: [],
+  categories:[],
   error: {},
   isAchatSuccess: false,
 };
@@ -87,7 +88,14 @@ const achatSlice = createSlice({
       state.isAchatSuccess = false;
       state.error = action.payload || "Erreur lors de la recupération !";
     });
-
+    builder.addCase(getCategorieAchat.fulfilled, (state, action) => {
+      state.isAchatSuccess = true;
+      state.categories = action.payload.data || [];
+    });
+    builder.addCase(getCategorieAchat.rejected, (state, action) => {
+      state.isAchatSuccess = false;
+      state.error = action.payload || "Erreur lors de la recupération !"
+    });
     
 
   }

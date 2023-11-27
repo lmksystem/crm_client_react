@@ -259,6 +259,9 @@ export const getAchatLinkTransaction = tba_id => api.get(url.ACHAT + '/transacti
 export const linkTransToAchat = data => api.create(url.TRANSACTION_BANK + '/achat', data);
 // update match amount bank link to achat
 export const updateMatchAmount = data => api.create(url.TRANSACTION_BANK + '/amountMatch', data);
+// get categories achat
+export const getCategorieAchat = () => api.get(url.ACHAT+'/categorie');
+
 
 
 

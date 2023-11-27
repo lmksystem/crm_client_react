@@ -26,7 +26,7 @@ const adminSlice = createSlice({
     });
   
     builder.addCase(deleteUser.fulfilled, (state, action) => {
-      state.users = state.users.filter( (u) => { console.log(u.use_id != action.payload.data.use_id);return u.use_id != action.payload.data.use_id});
+      state.users = state.users.filter( (u) => { return u.use_id != action.payload.data.use_id});
     });
     builder.addCase(deleteUser.rejected, (state, action) => {
       state.error = action.payload || null;

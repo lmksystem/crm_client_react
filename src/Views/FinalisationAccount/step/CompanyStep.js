@@ -196,7 +196,7 @@ const CompanyStep = ({ handleCompany, setStep, step, position }) => {
                     onChange={(e) => {
                       const selectedValue = e.target.value;
                       const [paysName, dialCode] = selectedValue.split(",");
-                      console.log(paysName);
+                      // console.log(paysName);
                       validation.setValues({
                         ...validation.values,
                         com_pays: paysName,

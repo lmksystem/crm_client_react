@@ -26,7 +26,6 @@ export const getUser = createAsyncThunk("admin/getUser", async () => {
 export const createOrUpdateUser = createAsyncThunk("admin/createOrUpdateUser", async (data) => {
   try {
     const response = await createOrUpdateUserApi(data);
-    console.log(response)
     return response;
   } catch (error) {
     return error;

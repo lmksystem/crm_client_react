@@ -74,7 +74,6 @@ const CollaboDetails = ({}) => {
         }
         setFactures(arrayFiltered);
       });
-      console.log(" useEffect invoices CollaboDetails", invoices);
     }
     
   }, [collaboDetails]);
@@ -144,7 +143,6 @@ const CollaboDetails = ({}) => {
                 <Card>
                   <ListGroup>
                     {email.map((ema, i) => {
-                      console.log(ema)
                       return (
                         <ListGroupItem key={i}>
                           <div className="d-flex align-items-center justify-content-between">

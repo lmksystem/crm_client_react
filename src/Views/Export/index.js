@@ -32,7 +32,7 @@ const Export = () => {
   }));
 
   const download = async () => {
-    console.log(periodeCalendar.end, moment(new Date(periodeCalendar.end)).format("DD MMM YYYY"));
+    // console.log(periodeCalendar.end, moment(new Date(periodeCalendar.end)).format("DD MMM YYYY"));
     axios.get(`${api.API_URL}/v1/export?date_start=${moment(periodeCalendar.start).format('YYYY-MM-DD')}&date_end=${moment(periodeCalendar.end).format('YYYY-MM-DD')}`, {
       mode: 'no-cors',
       responseType: 'blob'
@@ -57,9 +57,9 @@ const Export = () => {
     for (let index = 0; index < selectedInvoice.length; index++) {
       const invoice = selectedInvoice[index];
       let month = moment(invoice.header.fen_date_create).month();
-      console.log("invoice.header.fen_total_ttc", invoice.header.fen_total_ttc);
+      // console.log("invoice.header.fen_total_ttc", invoice.header.fen_total_ttc);
       data[month] += parseFloat(invoice.header.fen_total_ttc); // Ne pas utiliser toFixed(2) ici
-      console.log("data[month]", data[month]);
+      // console.log("data[month]", data[month]);
     }
     const formattedData = data.map(value => parseFloat(parseFloat(value).toFixed(2)));
     setDataChart(formattedData);

@@ -32,7 +32,7 @@ const Section = ({perdiodeCalendar,setPeriodeCalendar}) => {
                                                     defaultDate: [perdiodeCalendar?.start,perdiodeCalendar?.end]
                                                 }}
                                                 onChange={(periodDate)=>{
-                                                    console.log(periodDate)
+                                                    // console.log(periodDate)
 
                                                     if(periodDate.length==2){
                                                         setPeriodeCalendar({

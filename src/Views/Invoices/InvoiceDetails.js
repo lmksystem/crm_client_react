@@ -104,7 +104,7 @@ const InvoiceDetails = () => {
       tra_date: Yup.string().required("Champs obligatoire"),
     }),
     onSubmit: (values) => {
-      console.log(values);
+      // console.log(values);
       dispatch(onAddNewTransaction(values))
       setAddActifView(false);
       validation.resetForm();
@@ -226,7 +226,7 @@ const InvoiceDetails = () => {
                             onChange={(e) => {
                               let invoiceHeaderCopy = { ...invoice.header }
                               invoiceHeaderCopy.den_etat = e.target.value
-                              console.log(e.target.value);
+                              // console.log(e.target.value);
                               dispatch(onUpdateInvoice({ fen_id: invoice.header.fen_id, fen_etat: e.target.value }));
                               setSelectedEtat(etat?.find((d) => d.fet_id == e.target.value)?.fet_name)
                               setActiveChange(() => false);

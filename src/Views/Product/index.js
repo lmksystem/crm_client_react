@@ -176,7 +176,7 @@ const Products = () => {
     const checkall = document.getElementById("checkBoxAll");
 
     selectedCheckBoxDelete.forEach((element) => {
-      console.log(element.value);
+      // console.log(element.value);
       dispatch(onDeleteTva(element.value));
       setTimeout(() => { toast.clearWaitingQueue(); }, 3000);
     });
@@ -345,7 +345,6 @@ const Products = () => {
                       {!!isEdit ? "Modifier produit" : "Ajouter produit"}
                     </ModalHeader>
                     <Form className="tablelist-form" onSubmit={(e) => {
-                      console.log("fhuegfes");
                       e.preventDefault();
                       validation.handleSubmit();
                       return false;

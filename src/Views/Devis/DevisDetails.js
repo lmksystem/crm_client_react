@@ -115,7 +115,6 @@ const DevisDetails = () => {
 
   useEffect(() => {
     if (devisList) {
-      console.log(devisList?.find((d) => d?.header?.den_id == id));
       setDevis(devisList?.find((d) => d?.header?.den_id == id))
     }
   }, [devisList])
@@ -212,7 +211,6 @@ const DevisDetails = () => {
                             className="form-select"
                           >
                             {etatDevis.map((e) => {
-                              console.log(devis.header.den_etat == e.det_id);
                               return <option value={e.det_id}>{e.det_name}</option>
                             })}
                           </select>

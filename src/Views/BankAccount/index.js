@@ -167,7 +167,6 @@ const BankAccount = () => {
                               className={"list-group-item-action"}
                               onClick={() => {
                                 setIsLoading(true);
-                                console.log(bankItem)
                                 dispatch(
                                   onInsertBankAccount({
                                     bac_instit_id: bankItem.id,

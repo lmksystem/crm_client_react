@@ -41,7 +41,7 @@ const CompanyProfil = () => {
     companyredux: state?.Company?.company,
     license: state.Company.license
   }));
-  console.log(license);
+  // console.log(license);
   const [company, setCompany] = useState({});
   const [image, setImage] = useState("");
   const [numEntreprise, setNumEntreprise] = useState(

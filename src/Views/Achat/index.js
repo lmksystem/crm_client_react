@@ -143,7 +143,6 @@ const Achats = () => {
             let arrayUpdateAchat =[];
             for (let index = 0; index < res.data.length; index++) {
               const element = res.data[index];
-              console.log(element)
               let newAchat ={
                 ach_ent_fk:element.header.fen_ent_fk,
                 ach_date_create: element.header.fen_date_create.slice(0,10),
@@ -166,8 +165,6 @@ const Achats = () => {
             dispatch(onCreateUpdateAchat(objectDispatching));
           
           });
-        }else{
-          console.log("iefifj,i")
         }
        
 
