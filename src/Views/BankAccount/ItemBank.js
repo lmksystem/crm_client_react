@@ -50,6 +50,7 @@ const ItemBank = ({ item }) => {
                 <div className="input-group-append">
                   <button
                     onClick={() => {
+                      // console.log(item)
                       dispatch(
                         onInsertAccountLinkToBank({
                           bua_account_id: item.bua_account_id,
