@@ -39,6 +39,8 @@ const CompanyStep = ({ handleCompany, setStep, step, position }) => {
       com_conv_name: "",
       com_conv_num: "",
       com_siren: "",
+      com_bank_acc: "",
+
     },
 
     validationSchema: Yup.object({
@@ -374,7 +376,7 @@ const CompanyStep = ({ handleCompany, setStep, step, position }) => {
                     </FormFeedback>
                   ) : null}
                 </Col>
-                <Col lg={8} className="mb-3">
+                <Col lg={4} className="mb-3">
                   <Label htmlFor="email" className="form-label">
                     {numEntreprise}
                   </Label>
@@ -397,6 +399,32 @@ const CompanyStep = ({ handleCompany, setStep, step, position }) => {
                   validation.errors.com_siren ? (
                     <FormFeedback type="invalid">
                       {validation.errors.com_siren}
+                    </FormFeedback>
+                  ) : null}
+                </Col>
+                <Col lg={4} className="mb-3">
+                  <Label  className="form-label">
+                  Compte bancaire
+                  </Label>
+                  <Input
+                    name="com_bank_acc"
+                    className="form-control"
+                    placeholder={`Entrer votre compte bancaire`}
+                    type={"text"}
+                    onChange={validation.handleChange}
+                    onBlur={validation.handleBlur}
+                    value={validation.values.com_bank_acc || ""}
+                    invalid={
+                      validation.touched.com_bank_acc &&
+                      validation.errors.com_bank_acc
+                        ? true
+                        : false
+                    }
+                  />
+                  {validation.touched.com_bank_acc &&
+                  validation.errors.com_bank_acc ? (
+                    <FormFeedback type="invalid">
+                      {validation.errors.com_bank_acc}
                     </FormFeedback>
                   ) : null}
                 </Col>

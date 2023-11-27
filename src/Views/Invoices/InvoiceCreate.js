@@ -168,7 +168,7 @@ const InvoiceCreate = () => {
         fen_total_remise: 0,
         fen_num_fac: prefix_facture?.con_value ? (prefix_facture?.con_value + company?.com_nb_fac) : company?.com_nb_fac,
         fen_num_tva :"",
-        fen_num_bank :"",
+        fen_num_bank :(company && company.com_bank_acc) || "",
       },
       ligne: []
     },

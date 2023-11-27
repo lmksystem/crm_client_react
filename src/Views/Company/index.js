@@ -69,6 +69,8 @@ const CompanyProfil = () => {
       com_conv_name: company?.com_conv_name || "",
       com_conv_num: company?.com_conv_num || "",
       com_siren: company?.com_siren || "",
+      com_bank_acc: company?.com_bank_acc || "",
+
     },
 
     validationSchema: Yup.object({
@@ -77,9 +79,7 @@ const CompanyProfil = () => {
       com_ville: Yup.string().required("Veuillez entrer une ville"),
       com_cp: Yup.string().required("Veuillez entrer un code postal"),
       com_email: Yup.string().required("Veuillez entrer un email"),
-      com_phone: Yup.string().required(
-        "Veuillez entrer un numéro de téléphone"
-      ),
+      com_phone: Yup.string().required( "Veuillez entrer un numéro de téléphone" ),
     }),
 
     onSubmit: (values) => {
@@ -458,8 +458,8 @@ const CompanyProfil = () => {
                     </FormFeedback>
                   ) : null}
                 </Col>
-                <Col lg={8} className="mb-3">
-                  <Label htmlFor="email" className="form-label">
+                <Col lg={4} className="mb-3">
+                  <Label className="form-label">
                   {numEntreprise}
                   </Label>
                   <Input
@@ -481,6 +481,32 @@ const CompanyProfil = () => {
                     validation.errors.com_siren ? (
                     <FormFeedback type="invalid">
                       {validation.errors.com_siren}
+                    </FormFeedback>
+                  ) : null}
+                </Col>
+                <Col lg={4} className="mb-3">
+                  <Label  className="form-label">
+                  Compte bancaire
+                  </Label>
+                  <Input
+                    name="com_bank_acc"
+                    className="form-control"
+                    placeholder={`Entrer votre compte bancaire`}
+                    type={"text"}
+                    onChange={validation.handleChange}
+                    onBlur={validation.handleBlur}
+                    value={validation.values.com_bank_acc || ""}
+                    invalid={
+                      validation.touched.com_bank_acc &&
+                        validation.errors.com_bank_acc
+                        ? true
+                        : false
+                    }
+                  />
+                  {validation.touched.com_bank_acc &&
+                    validation.errors.com_bank_acc ? (
+                    <FormFeedback type="invalid">
+                      {validation.errors.com_bank_acc}
                     </FormFeedback>
                   ) : null}
                 </Col>
