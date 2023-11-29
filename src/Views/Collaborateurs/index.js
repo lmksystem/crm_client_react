@@ -26,6 +26,7 @@ import {
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import DeleteModal from "../../Components/Common/DeleteModal";
 import { forIn, isEmpty } from "lodash";
+import paysData from "../../Components/constants/paysPhone.json";
 
 //Import actions
 import {
@@ -270,6 +271,81 @@ const Collaborateurs = () => {
     },
     [toggle]
   );
+
+  const africanCountries = [
+    "Algeria",
+    "Angola",
+    "Benin",
+    "Botswana",
+    "Burkina Faso",
+    "Burundi",
+    "Cameroon",
+    "Cape Verde",
+    "Central African Republic",
+    "Chad",
+    "Comoros",
+    "Congo (Brazzaville)",
+    "Congo (Kinshasa)",
+    "Djibouti",
+    "Egypt",
+    "Equatorial Guinea",
+    "Eritrea",
+    "Ethiopia",
+    "Gabon",
+    "Gambia",
+    "Ghana",
+    "Guinea",
+    "Guinea-Bissau",
+    "Ivory Coast",
+    "Kenya",
+    "Lesotho",
+    "Liberia",
+    "Libya",
+    "Madagascar",
+    "Malawi",
+    "Mali",
+    "Mauritania",
+    "Mauritius",
+    "Mayotte",
+    "Morocco",
+    "Mozambique",
+    "Namibia",
+    "Niger",
+    "Nigeria",
+    "Rwanda",
+    "Reunion",
+    "Sao Tome and Principe",
+    "Senegal",
+    "Seychelles",
+    "Sierra Leone",
+    "Somalia",
+    "South Africa",
+    "South Sudan",
+    "Sudan",
+    "Swaziland",
+    "Tanzania",
+    "Togo",
+    "Tunisia",
+    "Uganda",
+    "Western Sahara",
+    "Zambia",
+    "Zimbabwe",
+  ];
+  const [numEntreprise, setNumEntreprise] = useState(
+    "Identifiant d'entreprise"
+  );
+
+  useEffect(() => {
+    if (validation.values.ent_pays == "France") {
+      setNumEntreprise("Siren");
+    } else if (validation.values.ent_pays == "Belgium") {
+      setNumEntreprise("Numéro d’entreprise");
+    } else if (africanCountries.includes(validation.values.ent_pays)) {
+      setNumEntreprise("NIF");
+    } else {
+      setNumEntreprise("Identifiant d'entreprise");
+    }
+  }, [validation.values.ent_pays]);
 
   // Checked All
   const checkedAll = useCallback(() => {
@@ -834,9 +910,9 @@ const Collaborateurs = () => {
                                 <option disabled={true} value={""}>
                                   Choisir un pays
                                 </option>
-                                {country.map((e, i) => (
-                                  <option key={i} value={e.value}>
-                                    {e.label}
+                                {paysData.map((e, i) => (
+                                  <option key={i} value={e.name}>
+                                    {e.name}
                                   </option>
                                 ))}
                               </Input>
@@ -1099,13 +1175,13 @@ const Collaborateurs = () => {
                                 htmlFor="ent_siren-field"
                                 className="form-label"
                               >
-                                Siren
+                                {numEntreprise}
                               </Label>
                               <Input
                                 name="ent_siren"
                                 id="ent_siren-field"
                                 className="form-control"
-                                placeholder="Entrer un siren"
+                                placeholder={`Entrer votre ${numEntreprise}`}
                                 type="text"
                                 validate={{
                                   required: { value: true },
@@ -1271,11 +1347,11 @@ const Collaborateurs = () => {
                   <CardBody className="text-center">
                     <div style={{ position: "absolute", right: 10, top: 5 }}><i onClick={() => setShow(false)} className="ri-close-fill" style={{ cursor: "pointer", fontSize: "20px" }}></i></div>
                     <div className="position-relative d-inline-block">
-                      <img
+                      {/* <img
                         src={api.API_URL + "/v1/images/user-dummy-img.jpg"}
                         alt=""
                         className="avatar-lg rounded-circle img-thumbnail"
-                      />
+                      /> */}
                       <span className="contact-active position-absolute rounded-circle bg-success">
                         <span className="visually-hidden"></span>
                       </span>

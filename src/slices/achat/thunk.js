@@ -5,7 +5,8 @@ getAchat as getAchatApi,
 deleteAchat as deleteAchatApi,
 getAchatLinkTransaction as getAchatLinkTransactionApi,
 linkTransToAchat as linkTransToAchatApi,
-updateMatchAmount as updateMatchAmountApi
+updateMatchAmount as updateMatchAmountApi,
+getCategorieAchat as getCategorieAchatApi
 } from "../../helpers/backend_helper";
 import { toast } from "react-toastify";
 
@@ -77,6 +78,19 @@ export const updateMatchAmount = createAsyncThunk(
       return response;
     } catch (error) {
       toast.error("Transaction Bank Match Amount Update  Failed", { autoClose: 3000 });
+      return error;
+    }
+  }
+);
+
+export const getCategorieAchat = createAsyncThunk(
+  "achat/getCategorieAchat",
+  async (body) => {
+    try {
+      const response = await getCategorieAchatApi(body);
+      return response;
+    } catch (error) {
+      toast.error("Get categories achat failed", { autoClose: 3000 });
       return error;
     }
   }

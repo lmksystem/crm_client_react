@@ -104,7 +104,7 @@ const InvoiceDetails = () => {
       tra_date: Yup.string().required("Champs obligatoire"),
     }),
     onSubmit: (values) => {
-      console.log(values);
+      // console.log(values);
       dispatch(onAddNewTransaction(values))
       setAddActifView(false);
       validation.resetForm();
@@ -172,10 +172,13 @@ const InvoiceDetails = () => {
                         </Col>
                         <Col lg={4} className="flex-shrink-0 mt-lg-0 mt-3">
                           {/* <h6><span className="text-muted fw-normal">Legal Registration No:</span><span id="legal-register-no">987654</span></h6> */}
-                          <h6><span className="text-muted fw-normal">Email: </span><span id="email">{invoice.contact.fco_email}</span></h6>
-                          <h6><span className="text-muted fw-normal">Téléphone:</span>{invoice.contact.fco_phone}</h6>
-                          <h6><span className="text-muted fw-normal">Address: </span><span id="email">{invoice.contact.fco_address}, {invoice.contact.fco_city}</span></h6>
-                          <h6><span className="text-muted fw-normal">code postal:</span>{invoice.contact.fco_cp}</h6>
+                          <h6><span className="text-muted fw-normal">Email : </span><span id="email">{invoice.contact.fco_email}</span></h6>
+                          <h6><span className="text-muted fw-normal">Téléphone : </span>{invoice.contact.fco_phone}</h6>
+                          <h6><span className="text-muted fw-normal">Adresse : </span><span id="email">{invoice.contact.fco_address}, {invoice.contact.fco_city}</span></h6>
+                          <h6><span className="text-muted fw-normal">Code postal : </span>{invoice.contact.fco_cp}</h6>
+                          <h6><span className="text-muted fw-normal">Compte Bancaire : </span>{invoice.header.fen_num_bank}</h6>
+                          <h6><span className="text-muted fw-normal">Numéro TVA : </span>{invoice.header.fen_num_tva}</h6>
+
 
                           {/* <h6 className="mb-0"><span className="text-muted fw-normal">Contact No: </span><span id="contact-no"> +(01) 234 6789</span></h6> */}
                         </Col>
@@ -223,7 +226,7 @@ const InvoiceDetails = () => {
                             onChange={(e) => {
                               let invoiceHeaderCopy = { ...invoice.header }
                               invoiceHeaderCopy.den_etat = e.target.value
-                              console.log(e.target.value);
+                              // console.log(e.target.value);
                               dispatch(onUpdateInvoice({ fen_id: invoice.header.fen_id, fen_etat: e.target.value }));
                               setSelectedEtat(etat?.find((d) => d.fet_id == e.target.value)?.fet_name)
                               setActiveChange(() => false);

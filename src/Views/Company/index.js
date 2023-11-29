@@ -41,10 +41,12 @@ const CompanyProfil = () => {
     companyredux: state?.Company?.company,
     license: state.Company.license
   }));
-  console.log(license);
+  // console.log(license);
   const [company, setCompany] = useState({});
   const [image, setImage] = useState("");
-
+  const [numEntreprise, setNumEntreprise] = useState(
+    "Identifiant d'entreprise"
+  );
   const [addActifView, setAddActifView] = useState(false);
   const [selectedId, setSelectedId] = useState(false);
   const [showModalDelete, setShowModalDelete] = useState(false);
@@ -67,6 +69,8 @@ const CompanyProfil = () => {
       com_conv_name: company?.com_conv_name || "",
       com_conv_num: company?.com_conv_num || "",
       com_siren: company?.com_siren || "",
+      com_bank_acc: company?.com_bank_acc || "",
+
     },
 
     validationSchema: Yup.object({
@@ -75,9 +79,7 @@ const CompanyProfil = () => {
       com_ville: Yup.string().required("Veuillez entrer une ville"),
       com_cp: Yup.string().required("Veuillez entrer un code postal"),
       com_email: Yup.string().required("Veuillez entrer un email"),
-      com_phone: Yup.string().required(
-        "Veuillez entrer un numéro de téléphone"
-      ),
+      com_phone: Yup.string().required( "Veuillez entrer un numéro de téléphone" ),
     }),
 
     onSubmit: (values) => {
@@ -136,7 +138,65 @@ const CompanyProfil = () => {
       dispatch(onUpdateLogoAction(response.data.com_logo));
     })
   }
-
+  const africanCountries = [
+    "Algeria",
+    "Angola",
+    "Benin",
+    "Botswana",
+    "Burkina Faso",
+    "Burundi",
+    "Cameroon",
+    "Cape Verde",
+    "Central African Republic",
+    "Chad",
+    "Comoros",
+    "Congo (Brazzaville)",
+    "Congo (Kinshasa)",
+    "Djibouti",
+    "Egypt",
+    "Equatorial Guinea",
+    "Eritrea",
+    "Ethiopia",
+    "Gabon",
+    "Gambia",
+    "Ghana",
+    "Guinea",
+    "Guinea-Bissau",
+    "Ivory Coast",
+    "Kenya",
+    "Lesotho",
+    "Liberia",
+    "Libya",
+    "Madagascar",
+    "Malawi",
+    "Mali",
+    "Mauritania",
+    "Mauritius",
+    "Mayotte",
+    "Morocco",
+    "Mozambique",
+    "Namibia",
+    "Niger",
+    "Nigeria",
+    "Rwanda",
+    "Reunion",
+    "Sao Tome and Principe",
+    "Senegal",
+    "Seychelles",
+    "Sierra Leone",
+    "Somalia",
+    "South Africa",
+    "South Sudan",
+    "Sudan",
+    "Swaziland",
+    "Tanzania",
+    "Togo",
+    "Tunisia",
+    "Uganda",
+    "Western Sahara",
+    "Zambia",
+    "Zimbabwe",
+  ];
   useEffect(() => {
     if (companyredux?.length > 0) {
       setCompany(companyredux[0]);
@@ -147,6 +207,18 @@ const CompanyProfil = () => {
           setImage("data:image/png;base64," + response)
         })
       }
+
+        if (companyredux[0].com_pays == "France") {
+          setNumEntreprise("Siren");
+        } else if (companyredux[0].com_pays  == "Belgium") {
+          setNumEntreprise("Numéro d’entreprise");
+        } else if (africanCountries.includes(companyredux[0].com_pays )) {
+          setNumEntreprise("NIF");
+        } else {
+          setNumEntreprise("Identifiant d'entreprise");
+        }
+
+
     }
   }, [companyredux]);
 
@@ -386,14 +458,14 @@ const CompanyProfil = () => {
                     </FormFeedback>
                   ) : null}
                 </Col>
-                <Col lg={8} className="mb-3">
-                  <Label htmlFor="email" className="form-label">
-                    Siren
+                <Col lg={4} className="mb-3">
+                  <Label className="form-label">
+                  {numEntreprise}
                   </Label>
                   <Input
                     name="com_siren"
                     className="form-control"
-                    placeholder="Entrer votre Siren"
+                    placeholder={`Entrer votre ${numEntreprise}`}
                     type={"text"}
                     onChange={validation.handleChange}
                     onBlur={validation.handleBlur}
@@ -409,6 +481,32 @@ const CompanyProfil = () => {
                     validation.errors.com_siren ? (
                     <FormFeedback type="invalid">
                       {validation.errors.com_siren}
+                    </FormFeedback>
+                  ) : null}
+                </Col>
+                <Col lg={4} className="mb-3">
+                  <Label  className="form-label">
+                  Compte bancaire
+                  </Label>
+                  <Input
+                    name="com_bank_acc"
+                    className="form-control"
+                    placeholder={`Entrer votre compte bancaire`}
+                    type={"text"}
+                    onChange={validation.handleChange}
+                    onBlur={validation.handleBlur}
+                    value={validation.values.com_bank_acc || ""}
+                    invalid={
+                      validation.touched.com_bank_acc &&
+                        validation.errors.com_bank_acc
+                        ? true
+                        : false
+                    }
+                  />
+                  {validation.touched.com_bank_acc &&
+                    validation.errors.com_bank_acc ? (
+                    <FormFeedback type="invalid">
+                      {validation.errors.com_bank_acc}
                     </FormFeedback>
                   ) : null}
                 </Col>

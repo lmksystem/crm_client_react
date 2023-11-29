@@ -27,7 +27,7 @@ const PasswordStep = ({ handlePassword, setStep, step, position, shipNextStep })
 
     validationSchema: Yup.object({
       newpassword: Yup.string().required('Mot de passe obligatoire'),
-      passwordConfirmation: Yup.string()
+      passwordConfirmation: Yup.string().required('Mot de passe obligatoire')
         .oneOf([Yup.ref('newpassword'), null], 'Les mots de passes doivent correspondre')
     }),
 

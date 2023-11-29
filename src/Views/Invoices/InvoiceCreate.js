@@ -167,6 +167,8 @@ const InvoiceCreate = () => {
         fen_total_tva: 0,
         fen_total_remise: 0,
         fen_num_fac: prefix_facture?.con_value ? (prefix_facture?.con_value + company?.com_nb_fac) : company?.com_nb_fac,
+        fen_num_tva :"",
+        fen_num_bank :(company && company.com_bank_acc) || "",
       },
       ligne: []
     },
@@ -350,7 +352,6 @@ const InvoiceCreate = () => {
   }, [validation.values.ligne])
 
   useEffect(() => {
-    console.log("------",state);
     if (state && state.den_id && company) {
       axios.get('/v1/invoiceFromDevis/' + state.den_id).then((response) => {
         let data = response.data;
@@ -598,6 +599,41 @@ const InvoiceCreate = () => {
                           ) : null}
 
                         </div>
+                        <div className="mb-2">
+                          <Input
+                            type="text"
+                            className="form-control border-1"
+                            id="fen_num_bank"
+                            name="header.fen_num_bank"
+                            value={validation.values.header.fen_num_bank || ""}
+                            onBlur={validation.handleBlur}
+                            onChange={validation.handleChange}
+                            placeholder="Numéro compte bancaire"
+                            invalid={validation.errors?.header?.fen_num_bank && validation.touched?.header?.fen_num_bank ? true : false}
+                          />
+                          {validation.errors?.header?.fen_num_bank && validation.touched?.header?.fen_num_bank ? (
+                            <FormFeedback type="invalid">{validation.errors?.header?.fen_num_bank}</FormFeedback>
+                          ) : null}
+
+                        </div>
+                        <div className="mb-2">
+                          <Input
+                            type="text"
+                            className="form-control border-1"
+                            id="fen_num_tva"
+                            name="header.fen_num_tva"
+                            value={validation.values.header.fen_num_tva || ""}
+                            onBlur={validation.handleBlur}
+                            onChange={validation.handleChange}
+                            placeholder="Numéro TVA"
+                            invalid={validation.errors?.header?.fen_num_tva && validation.touched?.header?.fen_num_tva ? true : false}
+                          />
+                          {validation.errors?.header?.fen_num_tva && validation.touched?.header?.fen_num_tva ? (
+                            <FormFeedback type="invalid">{validation.errors?.header?.fen_num_tva}</FormFeedback>
+                          ) : null}
+
+                        </div>
+                        
                       </Row>
                     </Col>
                     <Col lg={4} sm={6}>

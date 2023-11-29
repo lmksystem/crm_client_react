@@ -136,7 +136,6 @@ const TvaParameter = () => {
     }),
 
     onSubmit: (values) => {
-      console.log(values);
       if (isEdit) {
         const updateTva = {
           tva_id: tvaState ? tvaState.tva_id : 0,
@@ -152,7 +151,6 @@ const TvaParameter = () => {
           tva_libelle: values.tva_libelle,
           tva_value: values.tva_value,
         };
-        console.log(newTva);
         // save new tva
         dispatch(onAddNewTva(newTva));
         validation.resetForm();
@@ -202,9 +200,7 @@ const TvaParameter = () => {
 
   const deleteMultiple = () => {
     const checkall = document.getElementById("checkBoxAll");
-    console.log(selectedCheckBoxDelete);
     selectedCheckBoxDelete.forEach((element) => {
-      console.log(element.value);
       dispatch(onDeleteTva(element.value));
       setTimeout(() => {
         toast.clearWaitingQueue();

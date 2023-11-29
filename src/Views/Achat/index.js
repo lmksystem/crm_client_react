@@ -1,7 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { Link } from "react-router-dom";
 import { isEmpty } from "lodash";
-import * as moment from "moment";
 
 import {
   Col,
@@ -10,21 +8,6 @@ import {
   Card,
   CardHeader,
   CardBody,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  Label,
-  Input,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  Form,
-  ModalFooter,
-  Table,
-  FormFeedback,
-  ListGroupItem,
-  ListGroup,
 } from "reactstrap";
 
 import BreadCrumb from "../../Components/Common/BreadCrumb";
@@ -50,7 +33,6 @@ import { useFormik } from "formik";
 import Loader from "../../Components/Common/Loader";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import SimpleBar from "simplebar-react";
 import ModalCreate from "./ModalCreate";
 import FileService from "../../utils/FileService";
 
@@ -161,7 +143,6 @@ const Achats = () => {
             let arrayUpdateAchat =[];
             for (let index = 0; index < res.data.length; index++) {
               const element = res.data[index];
-              console.log(element)
               let newAchat ={
                 ach_ent_fk:element.header.fen_ent_fk,
                 ach_date_create: element.header.fen_date_create.slice(0,10),
@@ -184,8 +165,6 @@ const Achats = () => {
             dispatch(onCreateUpdateAchat(objectDispatching));
           
           });
-        }else{
-          console.log("iefifj,i")
         }
        
 

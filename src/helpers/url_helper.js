@@ -273,9 +273,6 @@ export const DELETE_INVOICE = "/v1/invoice";
 
 export const PDF = "/v1/pdf";
 
-/**
- * Company
- */
 
 // Company
 export const COMPANY = "/v1/user/company";
@@ -301,13 +298,13 @@ export const EMPLOYEES = "/v1/user";
 // Salary
 export const SALARY = "/v1/salary";
 
-// Salary
+// Achats
 export const ACHAT = "/v1/achat";
 
 // recurrence
 export const RECURRENCE = "/v1/recurrence";
 
-// recurrence
+// Export
 export const EXPORT = "/v1/export";
 
 // Liste Bank
@@ -318,11 +315,14 @@ export const BANK_ACCOUNT = "/v1/bankAccount";
 // ALERT
 export const ALERT = "/v1/alert";
 
-// ALERT
+// Admin user
 export const ADMIN_USER = "/v1/admin/user";
 
-// ALERT
+// Admin user admin
 export const ADMIN_USER_CREATE = "/v1/admin/user/admin";
 
 // ALERT
 export const REPORT = "/v1/rapport";
+
+// EMAIL
+export const EMAIL = "/v1/email";

@@ -11,6 +11,7 @@ import { useFormik, validateYupSchema } from "formik";
 
 import { handleAlert as onHandleAlert, getAlert as onGetAlert, deleteAlert as onDeleteAlert } from '../../slices/thunks'
 import { useDispatch, useSelector } from "react-redux";
+import { deleteOneAlert } from "../../slices/gestion/reducer";
 
 const AlertParametrage = () => {
   const { alerts } = useSelector((state) => ({
@@ -41,7 +42,8 @@ const AlertParametrage = () => {
 
   useEffect(() => {
     dispatch(onGetAlert());
-  }, [])
+  }, [dispatch])
+  
 
 
   return (
@@ -77,7 +79,16 @@ const AlertParametrage = () => {
                   onBlur={alertForm.handleBlur}
                   value={(Math.sign(alertForm.values?.alerts[i].aec_delai) == 1 ? "+" : "") + alertForm.values?.alerts[i].aec_delai || ""}
                 />
-                <div style={{ cursor: "pointer" }} onClick={() => { dispatch(onDeleteAlert(alert.aec_id)); }} className="input-group-text bg-danger border-danger text-white">
+                <div style={{ cursor: "pointer" }} onClick={() => {
+                  // console.log(alert)
+                  if(alert.aec_id){
+                    dispatch(onDeleteAlert(alert.aec_id));
+                  }else{
+                    const updatedAlerts = [...alertForm.values.alerts];
+                    updatedAlerts.splice(i, 1);
+                    alertForm.setFieldValue('alerts', updatedAlerts);
+                  }
+                }} className="input-group-text bg-danger border-danger text-white">
                   <i className="ri-close-fill"></i>
                 </div>
               </div>
