@@ -6,5 +6,7 @@ export const getImage = (path) => {
 
   return axios.get(url).then((response) => {
     return response
+  }).catch((err) => {
+    console.log(err);
   })
 }
