@@ -48,6 +48,7 @@ import ExportCSVModal from "../../Components/Common/ExportCSVModal";
 import SimpleBar from "simplebar-react";
 import moment from "moment";
 import DataTable from "react-data-table-component";
+import { customFormatNumber } from "../../utils/function";
 
 
 const Recurrence = () => {
@@ -230,7 +231,7 @@ const Recurrence = () => {
         Cell: (cell) => {
           let recurrenceMotantArray = cell.row.original.recurrences?.map((r) => r.rec_montant * r.rec_pro_qty);
           let montantTotal = recurrenceMotantArray.reduce((partialSum, a) => partialSum + a, 0);
-          return <div>{montantTotal}€</div>;
+          return <div>{customFormatNumber(montantTotal)}€</div>;
         }
       },
       {

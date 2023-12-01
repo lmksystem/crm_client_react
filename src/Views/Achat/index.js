@@ -35,6 +35,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ModalCreate from "./ModalCreate";
 import FileService from "../../utils/FileService";
+import { customFormatNumber } from "../../utils/function";
 
 const Achats = () => {
   const dispatch = useDispatch();
@@ -384,7 +385,7 @@ const Achats = () => {
         Cell: (cell) => {
         return (
           <div className="d-flex align-items-center">
-            <div >{cell.row.original.ach_type == "Charge"?"- ":"+ "}{cell.row.original.ach_total_amount}</div>
+            <div >{cell.row.original.ach_type == "Charge"?"- ":"+ "}{customFormatNumber(parseInt(cell.row.original.ach_total_amount))}</div>
           </div>
         );
         }
@@ -393,6 +394,13 @@ const Achats = () => {
         Header: "Reste à pointer",
         accessor: "ach_rp",
         filterable: false,
+        Cell: (cell) => {
+        return (
+          <div className="d-flex align-items-center">
+            <div >{customFormatNumber(parseInt(cell.row.original.ach_rp))}</div>
+          </div>
+        );
+        }
       },
       {
         Header: "Date d'achat",
