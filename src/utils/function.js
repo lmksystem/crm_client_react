@@ -14,10 +14,11 @@ export const genRandonString = (length) => {
 }
 
 export function customFormatNumber(number) {
-  // Convertir le nombre en une chaîne de caractères
   if(typeof number !='number'){
     return 0;
   }
+  // Convertir le nombre en une chaîne de caractères
+
   let numberString = number.toFixed(2).toString();
 
   // Remplacer le point par une virgule
