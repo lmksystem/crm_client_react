@@ -17,6 +17,7 @@ export function customFormatNumber(number) {
   if(typeof number !='number'){
     return 0;
   }
+  console.log(number)
   // Convertir le nombre en une chaîne de caractères
 
   let numberString = number.toFixed(2).toString();
