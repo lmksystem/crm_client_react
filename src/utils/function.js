@@ -12,3 +12,19 @@ export const genRandonString = (length) => {
   }
   return result;
 }
+
+export function customFormatNumber(number) {
+  // Convertir le nombre en une chaîne de caractères
+  if(typeof number !='number'){
+    return 0;
+  }
+  let numberString = number.toFixed(2).toString();
+
+  // Remplacer le point par une virgule
+  numberString = numberString.replace('.', ',');
+
+  // Ajouter des espaces pour séparer les milliers
+  numberString = numberString.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+
+  return numberString;
+}

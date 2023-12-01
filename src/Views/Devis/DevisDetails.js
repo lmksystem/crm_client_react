@@ -5,7 +5,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { api } from "../../config";
-import { rounded } from "../../utils/function";
+import { customFormatNumber, rounded } from "../../utils/function";
 import DeleteModal from "../../Components/Common/DeleteModal";
 import {
   deleteDevis as onDeleteDevis,
@@ -225,7 +225,7 @@ const DevisDetails = () => {
                       </Col>
                       <Col lg={3} className="col-6">
                         <p className="text-muted mb-2 text-uppercase fw-semibold">Total</p>
-                        <h5 className="fs-14 mb-0"><span id="total-amount">{rounded(devis.header.den_total_ttc, 2)}</span>€</h5>
+                        <h5 className="fs-14 mb-0"><span id="total-amount">{customFormatNumber(rounded(devis.header.den_total_ttc, 2))}</span>€</h5>
                       </Col>
                     </Row>
                   </CardBody>
@@ -256,10 +256,10 @@ const DevisDetails = () => {
                                 <p className="text-muted mb-0">{ligne.dli_detail}</p>
                               </td>
                               <td className="text-end">{ligne.dli_qty}</td>
-                              <td className="text-end">{ligne.dli_unit_ht}€</td>
+                              <td className="text-end">{customFormatNumber(ligne.dli_unit_ht)}€</td>
                               <td className="text-end">{ligne.dli_pourcent_remise}%</td>
                               <td className="text-end">{ligne.dli_tva}%</td>
-                              <td className="text-end">{rounded(ligne.dli_total_ttc, 2)}€</td>
+                              <td className="text-end">{customFormatNumber(rounded(ligne.dli_total_ttc, 2))}€</td>
                             </tr>
                           ))}
                         </tbody>
@@ -270,15 +270,15 @@ const DevisDetails = () => {
                         <tbody>
                           <tr>
                             <td>Sous total HT</td>
-                            <td className="text-end">{rounded(devis.header.den_total_ht, 2)}€</td>
+                            <td className="text-end">{customFormatNumber(rounded(devis.header.den_total_ht, 2))}€</td>
                           </tr>
                           <tr>
                             <td>Total remise</td>
-                            <td className="text-end">- {rounded(devis.header.den_total_remise, 2)}€</td>
+                            <td className="text-end">- {customFormatNumber(rounded(devis.header.den_total_remise, 2))}€</td>
                           </tr>
                           <tr>
                             <td>Total TVA <small className="text-muted"></small></td>
-                            <td className="text-end">{rounded(devis.header.den_total_tva, 2)}</td>
+                            <td className="text-end">{customFormatNumber(rounded(devis.header.den_total_tva, 2))}€</td>
                           </tr>
                           {/* <tr>
                             <td></td>
@@ -286,7 +286,7 @@ const DevisDetails = () => {
                           </tr> */}
                           <tr className="border-top border-top-dashed fs-15">
                             <th scope="row">Total TTC</th>
-                            <th className="text-end">{devis.header.den_total_ttc}</th>
+                            <th className="text-end">{customFormatNumber(devis.header.den_total_ttc)}€</th>
                           </tr>
                         </tbody>
                       </Table>
