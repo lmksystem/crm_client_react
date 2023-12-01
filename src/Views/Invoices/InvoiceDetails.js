@@ -17,7 +17,7 @@ import {
   getEtatInvoice as onGetEtatInvoice
 } from '../../slices/thunks'
 import { api } from "../../config";
-import { rounded } from "../../utils/function";
+import { customFormatNumber, rounded } from "../../utils/function";
 import ConfirmModal from "../../Components/Common/ConfirmModal";
 import DeleteModal from "../../Components/Common/DeleteModal";
 import { ToastContainer } from "react-toastify";
@@ -245,7 +245,7 @@ const InvoiceDetails = () => {
                       </Col>
                       <Col lg={3} className="col-6">
                         <p className="text-muted mb-2 text-uppercase fw-semibold">Total</p>
-                        <h5 className="fs-14 mb-0"><span id="total-amount">{invoice.header.fen_total_ttc}</span>€</h5>
+                        <h5 className="fs-14 mb-0"><span id="total-amount">{customFormatNumber(invoice.header.fen_total_ttc)}</span>€</h5>
                       </Col>
                     </Row>
                   </CardBody>
@@ -276,10 +276,10 @@ const InvoiceDetails = () => {
                                 <p className="text-muted mb-0">{ligne.fli_detail}</p>
                               </td>
                               <td className="text-end">{ligne.fli_qty}</td>
-                              <td className="text-end">{ligne.fli_unit_ht}€</td>
+                              <td className="text-end">{customFormatNumber(ligne.fli_unit_ht)}€</td>
                               <td className="text-end">{ligne.fli_pourcent_remise}%</td>
                               <td className="text-end">{ligne.fli_tva}%</td>
-                              <td className="text-end">{ligne.fli_total_ttc}€</td>
+                              <td className="text-end">{customFormatNumber(ligne.fli_total_ttc)}€</td>
                             </tr>
                           ))}
                         </tbody>
@@ -290,15 +290,15 @@ const InvoiceDetails = () => {
                         <tbody>
                           <tr>
                             <td>Sous total HT</td>
-                            <td className="text-end">{invoice.header.fen_total_ht}€</td>
+                            <td className="text-end">{customFormatNumber(invoice.header.fen_total_ht)}€</td>
                           </tr>
                           <tr>
                             <td>Total remise</td>
-                            <td className="text-end">- {invoice.header.fen_total_remise}€</td>
+                            <td className="text-end">- {customFormatNumber(invoice.header.fen_total_remise)}€</td>
                           </tr>
                           <tr>
                             <td>Total TVA <small className="text-muted"></small></td>
-                            <td className="text-end">{invoice.header.fen_total_tva}€</td>
+                            <td className="text-end">{customFormatNumber(invoice.header.fen_total_tva)}€</td>
                           </tr>
                           {/* <tr>
                             <td></td>
@@ -306,7 +306,7 @@ const InvoiceDetails = () => {
                           </tr> */}
                           <tr className="border-top border-top-dashed fs-15">
                             <th scope="row">Total TTC</th>
-                            <th className="text-end">{invoice.header.fen_total_ttc}€</th>
+                            <th className="text-end">{customFormatNumber(invoice.header.fen_total_ttc)}€</th>
                           </tr>
                         </tbody>
                       </Table>
@@ -341,7 +341,7 @@ const InvoiceDetails = () => {
                                     {element.tra_desc}
                                   </td>
                                   <td className="text-end">
-                                    {element.tra_value}€
+                                    {customFormatNumber(element.tra_value)}€
                                   </td>
                                   <td width={40}>
                                     <button disabled={invoice?.header.fen_etat == 1 ? true : false} onClick={() => { setShowModalDelete(() => true); setSelectedId(element.tra_id); }} className="btn btn-danger btn-icon " style={{ width: "25px", height: "25px" }} >
@@ -363,7 +363,7 @@ const InvoiceDetails = () => {
                                   Solde
                                 </td>
                                 <td className="text-end">
-                                  {invoice.header.fen_solde_du}€
+                                  {customFormatNumber(invoice.header.fen_solde_du)}€
                                 </td>
                                 <td width={40}></td>
                               </tr>

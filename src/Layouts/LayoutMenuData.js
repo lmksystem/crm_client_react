@@ -132,17 +132,16 @@ const Navdata = () => {
           link: "/factures/liste",
           parentId: "facturation",
         },
-
+        {
+          id: "recurrence",
+          label: "Récurrences",
+          link: "/recurrence",
+          parentId: "facturation",
+        },
         {
           id: "reglements",
           label: "Encaissements",
           link: "/transaction/liste",
-          parentId: "facturation",
-        },
-        {
-          id: "recurrence",
-          label: "Récurrence",
-          link: "/recurrence",
           parentId: "facturation",
         },
       ],

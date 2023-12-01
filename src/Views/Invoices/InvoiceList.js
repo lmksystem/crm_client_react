@@ -28,7 +28,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import 'moment/locale/fr'  // without this line it didn't work
 import { InvoiceListGlobalSearch } from "../../Components/Common/GlobalSearchFilter";
-import { rounded } from "../../utils/function";
+import { customFormatNumber, rounded } from "../../utils/function";
 import { api } from "../../config";
 import WidgetCountUp from "../../Components/Common/WidgetCountUp";
 
@@ -90,12 +90,20 @@ const InvoiceList = () => {
   // Invoice Column
   const columns = useMemo(
     () => [
+      // {
+      //   Header: "ID",
+      //   accessor: "header.fen_id",
+      //   filterable: false,
+      //   Cell: (cell) => {
+      //     return <Link to={`/factures/detail/${cell.value}`} className="fw-medium link-primary">{cell.row.original.header.fen_id}</Link>;
+      //   },
+      // },
       {
-        Header: "ID",
-        accessor: "header.fen_id",
+        Header: "Numéro facture",
+        accessor: "header.fen_num_fac",
         filterable: false,
         Cell: (cell) => {
-          return <Link to={`/factures/detail/${cell.value}`} className="fw-medium link-primary">{cell.row.original.header.fen_id}</Link>;
+          return <Link to={`/factures/detail/${cell.row.original.header.fen_id}`} className="fw-medium link-primary">{cell.row.original.header.fen_id}</Link>;
         },
       },
       {
@@ -150,7 +158,7 @@ const InvoiceList = () => {
         filterable: false,
         Cell: (invoice) => (
           <>
-            <div className="fw-semibold ff-secondary">{rounded(invoice.row.original.header.fen_total_ttc, 2)}€</div>
+            <div className="fw-semibold ff-secondary">{customFormatNumber(rounded(invoice.row.original.header.fen_total_ttc, 2))}€</div>
           </>
         ),
       },
@@ -163,7 +171,7 @@ const InvoiceList = () => {
           return (
             <>
               <div className="fw-semibold ff-secondary">
-                {rounded(transactionOfFac.reduce((previousValue, currentValue) => parseFloat(previousValue) - parseFloat(currentValue.tra_value), parseFloat(invoice.row.original.header.fen_total_ttc)), 2)}€
+                {customFormatNumber(rounded(transactionOfFac.reduce((previousValue, currentValue) => parseFloat(previousValue) - parseFloat(currentValue.tra_value), parseFloat(invoice.row.original.header.fen_total_ttc)), 2))}€
               </div>
             </>
           )

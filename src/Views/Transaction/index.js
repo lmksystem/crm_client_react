@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import * as moment from "moment";
+import moment from "moment";
 import { api } from "../../config";
 // import process from "process";
 import {
@@ -42,6 +42,7 @@ import "react-toastify/dist/ReactToastify.css";
 import SimpleBar from "simplebar-react";
 import { useProfile } from "../../Components/Hooks/UserHooks";
 import { getLoggedinUser } from "../../helpers/api_helper";
+import { customFormatNumber } from "../../utils/function";
 
 const TransactionBank = () => {
   const dispatch = useDispatch();
@@ -56,12 +57,12 @@ const TransactionBank = () => {
   );
   const [achatEvol, setAchatEvol] = useState(false);
   const dateActuelle = moment(); // Obtenir la date actuelle
-  const dateNow = dateActuelle.format("DD MMM YYYY");
+  const dateNow = moment(dateActuelle,"DD MMM YYYY");
   const premiereDateAnnee = dateActuelle.startOf("year"); // Obtenir la première date de l'année
   const formattedDate = premiereDateAnnee.format("DD MMM YYYY"); // Formatage de la date
   const [perdiodeCalendar, setPeriodeCalendar] = useState({
     start: formattedDate.replace(/\./g, ","),
-    end: dateNow,
+    end: dateNow
   });
 
   const [transaction, setTransaction] = useState({});
@@ -220,7 +221,7 @@ const TransactionBank = () => {
           return (
             <div className="d-flex align-items-center">
               <p className="p-0 m-0">
-                {cell.value != null ? cell.value + "€" : ""}
+                {cell.value != null ? customFormatNumber(parseFloat(cell.value)) + "€" : ""}
               </p>
             </div>
           );
@@ -234,7 +235,7 @@ const TransactionBank = () => {
           return (
             <div className="d-flex align-items-center">
               <p className="p-0 m-0">
-                {cell.value != null ? cell.value + "€" : ""}
+                {cell.value != null ? customFormatNumber(parseFloat(cell.value)) + "€" : ""}
               </p>
             </div>
           );
@@ -251,7 +252,7 @@ const TransactionBank = () => {
                 {cell.value != null
                   ? (cell.row.original?.tba_justify == 0
                       ? "0.00"
-                      : cell.value) + "€"
+                      :customFormatNumber(parseFloat(cell.value))) + "€"
                   : ""}
               </p>
             </div>
@@ -435,55 +436,54 @@ const TransactionBank = () => {
 
   useEffect(() => {
     if(transactions){
-      
+      if (isFilterBy != "null") {
+        let transFiltered = transactions
+          ?.filter((tra) => {
+            return (
+              tra.bua_account_id === isFilterBy || tra.bua_libelle === isFilterBy
+            );
+          })
+          .map((tra) => tra);
+        let tempProps = JSON?.parse(JSON.stringify(transFiltered));
+        transFiltered = tempProps?.map((tra) => {
+          if (tra.tba_rp == Math.abs(parseFloat(tra?.tba_amount))) {
+            tra.tba_assoc = 0;
+          } else if (tra.tba_rp == 0 || tra.tba_justify == 0) {
+            tra.tba_assoc = 2;
+          } else if (
+            tra.tba_rp < Math.abs(parseFloat(tra?.tba_amount)) &&
+            tra.tba_rp > 0
+          ) {
+            tra.tba_assoc = 1;
+          } else {
+            tra.tba_assoc = -1;
+          }
+          return tra;
+        });
+        setTTD(transFiltered);
+        setShow(false);
+        // setTransaction(null);
+      } else {
+        let tempProps = JSON.parse(JSON?.stringify(transactions));
+        let newArrayTraAssoc = tempProps?.map((tra) => {
+          if (tra.tba_rp == Math.abs(parseFloat(tra?.tba_amount))) {
+            tra.tba_assoc = 0;
+          } else if (tra.tba_rp == 0 || tra.tba_justify == 0) {
+            tra.tba_assoc = 2;
+          } else if (
+            tra.tba_rp < Math.abs(parseFloat(tra?.tba_amount)) &&
+            tra.tba_rp > 0
+          ) {
+            tra.tba_assoc = 1;
+          } else {
+            tra.tba_assoc = -1;
+          }
+          return tra;
+        });
+        setTTD(newArrayTraAssoc);
+      }
     }
-    if (isFilterBy != "null") {
-      let transFiltered = transactions
-        ?.filter((tra) => {
-          return (
-            tra.bua_account_id === isFilterBy || tra.bua_libelle === isFilterBy
-          );
-        })
-        .map((tra) => tra);
-      let tempProps = JSON.parse(JSON.stringify(transFiltered));
-        // console.log(tempProps)
-      transFiltered = tempProps?.map((tra) => {
-        if (tra.tba_rp == Math.abs(parseFloat(tra?.tba_amount))) {
-          tra.tba_assoc = 0;
-        } else if (tra.tba_rp == 0 || tra.tba_justify == 0) {
-          tra.tba_assoc = 2;
-        } else if (
-          tra.tba_rp < Math.abs(parseFloat(tra?.tba_amount)) &&
-          tra.tba_rp > 0
-        ) {
-          tra.tba_assoc = 1;
-        } else {
-          tra.tba_assoc = -1;
-        }
-        return tra;
-      });
-      setTTD(transFiltered);
-      setShow(false);
-      // setTransaction(null);
-    } else {
-      let tempProps = JSON.parse(JSON?.stringify(transactions));
-      let newArrayTraAssoc = tempProps?.map((tra) => {
-        if (tra.tba_rp == Math.abs(parseFloat(tra?.tba_amount))) {
-          tra.tba_assoc = 0;
-        } else if (tra.tba_rp == 0 || tra.tba_justify == 0) {
-          tra.tba_assoc = 2;
-        } else if (
-          tra.tba_rp < Math.abs(parseFloat(tra?.tba_amount)) &&
-          tra.tba_rp > 0
-        ) {
-          tra.tba_assoc = 1;
-        } else {
-          tra.tba_assoc = -1;
-        }
-        return tra;
-      });
-      setTTD(newArrayTraAssoc);
-    }
+   
   }, [transactions, isFilterBy]);
 
   document.title = "Transactions bancaires | Countano";

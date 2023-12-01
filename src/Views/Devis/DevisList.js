@@ -30,7 +30,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import 'moment/locale/fr'  // without this line it didn't work
 import { DevisListGlobalSearch } from "../../Components/Common/GlobalSearchFilter";
-import { rounded } from "../../utils/function";
+import { customFormatNumber, rounded } from "../../utils/function";
 import { api } from "../../config";
 import WidgetCountUp from "../../Components/Common/WidgetCountUp";
 moment.locale('fr')
@@ -130,12 +130,20 @@ const DevisList = () => {
         },
         id: '#',
       },
+      // {
+      //   Header: "ID",
+      //   accessor: "header.den_id",
+      //   filterable: false,
+      //   Cell: (cell) => {
+      //     return <Link to={`/devis/detail/${cell.row.original.header.den_id}`} state={cell.row.original} className="fw-medium link-primary">{cell.row.original.header.den_id}</Link>;
+      //   },
+      // },
       {
-        Header: "ID",
-        accessor: "header.den_id",
+        Header: "Numéro devis",
+        accessor: "header.den_num",
         filterable: false,
         Cell: (cell) => {
-          return <Link to={`/devis/detail/${cell.row.original.header.den_id}`} state={cell.row.original} className="fw-medium link-primary">{cell.row.original.header.den_id}</Link>;
+          return <Link to={`/devis/detail/${cell.row.original.header.den_id}`} state={cell.row.original} className="fw-medium link-primary">{cell.row.original.header.den_num}</Link>;
         },
       },
       {
@@ -190,7 +198,7 @@ const DevisList = () => {
         filterable: false,
         Cell: (devis) => (
           <>
-            <div className="fw-semibold ff-secondary">{rounded(devis.row.original.header.den_total_ttc, 2)}€</div>
+            <div className="fw-semibold ff-secondary">{customFormatNumber(rounded(devis.row.original.header.den_total_ttc, 2))}€</div>
           </>
         ),
       },

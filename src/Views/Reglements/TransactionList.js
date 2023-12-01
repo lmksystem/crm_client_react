@@ -36,7 +36,7 @@ import "react-toastify/dist/ReactToastify.css";
 import DeleteModal from "../../Components/Common/DeleteModal";
 
 import "moment/locale/fr"; // without this line it didn't work
-import { rounded } from "../../utils/function";
+import { customFormatNumber, rounded } from "../../utils/function";
 import TransactionCharts from "./TransactionCharts";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -230,7 +230,7 @@ const TransactionList = () => {
         Cell: (cell) => (
           <>
             <div className="fw-semibold ff-secondary">
-              {cell.row.original.tra_value}€
+              {customFormatNumber(cell.row.original.tra_value)}€
             </div>
           </>
         ),
