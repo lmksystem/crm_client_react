@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { CardBody, Row, Col, Card, Table, CardHeader, Container } from "reactstrap";
+import { CardBody, Row, Col, Card, Table, CardHeader, Container, Label, Input } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -151,7 +151,7 @@ const DevisDetails = () => {
                   <CardHeader className="border-bottom border-bottom-dashed">
                     <div className="d-flex">
                       <div className="flex-grow-1 d-flex align-items-center">
-                     { image &&  <img src={image} className="card-logo card-logo-dark" alt="logo dark" width="260" />}
+                        {image && <img src={image} className="card-logo card-logo-dark" alt="logo dark" width="260" />}
 
                       </div>
                       <div className="flex-shrink-0 mt-sm-0 mt-3">
@@ -287,7 +287,15 @@ const DevisDetails = () => {
                         </tbody>
                       </Table>
                     </div>
-
+                    <div className="mt-4">
+                      <Label
+                        for="exampleFormControlTextarea1"
+                        className="form-label text-muted text-uppercase fw-semibold"
+                      >
+                        NOTES
+                      </Label>
+                      <p className="form-control alert alert-info">{devis.header.den_note ? devis.header.den_note : <i style={{ color: "#898989" }}>Non renseigner</i>}</p>
+                    </div>
                     <div className="hstack gap-2 justify-content-end d-print-none mt-4">
 
                       <Link to={`/devis/edition/${devis.header.den_id}`} state={devis} className="btn btn-success"><i className="ri-ball-pen-line align-bottom me-1"></i> Editer</Link>
