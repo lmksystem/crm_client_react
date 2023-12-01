@@ -166,9 +166,8 @@ const Recurrence = () => {
         rec_ent_fk: Yup.number().required("Veuillez entrer un client"),
         rec_date_echeance: Yup.string().required("Veuillez entrer une date"),
         rec_nb: Yup.number().required("Champs obligatoire"),
-        rec_quand: Yup.string().required("Champs obligatoire"),
+        rec_quand: Yup.number().required("Champs obligatoire"),
         rec_repetition: Yup.string().required("Champs obligatoire"),
-
       }),
       products: Yup.array().min(1, "Ajouter au moins un produit")
     }),
@@ -418,7 +417,7 @@ const Recurrence = () => {
                           if (isSelected) {
                             validation.setValues({ ...validation.values, products: validation.values.products.filter((s) => s.pro_id != p.pro_id) })
                           } else {
-                            validation.setValues({ ...validation.values, products: [...validation.values.products, { pro_id: p.pro_id, rec_pro_name: p.pro_name, rec_pro_qty: 1, rec_montant: p.pro_prix }] })
+                            validation.setValues({ ...validation.values, products: [...validation.values.products, { pro_id: p.pro_id, rec_pro_name: p.pro_name, rec_pro_qty: 1, rec_montant: p.pro_prix, rec_tva: p.pro_tva }] })
                           }
                         }}
                         key={key}
@@ -556,9 +555,11 @@ const Recurrence = () => {
                       <option value={3}>Mois</option>
                       <option value={4}>Trimestres</option>
                     </Input>
-
+                    {validation.errors?.recurrence_data?.rec_quand && validation.touched?.recurrence_data?.rec_quand ? (
+                      <FormFeedback type="invalid">{validation.errors?.recurrence_data?.rec_quand}</FormFeedback>
+                    ) : null}
                   </div>
-                  {validation.values.recurrence_data.rec_nb != 0 ?
+                  {validation.values.recurrence_data.rec_nb !== 0 ?
                     <div className="mb-2 ms-2 d-flex align-items-center">
                       <span className="me-2">répéter</span>
                       <Input

@@ -135,7 +135,7 @@ const DevisDetails = () => {
       <Container fluid>
         <BreadCrumb className="d-print-none" title="Devis détaillé" pageTitle="Devis" />
         <ConfirmModal title={'Êtes-vous sûr ?'} text={"Êtes-vous sûr de vouloir envoyer le devis ?"} show={showConfirmModal} onCloseClick={() => setShowConfirmModal(false)} onActionClick={() => sendDevisByEmail()} />
-        <ConfirmModal title={'Êtes-vous sûr ?'} text={"Ce devis à déjà été converti en facture, voulez-vous recommencer ?"} show={showConfirmModal2} onCloseClick={() => setShowConfirmModal2(false)} onActionClick={() => { redirectToInvoice() }} />
+        <ConfirmModal title={'Êtes-vous sûr ?'} text={"Ce devis a déjà été converti en facture, voulez-vous recommencer ?"} show={showConfirmModal2} onCloseClick={() => setShowConfirmModal2(false)} onActionClick={() => { redirectToInvoice() }} />
         <DeleteModal
           show={deleteModal}
           onDeleteClick={() => { handleDeleteDevis(devis.header.den_id) }}
@@ -299,7 +299,7 @@ const DevisDetails = () => {
                       <Link to="#" onClick={printInvoice} className="btn btn-success"><i className="ri-printer-line align-bottom me-1"></i> Imprimer</Link>
 
                       <Link onClick={() => downloadPdf()} className="btn btn-secondary"><i className="ri-download-2-line align-bottom me-1"></i> Télécharger</Link>
-                      <Link onClick={() => { checkFactureAlreadyCreated(); }} /*to={'/factures/creation'}*/ state={{ den_id: devis.header.den_id }} className="btn btn-secondary"><i className="ri-file-copy-2-fill align-bottom me-1"></i> Facture</Link>
+                      <Link onClick={() => { checkFactureAlreadyCreated(); }} /*to={'/factures/creation'}*/ state={{ den_id: devis.header.den_id }} className="btn btn-secondary"><i className="ri-file-copy-2-fill align-bottom me-1"></i> Facturer</Link>
 
                       <Link onClick={() => { setDeleteModal(true) }} state={devis} className="btn btn-danger"><i className="ri-ball-pen-line align-bottom me-1"></i> Supprimer</Link>
                     </div>

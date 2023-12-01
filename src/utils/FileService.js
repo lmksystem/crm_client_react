@@ -7,6 +7,7 @@ async function uploadFile(files) {
     const element = files[index];
     formData.append("fileName", element);
   }
+  console.log(formData);
   return await axios
     .post("/v1/upload", formData, {
       headers: {
