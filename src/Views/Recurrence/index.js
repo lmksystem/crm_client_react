@@ -304,7 +304,7 @@ const Recurrence = () => {
   // Export Modal
   const [isExportCSV, setIsExportCSV] = useState(false);
 
-  document.title = "Produits | Countano";
+  document.title = "Récurrences | Countano";
   return (
     <React.Fragment>
       <div className="page-content">
@@ -321,7 +321,7 @@ const Recurrence = () => {
         />
 
         <Container fluid>
-          <BreadCrumb title="Récurrence" pageTitle="Facturation" />
+          <BreadCrumb title="Récurrences" pageTitle="Facturation" />
           <Row>
             <Col lg={12}>
               <Card>

@@ -94,7 +94,7 @@ const GestionParameter = () => {
   // Export Modal
   const [isExportCSV, setIsExportCSV] = useState(false);
 
-  document.title = "Paramètre | Countano";
+  document.title = "Paramétrage | Countano";
   return (
     <React.Fragment>
       <div className="page-content">
@@ -105,7 +105,7 @@ const GestionParameter = () => {
         />
 
         <Container fluid>
-          <BreadCrumb title="Paramètre" pageTitle="Gestion" />
+          <BreadCrumb title="Paramétrage" pageTitle="" />
           <Row>
             <Col lg={12}>
               <Card>

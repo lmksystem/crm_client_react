@@ -188,11 +188,15 @@ const DevisDetails = () => {
                 <Col lg={12}>
                   <CardBody className="border-bottom border-bottom-dashed p-4">
                     <Row className="g-3">
-                      <Col lg={3} className="col-6">
+                      <Col lg={2} className="col-6">
                         <p className="text-muted mb-2 text-uppercase fw-semibold">Devis N°</p>
                         <h5 className="fs-14 mb-0"><span id="devis-no">{devis.header.den_num}</span></h5>
                       </Col>
-                      <Col lg={3} className="col-6">
+                      <Col lg={2} className="col-6">
+                        <p className="text-muted mb-2 text-uppercase fw-semibold">Date de création</p>
+                        <h5 className="fs-14 mb-0"><span id="invoice-date">{moment(devis.header.den_date_create).format('L')}</span> <small className="text-muted" id="invoice-time"></small></h5>
+                      </Col>
+                      <Col lg={2} className="col-6">
                         <p className="text-muted mb-2 text-uppercase fw-semibold">Date de validité</p>
                         <h5 className="fs-14 mb-0"><span id="devis-date">{moment(devis.header.den_date_valid).format('L')}</span> <small className="text-muted" id="devis-time"></small></h5>
                       </Col>
