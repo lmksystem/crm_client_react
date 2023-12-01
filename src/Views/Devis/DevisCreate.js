@@ -47,6 +47,7 @@ import { api } from "../../config";
 import moment from "moment";
 import { allstatusDevis } from "../../common/data/devisList";
 import { getImage } from "../../utils/getImages";
+import ConfirmModal from "../../Components/Common/ConfirmModal";
 
 
 const InvoiceCreate = () => {
@@ -62,8 +63,10 @@ const InvoiceCreate = () => {
 
   let { state } = useLocation();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const history = useNavigate();
 
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const [collaborateur, setCollaborateur] = useState(null);
 
@@ -122,7 +125,15 @@ const InvoiceCreate = () => {
   }, [dispatch]);
 
   document.title = "Création devis | Countano";
-  // console.log(company);
+
+  const submitFormData = (sendEmail) => {
+    dispatch(onAddNewDevis({ devis: validation.values, send: sendEmail })).then(() => {
+      history("/devis/liste");
+      validation.resetForm();
+    });
+
+  }
+
   const validation = useFormik({
     enableReinitialize: true,
 
@@ -187,11 +198,12 @@ const InvoiceCreate = () => {
 
     }),
     onSubmit: (values) => {
-      dispatch(onAddNewDevis(values)).then(() => {
-        navigate("/devis/liste");
-        validation.resetForm();
+      setShowConfirmModal(true);
+      // dispatch(onAddNewDevis(values)).then(() => {
+      //   navigate("/devis/liste");
+      //   validation.resetForm();
 
-      });
+      // });
     },
   });
 
@@ -332,6 +344,7 @@ const InvoiceCreate = () => {
     validation.setValues({ ...validation.values, header: header, ligne: lignesData })
   }
 
+
   // useEffect(() => {
   //   if (validation.values.ligne.length < 1) {
   //     validation.setValues({
@@ -365,6 +378,15 @@ const InvoiceCreate = () => {
     <div className="page-content">
       <Container fluid>
         <BreadCrumb title="Création devis" pageTitle="Devis" />
+        <ConfirmModal title={'Envoyer ?'} text={"Voulez-vous envoyer la facture ?"} textClose="Non" show={showConfirmModal}
+          onCloseClick={() => {
+            setShowConfirmModal(false);
+            submitFormData(false);
+          }}
+          onActionClick={() => {
+            setShowConfirmModal(false);
+            submitFormData(true);
+          }} />
         <Row className="justify-content-center">
           <Col xxl={9}>
             <Card>
@@ -382,7 +404,7 @@ const InvoiceCreate = () => {
                   <Row>
                     <Col lg={6} className="d-flex">
                       <div className="profile-user mx-auto  mb-3">
-                       {image && <Label for="profile-img-file-input" className="d-block">
+                        {image && <Label for="profile-img-file-input" className="d-block">
                           <span
                             className="overflow-hidden border border-dashed d-flex align-items-center justify-content-center rounded"
                             style={{ height: "60px", width: "256px" }}
@@ -396,7 +418,7 @@ const InvoiceCreate = () => {
                           </span>
 
                         </Label>
-}
+                        }
                       </div>
 
 
