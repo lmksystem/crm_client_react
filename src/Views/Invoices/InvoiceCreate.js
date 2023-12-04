@@ -181,7 +181,7 @@ const InvoiceCreate = () => {
         fco_cus_city: Yup.string().required("Champs obligatoire"),
         fco_cus_cp: Yup.string().required("Champs obligatoire"),
         fco_name: Yup.string().required("Champs obligatoire"),
-        fco_email: Yup.string().required("Champs obligatoire"),
+        fco_email: Yup.string().email("Email invalide").required("Champs obligatoire"),
         fco_phone: Yup.string().required("Champs obligatoire"),
         fco_address: Yup.string().required("Champs obligatoire"),
         fco_city: Yup.string().required("Champs obligatoire"),
@@ -468,6 +468,7 @@ const InvoiceCreate = () => {
                               onChange={validation.handleChange}
                               placeholder="Sujet complet"
                               invalid={validation.errors?.header?.fen_sujet && validation.touched?.header?.fen_sujet ? true : false}
+                              required
                             />
                             {validation.errors?.header?.fen_sujet && validation.touched?.header?.fen_sujet ? (
                               <FormFeedback type="invalid">{validation.errors?.header?.fen_sujet}</FormFeedback>
@@ -504,8 +505,9 @@ const InvoiceCreate = () => {
                             value={validation.values.contact.fco_name || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
-                            placeholder="Nom complet"
+                            placeholder="Nom complet*"
                             invalid={validation.errors?.contact?.fco_name && validation.touched?.contact?.fco_name ? true : false}
+                            required
                           />
                           {validation.errors?.contact?.fco_name && validation.touched?.contact?.fco_name ? (
                             <FormFeedback type="invalid">{validation.errors?.contact?.fco_name}</FormFeedback>
@@ -522,8 +524,9 @@ const InvoiceCreate = () => {
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
                             rows="3"
-                            placeholder="Adresse"
+                            placeholder="Adresse*"
                             invalid={validation.errors?.contact?.fco_address && validation.touched?.contact?.fco_address ? true : false}
+                            required
                           />
                           {validation.errors?.contact?.fco_address && validation.touched?.contact?.fco_address ? (
                             <FormFeedback type="invalid">{validation.errors?.contact?.fco_address}</FormFeedback>
@@ -539,8 +542,9 @@ const InvoiceCreate = () => {
                             value={validation.values.contact.fco_cp || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
-                            placeholder="Code postal"
+                            placeholder="Code postal*"
                             invalid={validation.errors?.contact?.fco_cp && validation.touched?.contact?.fco_cp ? true : false}
+                            required
                           />
                           {validation.errors?.contact?.fco_cp && validation.touched?.contact?.fco_cp ? (
                             <FormFeedback type="invalid">{validation.errors?.contact?.fco_cp}</FormFeedback>
@@ -556,8 +560,9 @@ const InvoiceCreate = () => {
                             value={validation.values.contact.fco_city || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
-                            placeholder="Ville"
+                            placeholder="Ville*"
                             invalid={validation.errors?.contact?.fco_city && validation.touched?.contact?.fco_city ? true : false}
+                            required
                           />
                           {validation.errors?.contact?.fco_city && validation.touched?.contact?.fco_city ? (
                             <FormFeedback type="invalid">{validation.errors?.contact?.fco_city}</FormFeedback>
@@ -574,7 +579,8 @@ const InvoiceCreate = () => {
                             value={validation.values.contact.fco_phone || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
-                            placeholder="Téléphone"
+                            placeholder="Téléphone*"
+                            required
                             invalid={validation.errors?.contact?.fco_phone && validation.touched?.contact?.fco_phone ? true : false}
                           />
                           {validation.errors?.contact?.fco_phone && validation.touched?.contact?.fco_phone ? (
@@ -591,7 +597,8 @@ const InvoiceCreate = () => {
                             value={validation.values.contact.fco_email || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
-                            placeholder="Email"
+                            placeholder="Email*"
+                            required
                             invalid={validation.errors?.contact?.fco_email && validation.touched?.contact?.fco_email ? true : false}
                           />
                           {validation.errors?.contact?.fco_email && validation.touched?.contact?.fco_email ? (
@@ -660,7 +667,8 @@ const InvoiceCreate = () => {
                                 value={validation.values.contact.fco_cus_name || ""}
                                 onBlur={validation.handleBlur}
                                 onChange={validation.handleChange}
-                                placeholder="Nom complet"
+                                placeholder="Nom complet*"
+                                required
                                 invalid={validation.errors?.contact?.fco_cus_name && validation.touched?.contact?.fco_cus_name ? true : false}
                               />
                               <button onClick={toggle} className="btn btn-secondary" type="button" id="button-addon2">+</button>
@@ -690,7 +698,8 @@ const InvoiceCreate = () => {
                               onBlur={validation.handleBlur}
                               onChange={validation.handleChange}
                               rows="3"
-                              placeholder="Adresse"
+                              placeholder="Adresse*"
+                              required
                               invalid={validation.errors?.contact?.fco_cus_address && validation.touched?.contact?.fco_cus_address ? true : false}
                             />
                             {validation.errors?.contact?.fco_cus_address && validation.touched?.contact?.fco_cus_address ? (
@@ -707,7 +716,8 @@ const InvoiceCreate = () => {
                               value={validation.values.contact.fco_cus_cp || ""}
                               onBlur={validation.handleBlur}
                               onChange={validation.handleChange}
-                              placeholder="Code postal"
+                              placeholder="Code postal*"
+                              required
                               invalid={validation.errors?.contact?.fco_cus_cp && validation.touched?.contact?.fco_cus_cp ? true : false}
                             />
                             {validation.errors?.contact?.fco_cus_cp && validation.touched?.contact?.fco_cus_cp ? (
@@ -724,7 +734,8 @@ const InvoiceCreate = () => {
                               value={validation.values.contact.fco_cus_city || ""}
                               onBlur={validation.handleBlur}
                               onChange={validation.handleChange}
-                              placeholder="Ville"
+                              placeholder="Ville*"
+                              required
                               invalid={validation.errors?.contact?.fco_cus_city && validation.touched?.contact?.fco_cus_city ? true : false}
                             />
                             {validation.errors?.contact?.fco_cus_city && validation.touched?.contact?.fco_cus_city ? (
@@ -742,7 +753,8 @@ const InvoiceCreate = () => {
                               value={validation.values.contact.fco_cus_phone || ""}
                               onBlur={validation.handleBlur}
                               onChange={validation.handleChange}
-                              placeholder="Téléphone"
+                              placeholder="Téléphone*"
+                              required
                               invalid={validation.errors?.contact?.fco_cus_phone && validation.touched?.contact?.fco_cus_phone ? true : false}
                             />
                             {validation.errors?.contact?.fco_cus_phone && validation.touched?.contact?.fco_cus_phone ? (
@@ -759,7 +771,8 @@ const InvoiceCreate = () => {
                               value={validation.values.contact.fco_cus_email || ""}
                               onBlur={validation.handleBlur}
                               onChange={validation.handleChange}
-                              placeholder="Email"
+                              placeholder="Email*"
+                              required
                               invalid={validation.errors?.contact?.fco_cus_email && validation.touched?.contact?.fco_cus_email ? true : false}
                             />
                             {validation.errors?.contact?.fco_cus_email && validation.touched?.contact?.fco_cus_email ? (

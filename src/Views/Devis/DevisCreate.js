@@ -26,7 +26,7 @@ import logoDark from "../../assets/images/logo_countano.png";
 import logoLight from "../../assets/images/logo_countano.png";
 
 //formik
-import { useFormik } from "formik";
+import { ErrorMessage, useFormik } from "formik";
 import * as Yup from "yup";
 
 //redux
@@ -178,7 +178,7 @@ const InvoiceCreate = () => {
         dco_cus_city: Yup.string().required("Champs obligatoire"),
         dco_cus_cp: Yup.string().required("Champs obligatoire"),
         dco_name: Yup.string().required("Champs obligatoire"),
-        dco_email: Yup.string().required("Champs obligatoire"),
+        dco_email: Yup.string().email("Email invalide").required("Champs obligatoire"),
         dco_phone: Yup.string().required("Champs obligatoire"),
         dco_address: Yup.string().required("Champs obligatoire"),
         dco_city: Yup.string().required("Champs obligatoire"),
@@ -428,7 +428,7 @@ const InvoiceCreate = () => {
                         <Col lg={8}>
                           <div>
                             <Label
-                              for="dco_name"
+                              for="den_sujet"
                               className="text-muted text-uppercase fw-semibold"
                             >
                               Sujet
@@ -443,12 +443,13 @@ const InvoiceCreate = () => {
                               value={validation.values.header?.den_sujet || ""}
                               onBlur={validation.handleBlur}
                               onChange={validation.handleChange}
-                              placeholder="Sujet complet"
+                              placeholder="Sujet complet*"
                               invalid={validation.errors?.header?.den_sujet && validation.touched?.header?.den_sujet ? true : false}
+                              required
                             />
                             {validation.errors?.header?.den_sujet && validation.touched?.header?.den_sujet ? (
                               <FormFeedback type="invalid">{validation.errors?.header?.den_sujet}</FormFeedback>
-                            ) : null}
+                            ) : null} 
 
                           </div>
                         </Col>
@@ -481,8 +482,9 @@ const InvoiceCreate = () => {
                             value={validation.values.contact.dco_name || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
-                            placeholder="Nom complet"
+                            placeholder="Nom complet*"
                             invalid={validation.errors?.contact?.dco_name && validation.touched?.contact?.dco_name ? true : false}
+                            required
                           />
                           {validation.errors?.contact?.dco_name && validation.touched?.contact?.dco_name ? (
                             <FormFeedback type="invalid">{validation.errors?.contact?.dco_name}</FormFeedback>
@@ -499,8 +501,9 @@ const InvoiceCreate = () => {
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
                             rows="3"
-                            placeholder="Adresse"
+                            placeholder="Adresse*"
                             invalid={validation.errors?.contact?.dco_address && validation.touched?.contact?.dco_address ? true : false}
+                            required
                           />
                           {validation.errors?.contact?.dco_address && validation.touched?.contact?.dco_address ? (
                             <FormFeedback type="invalid">{validation.errors?.contact?.dco_address}</FormFeedback>
@@ -516,8 +519,9 @@ const InvoiceCreate = () => {
                             value={validation.values.contact.dco_cp || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
-                            placeholder="Code postal"
+                            placeholder="Code postal*"
                             invalid={validation.errors?.contact?.dco_cp && validation.touched?.contact?.dco_cp ? true : false}
+                            required
                           />
                           {validation.errors?.contact?.dco_cp && validation.touched?.contact?.dco_cp ? (
                             <FormFeedback type="invalid">{validation.errors?.contact?.dco_cp}</FormFeedback>
@@ -533,8 +537,9 @@ const InvoiceCreate = () => {
                             value={validation.values.contact.dco_city || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
-                            placeholder="Ville"
+                            placeholder="Ville*"
                             invalid={validation.errors?.contact?.dco_city && validation.touched?.contact?.dco_city ? true : false}
+                            required
                           />
                           {validation.errors?.contact?.dco_city && validation.touched?.contact?.dco_city ? (
                             <FormFeedback type="invalid">{validation.errors?.contact?.dco_city}</FormFeedback>
@@ -551,8 +556,9 @@ const InvoiceCreate = () => {
                             value={validation.values.contact.dco_phone || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
-                            placeholder="Téléphone"
+                            placeholder="Téléphone*"
                             invalid={validation.errors?.contact?.dco_phone && validation.touched?.contact?.dco_phone ? true : false}
+                            required
                           />
                           {validation.errors?.contact?.dco_phone && validation.touched?.contact?.dco_phone ? (
                             <FormFeedback type="invalid">{validation.errors?.contact?.dco_phone}</FormFeedback>
@@ -568,8 +574,9 @@ const InvoiceCreate = () => {
                             value={validation.values.contact.dco_email || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
-                            placeholder="Email"
+                            placeholder="Email*"
                             invalid={validation.errors?.contact?.dco_email && validation.touched?.contact?.dco_email ? true : false}
+                            required
                           />
                           {validation.errors?.contact?.dco_email && validation.touched?.contact?.dco_email ? (
                             <FormFeedback type="invalid">{validation.errors?.contact?.dco_email}</FormFeedback>
@@ -602,8 +609,9 @@ const InvoiceCreate = () => {
                                 value={validation.values.contact.dco_cus_name || ""}
                                 onBlur={validation.handleBlur}
                                 onChange={validation.handleChange}
-                                placeholder="Nom complet"
+                                placeholder="Nom complet*"
                                 invalid={validation.errors?.contact?.dco_cus_name && validation.touched?.contact?.dco_cus_name ? true : false}
+                                required
                               />
                               <button onClick={toggle} className="btn btn-secondary" type="button" id="button-addon2">+</button>
                               {/* {showCollabDiv &&
@@ -632,8 +640,9 @@ const InvoiceCreate = () => {
                               onBlur={validation.handleBlur}
                               onChange={validation.handleChange}
                               rows="3"
-                              placeholder="Adresse"
+                              placeholder="Adresse*"
                               invalid={validation.errors?.contact?.dco_cus_address && validation.touched?.contact?.dco_cus_address ? true : false}
+                              required
                             />
                             {validation.errors?.contact?.dco_cus_address && validation.touched?.contact?.dco_cus_address ? (
                               <FormFeedback type="invalid">{validation.errors?.contact?.dco_cus_address}</FormFeedback>
@@ -649,8 +658,9 @@ const InvoiceCreate = () => {
                               value={validation.values.contact.dco_cus_cp || ""}
                               onBlur={validation.handleBlur}
                               onChange={validation.handleChange}
-                              placeholder="Code postal"
+                              placeholder="Code postal*"
                               invalid={validation.errors?.contact?.dco_cus_cp && validation.touched?.contact?.dco_cus_cp ? true : false}
+                              required
                             />
                             {validation.errors?.contact?.dco_cus_cp && validation.touched?.contact?.dco_cus_cp ? (
                               <FormFeedback type="invalid">{validation.errors?.contact?.dco_cus_cp}</FormFeedback>
@@ -666,7 +676,8 @@ const InvoiceCreate = () => {
                               value={validation.values.contact.dco_cus_city || ""}
                               onBlur={validation.handleBlur}
                               onChange={validation.handleChange}
-                              placeholder="Ville"
+                              placeholder="Ville*"
+                              required
                               invalid={validation.errors?.contact?.dco_cus_city && validation.touched?.contact?.dco_cus_city ? true : false}
                             />
                             {validation.errors?.contact?.dco_cus_city && validation.touched?.contact?.dco_cus_city ? (
@@ -684,7 +695,8 @@ const InvoiceCreate = () => {
                               value={validation.values.contact.dco_cus_phone || ""}
                               onBlur={validation.handleBlur}
                               onChange={validation.handleChange}
-                              placeholder="Téléphone"
+                              placeholder="Téléphone*"
+                              required
                               invalid={validation.errors?.contact?.dco_cus_phone && validation.touched?.contact?.dco_cus_phone ? true : false}
                             />
                             {validation.errors?.contact?.dco_cus_phone && validation.touched?.contact?.dco_cus_phone ? (
@@ -701,7 +713,8 @@ const InvoiceCreate = () => {
                               value={validation.values.contact.dco_cus_email || ""}
                               onBlur={validation.handleBlur}
                               onChange={validation.handleChange}
-                              placeholder="Email"
+                              placeholder="Email*"
+                              required
                               invalid={validation.errors?.contact?.dco_cus_email && validation.touched?.contact?.dco_cus_email ? true : false}
                             />
                             {validation.errors?.contact?.dco_cus_email && validation.touched?.contact?.dco_cus_email ? (
