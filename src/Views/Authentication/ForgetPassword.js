@@ -16,12 +16,14 @@ import { useFormik } from "formik";
 import { userForgetPassword } from "../../slices/thunks";
 
 // import images
+import logoLight from "../../assets/images/logo_countano.png";
+
 // import profile from "../../assets/images/bg.png";
-import logoLight from "../../assets/images/logo-light.png";
+// import logoLight from "../../assets/images/logo-light.png";
 import ParticlesAuth from "../AuthenticationInner/ParticlesAuth";
 
 const ForgetPasswordPage = props => {
-  document.title="Mot de passe oublié| Countano";
+  document.title="Mot de passe oublié | Countano";
 
   const dispatch = useDispatch();
 
@@ -33,7 +35,7 @@ const ForgetPasswordPage = props => {
       email: '',
     },
     validationSchema: Yup.object({
-      email: Yup.string().required("Please Enter Your Email"),
+      email: Yup.string().required("Email obligatoire"),
     }),
     onSubmit: (values) => {
       dispatch(userForgetPassword(values, props.history));
@@ -49,18 +51,18 @@ const ForgetPasswordPage = props => {
     <ParticlesAuth>
       <div className="auth-page-content">        
         <Container>
-          <Row>
-            <Col lg={12}>
-              <div className="text-center mt-sm-5 mb-4 text-white-50">
-                <div>
-                  <Link to="/" className="d-inline-block auth-logo">
-                    <img src={logoLight} alt="" height="20" />
-                  </Link>
+        <Row>
+              <Col lg={12}>
+                <div className="text-center mt-sm-5 mb-4 text-white-50">
+                  <div>
+                    <Link to="/" className="d-inline-block auth-logo">
+                      <img src={logoLight} alt="" height="20" />
+                    </Link>
+                  </div>
+                  <p className="mt-3 fs-15 fw-medium"></p>
                 </div>
-                <p className="mt-3 fs-15 fw-medium">Premium Admin & Dashboard Template</p>
-              </div>
-            </Col>
-          </Row>
+              </Col>
+            </Row>
 
           <Row className="justify-content-center">
             <Col md={8} lg={6} xl={5}>
@@ -68,8 +70,8 @@ const ForgetPasswordPage = props => {
 
                 <CardBody className="p-4">
                   <div className="text-center mt-2">
-                    <h5 className="text-primary">Forgot Password?</h5>
-                    <p className="text-muted">Reset password</p>
+                    <h5 className="text-primary">Mot de passe oublié ?</h5>
+                    <p className="text-muted">Réinitialisé le mot de passe</p>
 
                     <lord-icon
                       src="https://cdn.lordicon.com/rhvddzym.json"
@@ -83,7 +85,7 @@ const ForgetPasswordPage = props => {
                   </div>
 
                   <Alert className="alert-borderless alert-warning text-center mb-2 mx-2" role="alert">
-                    Enter your email and instructions will be sent to you!
+                  Entrez votre email et les instructions vous seront envoyées !
                   </Alert>
                   <div className="p-2">
                     {forgetError && forgetError ? (
@@ -108,7 +110,7 @@ const ForgetPasswordPage = props => {
                         <Input
                           name="email"
                           className="form-control"
-                          placeholder="Enter email"
+                          placeholder="Email"
                           type="email"
                           onChange={validation.handleChange}
                           onBlur={validation.handleBlur}
@@ -123,7 +125,7 @@ const ForgetPasswordPage = props => {
                       </div>
 
                       <div className="text-center mt-4">
-                        <button className="btn btn-success w-100" type="submit">Send Reset Link</button>
+                        <button className="btn btn-success w-100" type="submit">Envoyer le lien de réinitialisation</button>
                       </div>
                     </Form>
                   </div>
@@ -131,7 +133,7 @@ const ForgetPasswordPage = props => {
               </Card>
 
               <div className="mt-4 text-center">
-                <p className="mb-0">Wait, I remember my password... <Link to="/login" className="fw-semibold text-primary text-decoration-underline"> Click here </Link> </p>
+                <p className="mb-0">Je me rappel de mon mot de passe... <Link to="/login" className="fw-semibold text-primary text-decoration-underline"> Cliquez ici</Link> </p>
               </div>
 
             </Col>

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import SimpleBar from "simplebar-react";
 //import logo
-import logoSm from "../assets/images/logo-sm.png";
+import logoSm from "../assets/images/icone_countano.png";
 import logoDark from "../assets/images/logo_countano.png";
 import logoLight from "../assets/images/logo_countano.png";
 
