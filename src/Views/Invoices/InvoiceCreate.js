@@ -98,7 +98,7 @@ const InvoiceCreate = () => {
     fli_unit_ttc: 0,
     fli_total_ht: 0,
     fli_total_ttc: 0,
-    fli_qty: 0,
+    fli_qty: 1,
     fli_tva: 0,
     fli_total_tva: 0,
     fli_pourcent_remise: 0,
@@ -1242,6 +1242,7 @@ const InvoiceCreate = () => {
                             fli_name: p.pro_name,
                             fli_detail: p.pro_detail,
                             fli_unit_ht: p.pro_prix,
+                            
                           }
 
 
