@@ -397,7 +397,7 @@ const Achats = () => {
         Cell: (cell) => {
         return (
           <div className="d-flex align-items-center">
-            <div >{customFormatNumber(parseInt(cell.row.original.ach_rp))}</div>
+            <div >{customFormatNumber(parseFloat(cell.row.original.ach_rp))}</div>
           </div>
         );
         }

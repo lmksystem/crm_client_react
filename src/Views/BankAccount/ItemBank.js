@@ -17,7 +17,7 @@ const ItemBank = ({ item }) => {
     item?.bua_libelle ? item?.bua_libelle : ""
   );
   return (
-    <ListGroupItem data-id="1" className={"list-group-item-action"}>
+    <ListGroupItem data-id="1" className={"list-group-item"}>
       <Row lg={12} xs={12}>
         <Col md={6} xs={12} className="row">
           <Col xs={2} md={1} style={{ minWidth: 95, maxWidth: 120 }}>
@@ -87,25 +87,22 @@ const ItemBank = ({ item }) => {
                 );
               }}
             >
-              Mettre à jour
-            </button>
-            <p
+              Renouveler l’autorisation<br/>
+              <p
               className="m-0"
               style={{
                 color: item.bua_account_id?.length > 0 ? "black" : "red",
                 fontWeight: "bolder",
                 textAlign: "center",
-                minWidth: 147,
+                // minWidth: 147,
               }}
             >
               {item.bua_account_id?.length > 0
                 ? "Date expiration : " + item.bac_date_expired
                 : "Veuillez vous mettre à jour avec cette banque"}{" "}
             </p>
+            </button>
           </Col>
-          {/* <Col xs={3} md={6} className="d-flex justify-content-center">
-          
-          </Col> */}
         </Col>
         {item.bua_account_id?.length > 0 && (
           <Col md={2} xs={12} className="row my-4 d-flex justify-content-center">
@@ -123,9 +120,6 @@ const ItemBank = ({ item }) => {
               >
                 Charger mes transactions
               </button>
-            </Col>
-            <Col xs={3} md={6} className="d-flex justify-content-center">
-    
             </Col>
           </Col>
         )}
