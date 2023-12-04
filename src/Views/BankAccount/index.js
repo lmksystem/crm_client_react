@@ -21,7 +21,6 @@ import {
   getListBank as onGetListBank,
   insertBankAccount as onInsertBankAccount,
   getAccountBank as onGetAccountBank,
-  insertAccountLinkToBank as onInsertAccountLinkToBank,
 } from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
