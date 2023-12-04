@@ -27,10 +27,10 @@ export const addNewInvoice = createAsyncThunk("invoice/addNewInvoice", async (da
   try {
     const response = await addNewInvoiceApi(data)
     
-    toast.success("Invoice Added Successfully", { autoClose: 3000 });
+    toast.success("Ajout de facture réussi", { autoClose: 3000 });
     return response;
   } catch (error) {
-    toast.error("Invoice Added Failed", { autoClose: 3000 });
+    toast.error("Erreur d'ajout facture", { autoClose: 3000 });
     return error;
   }
 });
@@ -42,7 +42,7 @@ export const updateInvoice = createAsyncThunk("invoice/updateInvoice", async (da
 
     return response;
   } catch (error) {
-    toast.error("Invoice Updated Failed", { autoClose: 3000 });
+    toast.error("Erreur mise à jour de facture", { autoClose: 3000 });
     return error;
   }
 });
@@ -50,10 +50,8 @@ export const updateInvoice = createAsyncThunk("invoice/updateInvoice", async (da
 export const createPdf = createAsyncThunk("invoice/createPdf", async (invoice) => {
   try {
     const response = createPdfApi(invoice);
-
     return response;
   } catch (error) {
-    console.log('erreur', error);
     toast.error("Création du pdf echoué", { autoClose: 3000 });
     return error;
   }
@@ -62,7 +60,6 @@ export const createPdf = createAsyncThunk("invoice/createPdf", async (invoice) =
 export const getWidgetInvoices = createAsyncThunk("invoice/getWidgetInvoices", async (invoice) => {
   try {
     const response = await getWidgetInvoicesApi(invoice);
-
     return response;
   }
   catch (error) {
@@ -76,7 +73,6 @@ export const getInvoicePeriodCount = createAsyncThunk("invoice/getInvoicePeriodC
     const response = getInvoicePeriodCountApi(data);
     return response;
   } catch (error) {
-    console.log("thunk catch", error);
     toast.error("Une erreur s'est produite sur la récupération des factures", { autoClose: 3000 });
     return error;
   }
@@ -88,8 +84,7 @@ export const getInvoiceByMonth = createAsyncThunk("invoice/getInvoiceByMonth", a
     return response;
   }
   catch (error) {
-    console.log("thunk catch", error);
-    toast.error("Invoice Read Failed", { autoClose: 3000 });
+    toast.error("Erreur lecture des factures", { autoClose: 3000 });
     return error;
   }
 });
@@ -100,7 +95,7 @@ export const getEtatInvoice = createAsyncThunk("invoice/getEtatInvoice", async (
     return response;
   }
   catch (error) {
-    toast.error("Invoice Read Failed", { autoClose: 3000 });
+    toast.error("Erreur de lecture d'état de facture", { autoClose: 3000 });
     return error;
   }
 });

@@ -11,7 +11,7 @@ export const getEmail = createAsyncThunk("email/getEmail", async () => {
     return response;
   }
   catch (error) {
-    toast.error("Email Get Failed", { autoClose: 3000 });
+    toast.error("Erreur de récupération d'email", { autoClose: 3000 });
     return error;
   }
 });

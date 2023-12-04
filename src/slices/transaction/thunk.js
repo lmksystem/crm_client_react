@@ -71,7 +71,7 @@ export const getTransactionPricePeriode = createAsyncThunk("transaction/getTrans
     return response;
   } 
   catch (error) {
-    toast.error("Transaction Read Failed", { autoClose: 3000 });
+    toast.error("Erreur récupération des transactions par période", { autoClose: 3000 });
     return error;
   }
 });
@@ -79,11 +79,10 @@ export const getTransactionPricePeriode = createAsyncThunk("transaction/getTrans
 export const getTransactionByMonth = createAsyncThunk("transaction/getTransactionByMonth", async (data) => {
   try {
     const response =await getTransactionByMonthApi(data);
-    // console.log("response getTransactionByMonth",response)
     return response;
   } 
   catch (error) {
-    toast.error("Transaction Read Failed", { autoClose: 3000 });
+    toast.error("Erreur récupération des transactions par période", { autoClose: 3000 });
     return error;
   }
 });

@@ -12,7 +12,7 @@ export const createUpdateSalary = createAsyncThunk("salary/createUpdateSalary", 
     return response;
   }
   catch (error) {
-    toast.error("Salary Post Failed", { autoClose: 3000 });
+    toast.error("Erreur d'ajout / mise à jour de salaire", { autoClose: 3000 });
     return error;
   }
 });
@@ -23,7 +23,7 @@ export const getSalary = createAsyncThunk("salary/getSalary", async (year) => {
     return response;
   }
   catch (error) {
-    toast.error("Salary Get Failed", { autoClose: 3000 });
+    toast.error("Erreur de récupération de salaire", { autoClose: 3000 });
     return error;
   }
 });
@@ -35,7 +35,7 @@ export const deleteSalary = createAsyncThunk("salary/deleteSalary", async (id) =
     return response;
   }
   catch (error) {
-    toast.error("Invoice Delete Failed", { autoClose: 3000 });
+    toast.error("Erreur sur la suppression d'un salaire", { autoClose: 3000 });
     return error;
   }
 });

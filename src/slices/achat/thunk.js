@@ -16,7 +16,7 @@ export const createUpdateAchat= createAsyncThunk("achat/createUpdateAchat", asyn
     return response;
   }
   catch (error) {
-    toast.error("Achat Post Failed", { autoClose: 3000 });
+    toast.error("Erreur de création/mise à jour d'achat", { autoClose: 3000 });
     return error;
   }
 });
@@ -27,7 +27,7 @@ export const getAchat = createAsyncThunk("achat/getAchat", async (year) => {
     return response;
   }
   catch (error) {
-    toast.error("Achat Get Failed", { autoClose: 3000 });
+    toast.error("Erreur récupération d'achat", { autoClose: 3000 });
     return error;
   }
 });
@@ -39,7 +39,7 @@ export const deleteAchat = createAsyncThunk("achat/deleteAchat", async (id) => {
     return response;
   }
   catch (error) {
-    toast.error("Achat Delete Failed", { autoClose: 3000 });
+    toast.error("Erreur de suppression d'achat", { autoClose: 3000 });
     return error;
   }
 });
@@ -47,11 +47,10 @@ export const deleteAchat = createAsyncThunk("achat/deleteAchat", async (id) => {
 export const getAchatLinkTransaction = createAsyncThunk("achat/getAchatLinkTransaction", async (tba_id) => {
   try {
     const response = await getAchatLinkTransactionApi(tba_id);
-    // console.log("response getAchatLinkTransaction",response)
     return response;
   }
   catch (error) {
-    toast.error("Achat Get Failed", { autoClose: 3000 });
+    toast.error("Erreur de récupération liaison achat/transaction", { autoClose: 3000 });
     return error;
   }
 });
@@ -63,7 +62,7 @@ export const linkTransToAchat = createAsyncThunk(
       const response = await linkTransToAchatApi(body);
       return response;
     } catch (error) {
-      toast.error("Transaction Bank link Achat Update Failed", { autoClose: 3000 });
+      toast.error("Erreur d'association entre transaction et achat", { autoClose: 3000 });
       return error;
     }
   }
@@ -77,7 +76,7 @@ export const updateMatchAmount = createAsyncThunk(
       const response = await updateMatchAmountApi(body);
       return response;
     } catch (error) {
-      toast.error("Transaction Bank Match Amount Update  Failed", { autoClose: 3000 });
+      toast.error("Erreur mise à jour du montant associé", { autoClose: 3000 });
       return error;
     }
   }
@@ -90,7 +89,7 @@ export const getCategorieAchat = createAsyncThunk(
       const response = await getCategorieAchatApi(body);
       return response;
     } catch (error) {
-      toast.error("Get categories achat failed", { autoClose: 3000 });
+      toast.error("Erreur de récupération des catégories d'achat", { autoClose: 3000 });
       return error;
     }
   }

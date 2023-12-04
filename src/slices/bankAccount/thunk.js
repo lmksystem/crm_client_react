@@ -15,7 +15,7 @@ export const getListBank = createAsyncThunk(
       const response = await getListBankApi(pays);
       return response;
     } catch (error) {
-      toast.error("List Bank Read Failed", { autoClose: 3000 });
+      toast.error("Erreur de récupération des listes de banque", { autoClose: 3000 });
       return error;
     }
   }
@@ -41,7 +41,7 @@ export const getAccountBank = createAsyncThunk(
         }
     } catch (error) {
       console.log(error)
-      toast.error("List Account Bank User Read Failed", { autoClose: 3000 });
+      toast.error("Erreur de lecture comptes bancaires", { autoClose: 3000 });
       return error;
     }
   }
@@ -54,7 +54,7 @@ export const getAccountsBankUser = createAsyncThunk(
       const response = await getAccountsBankUserApi();
       return response;
     } catch (error) {
-      toast.error("List Bank And Account User Read Failed", {
+      toast.error("Erreur de lecture comptes bancaires utilisateur", {
         autoClose: 3000,
       });
       return error;
@@ -72,7 +72,7 @@ export const insertBankAccount = createAsyncThunk(
       }
       return response;
     } catch (error) {
-      toast.error("Bank Account Post Failed", { autoClose: 3000 });
+      toast.error("Erreur d'insertion du compte bancaire", { autoClose: 3000 });
       return error;
     }
   }
@@ -87,7 +87,7 @@ export const insertAccountLinkToBank= createAsyncThunk(
       toast.success("Libellé mis à jour", { autoClose: 3000 });
       return response;
     } catch (error) {
-      toast.error("Bank Account Post Failed", { autoClose: 3000 });
+      toast.error("Erreur sur l'ajout/mise à jour du libellé", { autoClose: 3000 });
       return error;
     }
   }
