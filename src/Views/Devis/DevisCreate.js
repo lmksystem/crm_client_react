@@ -159,7 +159,7 @@ const InvoiceCreate = () => {
         den_ent_fk: "",
         den_sujet: "",
         den_date_valid: moment().format('YYYY-MM-DD'),
-        den_etat: "",
+        den_etat: 3,
         den_total_ht: 0,
         den_total_ttc: 0,
         den_total_tva: 0,

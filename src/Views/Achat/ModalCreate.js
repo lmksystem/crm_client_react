@@ -29,7 +29,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { api } from "../../config";
 import { getLoggedinUser } from "../../helpers/api_helper";
-
+import Select from "react-select";
 
 const ModalCreate = ({
   validation,
@@ -50,9 +50,7 @@ const ModalCreate = ({
 }) => {
   const dispatch = useDispatch();
   const [factures, setFactures] = useState([]);
-  const [doc, setDoc] = useState(null);
   const userProfile = getLoggedinUser();
-  console.log(userProfile)
   const { invoices, categories } = useSelector((state) => ({
     invoices: state.Invoice.invoices,
     categories: state.Achat.categories,
@@ -602,30 +600,29 @@ const ModalCreate = ({
                       <Label htmlFor="entity-field" className="form-label">
                         Client/Fournisseur
                       </Label>
-
-                      <Input
-                        type="select"
-                        className="form-select mb-0"
-                        invalid={
-                          validation.touched.entity && validation.errors.entity
-                            ? true
-                            : false
+                      {console.log(validation.values.entity)}
+                      <Select
+                        placeholder={"Selectionnez un client/fournisseur"}
+                        value={ {
+                          label:collaborateurs?.filter(e=>e.ent_id===validation.values.entity)[0]?.ent_name,
+                          value:validation.values.entity,
                         }
-                        value={validation.values.entity}
-                        onChange={validation.handleChange}
-                        onBlur={validation.handleBlur}
-                        name="entity"
-                        id="entity-field"
-                      >
-                        <option disabled={false} value={""}>
-                          Choisissez client/fournisseur
-                        </option>
-                        {collaborateurs.map((e, i) => (
-                          <option key={i} value={e.ent_id}>
-                            {e.ent_name}
-                          </option>
-                        ))}
-                      </Input>
+                        
+                         }
+                        onChange={(res) => {
+                          validation.setValues({
+                            ...validation.values,
+                            entity: res.value,
+                            entityName:res.label
+                          });
+                        }}
+                        options={collaborateurs.map((i) => ({
+                          label: i.ent_name,
+                          value: i.ent_id,
+                        }))}
+                        name="choices-single-default"
+                        id="entity"
+                      ></Select>
                       {validation.touched.entity && validation.errors.entity ? (
                         <FormFeedback type="invalid">
                           {validation.errors.entity}
@@ -714,8 +711,8 @@ const ModalCreate = ({
                   src={
                     !process.env.NODE_ENV ||
                     process.env.NODE_ENV === "development"
-                      ? `${api.API_URL}/v1/achat/doc/${achat.justificatif}/${userProfile.use_com_fk}`
-                      : `${api.API_PDF}/${userProfile.use_com_fk}/achat/${achat.justificatif}`
+                      ? `${api.API_URL}/v1/achat/doc/${achat?.justificatif}/${userProfile.use_com_fk}`
+                      : `${api.API_PDF}/${userProfile.use_com_fk}/achat/${achat?.justificatif}`
                   }
                   title={achat.justificatif}
                 ></iframe>

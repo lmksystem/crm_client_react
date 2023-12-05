@@ -13,6 +13,11 @@ import { toast } from "react-toastify";
 export const createUpdateAchat= createAsyncThunk("achat/createUpdateAchat", async (data) => {
   try {
     const response = await createUpdateAchatApi(data);
+    if(data?.associate){
+      toast.success('Achat mis à jour', { autoClose: 3000 })
+    }else{
+      toast.success('Achat(s) ajouté(s) !', { autoClose: 3000 })
+    }
     return response;
   }
   catch (error) {

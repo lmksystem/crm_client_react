@@ -20,7 +20,7 @@ import {
 
 export const getDevis = createAsyncThunk("devis/getDevis", async () => {
   try {
-    const response = getDevisApi();
+    const response = await getDevisApi();
     return response;
   } catch (error) {
     return error;
@@ -144,7 +144,7 @@ export const getEtatDevis = createAsyncThunk(
   "devis/getEtatDevis",
   async (id) => {
     try {
-      const response = getEtatDevisApi(id);
+      const response =await getEtatDevisApi(id);
       return response;
     } catch (error) {
       toast.error(

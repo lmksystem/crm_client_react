@@ -17,7 +17,6 @@ const achatSlice = createSlice({
   reducer: {},
   extraReducers: (builder) => {
     builder.addCase(createUpdateAchat.fulfilled, (state, action) => {
-      toast.success('Ajout réussie', { autoClose: 3000 })
       state.isAchatSuccess = true;
       if(!Array.isArray(action.payload.data)){
         let index = state.achats.findIndex(

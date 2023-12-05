@@ -57,18 +57,6 @@ const DevisList = () => {
   const [devisList, setDevisList] = useState([]);
   const [devis, setDevis] = useState([]);
 
-  useEffect(() => {
-    if (devis) {
-      setDevisList(devis)
-    }
-  }, [devis])
-
-
-  useEffect(() => {
-    dispatch(onGetDevisWidgets())
-    dispatch(onGetDevis());
-    dispatch(onGetEtatDevis());
-  }, [dispatch]);
 
 
   const handleDeleteDevis = (id) => {
@@ -210,12 +198,25 @@ const DevisList = () => {
         }
       },
     ],
-    [checkedAll, dispatch]
+    [checkedAll, dispatch,etatDevis,devis]
   );
 
   useEffect(() => {
     setDevis(devisRedux);
-  }, [devisRedux])
+  }, [devisRedux]);
+
+  useEffect(() => {
+    // if (devis) {
+      setDevisList(devis);
+    // }
+  }, [devis,etatDevis])
+
+
+  useEffect(() => {
+    dispatch(onGetDevisWidgets())
+    dispatch(onGetDevis());
+    dispatch(onGetEtatDevis());
+  }, [dispatch]);
 
 
   return (

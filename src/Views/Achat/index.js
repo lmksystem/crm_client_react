@@ -195,6 +195,7 @@ const Achats = () => {
       transactionAssoc: (achat && achat.transactionAssoc) || [],
       entity: (achat && achat.entity) || "",
       rp: (achat && achat.rp) || 0.0,
+      entityName: collaborateurs?.filter(e=>e.ent_id===achat.entity)[0]?.ent_name,
     },
     validationSchema: Yup.object({
       montant: Yup.number().required("Veuillez choisir entrer un montant"),
@@ -235,6 +236,7 @@ const Achats = () => {
             ach_met: values.methode,
             ach_num: values.numero,
             ach_rp: values.rp,
+            ent_name :values.entityName
           },
           associate: newTransAssoc,
         };
