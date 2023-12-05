@@ -31,7 +31,7 @@ export const addNewDevis = createAsyncThunk(
   "devis/addNewDevis",
   async (Devis) => {
     try {
-      const response = addNewDevisApi(Devis);
+      const response = await addNewDevisApi(Devis);
       toast.success("Devis ajouté", { autoClose: 3000 });
       return response;
     } catch (error) {
@@ -45,10 +45,9 @@ export const updateDevis = createAsyncThunk(
   "devis/updateDevis",
   async (Devis) => {
     try {
-      const response = updateDevisApi(Devis);
+      const response = await updateDevisApi(Devis);
       toast.success("Devis mis à jour", { autoClose: 3000 });
-      const data = await response;
-      return data;
+      return response;
     } catch (error) {
       toast.error("Erreur mise à jour de devis", { autoClose: 3000 });
       return error;
