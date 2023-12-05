@@ -63,7 +63,7 @@ const InvoiceCreate = () => {
 
   let { state } = useLocation();
   const dispatch = useDispatch();
-  const history = useNavigate();
+  const navigate = useNavigate();
 
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -127,10 +127,17 @@ const InvoiceCreate = () => {
   document.title = "Création devis | Countano";
 
   const submitFormData = (sendEmail) => {
-    dispatch(onAddNewDevis({ devis: validation.values, send: sendEmail })).then(() => {
-      history("/devis/liste");
+    try {
+    dispatch(onAddNewDevis({ devis: validation.values, send: sendEmail }))
+    // .then(() => {
+      console.log("je vais navvigate")
       validation.resetForm();
-    });
+      navigate("/devis/liste");
+
+    // });
+    } catch (error) {
+      console.log(error)
+    }
 
   }
 
@@ -382,6 +389,7 @@ const InvoiceCreate = () => {
           onCloseClick={() => {
             setShowConfirmModal(false);
             submitFormData(false);
+
           }}
           onActionClick={() => {
             setShowConfirmModal(false);

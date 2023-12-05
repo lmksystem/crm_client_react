@@ -14,15 +14,18 @@ export const genRandonString = (length) => {
 }
 
 export function customFormatNumber(number) {
-  if(typeof number !='number' || number==NaN){
-    return 0;
+  if(typeof number !== 'number' || isNaN(number) || number ===null){
+    return "0,00";
   }
-  // Convertir le nombre en une chaîne de caractères
+  // // Convertir le nombre en une chaîne de caractères
 
   let numberString = number.toFixed(2).toString();
 
   // Remplacer le point par une virgule
-  numberString = numberString.replace('.', ',');
+  if(numberString.includes('.')){
+    numberString = numberString.replace('.', ',');
+    
+  }
 
   // Ajouter des espaces pour séparer les milliers
   numberString = numberString.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
