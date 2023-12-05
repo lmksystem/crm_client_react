@@ -161,7 +161,7 @@ const InvoiceCreate = () => {
         fen_ent_fk: "",
         fen_sujet: "",
         fen_date_expired: moment().format('YYYY-MM-DD'),
-        fen_etat: "",
+        fen_etat: 5,
         fen_total_ht: 0,
         fen_total_ttc: 0,
         fen_total_tva: 0,
@@ -813,7 +813,6 @@ const InvoiceCreate = () => {
                           name="header.fen_date_expired"
                           id="date-field"
                           className="form-control"
-                          placeholder="Select a date"
                           onBlur={validation.handleBlur}
                           onChange={validation.handleChange}
                           value={validation.values.header.fen_date_expired || ""}

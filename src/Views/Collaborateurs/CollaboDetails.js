@@ -111,7 +111,7 @@ const CollaboDetails = ({}) => {
                 <CardHeader>
                   <h3 style={{color:"rgb(0, 77, 133)" }}>Détails du client / fournisseur</h3>
                 </CardHeader>
-                <Card>
+                <Card  style={{ height: "250px" }}>
                   <p className="px-3 py-1 my-1">
                     Prénom : {collaboDetails?.infoBase?.ent_firstname}
                   </p>

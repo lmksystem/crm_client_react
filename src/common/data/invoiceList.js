@@ -5,6 +5,8 @@ const allstatus = [
   { value: "2", label: "Impayé" },
   { value: "3", label: "Remboursé" },
   { value: "4", label: "Annulé" },
+  { value: "5", label: "Non payé" },
+
 ];
 
 const invoiceWidgets = [

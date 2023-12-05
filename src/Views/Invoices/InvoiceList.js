@@ -198,8 +198,9 @@ const InvoiceList = () => {
         <Container fluid>
           <BreadCrumb title="Factures" pageTitle="Facturation" />
           <h3>Statistiques de l'année</h3>
-          <Row>
-            {invoiceWidgets?.map((widget,i) => {
+          <Row className="d-flex  justify-content-around ">
+            {invoiceWidgets?.filter(e=>e.icon!="none")?.map((widget,i) => {
+              console.log(widget)
               return <WidgetCountUp key={i} data={widget} type={"Factures"} />
             })}
           </Row>

@@ -23,8 +23,8 @@ const WidgetCountUp = ({ data, type, xl = 3, md = 6 }) => {
   return (
     <React.Fragment>
       <Col xl={xl} md={md}>
-        <Card className="card-animate">
-          <CardBody>
+        <Card className="card-animate" >
+          <CardBody >
             <div className="d-flex align-items-center">
               <div className="flex-grow-1">
                 <p style={{ color:"#ff9f00" }}  className="text-uppercase fw-medium  mb-0">
