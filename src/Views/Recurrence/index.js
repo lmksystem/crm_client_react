@@ -49,6 +49,7 @@ import SimpleBar from "simplebar-react";
 import moment from "moment";
 import DataTable from "react-data-table-component";
 import { customFormatNumber } from "../../utils/function";
+import { removeRecurrenceById } from "../../slices/recurrence/reducer";
 
 
 const Recurrence = () => {
@@ -89,7 +90,7 @@ const Recurrence = () => {
     dispatch(onGetRecurrences())
     dispatch(onGetCollaborateurs());
 
-  }, []);
+  }, [openList]);
 
   //delete Conatct
   const [deleteModal, setDeleteModal] = useState(false);
@@ -133,7 +134,7 @@ const Recurrence = () => {
       dispatch(onDeleteRecurrence(recurrenceToDelete));
       setDeleteModal(false);
       if (isLastRec) {
-        setShow(false);
+        setOpenList(false);
       }
     }
   };
@@ -142,6 +143,7 @@ const Recurrence = () => {
     setRecurrenceToDelete(rec_id);
     setDeleteModal(true);
     setIsLastRec(is_last);
+
   };
 
   // validation
@@ -267,12 +269,48 @@ const Recurrence = () => {
     ],
     []
   );
+    const [idModif,setIdModif] =useState(null);
+    const [newMontantValue,setNewMontantValue] =useState(0);
 
   let columns2 = [
     { name: "Produit", selector: row => row.rec_pro_name, sortable: true, },
     { name: "Qté", selector: row => row.rec_pro_qty, sortable: true, width: "70px" },
-    { name: "Montant/unit", selector: row => row.rec_montant + "€", sortable: true },
+    { name: "Montant/unit", selector: (row) => {
+      if(idModif == row.rec_id){
+        return(
+        <div className="input-group">
+            <input type="number" value={newMontantValue} onChange={(e)=>setNewMontantValue(e.target.value)} className="form-control" />
+        </div>
+        )
+      }
+      return (row.rec_montant + "€")
+    
+    }
+,
+    sortable: true
+    },
     { name: "Échéance", selector: row => moment(row.rec_date_echeance).format('D MMM'), sortable: true },
+    {
+      name: "", selector: (row) => {
+        return (
+          <i 
+          onClick={
+            () => { if(idModif==row.rec_id){
+              setIdModif(null);
+              dispatch(onAddRecurrence({
+                rec_id:row.rec_id,
+                rec_montant:newMontantValue
+              }));
+              setInfo({...info,rec_montant:newMontantValue});
+            }else{
+              setIdModif(row.rec_id);
+              setNewMontantValue(row.rec_montant);
+            }}
+          } className={idModif==row.rec_id?"ri-check-fill text-success fs-18":"ri-pencil-fill"}></i>
+        )
+      },
+      width: "50px"
+    },
     {
       name: "", selector: (row) => {
         return (
@@ -280,7 +318,10 @@ const Recurrence = () => {
         )
       },
       width: "50px"
-    }]
+    },
+   
+  
+  ]
 
   //  Internally, customStyles will deep merges your customStyles with the default styling.
   const customStyles = {
@@ -317,7 +358,8 @@ const Recurrence = () => {
         <DeleteModal
           show={deleteModal}
           onDeleteClick={handleDeleteRecurrence}
-          onCloseClick={() => { setDeleteModal(false); setIsLastRec(false); }}
+          onCloseClick={() => { setDeleteModal(false); setIsLastRec(false);  
+               }}
         />
 
         <Container fluid>
@@ -457,7 +499,7 @@ const Recurrence = () => {
             return false;
           }}>
 
-            <ModalBody>
+            <ModalBody className="p-2">
               <Row>
 
 
@@ -752,9 +794,9 @@ const Recurrence = () => {
 
             <Row className="g-3">
 
-              <SimpleBar autoHide={false} style={{ maxHeight: "220px" }} className="px-3">
+              <SimpleBar autoHide={false} style={{ maxHeight: "250px" }} className="px-3">
                 <Col lg={12} className="">
-                  <div style={{}}>
+                  <div >
                     <DataTable columns={columns2} data={recurrenceOfEntity} tableStyle={{ minWidth: '60rem' }} customStyles={customStyles} />
 
                   </div>

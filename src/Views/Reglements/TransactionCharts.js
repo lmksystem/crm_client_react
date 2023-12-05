@@ -46,6 +46,13 @@ const TransactionCharts = ({ chartData }) => {
       },
 
     },
+    yaxis: {
+      labels: {
+        formatter: function (value) {
+          return value.toFixed(0); // Formater les valeurs à deux chiffres après la virgule
+        }
+      }
+    },
     stroke: {
       curve: "straight",
       dashArray: [0, 0, 8],

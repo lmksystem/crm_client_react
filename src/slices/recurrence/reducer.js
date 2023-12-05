@@ -11,7 +11,13 @@ export const initialState = {
 const RecurrenceSlice = createSlice({
   name: 'recurrence',
   initialState,
-  reducer: {},
+  reducer: {
+    removeRecurrenceById: (state, action) => {
+      const idToRemove = action.payload;
+      state.recurrences = state.recurrences.filter(recurrence => recurrence.rec_id !== idToRemove);
+    },
+
+  },
   extraReducers: (builder) => {
     builder.addCase(getRecurrences.fulfilled, (state, action) => {
   
@@ -58,5 +64,5 @@ const RecurrenceSlice = createSlice({
     });
   }
 });
-
+export const { removeRecurrenceById } = RecurrenceSlice.actions;
 export default RecurrenceSlice.reducer;

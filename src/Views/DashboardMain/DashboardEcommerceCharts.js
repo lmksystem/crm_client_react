@@ -121,6 +121,14 @@ const RevenueCharts = ({ dataColors, series }) => {
         barHeight: "70%",
       },
     },
+
+      yaxis: {
+      labels: {
+        formatter: function (value) {
+          return value.toFixed(0); // Formater les valeurs à deux chiffres après la virgule
+        }
+      }
+    },
     colors: linechartcustomerColors,
     tooltip: {
       shared: true,
