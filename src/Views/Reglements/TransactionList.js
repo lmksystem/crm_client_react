@@ -391,7 +391,7 @@ const TransactionList = () => {
         </Container>
         <Modal id="showModal" isOpen={modal} toggle={toggle} centered size="lg">
           <ModalHeader className="bg-soft-info p-3" toggle={toggle}>
-            Ajouter un transaction
+            Ajouter une transaction
           </ModalHeader>
           <Form
             className="tablelist-form"
@@ -406,7 +406,7 @@ const TransactionList = () => {
               <Row className="g-3">
                 <Col lg={6}>
                   <Select
-                    placeholder={"Selectionnez un facture"}
+                    placeholder={"Selectionnez une facture"}
                     value={selectedInvoice}
                     onChange={(res) => {
                       setSelectedInvoice(res);
@@ -416,7 +416,7 @@ const TransactionList = () => {
                       });
                     }}
                     options={invoices.map((i) => ({
-                      label: i.header.fen_sujet,
+                      label: i.header.fen_num_fac+" - "+i.header.fen_sujet,
                       value: i.header.fen_id,
                     }))}
                     name="choices-single-default"
