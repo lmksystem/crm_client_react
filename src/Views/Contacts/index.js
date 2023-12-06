@@ -646,7 +646,7 @@ const Contacts = () => {
                                 Entreprise
                               </Label>
                               <Select
-                                defaultValue={{ label: 'Séléctionner...', value: null }}
+                                defaultValue={{ label: 'Sélectionner...', value: null }}
                                 value={collaborateur}
                                 onChange={(e) => {
                                   handlestag(e);

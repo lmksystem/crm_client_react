@@ -7,11 +7,11 @@ import {
   Input,
   Form,
 } from "reactstrap";
-import { useFormik, validateYupSchema } from "formik";
+import { useFormik } from "formik";
 
 import { handleAlert as onHandleAlert, getAlert as onGetAlert, deleteAlert as onDeleteAlert } from '../../slices/thunks'
 import { useDispatch, useSelector } from "react-redux";
-import { deleteOneAlert } from "../../slices/gestion/reducer";
+import { toast } from "react-toastify";
 
 const AlertParametrage = () => {
   const { alerts } = useSelector((state) => ({
@@ -30,8 +30,18 @@ const AlertParametrage = () => {
 
     },
     onSubmit: (values) => {
-      let alerts = values.alerts
-
+      let alerts = values.alerts;
+      const occurrences = {};
+      values.alerts.forEach(({ aec_delai }) => {
+        occurrences[aec_delai] = (occurrences[aec_delai] || 0) + 1;
+      });
+      const valeursSimilaires = Object.entries(occurrences)
+      .filter(([_, count]) => count > 1)
+      .map(([valeur]) => valeur);
+      if (valeursSimilaires.length > 0) {
+        toast.error('Des valeurs sont similaires ! ', { autoClose: 3000 });
+        return
+      }
       dispatch(onHandleAlert(alerts));
       return;
 

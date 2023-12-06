@@ -175,77 +175,6 @@ const Achats = () => {
     },
   });
 
-  
-  // validation
-  const validation = useFormik({
-    // enableReinitialize : use this flag when initial values needs to be changed
-    enableReinitialize: true,
-
-    initialValues: {
-      id: (achat && achat.id) || "",
-      montant: (achat && achat.montant) || 0.0,
-      tva: (achat && achat.tva) || 0.0,
-      libelle: (achat && achat.libelle) || "",
-      categorie: (achat && achat.categorie) || "",
-      methode: (achat && achat.methode) || "",
-      dateAchat: (achat && achat.dateAchat) || "",
-      dateEcheance: (achat && achat.dateEcheance) || "",
-      numero: (achat && achat.numero) || "",
-      justificatif: (achat && achat.justificatif) || "",
-      transactionAssoc: (achat && achat.transactionAssoc) || [],
-      entity: (achat && achat.entity) || "",
-      rp: (achat && achat.rp) || 0.0,
-      entityName: collaborateurs?.filter(e=>e.ent_id===achat.entity)[0]?.ent_name,
-    },
-    validationSchema: Yup.object({
-      montant: Yup.number().required("Veuillez choisir entrer un montant"),
-      categorie: Yup.string().required("Veuillez choisir entrer une catégorie"),
-      entity: Yup.number().required("Veuillez choisir un client/fournisseur"),
-    }),
-   
-    onSubmit: (values) => {
-      if (isEdit) {
-        let TRANS_ASSOC_DISOC =
-          transFilter?.data?.filter(
-            (item) => item.type === "assoc" || item.type == "disoc" || item.old==1
-          ) || [];
-        let newTransAssoc = TRANS_ASSOC_DISOC?.map((trAss) => {
-          let newItem = {
-            aba_ach_fk: values.id,
-            aba_tba_fk: trAss.tba_id,
-            aba_match_amount: Math.abs(trAss.tba_amount),
-            type: trAss.type,
-            tba_amount:trAss.tba_amount,
-
-          };
-          if (trAss.old == 1 && trAss.type == "disoc" && trAss.aba_id) {
-            newItem.aba_id = trAss.aba_id;
-          }
-          return newItem;
-        });
-        const updateAchat = {
-          dataUp: {
-            ach_id: achat?.id ? achat.id : 0,
-            ach_date_create: values.dateAchat,
-            ach_ent_fk: values.entity,
-            ach_date_expired: values.dateEcheance,
-            ach_total_amount: values.montant,
-            ach_total_tva: values.tva,
-            ach_categorie: values.categorie,
-            ach_lib: values.libelle,
-            ach_met: values.methode,
-            ach_num: values.numero,
-            ach_rp: values.rp,
-            ent_name :values.entityName
-          },
-          associate: newTransAssoc,
-        };
-        dispatch(onCreateUpdateAchat(updateAchat));
-        validation.resetForm();
-      }
-      toggle();
-    },
-  });
 
   // Update Data
   const handleContactClick = useCallback(
@@ -608,7 +537,7 @@ const Achats = () => {
                     )}
                   </div>
                   <ModalCreate
-                    validation={validation}
+                    // validation={validation}
                     modal={modal}
                     toggle={toggle}
                     isEdit={isEdit}

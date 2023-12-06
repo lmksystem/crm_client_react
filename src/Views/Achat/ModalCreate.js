@@ -20,19 +20,23 @@ import {
 } from "reactstrap";
 import "react-toastify/dist/ReactToastify.css";
 import SimpleBar from "simplebar-react";
-import Dropzone from "react-dropzone";
+import * as Yup from "yup";
+
 import DropFileComponents from "./DropFileComponent";
 import {
   getInvoices as onGetInvoices,
   getCategorieAchat as onGetCategorieAchat,
+  createUpdateAchat as onCreateUpdateAchat,
+
 } from "../../slices/thunks";
 import { useDispatch, useSelector } from "react-redux";
 import { api } from "../../config";
 import { getLoggedinUser } from "../../helpers/api_helper";
 import Select from "react-select";
+import { useFormik } from "formik";
 
 const ModalCreate = ({
-  validation,
+  // validation,
   modal,
   toggle,
   setModal,
@@ -157,7 +161,79 @@ const ModalCreate = ({
     });
     setTransFilter({ ...transFilter, data: newArrayselected });
   };
+  const validation = useFormik({
+    // enableReinitialize : use this flag when initial values needs to be changed
+    enableReinitialize: true,
 
+    initialValues: {
+      id: (achat && achat.id) || "",
+      montant: (achat && achat.montant) || 0.0,
+      tva: (achat && achat.tva) || 0.0,
+      libelle: (achat && achat.libelle) || "",
+      categorie: (achat && achat.categorie) || "",
+      methode: (achat && achat.methode) || "",
+      dateAchat: (achat && achat.dateAchat) || "",
+      dateEcheance: (achat && achat.dateEcheance) || "",
+      numero: (achat && achat.numero) || "",
+      justificatif: (achat && achat.justificatif) || "",
+      transactionAssoc: (achat && achat.transactionAssoc) || [],
+      entity: (achat && achat.entity) || "",
+      rp: (achat && achat.rp) || 0.0,
+      entityName: collaborateurs?.filter((e) => e.ent_id === achat.entity)[0]
+        ?.ent_name,
+    },
+    validationSchema: Yup.object({
+      montant: Yup.number().required("Veuillez choisir entrer un montant"),
+      categorie: Yup.string().required("Veuillez choisir entrer une catégorie"),
+      entity: Yup.number().required("Veuillez choisir un client/fournisseur"),
+      entityName: Yup.string().required(
+        "Veuillez choisir un client/fournisseur"
+      ),
+    }),
+
+    onSubmit: (values) => {
+      if (isEdit) {
+        let TRANS_ASSOC_DISOC =
+          transFilter?.data?.filter(
+            (item) =>
+              item.type === "assoc" || item.type == "disoc" || item.old == 1
+          ) || [];
+        let newTransAssoc = TRANS_ASSOC_DISOC?.map((trAss) => {
+          let newItem = {
+            aba_ach_fk: values.id,
+            aba_tba_fk: trAss.tba_id,
+            aba_match_amount: Math.abs(trAss.tba_amount),
+            type: trAss.type,
+            tba_amount: trAss.tba_amount,
+          };
+          if (trAss.old == 1 && trAss.type == "disoc" && trAss.aba_id) {
+            newItem.aba_id = trAss.aba_id;
+          }
+          return newItem;
+        });
+        const updateAchat = {
+          dataUp: {
+            ach_id: achat?.id ? achat.id : 0,
+            ach_date_create: values.dateAchat,
+            ach_ent_fk: values.entity,
+            ach_date_expired: values.dateEcheance,
+            ach_total_amount: values.montant,
+            ach_total_tva: values.tva,
+            ach_categorie: values.categorie,
+            ach_lib: values.libelle,
+            ach_met: values.methode,
+            ach_num: values.numero,
+            ach_rp: values.rp,
+            ent_name: values.entityName,
+          },
+          associate: newTransAssoc,
+        };
+        dispatch(onCreateUpdateAchat(updateAchat));
+        validation.resetForm();
+      }
+      toggle();
+    },
+  });
   const typesAchat = [
     {
       value: "Charge",
@@ -336,7 +412,7 @@ const ModalCreate = ({
                   <Col lg={6}>
                     <div>
                       <Label htmlFor="montant-field" className="form-label">
-                        Montant Total (TVA inclus)
+                        Montant Total (TVA inclus)*
                       </Label>
                       <Input
                         name="montant"
@@ -422,7 +498,7 @@ const ModalCreate = ({
                   <Col lg={6}>
                     <div>
                       <Label htmlFor="categorie-field" className="form-label">
-                        Catégorie
+                        Catégorie*
                       </Label>
                       <UncontrolledDropdown className="input-group">
                         <Input
@@ -595,25 +671,32 @@ const ModalCreate = ({
                       ) : null}
                     </div>
                   </Col>
+
                   <Col lg={12}>
                     <div>
                       <Label htmlFor="entity-field" className="form-label">
-                        Client/Fournisseur
+                        Client/Fournisseur*
                       </Label>
                       {console.log(validation.values.entity)}
                       <Select
-                        placeholder={"Selectionnez un client/fournisseur"}
-                        value={ {
-                          label:collaborateurs?.filter(e=>e.ent_id===validation.values.entity)[0]?.ent_name,
-                          value:validation.values.entity,
+                        invalid={
+                          (validation.touched.entity &&
+                            validation.errors.entity) ||
+                          (validation.touched.entityName &&
+                            validation.errors.entityName)
+                            ? true
+                            : false
                         }
-                        
-                         }
+                        placeholder={"Selectionnez un client/fournisseur"}
+                        value={{
+                          label: collaborateurs?.filter( (e) => e.ent_id === validation.values.entity )[0]?.ent_name,
+                          value: validation.values.entity,
+                        }}
                         onChange={(res) => {
                           validation.setValues({
                             ...validation.values,
                             entity: res.value,
-                            entityName:res.label
+                            entityName: res.label,
                           });
                         }}
                         options={collaborateurs.map((i) => ({
@@ -623,9 +706,15 @@ const ModalCreate = ({
                         name="choices-single-default"
                         id="entity"
                       ></Select>
-                      {validation.touched.entity && validation.errors.entity ? (
-                        <FormFeedback type="invalid">
-                          {validation.errors.entity}
+                      {(validation.touched.entity &&
+                        validation.errors.entity) ||
+                      (validation.touched.entityName &&
+                        validation.errors.entityName) ? (
+                        <FormFeedback
+                          type="invalid"
+                          style={{ display: "block" }}
+                        >
+                          {validation.errors.entityName}
                         </FormFeedback>
                       ) : null}
                     </div>

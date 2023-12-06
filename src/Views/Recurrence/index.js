@@ -188,7 +188,7 @@ const Recurrence = () => {
   });
 
   /**
-  * Fonction de recherche d'un client lors de la séléction
+  * Fonction de recherche d'un client lors de la sélection
   * @returns 
   */
   const handleListClient = () => {
@@ -422,7 +422,7 @@ const Recurrence = () => {
         </Container>
         <Modal id="showModal" isOpen={modalProduct} toggle={toggleModalProduct} centered>
           <ModalHeader className="bg-soft-info p-3" toggle={toggleModalProduct}>
-            Séléctionner un produit
+            Sélectionnez un produit
           </ModalHeader>
 
 
@@ -592,7 +592,7 @@ const Recurrence = () => {
                       invalid={validation.errors?.recurrence_data?.rec_quand && validation.touched?.recurrence_data?.rec_quand ? true : false}
 
                     >
-                      <option>Séléctionnez une répétition...</option>
+                      <option>Sélectionnez une répétition...</option>
                       <option value={1} >Jours</option>
                       <option value={2}>Semaines</option>
                       <option value={3}>Mois</option>
@@ -722,7 +722,7 @@ const Recurrence = () => {
         </Modal>
         <Modal id="showModal" isOpen={modalClient} toggle={toggleModalClient} centered>
           <ModalHeader className="bg-soft-info p-3" toggle={toggleModalClient}>
-            Séléctionner un client
+            Sélectionnez un client
           </ModalHeader>
 
 
@@ -779,7 +779,7 @@ const Recurrence = () => {
           <ModalFooter>
             <div className="hstack gap-2 justify-content-end">
               <button type="button" className="btn btn-light" onClick={() => { setModalClient(false); }} > Fermer </button>
-              <button type="submit" className="btn btn-success" id="add-btn" > Séléctionner </button>
+              <button type="submit" className="btn btn-success" id="add-btn" > Sélectionner </button>
             </div>
           </ModalFooter>
 
@@ -807,7 +807,7 @@ const Recurrence = () => {
           <ModalFooter>
             <div className="hstack gap-2 justify-content-end">
               <button type="button" className="btn btn-light" onClick={() => { setOpenList(false); }} > Fermer </button>
-              {/* <button type="submit" className="btn btn-success" id="add-btn" > Séléctionner </button> */}
+              {/* <button type="submit" className="btn btn-success" id="add-btn" > Séléetionner </button> */}
             </div>
           </ModalFooter>
 

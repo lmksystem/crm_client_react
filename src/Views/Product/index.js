@@ -439,7 +439,7 @@ const Products = () => {
                                   validation.touched.pro_tva && validation.errors.pro_tva ? true : false
                                 }
                               >
-                                <option value={0}>Séléctionnez une Tva</option>
+                                <option value={0}>Sélectionnez une Tva</option>
                                 {tva?.map((e, i) => <option {...e.value == product?.pro_tva ? "selected" : ""} key={i} value={e.tva_value}>{e.tva_libelle}</option>)}
                               </Input>
                               {validation.touched.pro_tva && validation.errors.pro_tva ? (

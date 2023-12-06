@@ -206,7 +206,7 @@ const InvoiceCreate = () => {
   });
 
   /**
-   * Fonction de recherche d'un client lors de la séléction
+   * Fonction de recherche d'un client lors de la sélection
    * @returns 
    */
   const handleListClient = () => {
@@ -1152,7 +1152,7 @@ const InvoiceCreate = () => {
         </Row>
         <Modal id="showModal" isOpen={modal} toggle={toggle} centered>
           <ModalHeader className="bg-soft-info p-3" toggle={toggle}>
-            Séléctionner un client
+            Sélectionnez un client
           </ModalHeader>
 
 
@@ -1200,14 +1200,14 @@ const InvoiceCreate = () => {
           <ModalFooter>
             <div className="hstack gap-2 justify-content-end">
               <button type="button" className="btn btn-light" onClick={() => { setModal(false); }} > Fermer </button>
-              <button type="submit" className="btn btn-success" id="add-btn" > Séléctionner </button>
+              <button type="submit" className="btn btn-success" id="add-btn" > Sélectionner </button>
             </div>
           </ModalFooter>
 
         </Modal>
         <Modal id="showModal" isOpen={modalProduct} toggle={toggleModalProduct} centered>
           <ModalHeader className="bg-soft-info p-3" toggle={toggleModalProduct}>
-            Séléctionner un produit
+            Sélectionnez un produit
           </ModalHeader>
 
 
@@ -1249,7 +1249,7 @@ const InvoiceCreate = () => {
                             ...validation.values,
                             ligne: validation.values.ligne.map((l, lingeIndex) => { return selectedLigne == lingeIndex ? newData : l })
                           })
-                          toggleModalProduct()
+                          toggleModalProduct();
                         }}
                         key={key}
                       >

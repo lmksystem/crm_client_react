@@ -22,7 +22,7 @@ const DashboardMain = () => {
 
   const dispatch = useDispatch();
   const dateActuelle = moment(); // Obtenez la date actuelle
-  const dateNow = dateActuelle.format('DD MMM YYYY')
+  const dateNow =  moment(dateActuelle,"DD MMM YYYY");
   const premiereDateAnnee = dateActuelle.startOf('year'); // Obtenez la première date de l'année
   const formattedDate = premiereDateAnnee.format('DD MMM YYYY'); // Formatez la date
   const [perdiodeCalendar,setPeriodeCalendar] = useState({
@@ -34,41 +34,41 @@ const DashboardMain = () => {
     dispatch(
       onGetTransactionPricePeriode({
         dateDebut: perdiodeCalendar.start
-          ? moment(perdiodeCalendar.start).format("YYYY-MM-DD")
-          : null,
-        dateFin: perdiodeCalendar.end
-          ? moment(perdiodeCalendar.end).format("YYYY-MM-DD")
-          : null,
+        ? moment(perdiodeCalendar.start).format("YYYY-MM-DD")
+        : null,
+      dateFin: perdiodeCalendar.end
+        ? moment(perdiodeCalendar.end).format("YYYY-MM-DD")
+        : null,
       })
     );
     dispatch(
       onGetDevisPeriodCount({
         dateDebut: perdiodeCalendar.start
-          ? moment(perdiodeCalendar.start).format("YYYY-MM-DD")
-          : null,
-        dateFin: perdiodeCalendar.end
-          ? moment(perdiodeCalendar.end).format("YYYY-MM-DD")
-          : null,
+        ? moment(perdiodeCalendar.start).format("YYYY-MM-DD")
+        : null,
+      dateFin: perdiodeCalendar.end
+        ? moment(perdiodeCalendar.end).format("YYYY-MM-DD")
+        : null,
       })
     );
     dispatch(
       onGetInvoicePeriodCount({
         dateDebut: perdiodeCalendar.start
-          ? moment(perdiodeCalendar.start).format("YYYY-MM-DD")
-          : null,
-        dateFin: perdiodeCalendar.end
-          ? moment(perdiodeCalendar.end).format("YYYY-MM-DD")
-          : null,
+        ? moment(perdiodeCalendar.start).format("YYYY-MM-DD")
+        : null,
+      dateFin: perdiodeCalendar.end
+        ? moment(perdiodeCalendar.end).format("YYYY-MM-DD")
+        : null,
       })
     );
     dispatch(
       onGetEntityPeriodCount({
         dateDebut: perdiodeCalendar.start
-          ? moment(perdiodeCalendar.start).format("YYYY-MM-DD")
-          : null,
-        dateFin: perdiodeCalendar.end
-          ? moment(perdiodeCalendar.end).format("YYYY-MM-DD")
-          : null,
+        ? moment(perdiodeCalendar.start).format("YYYY-MM-DD")
+        : null,
+      dateFin: perdiodeCalendar.end
+        ? moment(perdiodeCalendar.end).format("YYYY-MM-DD")
+        : null,
       })
     );
     dispatch(onGetTransactionByMonth({
