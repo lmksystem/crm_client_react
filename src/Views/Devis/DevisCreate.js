@@ -1026,11 +1026,11 @@ const InvoiceCreate = () => {
                         </tr>
                         <tr className="border-top border-top-dashed mt-2">
                           <td colSpan="5"></td>
-                          <td colSpan="2" className="p-0">
+                          <td colSpan="3" className="p-0">
                             <Table className="table-borderless table-sm table-nowrap align-middle mb-0">
                               <tbody>
                                 <tr>
-                                  <th scope="row">Sous total (ht)</th>
+                                  <th scope="row" className="text-end">Sous total (ht)</th>
                                   <td style={{ width: "150px" }}>
                                     <Input
                                       type="text"
@@ -1043,7 +1043,7 @@ const InvoiceCreate = () => {
                                   </td>
                                 </tr>
                                 <tr>
-                                  <th scope="row">Total remise</th>
+                                  <th scope="row" className="text-end">Total remise</th>
                                   <td>
                                     <Input
                                       type="text"
@@ -1055,26 +1055,8 @@ const InvoiceCreate = () => {
                                     />
                                   </td>
                                 </tr>
-                                {/* <tr>
-                                  <th scope="row">
-                                    Discount{" "}
-                                    <small className="text-muted">
-                                      (Coutanto15)
-                                    </small>
-                                  </th>
-                                  <td>
-                                    <Input
-                                      type="text"
-                                      className="form-control bg-light border-0"
-                                      id="cart-discount"
-                                      placeholder="$0.00"
-                                      readOnly
-                                      value={"€" + dis}
-                                    />
-                                  </td>
-                                </tr> */}
                                 <tr>
-                                  <th scope="row">Total TVA</th>
+                                  <th scope="row" className="text-end">Total TVA</th>
                                   <td>
                                     <Input
                                       type="text"
@@ -1087,7 +1069,7 @@ const InvoiceCreate = () => {
                                   </td>
                                 </tr>
                                 <tr className="border-top border-top-dashed">
-                                  <th scope="row">Total (TTC)</th>
+                                  <th scope="row" className="text-end">Total (TTC)</th>
                                   <td>
                                     <Input
                                       type="text"

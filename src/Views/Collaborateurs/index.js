@@ -153,8 +153,7 @@ const Collaborateurs = () => {
       ent_siren: (collaborateur && collaborateur.ent_siren) || "",
       ent_methode_payment:
         (collaborateur && collaborateur.ent_methode_payment) || "",
-      ent_tva_intracom:
-        (collaborateur && collaborateur.ent_tva_intracom) || "",
+      ent_tva_intracom: (collaborateur && collaborateur.ent_tva_intracom) || "",
       type: {
         // { eti_removed: 1 } permet au backend de savoir si il doit l'inserrer ou non  (1 : non / 0: oui)
         client: (collaborateur && collaborateur.type?.client) || {
@@ -187,7 +186,30 @@ const Collaborateurs = () => {
       ent_iban: Yup.string(),
       ent_siren: Yup.string(),
       ent_methode_payment: Yup.string(),
-      ent_tva_intracom:Yup.string().matches(/^[A-Za-z]{2}[0-9]{9}$/, 'Le champ doit contenir 2 lettres suivies de 9 chiffres.'),
+      ent_tva_intracom: Yup.string().matches(
+        /^[A-Za-z]{2}[0-9]{9}$/,
+        "Le champ doit contenir 2 lettres suivies de 9 chiffres."
+      ),
+      type: Yup.object().shape({
+        client: Yup.object().shape({
+          eti_removed: Yup.number().oneOf(
+            [0],
+            "Sélectionnez au moins une option"
+          ),
+        }),
+        prospect: Yup.object().shape({
+          eti_removed: Yup.number().oneOf(
+            [0],
+            "Sélectionnez au moins une option"
+          ),
+        }),
+        fournisseur: Yup.object().shape({
+          eti_removed: Yup.number().oneOf(
+            [0],
+            "Sélectionnez au moins une option"
+          ),
+        }),
+      }),
     }),
 
     onSubmit: (values) => {
@@ -208,7 +230,6 @@ const Collaborateurs = () => {
         ent_siren: values.ent_siren,
         ent_methode_payment: values.ent_methode_payment,
         ent_tva_intracom: values.ent_tva_intracom,
-
       };
 
       const company_type = {
@@ -540,14 +561,21 @@ const Collaborateurs = () => {
       },
     });
   };
+  const isAtLeastOneCheckboxChecked = (type) => {
+    return (
+      type.client.eti_removed === 1 &&
+      type.prospect.eti_removed === 1 &&
+      type.fournisseur.eti_removed === 1
+    );
+  };
 
   useEffect(() => {
     if (show) {
       setTimeout(() => {
-        document.getElementById('start-anime').classList.add("show-cus")
+        document.getElementById("start-anime").classList.add("show-cus");
       }, 350);
     } else {
-      document.getElementById('start-anime').classList.remove("show-cus")
+      document.getElementById("start-anime").classList.remove("show-cus");
     }
   }, [show]);
 
@@ -599,7 +627,10 @@ const Collaborateurs = () => {
                         }}
                       >
                         <i className="ri-add-fill me-1 align-bottom "></i>
-                       <p className="p-0 m-0"> {" "}Ajouter un client / fournisseur</p> 
+                        <p className="p-0 m-0">
+                          {" "}
+                          Ajouter un client / fournisseur
+                        </p>
                       </button>
                     </div>
                     <div className="flex-shrink-0">
@@ -740,7 +771,12 @@ const Collaborateurs = () => {
                               <Input
                                 type="checkbox"
                                 className="form-check-input ms-2"
-                                checked={validation.values.type.fournisseur.eti_removed == 0 ? true : false}
+                                checked={
+                                  validation.values.type.fournisseur
+                                    .eti_removed == 0
+                                    ? true
+                                    : false
+                                }
                                 onChange={(e) => handleTypeEntity(e)}
                                 name="fournisseur"
                                 id="isfournisseur-field"
@@ -773,6 +809,14 @@ const Collaborateurs = () => {
                               />
                             </div>
                           </Col>
+                          {validation.touched.type &&
+                          isAtLeastOneCheckboxChecked(
+                            validation.values.type
+                          ) ? (
+                            <FormFeedback type="invalid" style={{display:"block"}}>
+                              Sélectionnez au moins une option
+                            </FormFeedback>
+                           ) : null} 
                           <Col lg={6}>
                             <div>
                               <Label
@@ -1260,9 +1304,7 @@ const Collaborateurs = () => {
                                 // }}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
-                                value={
-                                  validation.values.ent_tva_intracom || ""
-                                }
+                                value={validation.values.ent_tva_intracom || ""}
                                 invalid={
                                   validation.touched.ent_tva_intracom &&
                                   validation.errors.ent_tva_intracom
@@ -1345,7 +1387,13 @@ const Collaborateurs = () => {
               <div id="start-anime">
                 <Card id="contact-view-detail">
                   <CardBody className="text-center">
-                    <div style={{ position: "absolute", right: 10, top: 5 }}><i onClick={() => setShow(false)} className="ri-close-fill" style={{ cursor: "pointer", fontSize: "20px" }}></i></div>
+                    <div style={{ position: "absolute", right: 10, top: 5 }}>
+                      <i
+                        onClick={() => setShow(false)}
+                        className="ri-close-fill"
+                        style={{ cursor: "pointer", fontSize: "20px" }}
+                      ></i>
+                    </div>
                     <div className="position-relative d-inline-block">
                       {/* <img
                         src={api.API_URL + "/v1/images/user-dummy-img.jpg"}
