@@ -20,7 +20,7 @@ import { api } from "../../config";
 import { customFormatNumber, rounded } from "../../utils/function";
 import ConfirmModal from "../../Components/Common/ConfirmModal";
 import DeleteModal from "../../Components/Common/DeleteModal";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import SimpleBar from "simplebar-react";
 import axios from "axios";
 import { getImage } from "../../utils/getImages";
@@ -52,6 +52,9 @@ const InvoiceDetails = () => {
 
   const [activeChange, setActiveChange] = useState(false);
   const [selectedEtat, setSelectedEtat] = useState(false);
+  const [valueSubject, setValueSubject] = useState("");
+  const [subjectChange, setSubjectChange] = useState(false);
+
 
   const dispatch = useDispatch();
 
@@ -62,7 +65,10 @@ const InvoiceDetails = () => {
   }, [invoices])
 
   useEffect(() => {
-    setSelectedEtat(etat?.find((d) => d.fet_id == invoice?.header.fen_etat)?.fet_name);
+    if(invoice){
+      setSelectedEtat(etat?.find((d) => d.fet_id == invoice?.header.fen_etat)?.fet_name);
+      setValueSubject(invoice?.header.fen_sujet)
+    }
   }, [invoice])
 
 
@@ -154,6 +160,7 @@ const InvoiceDetails = () => {
   return (
     <div className="page-content">
       <Container fluid>
+        
         <BreadCrumb className="d-print-none" title="Facture détaillée" pageTitle="Factures" />
         <ConfirmModal title={'Êtes-vous sûr ?'} text={"Êtes-vous sûr de vouloir envoyer la facture ?"} show={showConfirmModal} onCloseClick={() => setShowConfirmModal(false)} onActionClick={() => sendInvoiceByEmail()} />
         <DeleteModal show={showModalDelete} onCloseClick={() => setShowModalDelete(false)} onDeleteClick={() => deletetransaction()} />
@@ -171,16 +178,12 @@ const InvoiceDetails = () => {
                         {image && <img src={image} className="card-logo card-logo-dark" alt="logo dark" width="260" />}
                         </Col>
                         <Col lg={4} className="flex-shrink-0 mt-lg-0 mt-3">
-                          {/* <h6><span className="text-muted fw-normal">Legal Registration No:</span><span id="legal-register-no">987654</span></h6> */}
                           <h6><span className="text-muted fw-normal">Email : </span><span id="email">{invoice.contact.fco_email}</span></h6>
                           <h6><span className="text-muted fw-normal">Téléphone : </span>{invoice.contact.fco_phone}</h6>
                           <h6><span className="text-muted fw-normal">Adresse : </span><span id="email">{invoice.contact.fco_address}, {invoice.contact.fco_city}</span></h6>
                           <h6><span className="text-muted fw-normal">Code postal : </span>{invoice.contact.fco_cp}</h6>
                           <h6><span className="text-muted fw-normal">Compte Bancaire : </span>{invoice.header.fen_num_bank}</h6>
                           <h6><span className="text-muted fw-normal">Numéro TVA : </span>{invoice.header.fen_num_tva}</h6>
-
-
-                          {/* <h6 className="mb-0"><span className="text-muted fw-normal">Contact No: </span><span id="contact-no"> +(01) 234 6789</span></h6> */}
                         </Col>
                       </Row>
                     </div>
@@ -188,10 +191,33 @@ const InvoiceDetails = () => {
                 </Col>
                 <Col lg={12}>
                   <CardBody className="p-4 border-bottom border-bottom-dashed">
-                    <h6 className="text-muted text-uppercase fw-semibold mb-3">{invoice.header.fen_sujet}</h6>
-                    <Row className="g-3">
-
-                      <Col className="col-12 d-flex flex-column align-items-end">
+                  <Row className="g-3">
+                  <Col xs={12} md={6} lg={4} className="col-6 d-flex flex-column">
+                  {!subjectChange ?
+                       <h6 className="text-muted text-uppercase fw-semibold mb-3">{valueSubject}<FeatherIcon onClick={() => { setSubjectChange(() => !subjectChange) }} className={"mx-2 cursor-pointer"} size={13} icon={'edit-2'}></FeatherIcon></h6>
+                       
+                       :
+                       <div class="input-group"><input placeholder="Sujet"  type="text" 
+                       defaultValue={invoice.header.fen_sujet}
+                       class="form-control form-control"
+                       /><button
+                       onClick={
+                        (e)=>{
+                          if(e.target?.previousSibling?.value?.trim()?.length>0){
+                            dispatch(onUpdateInvoice({ fen_id: invoice.header.fen_id, fen_sujet: e.target.previousSibling.value }));
+                            setValueSubject( e.target.previousSibling.value)
+                            setSubjectChange(() => false);
+                          }else{
+                            toast.error('Veuillez entrer un sujet', { autoClose: 3000 })
+                          }
+                     
+                        }
+                       }
+                       class="btn btn-primary" type="button">Valider</button></div>
+                       }
+              
+              </Col>
+              <Col  xs={12} md={6} lg={8} className="col-6 d-flex flex-column align-items-end">
                         <h6 className="text-muted text-uppercase fw-semibold mb-3">Information Client</h6>
                         <p className="fw-medium mb-2" id="billing-name">{invoice.contact?.fco_cus_name}</p>
                         <p className="text-muted mb-1" id="billing-address-line-1">{invoice.contact.fco_cus_address}</p>
@@ -224,9 +250,6 @@ const InvoiceDetails = () => {
                           <select
                             defaultValue={invoice.header.fen_etat}
                             onChange={(e) => {
-                              let invoiceHeaderCopy = { ...invoice.header }
-                              invoiceHeaderCopy.den_etat = e.target.value
-                              // console.log(e.target.value);
                               dispatch(onUpdateInvoice({ fen_id: invoice.header.fen_id, fen_etat: e.target.value }));
                               setSelectedEtat(etat?.find((d) => d.fet_id == e.target.value)?.fet_name)
                               setActiveChange(() => false);
