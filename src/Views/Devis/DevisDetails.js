@@ -238,7 +238,7 @@ const DevisDetails = () => {
                         <thead>
                           <tr className="table-active">
                             <th scope="col" style={{ width: "50px" }}>#</th>
-                            <th scope="col">Détails produit</th>
+                            <th scope="col" >Détails produit</th>
                             <th scope="col" className="text-end">Quantité</th>
                             <th scope="col" className="text-end">Prix unitaire HT</th>
                             <th scope="col" className="text-end">Remise %</th>
@@ -251,7 +251,7 @@ const DevisDetails = () => {
 
                             <tr key={i}>
                               <th scope="row">{i + 1}</th>
-                              <td className="text-start">
+                              <td className="text-center">
                                 <span className="fw-medium">{ligne.dli_name}</span>
                                 <p className="text-muted mb-0">{ligne.dli_detail}</p>
                               </td>

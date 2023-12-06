@@ -271,7 +271,7 @@ const InvoiceDetails = () => {
 
                             <tr key={i}>
                               <th scope="row">{i + 1}</th>
-                              <td className="text-start">
+                              <td className="text-center">
                                 <span className="fw-medium">{ligne.fli_name}</span>
                                 <p className="text-muted mb-0">{ligne.fli_detail}</p>
                               </td>
@@ -312,7 +312,7 @@ const InvoiceDetails = () => {
                       </Table>
                     </div>
                     <div className="border-top border-top-dashed mt-2  table-responsive">
-                      <SimpleBar autoHide={false} className="px-3">
+                      <SimpleBar autoHide={false}>
                         <Table className="pagebreak table-borderless table-nowrap align-middle mb-0 ms-auto mt-3">
                           <thead>
                             <tr className="table-active">
