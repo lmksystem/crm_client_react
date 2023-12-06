@@ -109,7 +109,7 @@ const Salary = () => {
 
   // Créez un objet pour organiser les données par mois
   const [moisDonnees, setMoisDonnee] = useState({});
-  function MoisComponent() {
+  const  MoisComponent = () => {
     // Affichez tous les mois de l'année, même ceux sans données
     return (
       <div>
@@ -389,20 +389,25 @@ const Salary = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (dateFormat?.length > 3) {
-      dispatch(onGetSalary(dateFormat)).then(() => {
-        let moisData = {};
-        for (let index = 0; index < salaries.length; index++) {
-          const element = salaries[index];
-          const moisNom = moisIndices[element?.mois];
-          if (!moisData[moisNom]) {
-            moisData[moisNom] = [];
+    async function ChargeMoisDate(){
+      if (dateFormat?.length > 3) {
+        console.log("dateFormat",dateFormat)
+        dispatch(onGetSalary(dateFormat))
+          let moisData = {};
+          for (let index = 0; index < salaries.length; index++) {
+            const element = salaries[index];
+            const moisNom = moisIndices[element?.mois];
+            if (!moisData[moisNom]) {
+              moisData[moisNom] = [];
+            }
+            moisData[moisNom].push(element);
           }
-          moisData[moisNom].push(element);
-        }
-        setMoisDonnee(moisData);
-      });
+          console.log("mois data",moisData)
+          setMoisDonnee(moisData);
+      
+      }
     }
+    ChargeMoisDate()
   }, [dispatch, dateFormat, salary]);
 
   document.title = "Salaires | Countano";
@@ -458,7 +463,7 @@ const Salary = () => {
                   options={{
                     date: true,
                     datePattern: ["Y"],
-                    limit: "2021",
+                    // limit: "2021",
                     dateMin: "2000", // Année minimale autorisée
                   }}
                   value={dateFormat}
