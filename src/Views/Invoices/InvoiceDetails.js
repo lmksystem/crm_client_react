@@ -95,7 +95,7 @@ const InvoiceDetails = () => {
       tra_com_fk: invoice.header.fen_com_fk,
       tra_fen_fk: invoice.header.fen_id,
       tra_ent_fk: invoice.header.fen_ent_fk,
-      tra_value: "",
+      tra_value: invoice.header.fen_total_ttc,
       tra_date: moment().format('YYYY-MM-DD'),
       tra_desc: "",
     },
@@ -371,23 +371,22 @@ const InvoiceDetails = () => {
                           </Table>
                         }
 
-                        {!transactions.length && (
-                          <Row>
-                            <Col xl={12} className="mt-3 mb-3 text-center"><i>Aucune Transaction</i></Col>
-                          </Row>
+                        {!transactions.length && !addActifView && (
+                            <Col  className="mt-4 mb-4 text-center"><i>Aucune Transaction</i></Col>
                         )}
 
 
-                        <form className="d-print-none" onSubmit={(e) => {
-                          e.preventDefault();
-                          validation.handleSubmit();
-                          return false;
-                        }}>
-
+                    
 
                           {addActifView
                             ?
-                            <Row>
+                            <form className="d-print-none " onSubmit={(e) => {
+                              e.preventDefault();
+                              validation.handleSubmit();
+                              return false;
+                            }}>
+    
+                            <Row className="my-4 mx-0 p-0 ">
 
                               <Col lg={3}>
                                 <Input
@@ -444,9 +443,10 @@ const InvoiceDetails = () => {
                                 </div>
                               </Col>
                             </Row>
+                        </form>
+
                             : ""
                           }
-                        </form>
                       </SimpleBar>
                     </div>
 

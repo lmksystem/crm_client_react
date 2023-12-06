@@ -385,7 +385,7 @@ const InvoiceCreate = () => {
     <div className="page-content">
       <Container fluid>
         <BreadCrumb title="Création devis" pageTitle="Devis" />
-        <ConfirmModal title={'Envoyer ?'} text={"Voulez-vous envoyer la facture ?"} textClose="Non" show={showConfirmModal}
+        <ConfirmModal title={'Envoyer ?'} text={"Voulez-vous envoyer le devis ?"} textClose="Non" show={showConfirmModal}
           onCloseClick={() => {
             setShowConfirmModal(false);
             submitFormData(false);
