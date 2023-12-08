@@ -56,12 +56,12 @@ const TransactionBank = () => {
   );
   const [achatEvol, setAchatEvol] = useState(false);
   const dateActuelle = moment(); // Obtenir la date actuelle
-  const dateNow = moment(dateActuelle,"DD MMM YYYY");
+  const dateNow = moment(dateActuelle, "DD MMM YYYY");
   const premiereDateAnnee = dateActuelle.startOf("year"); // Obtenir la première date de l'année
   const formattedDate = premiereDateAnnee.format("DD MMM YYYY"); // Formatage de la date
   const [perdiodeCalendar, setPeriodeCalendar] = useState({
     start: formattedDate.replace(/\./g, ","),
-    end: dateNow
+    end: dateNow,
   });
 
   const [transaction, setTransaction] = useState({});
@@ -186,7 +186,6 @@ const TransactionBank = () => {
   const columns = useMemo(
     () => [
       {
-        Header: "",
         accessor: "tba_id",
         hiddenColumns: true,
         Cell: (cell) => {
@@ -194,19 +193,46 @@ const TransactionBank = () => {
         },
       },
       {
-        Header: "Libellé / N° compte ",
+        Header: "Compte bancaire",
         accessor: "bua_account_id",
         filterable: false,
         Cell: (cell) => {
+          console.log(cell.row.original?.bua_color);
           return (
             <div className="d-flex align-items-center">
-              <p className="p-0 m-0">
-                {cell.value != null
-                  ? (cell.row.original?.bua_libelle
-                      ? cell.row.original?.bua_libelle + " / "
-                      : "") + cell.value
-                  : ""}
-              </p>
+              {cell.row.original?.bua_color ? (
+                <span
+                  class="d-inline-block"
+                  style={{ marginLeft: "25%" }}
+                  tabindex="0"
+                  data-toggle="tooltip"
+                  title={`${
+                    cell.value != null
+                      ? (cell.row.original?.bua_libelle
+                          ? cell.row.original?.bua_libelle + " / "
+                          : "") + cell.value
+                      : ""
+                  }`}
+                >
+                  <div
+                    className="align-self-center"
+                    style={{
+                      backgroundColor: `${cell.row.original?.bua_color}`,
+                      height: 20,
+                      width: 20,
+                      borderRadius: 50,
+                    }}
+                  ></div>
+                </span>
+              ) : (
+                <p className="p-0 m-0">
+                  {cell.value != null
+                    ? (cell.row.original?.bua_libelle
+                        ? cell.row.original?.bua_libelle + " / "
+                        : "") + cell.value
+                    : ""}
+                </p>
+              )}
             </div>
           );
         },
@@ -220,7 +246,9 @@ const TransactionBank = () => {
           return (
             <div className="d-flex align-items-center">
               <p className="p-0 m-0">
-                {cell.value != null ? customFormatNumber(parseFloat(cell.value)) + "€" : ""}
+                {cell.value != null
+                  ? customFormatNumber(parseFloat(cell.value)) + "€"
+                  : ""}
               </p>
             </div>
           );
@@ -234,7 +262,9 @@ const TransactionBank = () => {
           return (
             <div className="d-flex align-items-center">
               <p className="p-0 m-0">
-                {cell.value != null ? customFormatNumber(parseFloat(cell.value)) + "€" : ""}
+                {cell.value != null
+                  ? customFormatNumber(parseFloat(cell.value)) + "€"
+                  : ""}
               </p>
             </div>
           );
@@ -251,7 +281,7 @@ const TransactionBank = () => {
                 {cell.value != null
                   ? (cell.row.original?.tba_justify == 0
                       ? "0.00"
-                      :customFormatNumber(parseFloat(cell.value))) + "€"
+                      : customFormatNumber(parseFloat(cell.value))) + "€"
                   : ""}
               </p>
             </div>
@@ -325,7 +355,7 @@ const TransactionBank = () => {
           return (
             <div className="d-flex align-items-center">
               <p className="p-0 m-0">
-                {cell.value != null ? moment(cell.value).format('L') : ""}
+                {cell.value != null ? moment(cell.value).format("L") : ""}
               </p>
             </div>
           );
@@ -443,12 +473,13 @@ const TransactionBank = () => {
   }, [dispatch, perdiodeCalendar, isFilterBy, achats]);
 
   useEffect(() => {
-    if(transactions){
+    if (transactions) {
       if (isFilterBy != "null") {
         let transFiltered = transactions
           ?.filter((tra) => {
             return (
-              tra.bua_account_id === isFilterBy || tra.bua_libelle === isFilterBy
+              tra.bua_account_id === isFilterBy ||
+              tra.bua_libelle === isFilterBy
             );
           })
           .map((tra) => tra);
@@ -491,7 +522,6 @@ const TransactionBank = () => {
         setTTD(newArrayTraAssoc);
       }
     }
-   
   }, [transactions, isFilterBy]);
 
   document.title = "Transactions bancaires | Countano";
@@ -589,8 +619,8 @@ const TransactionBank = () => {
                       src={
                         !process.env.NODE_ENV ||
                         process.env.NODE_ENV === "development"
-                        // : `${api.API_PDF}/${userProfile.use_com_fk}/achat/${doc}`
-                          ? `${api.API_URL}/v1/achat/doc/${doc}/${userProfile.use_com_fk}`
+                          ? // : `${api.API_PDF}/${userProfile.use_com_fk}/achat/${doc}`
+                            `${api.API_URL}/v1/achat/doc/${doc}/${userProfile.use_com_fk}`
                           : `${api.API_PDF}/${userProfile.use_com_fk}/achat/${doc}`
                       }
                       title={doc}

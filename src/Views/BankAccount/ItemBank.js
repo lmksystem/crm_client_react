@@ -12,12 +12,32 @@ import { useDispatch } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
 import { customFormatNumber } from "../../utils/function";
+import { SketchPicker } from "react-color";
 
 const ItemBank = ({ item }) => {
   const dispatch = useDispatch();
   const [libelle, setLibelle] = useState(
     item?.bua_libelle ? item?.bua_libelle : ""
   );
+  const [display_Cust, setdisplay_Cust] = useState(false);
+  const [colorCust, setcolorCust] = useState(item?.bua_color ||"rgba(95, 208, 243, 1)");
+  const onSwatchHover_Cust = (color) => {
+    const format1 =
+      "rgba(" +
+      color.rgb.r +
+      "," +
+      color.rgb.g +
+      "," +
+      color.rgb.b +
+      "," +
+      color.rgb.a +
+      ")";
+    setcolorCust(format1);
+  };
+  function handleCust() {
+    setdisplay_Cust(!display_Cust);
+  }
+  console.log(item)
   return (
     <ListGroupItem data-id="1" className={"list-group-item"}>
       <Row lg={12} xs={12}>
@@ -38,46 +58,99 @@ const ItemBank = ({ item }) => {
           </Col>
           {item.bua_account_id?.length > 0 && (
             <>
-            <Col xs={12} md={6}>
-              <div className="input-group ">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Libellé personnalisé"
-                  aria-label="Libellé personnalisé"
-                  value={libelle}
-                  onChange={(e) => {
-                    setLibelle(e.target.value);
-                  }}
-                />
-                <div className="input-group-append">
-                  <button
-                    onClick={() => {
-                      dispatch(
-                        onInsertAccountLinkToBank({
-                          bua_account_id: item.bua_account_id,
-                          bua_libelle: libelle,
-                        })
-                      );
-                    }}
-                    class="btn btn-outline-success"
-                    type="button"
+              <Col xs={12} md={6}>
+                <div className="input-group ">
+                  <div
+                    style={{ position: "relative" }}
+                    className="input-group-append"
                   >
-                    <i className=" las la-check"></i>
-                  </button>
-                </div>
-              </div>
-            </Col>
-            <Col xs={12} md={6} className="d-flex justify-content-center flex-column">
-              <p className="p-0 m-0">Solde du compte : {customFormatNumber(parseFloat(item.bua_solde))}€</p>
-              {item.bua_last_tra && <p className="p-0 m-0">Dernière transaction : {moment(item.bua_last_tra).format('L')}</p>}
+                    <div className="monolith-colorpicker" onClick={handleCust}>
+                      <i
+                        style={{
+                          height: "39px",
+                          width: "39px",
+                          background: colorCust,
+                          display: "block",
+                          borderTopLeftRadius:"5px",
+                          borderBottomLeftRadius:"5px",
+                          border:"1px solid lightgray"
+                        }}
+                      />
+                    </div>
 
-            </Col>
+                    {display_Cust ? (
+                      <div
+                        style={{
+                          position: "absolute",
+                          zIndex: 2,
+                          top: 40,
+                          left: 0,
+                        }}
+                      >
+                        <SketchPicker
+                          color="#fff"
+                          value={colorCust}
+                          width="160px"
+                          onChangeComplete={onSwatchHover_Cust}
+                        />
+                      </div>
+                    ) : null}
+                  </div>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Libellé personnalisé"
+                    aria-label="Libellé personnalisé"
+                    value={libelle}
+                    onChange={(e) => {
+                      setLibelle(e.target.value);
+                    }}
+                  />
+
+                  <div className="input-group-append">
+                    <button
+                      onClick={() => {
+                        dispatch(
+                          onInsertAccountLinkToBank({
+                            bua_color:colorCust,
+                            bua_account_id: item.bua_account_id,
+                            bua_libelle: libelle,
+                          })
+                        );
+                      }}
+                      class="btn btn-outline-success"
+                      type="button"
+                    >
+                      <i className=" las la-check"></i>
+                    </button>
+                  </div>
+                </div>
+              </Col>
+              <Col
+                xs={12}
+                md={6}
+                className="d-flex justify-content-center flex-column"
+              >
+                <p className="p-0 m-0">
+                  Solde du compte :{" "}
+                  {customFormatNumber(parseFloat(item.bua_solde))}€
+                </p>
+                {item.bua_last_tra && (
+                  <p className="p-0 m-0">
+                    Dernière transaction :{" "}
+                    {moment(item.bua_last_tra).format("L")}
+                  </p>
+                )}
+              </Col>
             </>
           )}
         </Col>
         <Col md={4} xs={12} className="row my-4 d-flex justify-content-center">
-          <Col xs={12} md={6} className="d-flex justify-content-center flex-column">
+          <Col
+            xs={12}
+            md={6}
+            className="d-flex justify-content-center flex-column"
+          >
             <button
               type="button"
               class={`btn ${
@@ -96,7 +169,8 @@ const ItemBank = ({ item }) => {
                 );
               }}
             >
-              Renouveler l’autorisation<br/>
+              Renouveler l’autorisation
+              <br />
               {/* <p
               className="m-0"
               style={{
@@ -107,14 +181,19 @@ const ItemBank = ({ item }) => {
               }}
             > */}
               {item.bua_account_id?.length > 0
-                ? "Date expiration : " + moment(item.bac_date_expired).format("D MMM YYYY")
+                ? "Date expiration : " +
+                  moment(item.bac_date_expired).format("D MMM YYYY")
                 : "Informations du compte obsolètes "}{" "}
-            {/* </p> */}
+              {/* </p> */}
             </button>
           </Col>
         </Col>
         {item.bua_account_id?.length > 0 && (
-          <Col md={2} xs={12} className="row my-4 d-flex justify-content-center">
+          <Col
+            md={2}
+            xs={12}
+            className="row my-4 d-flex justify-content-center"
+          >
             <Col xs={12} md={12} className="d-flex justify-content-center">
               <button
                 type="button"
@@ -124,7 +203,7 @@ const ItemBank = ({ item }) => {
                     : "btn-outline-danger"
                 }`}
                 onClick={() => {
-                  dispatch(onGetAccountBank("insert"))
+                  dispatch(onGetAccountBank("insert"));
                 }}
               >
                 Charger mes transactions

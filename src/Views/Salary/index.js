@@ -45,6 +45,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Cleave from "cleave.js/react";
 import moment from "moment";
+import { customFormatNumber } from "../../utils/function";
 
 const Salary = () => {
   const dispatch = useDispatch();
@@ -320,16 +321,37 @@ const Salary = () => {
         Header: "Net",
         accessor: "sal_net",
         filterable: false,
+        Cell: (cell) => {
+          return (
+            <div className="d-flex align-items-center">
+              <div >{customFormatNumber(parseFloat(cell.value))}€</div>
+            </div>
+          );
+          }
       },
       {
         Header: "Brut",
         accessor: "sal_brut",
         filterable: false,
+        Cell: (cell) => {
+          return (
+            <div className="d-flex align-items-center">
+              <div >{customFormatNumber(parseFloat(cell.value))}€</div>
+            </div>
+          );
+          }
       },
       {
         Header: "Brut chargé",
         accessor: "sal_bcharge",
         filterable: false,
+        Cell: (cell) => {
+          return (
+            <div className="d-flex align-items-center">
+              <div >{customFormatNumber(parseFloat(cell.value))}€</div>
+            </div>
+          );
+          }
       },
       {
         Header: "Date versement",

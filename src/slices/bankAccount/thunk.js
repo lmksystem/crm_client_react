@@ -84,10 +84,10 @@ export const insertAccountLinkToBank= createAsyncThunk(
   async (body) => {
     try {
       const response = await insertAccountLinkToBankApi(body);
-      toast.success("Libellé mis à jour", { autoClose: 3000 });
+      toast.success("Compte mis à jour", { autoClose: 3000 });
       return response;
     } catch (error) {
-      toast.error("Erreur sur l'ajout/mise à jour du libellé", { autoClose: 3000 });
+      toast.error("Erreur sur l'ajout/mise à jour", { autoClose: 3000 });
       return error;
     }
   }

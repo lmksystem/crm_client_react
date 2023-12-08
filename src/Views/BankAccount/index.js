@@ -226,7 +226,8 @@ const BankAccount = () => {
                         >
                           <ListGroup className="list mb-0" flush>
                             {listAccountsBank?.map((acc, i) => {
-                              return <ItemBank item={acc} key={i} />;
+                              console.log(acc)
+                              return (<ItemBank item={acc} key={i} />);
                             })}
                           </ListGroup>
                         </SimpleBar>
