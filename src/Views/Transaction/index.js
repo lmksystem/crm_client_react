@@ -40,7 +40,6 @@ import Loader from "../../Components/Common/Loader";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SimpleBar from "simplebar-react";
-import { useProfile } from "../../Components/Hooks/UserHooks";
 import { getLoggedinUser } from "../../helpers/api_helper";
 import { customFormatNumber } from "../../utils/function";
 
@@ -322,6 +321,15 @@ const TransactionBank = () => {
         Header: "Date",
         accessor: "tba_bkg_date",
         filterable: false,
+        Cell: (cell) => {
+          return (
+            <div className="d-flex align-items-center">
+              <p className="p-0 m-0">
+                {cell.value != null ? moment(cell.value).format('L') : ""}
+              </p>
+            </div>
+          );
+        },
       },
       {
         Header: "Description",

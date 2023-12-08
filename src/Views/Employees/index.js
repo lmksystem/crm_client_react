@@ -44,6 +44,7 @@ import { useFormik } from "formik";
 import Loader from "../../Components/Common/Loader";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import moment from "moment";
 
 const Employees = () => {
   const dispatch = useDispatch();
@@ -251,6 +252,13 @@ const Employees = () => {
         Header: "Date entrée",
         accessor: "usa_date_entree",
         filterable: false,
+        Cell: (cell) => {
+          return (
+            <div className="d-flex align-items-center">
+              <div >{moment(cell.value).isValid()? moment(cell.value).format('D MMM YYYY'):"Aucune date"}</div>
+            </div>
+          );
+          }
       },
       {
         Header: "Action",

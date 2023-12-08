@@ -180,7 +180,7 @@ const DevisDetails = () => {
                     <Row className="g-3">
                       <Col xs={12} md={6} lg={4} className="col-6 d-flex flex-column">
                        {!subjectChange ?
-                       <h6 className="text-muted text-uppercase fw-semibold mb-3">{valueSubject}<FeatherIcon onClick={() => { setSubjectChange(() => !subjectChange) }} className={"mx-2 cursor-pointer"} size={13} icon={'edit-2'}></FeatherIcon></h6>
+                       <h6 className="text-muted text-uppercase fw-semibold mb-3">{valueSubject}<FeatherIcon onClick={() => { setSubjectChange(() => !subjectChange) }} className={"d-print-none mx-2 cursor-pointer"} size={13} icon={'edit-2'}></FeatherIcon></h6>
                        
                        :
                        <div class="input-group"><input placeholder="Sujet"  type="text" 
@@ -232,7 +232,7 @@ const DevisDetails = () => {
                         <h5 className="fs-14 mb-0"><span id="devis-date">{moment(devis.header.den_date_valid).format('L')}</span> <small className="text-muted" id="devis-time"></small></h5>
                       </Col>
                       <Col lg={3} className="col-6">
-                        <p className="text-muted mb-2 text-uppercase fw-semibold">état <FeatherIcon onClick={() => { setActiveChange(() => !activeChange) }} className={"mx-2 cursor-pointer"} size={13} icon={'edit-2'}></FeatherIcon></p>
+                        <p className="text-muted mb-2 text-uppercase fw-semibold">état <FeatherIcon onClick={() => { setActiveChange(() => !activeChange) }} className={"d-print-none mx-2 cursor-pointer"} size={13} icon={'edit-2'}></FeatherIcon></p>
                         {activeChange ?
                           <select
                             defaultValue={devis.header.den_etat}

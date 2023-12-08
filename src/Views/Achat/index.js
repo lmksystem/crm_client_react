@@ -36,6 +36,7 @@ import "react-toastify/dist/ReactToastify.css";
 import ModalCreate from "./ModalCreate";
 import FileService from "../../utils/FileService";
 import { customFormatNumber } from "../../utils/function";
+import moment from "moment";
 
 const Achats = () => {
   const dispatch = useDispatch();
@@ -337,11 +338,25 @@ const Achats = () => {
         Header: "Date d'achat",
         accessor: "ach_date_create",
         filterable: false,
+        Cell: (cell) => {
+          return (
+            <div className="d-flex align-items-center">
+              <div >{moment(cell.value).isValid()? moment(cell.value).format('L'):"Aucune date"}</div>
+            </div>
+          );
+          }
       },
       {
         Header: "Echéance",
         accessor: "ach_date_expired",
         filterable: false,
+        Cell: (cell) => {
+          return (
+            <div className="d-flex align-items-center">
+              <div >{moment(cell.value).isValid()? moment(cell.value).format('L'):"Aucune date"}</div>
+            </div>
+          );
+          }
       },
       {
         Header: "Catégorie",

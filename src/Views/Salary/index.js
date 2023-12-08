@@ -44,6 +44,7 @@ import Loader from "../../Components/Common/Loader";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Cleave from "cleave.js/react";
+import moment from "moment";
 
 const Salary = () => {
   const dispatch = useDispatch();
@@ -334,6 +335,13 @@ const Salary = () => {
         Header: "Date versement",
         accessor: "sal_date",
         filterable: false,
+        Cell: (cell) => {
+          return (
+            <div className="d-flex align-items-center">
+              <div >{moment(cell.value).isValid()? moment(cell.value).format('D MMM YYYY'):"Aucune date"}</div>
+            </div>
+          );
+          }
       },
       {
         Header: "Action",

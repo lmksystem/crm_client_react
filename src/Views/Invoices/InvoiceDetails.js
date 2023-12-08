@@ -257,7 +257,7 @@ const InvoiceDetails = () => {
                               onClick={() => {
                                 setSubjectChange(() => !subjectChange);
                               }}
-                              className={"mx-2 cursor-pointer"}
+                              className={"d-print-none mx-2 cursor-pointer"}
                               size={13}
                               icon={"edit-2"}
                             ></FeatherIcon>
@@ -391,7 +391,7 @@ const InvoiceDetails = () => {
                             onClick={() => {
                               setActiveChange(() => !activeChange);
                             }}
-                            className={"mx-2 cursor-pointer"}
+                            className={"d-print-none mx-2 cursor-pointer"}
                             size={13}
                             icon={"edit-2"}
                           ></FeatherIcon>
