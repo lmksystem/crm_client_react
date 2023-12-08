@@ -114,7 +114,7 @@ const DevisList = () => {
       {
         Header: <input type="checkbox" id="checkBoxAll" className="form-check-input" onClick={() => checkedAll()} />,
         Cell: (cellProps) => {
-          return <input style={{ zIndex: 5000, position: "relative" }} type="checkbox" onClick={(e) => { e.stopPropagation(); deleteCheckbox() }} className="invoiceCheckBox form-check-input" value={cellProps.row.original.header.den_id} onChange={() => {/*deleteCheckbox()*/ }} />;
+          return <input style={{ zIndex: 4000, position: "relative" }} type="checkbox" onClick={(e) => { e.stopPropagation(); deleteCheckbox() }} className="invoiceCheckBox form-check-input" value={cellProps.row.original.header.den_id} onChange={() => {/*deleteCheckbox()*/ }} />;
         },
         id: '#',
       },

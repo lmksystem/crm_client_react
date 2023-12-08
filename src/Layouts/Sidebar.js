@@ -42,7 +42,7 @@ const Sidebar = ({ layoutType, leftSidebarType }) => {
   };
   return (
     <React.Fragment>
-      <div style={{ position: "fixed", height: "100%", zIndex: 6000 }}>
+      <div style={{ position: "fixed", height: "100%", zIndex: 1000 }}>
         <div className="app-menu navbar-menu">
           <div className="navbar-brand-box">
             <Link to="/" className="logo logo-dark">
