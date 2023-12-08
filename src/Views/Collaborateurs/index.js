@@ -19,13 +19,11 @@ import {
   Form,
   ModalFooter,
   Table,
-  Button,
   FormFeedback,
-  Collapse,
 } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import DeleteModal from "../../Components/Common/DeleteModal";
-import { forIn, isEmpty } from "lodash";
+import { isEmpty } from "lodash";
 import paysData from "../../Components/constants/paysPhone.json";
 
 //Import actions
@@ -62,33 +60,12 @@ const Collaborateurs = () => {
     })
   );
 
-  const country = [
-    { label: "Argentina", value: "Argentina" },
-    { label: "Belgium", value: "Belgium" },
-    { label: "Brazil", value: "Brazil" },
-    { label: "Colombia", value: "Colombia" },
-    { label: "Denmark", value: "Denmark" },
-    { label: "France", value: "France" },
-    { label: "Germany", value: "Germany" },
-    { label: "Mexico", value: "Mexico" },
-    { label: "Russia", value: "Russia" },
-    { label: "Spain", value: "Spain" },
-    { label: "Syria", value: "Syria" },
-    { label: "United Kingdom", value: "United Kingdom" },
-    { label: "United States of America", value: "United States of America" },
-  ];
-
   useEffect(() => {
     dispatch(onGetCollaborateur());
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   setCollaborateur(collaborateurs);
-  // }, [collaborateurs]);
-
   useEffect(() => {
     if (!isEmpty(collaborateur)) {
-      // setCollaborateur(collaborateurs);
       setIsEdit(false);
     }
   }, [collaborateurs]);
@@ -190,26 +167,26 @@ const Collaborateurs = () => {
         /^[A-Za-z]{2}[0-9]{9}$/,
         "Le champ doit contenir 2 lettres suivies de 9 chiffres."
       ),
-      type: Yup.object().shape({
-        client: Yup.object().shape({
-          eti_removed: Yup.number().oneOf(
-            [0],
-            "Sélectionnez au moins une option"
-          ),
-        }),
-        prospect: Yup.object().shape({
-          eti_removed: Yup.number().oneOf(
-            [0],
-            "Sélectionnez au moins une option"
-          ),
-        }),
-        fournisseur: Yup.object().shape({
-          eti_removed: Yup.number().oneOf(
-            [0],
-            "Sélectionnez au moins une option"
-          ),
-        }),
-      }),
+      // type: Yup.object().shape({
+      //   client: Yup.object().shape({
+      //     eti_removed: Yup.boolean().oneOf(
+      //       [true],
+      //       "Sélectionnez au moins une option"
+      //     ),
+      //   }),
+      //   prospect: Yup.object().shape({
+      //     eti_removed: Yup.boolean().oneOf(
+      //       [true],
+      //       "Sélectionnez au moins une option"
+      //     ),
+      //   }),
+      //   fournisseur: Yup.object().shape({
+      //     eti_removed: Yup.boolean().oneOf(
+      //       [true],
+      //       "Sélectionnez au moins une option"
+      //     ),
+      //   }),
+      // }),
     }),
 
     onSubmit: (values) => {
@@ -563,12 +540,11 @@ const Collaborateurs = () => {
   };
   const isAtLeastOneCheckboxChecked = (type) => {
     return (
-      type.client.eti_removed === 1 &&
-      type.prospect.eti_removed === 1 &&
-      type.fournisseur.eti_removed === 1
+      type.client.eti_removed === 0 ||
+      type.prospect.eti_removed === 0 ||
+      type.fournisseur.eti_removed === 0
     );
   };
-
   useEffect(() => {
     if (show) {
       setTimeout(() => {
@@ -810,13 +786,16 @@ const Collaborateurs = () => {
                             </div>
                           </Col>
                           {validation.touched.type &&
-                          isAtLeastOneCheckboxChecked(
+                          !isAtLeastOneCheckboxChecked(
                             validation.values.type
                           ) ? (
-                            <FormFeedback type="invalid" style={{display:"block"}}>
+                            <FormFeedback
+                              type="invalid"
+                              style={{ display: "block" }}
+                            >
                               Sélectionnez au moins une option
                             </FormFeedback>
-                           ) : null} 
+                          ) : null}
                           <Col lg={6}>
                             <div>
                               <Label
