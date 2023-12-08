@@ -391,7 +391,6 @@ const Salary = () => {
   useEffect(() => {
     async function ChargeMoisDate(){
       if (dateFormat?.length > 3) {
-        console.log("dateFormat",dateFormat)
         dispatch(onGetSalary(dateFormat))
           let moisData = {};
           for (let index = 0; index < salaries.length; index++) {
@@ -402,9 +401,7 @@ const Salary = () => {
             }
             moisData[moisNom].push(element);
           }
-          console.log("mois data",moisData)
           setMoisDonnee(moisData);
-      
       }
     }
     ChargeMoisDate()

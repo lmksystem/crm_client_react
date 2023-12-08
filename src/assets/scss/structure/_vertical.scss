@@ -38,6 +38,7 @@
     transition: all .1s ease-out;
 
     .navbar-nav {
+        
         .nav-link {
             display: flex;
             align-items: center;
@@ -45,7 +46,7 @@
             color: $vertical-menu-item-color;
             font-size: $vertical-menu-item-font-size;
             font-family: $vertical-menu-item-font-family;
-
+                
             &.active {
                 color: $vertical-menu-item-active-color;
             }
@@ -509,7 +510,7 @@
 
     &[data-sidebar-size="sm"] {
         @media (min-width: 768px) {
-            min-height: 1400px;
+            // min-height: 768px;
 
             .main-content {
                 margin-left: $vertical-menu-width-sm;
@@ -1005,7 +1006,7 @@
 
                 #layout-wrapper,
                 .main-content {
-                    min-height: 1400px;
+                    // min-height: 1400px;
                 }
             }
         }

@@ -132,6 +132,11 @@ const TwoColumnLayout = (props) => {
             };
         }
     });
+    console.log("a",document.querySelector("#simplebar-wrapper"))
+    useEffect(()=>{
+        const elementtoFixed =document.querySelector("#simplebar-wrapper");
+        console.log(elementtoFixed)
+    },[])
 
     return (
         <React.Fragment>
@@ -139,7 +144,7 @@ const TwoColumnLayout = (props) => {
                 <div id="scrollbar">
                     <Container fluid>
                         <div id="two-column-menu">
-                            <SimpleBar className="twocolumn-iconview">
+                            <SimpleBar style={{ position:"fixed" }} className="twocolumn-iconview " > 
                                 <Link to="#" className="logo">
                                     <img src={logoSm} alt="" height="22" />
                                 </Link>
@@ -147,7 +152,7 @@ const TwoColumnLayout = (props) => {
                                     <React.Fragment key={key}>
                                         {item.icon && (
                                             item.subItems ? (
-                                                <li>
+                                                <li >
                                                     <Link
                                                         onClick={item.click}
                                                         to="#"
