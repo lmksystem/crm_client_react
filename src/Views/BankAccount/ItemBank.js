@@ -10,6 +10,8 @@ import {
 //redux
 import { useDispatch } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
+import moment from "moment";
+import { customFormatNumber } from "../../utils/function";
 
 const ItemBank = ({ item }) => {
   const dispatch = useDispatch();
@@ -35,7 +37,8 @@ const ItemBank = ({ item }) => {
             </Col>
           </Col>
           {item.bua_account_id?.length > 0 && (
-            <Col xs={12}>
+            <>
+            <Col xs={12} md={6}>
               <div className="input-group ">
                 <input
                   type="text"
@@ -50,11 +53,6 @@ const ItemBank = ({ item }) => {
                 <div className="input-group-append">
                   <button
                     onClick={() => {
-                      // console.log(item)
-// console.log({
-//   bua_account_id: item.bua_account_id,
-//   bua_libelle: libelle,
-// })
                       dispatch(
                         onInsertAccountLinkToBank({
                           bua_account_id: item.bua_account_id,
@@ -70,6 +68,10 @@ const ItemBank = ({ item }) => {
                 </div>
               </div>
             </Col>
+            <Col xs={12} md={6} className="d-flex align-items-center">
+              <p className="p-0 m-0">Solde du compte : {customFormatNumber(parseFloat(item.bua_solde))}€</p>
+            </Col>
+            </>
           )}
         </Col>
         <Col md={4} xs={12} className="row my-4 d-flex justify-content-center">
@@ -93,7 +95,7 @@ const ItemBank = ({ item }) => {
               }}
             >
               Renouveler l’autorisation<br/>
-              <p
+              {/* <p
               className="m-0"
               style={{
                 color: item.bua_account_id?.length > 0 ? "black" : "red",
@@ -101,11 +103,11 @@ const ItemBank = ({ item }) => {
                 textAlign: "center",
                 // minWidth: 147,
               }}
-            >
+            > */}
               {item.bua_account_id?.length > 0
-                ? "Date expiration : " + item.bac_date_expired
-                : "Veuillez vous mettre à jour avec cette banque"}{" "}
-            </p>
+                ? "Date expiration : " + moment(item.bac_date_expired).format("D MMM YYYY")
+                : "Informations du compte obsolètes "}{" "}
+            {/* </p> */}
             </button>
           </Col>
         </Col>

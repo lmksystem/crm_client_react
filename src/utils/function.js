@@ -14,6 +14,7 @@ export const genRandonString = (length) => {
 }
 
 export function customFormatNumber(number) {
+
   if(typeof number !== 'number' || isNaN(number) || number ===null){
     return "0,00";
   }
