@@ -34,6 +34,8 @@ import { api } from "../../config";
 import { getLoggedinUser } from "../../helpers/api_helper";
 import Select from "react-select";
 import { useFormik } from "formik";
+import { customFormatNumber } from "../../utils/function";
+import moment from "moment";
 
 const ModalCreate = ({
   // validation,
@@ -776,11 +778,11 @@ const ModalCreate = ({
                                         className="born timestamp text-muted mb-0"
                                         data-timestamp="12345"
                                       >
-                                        {tra.tba_bkg_date}
+                                        {moment(tra.tba_bkg_date).format('L')}
                                       </p>
                                     </div>
                                     <div className="flex-shrink-0">
-                                      <div>€ {tra.tba_amount}</div>
+                                      <div>{customFormatNumber(parseFloat(tra.tba_amount))}€</div>
                                     </div>
                                   </div>
                                 </ListGroupItem>

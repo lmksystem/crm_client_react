@@ -791,7 +791,7 @@ const TransactionBank = () => {
                                                   className="born timestamp text-muted mb-0"
                                                   data-timestamp="12345"
                                                 >
-                                                  {ach.ach_date_create}
+                                                  {moment(ach.ach_date_create).format('L')}
                                                 </p>
                                               </div>
                                               <div className="flex-shrink-0 d-flex flex-md-column align-items-end">
@@ -800,8 +800,8 @@ const TransactionBank = () => {
                                                     ? "- "
                                                     : "+ "}
                                                   {isSelected(ach.ach_id)
-                                                    ? ach.aba_match_amount
-                                                    : ach.ach_rp}{" "}
+                                                    ? customFormatNumber(parseFloat(ach.aba_match_amount ))
+                                                    : customFormatNumber(parseFloat(ach.ach_rp))}{" "}
                                                   €
                                                 </div>
                                                 {isSelected(ach.ach_id) ? (
