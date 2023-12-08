@@ -68,8 +68,10 @@ const ItemBank = ({ item }) => {
                 </div>
               </div>
             </Col>
-            <Col xs={12} md={6} className="d-flex align-items-center">
+            <Col xs={12} md={6} className="d-flex justify-content-center flex-column">
               <p className="p-0 m-0">Solde du compte : {customFormatNumber(parseFloat(item.bua_solde))}€</p>
+              {item.bua_last_tra && <p className="p-0 m-0">Dernière transaction : {moment(item.bua_last_tra).format('L')}</p>}
+
             </Col>
             </>
           )}
