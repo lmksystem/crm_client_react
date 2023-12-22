@@ -36,8 +36,8 @@ const AlertParametrage = () => {
         occurrences[aec_delai] = (occurrences[aec_delai] || 0) + 1;
       });
       const valeursSimilaires = Object.entries(occurrences)
-      .filter(([_, count]) => count > 1)
-      .map(([valeur]) => valeur);
+        .filter(([_, count]) => count > 1)
+        .map(([valeur]) => valeur);
       if (valeursSimilaires.length > 0) {
         toast.error('Des valeurs sont similaires ! ', { autoClose: 3000 });
         return
@@ -53,7 +53,6 @@ const AlertParametrage = () => {
   useEffect(() => {
     dispatch(onGetAlert());
   }, [dispatch])
-  
 
 
   return (
@@ -74,26 +73,33 @@ const AlertParametrage = () => {
             Rappel d'échéance facture
           </Label>
           {alertForm.values?.alerts.map((alert, i) => {
+  
+            let isPositive = alert.aec_delai > 0 && !(alert.aec_delai.toString().includes('+')) && alert.aec_delai.length > 0 ? "+" : "";
+
             return (
               <div key={i} className="m-2 input-group">
                 <div className="input-group-text bg-primary border-primary text-white">
                   Nombres de jours
                 </div>
+                
                 <Input
+                  type="text"
                   name={`alerts[${i}].aec_delai`}
                   id="prefixe_libelle_fac-field"
                   className="form-control"
                   placeholder="ex: 5"
-                  type="text"
-                  onChange={alertForm.handleChange}
+                  onChange={(e) => {
+                 
+                    alertForm.handleChange(e);
+                  }}
                   onBlur={alertForm.handleBlur}
-                  value={(Math.sign(alertForm.values?.alerts[i].aec_delai) == 1 ? "+" : "") + alertForm.values?.alerts[i].aec_delai || ""}
+                  value={isPositive + alertForm.values?.alerts[i].aec_delai || ""}
                 />
                 <div style={{ cursor: "pointer" }} onClick={() => {
                   // console.log(alert)
-                  if(alert.aec_id){
+                  if (alert.aec_id) {
                     dispatch(onDeleteAlert(alert.aec_id));
-                  }else{
+                  } else {
                     const updatedAlerts = [...alertForm.values.alerts];
                     updatedAlerts.splice(i, 1);
                     alertForm.setFieldValue('alerts', updatedAlerts);

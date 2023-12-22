@@ -33,9 +33,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { api } from "../../config";
 import { getLoggedinUser } from "../../helpers/api_helper";
 import Select from "react-select";
+import CreatableSelect from 'react-select/creatable';
 import { useFormik } from "formik";
 import { customFormatNumber } from "../../utils/function";
 import moment from "moment";
+import makeAnimated from 'react-select/animated';
+import axios from "axios";
+
+const animatedComponents = makeAnimated();
 
 const ModalCreate = ({
   // validation,
@@ -56,11 +61,14 @@ const ModalCreate = ({
 }) => {
   const dispatch = useDispatch();
   const [factures, setFactures] = useState([]);
+  const [selectedCat, setSelectedCat] = useState([]);
   const userProfile = getLoggedinUser();
+
   const { invoices, categories } = useSelector((state) => ({
     invoices: state.Invoice.invoices,
-    categories: state.Achat.categories,
+    categories: state.Achat.categories.map((e) => ({ label: e.aca_name, value: e.aca_name })),
   }));
+
   function isSelected(id) {
     let obj = transFilter?.data?.find((item) => item.tba_id === id);
     if (obj) {
@@ -163,6 +171,25 @@ const ModalCreate = ({
     });
     setTransFilter({ ...transFilter, data: newArrayselected });
   };
+
+  const submitCat = (categories) => {
+    console.log(categories);
+    let data = categories.map((cat) => ({ ...cat, aca_ach_fk: achat.id }));
+    console.log(data);
+    if (data.length > 0) {
+      axios.post('/v1/achat/categorie', { data }).then((res) => {
+        console.log(res);
+      })
+    }
+  }
+
+  const getCategorieByAchatId = () => {
+    axios.get('/v1/achat/categorie/' + achat.id).then((res) => {
+      setSelectedCat(res.data);
+
+    })
+  }
+
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
@@ -186,7 +213,6 @@ const ModalCreate = ({
     },
     validationSchema: Yup.object({
       montant: Yup.number().required("Veuillez choisir entrer un montant"),
-      categorie: Yup.string().required("Veuillez choisir entrer une catégorie"),
       entity: Yup.number().required("Veuillez choisir un client/fournisseur"),
       entityName: Yup.string().required(
         "Veuillez choisir un client/fournisseur"
@@ -226,16 +252,45 @@ const ModalCreate = ({
             ach_met: values.methode,
             ach_num: values.numero,
             ach_rp: values.rp,
-            ent_name: values.entityName,
           },
           associate: newTransAssoc,
         };
         dispatch(onCreateUpdateAchat(updateAchat));
+        submitCat(selectedCat);
         validation.resetForm();
       }
       toggle();
     },
   });
+
+  /**
+   * Permet d'ajouter et supprimer les categories
+   * @param {*} arraySelected 
+   */
+  const onChangeCategorie = (arraySelected) => {
+    let selected = [];
+    // On retirer les categorie si l'user les a supprimer
+    let filterRemoved = selectedCat.filter((cat) => arraySelected.findIndex((e) => cat.aca_name == e.value) > 0)
+
+    // Boucle sur les nouvelle valeur
+    for (let i = 0; i < arraySelected.length; i++) {
+      const element = arraySelected[i];
+
+      // On recupere l'index des valeurs si elle sont déjà presente dans le state des categorie
+      let index = filterRemoved.findIndex((cat) => cat.aca_name == element.value);
+      if (index > 0) {
+        // Si on trouve la valeur on push dans le nouveau state les ancien valeur pour ne pas les perdre 
+        selected.push(selectedCat[index]);
+      } else {
+        // Si non on l'ajoute avec les valeur par defaut 
+        selected.push({ aca_name: element.value, aca_montant: 0, aca_tva: 0 })
+      }
+    }
+
+    setSelectedCat(selected);
+
+  }
+
   const typesAchat = [
     {
       value: "Charge",
@@ -272,6 +327,13 @@ const ModalCreate = ({
   useEffect(() => {
     dispatch(onGetCategorieAchat());
   }, []);
+
+  useEffect(() => {
+    if (achat.id) {
+      getCategorieByAchatId();
+    }
+  }, [achat])
+
 
   return (
     <Modal
@@ -354,11 +416,10 @@ const ModalCreate = ({
                           return (
                             <ListGroupItem
                               key={i}
-                              className={` ${
-                                isInvoiceSelected(fac.header.fen_id)
-                                  ? "bg-light text-grey tit"
-                                  : ""
-                              }`}
+                              className={` ${isInvoiceSelected(fac.header.fen_id)
+                                ? "bg-light text-grey tit"
+                                : ""
+                                }`}
                               onClick={() => {
                                 handleFacture(fac);
                               }}
@@ -427,13 +488,13 @@ const ModalCreate = ({
                         value={validation.values.montant || ""}
                         invalid={
                           validation.touched.montant &&
-                          validation.errors.montant
+                            validation.errors.montant
                             ? true
                             : false
                         }
                       />
                       {validation.touched.montant &&
-                      validation.errors.montant ? (
+                        validation.errors.montant ? (
                         <FormFeedback type="invalid">
                           {validation.errors.montant}
                         </FormFeedback>
@@ -484,13 +545,13 @@ const ModalCreate = ({
                         value={validation.values.libelle || ""}
                         invalid={
                           validation.touched.libelle &&
-                          validation.errors.libelle
+                            validation.errors.libelle
                             ? true
                             : false
                         }
                       />
                       {validation.touched.libelle &&
-                      validation.errors.libelle ? (
+                        validation.errors.libelle ? (
                         <FormFeedback type="invalid">
                           {validation.errors.libelle}
                         </FormFeedback>
@@ -498,59 +559,49 @@ const ModalCreate = ({
                     </div>
                   </Col>
                   <Col lg={6}>
+
                     <div>
-                      <Label htmlFor="categorie-field" className="form-label">
-                        Catégorie*
+                      <Label htmlFor="entity-field" className="form-label">
+                        Client/Fournisseur*
                       </Label>
-                      <UncontrolledDropdown className="input-group">
-                        <Input
-                          type="text"
-                          name="categorie"
-                          className="form-control"
-                          placeholder="Entrer une catégorie"
-                          onChange={validation.handleChange}
-                          onBlur={validation.handleBlur}
-                          value={validation.values.categorie || ""}
-                          invalid={
-                            validation.touched.categorie &&
-                            validation.errors.categorie
-                              ? true
-                              : false
-                          }
-                        />
-                        <DropdownToggle
-                          tag="button"
-                          className="btn btn-success"
-                          type="button"
-                          data-bs-toggle="dropdown"
-                          aria-expanded="false"
+
+                      <Select
+                        invalid={
+                          (validation.touched.entity &&
+                            validation.errors.entity) ||
+                            (validation.touched.entityName &&
+                              validation.errors.entityName)
+                            ? true
+                            : false
+                        }
+                        placeholder={"Selectionnez un client/fournisseur"}
+                        value={{
+                          label: collaborateurs?.filter((e) => e.ent_id === validation.values.entity)[0]?.ent_name,
+                          value: validation.values.entity,
+                        }}
+                        onChange={(res) => {
+                          validation.setValues({
+                            ...validation.values,
+                            entity: res.value,
+                            entityName: res.label,
+                          });
+                        }}
+                        options={collaborateurs.map((i) => ({
+                          label: i.ent_name,
+                          value: i.ent_id,
+                        }))}
+                        name="choices-single-default"
+                        id="entity"
+                      ></Select>
+                      {(validation.touched.entity &&
+                        validation.errors.entity) ||
+                        (validation.touched.entityName &&
+                          validation.errors.entityName) ? (
+                        <FormFeedback
+                          type="invalid"
+                          style={{ display: "block" }}
                         >
-                          <i className="mdi mdi-chevron-down"></i>
-                        </DropdownToggle>
-                        <DropdownMenu className="dropdown-menu-end">
-                          {categories?.map((itemCat, i) => {
-                            return (
-                              <li
-                                onClick={() => {
-                                  validation.setValues({
-                                    ...validation.values,
-                                    categorie: itemCat?.ach_categorie,
-                                  });
-                                }}
-                                key={i}
-                              >
-                                <DropdownItem>
-                                  {itemCat?.ach_categorie}
-                                </DropdownItem>
-                              </li>
-                            );
-                          })}
-                        </DropdownMenu>
-                      </UncontrolledDropdown>
-                      {validation.touched.categorie &&
-                      validation.errors.categorie ? (
-                        <FormFeedback type="invalid">
-                          {validation.errors.categorie}
+                          {validation.errors.entityName}
                         </FormFeedback>
                       ) : null}
                     </div>
@@ -571,13 +622,13 @@ const ModalCreate = ({
                         value={validation.values.dateAchat || ""}
                         invalid={
                           validation.touched.dateAchat &&
-                          validation.errors.dateAchat
+                            validation.errors.dateAchat
                             ? true
                             : false
                         }
                       />
                       {validation.touched.dateAchat &&
-                      validation.errors.dateAchat ? (
+                        validation.errors.dateAchat ? (
                         <FormFeedback type="invalid">
                           {validation.errors.dateAchat}
                         </FormFeedback>
@@ -603,13 +654,13 @@ const ModalCreate = ({
                         value={validation.values.dateEcheance || ""}
                         invalid={
                           validation.touched.dateEcheance &&
-                          validation.errors.dateEcheance
+                            validation.errors.dateEcheance
                             ? true
                             : false
                         }
                       />
                       {validation.touched.dateEcheance &&
-                      validation.errors.dateEcheance ? (
+                        validation.errors.dateEcheance ? (
                         <FormFeedback type="invalid">
                           {validation.errors.dateEcheance}
                         </FormFeedback>
@@ -660,13 +711,13 @@ const ModalCreate = ({
                         value={validation.values.methode || ""}
                         invalid={
                           validation.touched.methode &&
-                          validation.errors.methode
+                            validation.errors.methode
                             ? true
                             : false
                         }
                       />
                       {validation.touched.methode &&
-                      validation.errors.methode ? (
+                        validation.errors.methode ? (
                         <FormFeedback type="invalid">
                           {validation.errors.methode}
                         </FormFeedback>
@@ -676,49 +727,73 @@ const ModalCreate = ({
 
                   <Col lg={12}>
                     <div>
-                      <Label htmlFor="entity-field" className="form-label">
-                        Client/Fournisseur*
+                      <Label htmlFor="categorie-field" className="form-label">
+                        Catégorie*
                       </Label>
-                      {console.log(validation.values.entity)}
-                      <Select
-                        invalid={
-                          (validation.touched.entity &&
-                            validation.errors.entity) ||
-                          (validation.touched.entityName &&
-                            validation.errors.entityName)
-                            ? true
-                            : false
-                        }
-                        placeholder={"Selectionnez un client/fournisseur"}
-                        value={{
-                          label: collaborateurs?.filter( (e) => e.ent_id === validation.values.entity )[0]?.ent_name,
-                          value: validation.values.entity,
-                        }}
-                        onChange={(res) => {
-                          validation.setValues({
-                            ...validation.values,
-                            entity: res.value,
-                            entityName: res.label,
-                          });
-                        }}
-                        options={collaborateurs.map((i) => ({
-                          label: i.ent_name,
-                          value: i.ent_id,
-                        }))}
-                        name="choices-single-default"
-                        id="entity"
-                      ></Select>
-                      {(validation.touched.entity &&
-                        validation.errors.entity) ||
-                      (validation.touched.entityName &&
-                        validation.errors.entityName) ? (
-                        <FormFeedback
-                          type="invalid"
-                          style={{ display: "block" }}
-                        >
-                          {validation.errors.entityName}
+
+                      <CreatableSelect
+                        placeholder={"Ajouter vos catégories..."}
+                        noOptionsMessage={() => 'Aucune option (écrire pour en ajouter)'}
+                        formatCreateLabel={(val) => `Créer "${val}"`}
+                        isMulti
+                        isClearable
+                        closeMenuOnSelect={false}
+                        options={[{ options: categories }]}
+                        onChange={onChangeCategorie}
+
+                      />
+
+                      {validation.touched.categorie &&
+                        validation.errors.categorie ? (
+                        <FormFeedback type="invalid">
+                          {validation.errors.categorie}
                         </FormFeedback>
                       ) : null}
+                      <p className="mt-2">Liste de catégories</p>
+                      {
+                        selectedCat.length > 0 ?
+                          selectedCat.map((cat, i) => (
+                            <div key={i} className="d-flex flex-row">
+                              <div style={{ minWidth: "85px", alignItems: "center", display: "flex" }}>
+                                {cat.aca_name}
+                              </div>
+                              <div className="mx-2 input-group">
+                                <Input
+                                  name=""
+                                  id=""
+                                  className="form-control"
+                                  placeholder="TVA"
+                                  type="number"
+                                  onChange={(e) => {
+                                    let copy = [...selectedCat];
+                                    copy[i].aca_tva = e.target.value;
+                                    setSelectedCat(copy);
+                                  }}
+                                  value={cat.aca_tva || ""}
+                                />
+                                <Label className="btn btn-secondary btn-input-group">%</Label>
+                              </div>
+                              <div className="mx-2 input-group">
+                                <Input
+                                  name=""
+                                  id=""
+                                  className="form-control"
+                                  placeholder="Montant"
+                                  type="number"
+                                  onChange={(e) => {
+                                    let copy = [...selectedCat];
+                                    copy[i].aca_montant = e.target.value;
+                                    setSelectedCat(copy);
+                                  }}
+                                  value={(cat.aca_montant || "")}
+                                />
+                                <Label className="btn btn-secondary btn-input-group">€</Label>
+                              </div>
+                            </div>
+                          ))
+                          : null
+                      }
+
                     </div>
                   </Col>
                   <Col lg={12}>
@@ -749,11 +824,10 @@ const ModalCreate = ({
                               return (
                                 <ListGroupItem
                                   key={i}
-                                  className={` ${
-                                    isSelected(tra.tba_id)
-                                      ? "bg-light text-grey tit"
-                                      : ""
-                                  }`}
+                                  className={` ${isSelected(tra.tba_id)
+                                    ? "bg-light text-grey tit"
+                                    : ""
+                                    }`}
                                   onClick={() => {
                                     handleTransaction(tra);
                                   }}
@@ -801,7 +875,7 @@ const ModalCreate = ({
                   lg={12}
                   src={
                     !process.env.NODE_ENV ||
-                    process.env.NODE_ENV === "development"
+                      process.env.NODE_ENV === "development"
                       ? `${api.API_URL}/v1/achat/doc/${achat?.justificatif}/${userProfile.use_com_fk}`
                       : `${api.API_PDF}/${userProfile.use_com_fk}/achat/${achat?.justificatif}`
                   }
@@ -831,8 +905,8 @@ const ModalCreate = ({
             </button>
           </div>
         </ModalFooter>
-      </Form>
-    </Modal>
+      </Form >
+    </Modal >
   );
 };
 
