@@ -335,6 +335,8 @@ const ModalCreate = ({
   }, [achat])
 
 
+  let match = /^(([A-Za-z0-9]{8})(\d{4})(\d{2})(\d{2})(.*))/.exec(achat?.justificatif);
+
   return (
     <Modal
       style={{ maxWidth: isEdit ? "90%" : "auto" }}
