@@ -873,21 +873,23 @@ const ModalCreate = ({
               </Col>
               <Col lg={6}>
                 {
-                  achat.justificatif && match.length > 4 && achat.justificatif.split('.').pop() == 'pdf' ?
-                    <iframe
-                      style={{ width: "100%", height: "100%" }}
-                      lg={12}
-                      src={
-                        `${api.API_URL}/public/pdf/viewer.php?url=${api.API_URL}/public/pdf/${userProfile?.use_com_fk}/achat/${match[3]}/${match[4]}/${achat?.justificatif}`
-                      }
-                      title={achat.justificatif}
-                    ></iframe>
-                    :
-                    <div className="container-img-achat">
+                  achat.justificatif && match.length > 4 ?
+                    achat.justificatif.split('.').pop() == 'pdf' ?
+                      <iframe
+                        style={{ width: "100%", height: "100%" }}
+                        lg={12}
+                        src={
+                          `${api.API_URL}/public/pdf/viewer.php?url=${api.API_URL}/public/pdf/${userProfile?.use_com_fk}/achat/${match[3]}/${match[4]}/${achat?.justificatif}`
+                        }
+                        title={achat.justificatif}
+                      ></iframe>
+                      :
+                      <div className="container-img-achat">
 
-                      <img className="image-achat-doc" src={`${api.API_URL}/public/pdf/${userProfile?.use_com_fk}/achat/${match[3]}/${match[4]}/${achat?.justificatif}`} />
+                        <img className="image-achat-doc" src={`${api.API_URL}/public/pdf/${userProfile?.use_com_fk}/achat/${match[3]}/${match[4]}/${achat?.justificatif}`} />
 
-                    </div>
+                      </div>
+                    : null
                 }
 
               </Col>
