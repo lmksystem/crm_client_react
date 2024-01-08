@@ -285,23 +285,38 @@ html {
 .product .input-group {
   flex-wrap: nowrap;
 }
+
 .product #choices-tva {
   max-width: 100px;
 }
 
-.product td{
+.product td {
   min-width: 120px;
 }
 
-.product td:nth-child(2){
+.product td:nth-child(2) {
   min-width: 220px;
 }
 
 .product .product-removal {
-  min-width: 50px!important;
+  min-width: 50px !important;
 }
 
 .card-logo {
   object-fit: contain;
   width: 260px;
+}
+
+iframe img {
+  width: 97vw;
+}
+
+.container-img-achat{
+  overflow-y: scroll;
+
+  height: 700px;
+}
+
+.image-achat-doc {
+  width: 100%;
 }

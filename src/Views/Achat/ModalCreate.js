@@ -334,6 +334,7 @@ const ModalCreate = ({
     }
   }, [achat])
 
+  let match = /^(([A-Za-z0-9]{8})(\d{4})(\d{2})(\d{2})(.*))/.exec(achat?.justificatif);
 
   return (
     <Modal
@@ -870,17 +871,27 @@ const ModalCreate = ({
                 </Row>
               </Col>
               <Col lg={6}>
-                <iframe
-                  style={{ width: "100%", height: 550 }}
-                  lg={12}
-                  src={
-                    !process.env.NODE_ENV ||
-                      process.env.NODE_ENV === "development"
-                      ? `${api.API_URL}/v1/achat/doc/${achat?.justificatif}/${userProfile.use_com_fk}`
-                      : `${api.API_PDF}/${userProfile.use_com_fk}/achat/${achat?.justificatif}`
-                  }
-                  title={achat.justificatif}
-                ></iframe>
+                {achat.justificatif.split('.').pop() == 'pdf' ?
+                  <iframe
+                    style={{ width: "100%", height: "100%" }}
+                    lg={12}
+                    src={
+                      // !process.env.NODE_ENV ||
+                      //   process.env.NODE_ENV === "development"
+                      //   ? `${api.API_URL}/v1/achat/doc/${achat?.justificatif}/${userProfile.use_com_fk}`
+                      //   : `${api.API_PDF}/${userProfile.use_com_fk}/achat/${achat?.justificatif}`
+                      `${api.API_URL}/public/pdf/viewer.php?url=${api.API_URL}/public/pdf/${userProfile?.use_com_fk}/achat/${match[3]}/${match[4]}/${achat?.justificatif}`
+                    }
+                    title={achat.justificatif}
+                  ></iframe>
+                  :
+                  <div className="container-img-achat">
+
+                    <img className="image-achat-doc" src={`${api.API_URL}/public/pdf/${userProfile?.use_com_fk}/achat/${match[3]}/${match[4]}/${achat?.justificatif}`} />
+
+                  </div>
+                }
+
               </Col>
             </Row>
           )}

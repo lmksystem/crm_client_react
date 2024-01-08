@@ -63,6 +63,11 @@ const Recurrence = () => {
     isRecurrenceAdd: state.Recurrence.isRecurrenceAdd,
     error: state.Product.error,
   }));
+  let daysOptions = [
+    {
+      options: new Array(30).fill(0).map((v, i) => ({ value: i + 1, label: i + 1 + ' jours' }))
+    },
+  ]
 
   const [searchValueProduct, setSearchValueProduct] = useState("");
   const [openList, setOpenList] = useState(false);
@@ -157,19 +162,19 @@ const Recurrence = () => {
       recurrence_data: {
         rec_ent_fk: "",
         rec_desc: "",
-        rec_date_echeance: "",
         rec_nb: 1,
         rec_quand: 0,
         rec_repetition: 1,
+        rec_date_create: "",
+        rec_delai_echeance: ""
       }
 
     },
     validationSchema: Yup.object({
       recurrence_data: Yup.object({
         rec_ent_fk: Yup.number().required("Veuillez entrer un client"),
-        rec_date_echeance: Yup.string().required("Veuillez entrer une date"),
         rec_nb: Yup.number().required("Champs obligatoire"),
-        rec_quand: Yup.number().required("Champs obligatoire"),
+        rec_quand: Yup.number().min(1).required("Champs obligatoire"),
         rec_repetition: Yup.string().required("Champs obligatoire"),
       }),
       products: Yup.array().min(1, "Ajouter au moins un produit")
@@ -269,44 +274,47 @@ const Recurrence = () => {
     ],
     []
   );
-    const [idModif,setIdModif] =useState(null);
-    const [newMontantValue,setNewMontantValue] =useState(0);
+  const [idModif, setIdModif] = useState(null);
+  const [newMontantValue, setNewMontantValue] = useState(0);
 
   let columns2 = [
     { name: "Produit", selector: row => row.rec_pro_name, sortable: true, },
     { name: "Qté", selector: row => row.rec_pro_qty, sortable: true, width: "70px" },
-    { name: "Montant/unit", selector: (row) => {
-      if(idModif == row.rec_id){
-        return(
-        <div className="input-group">
-            <input type="number" value={newMontantValue} onChange={(e)=>setNewMontantValue(e.target.value)} className="form-control" />
-        </div>
-        )
+    {
+      name: "Montant/unit", selector: (row) => {
+        if (idModif == row.rec_id) {
+          return (
+            <div className="input-group">
+              <input type="number" value={newMontantValue} onChange={(e) => setNewMontantValue(e.target.value)} className="form-control" />
+            </div>
+          )
+        }
+        return (row.rec_montant + "€")
+
       }
-      return (row.rec_montant + "€")
-    
-    }
-,
-    sortable: true
+      ,
+      sortable: true
     },
-    { name: "Échéance", selector: row => moment(row.rec_date_echeance).format('D MMM'), sortable: true },
+    { name: "Échéance", selector: row => moment(row.rec_date_create).format('D MMM'), sortable: true },
     {
       name: "", selector: (row) => {
         return (
-          <i 
-          onClick={
-            () => { if(idModif==row.rec_id){
-              setIdModif(null);
-              dispatch(onAddRecurrence({
-                rec_id:row.rec_id,
-                rec_montant:newMontantValue
-              }));
-              setInfo({...info,rec_montant:newMontantValue});
-            }else{
-              setIdModif(row.rec_id);
-              setNewMontantValue(row.rec_montant);
-            }}
-          } className={idModif==row.rec_id?"ri-check-fill text-success fs-18":"ri-pencil-fill"}></i>
+          <i
+            onClick={
+              () => {
+                if (idModif == row.rec_id) {
+                  setIdModif(null);
+                  dispatch(onAddRecurrence({
+                    rec_id: row.rec_id,
+                    rec_montant: newMontantValue
+                  }));
+                  setInfo({ ...info, rec_montant: newMontantValue });
+                } else {
+                  setIdModif(row.rec_id);
+                  setNewMontantValue(row.rec_montant);
+                }
+              }
+            } className={idModif == row.rec_id ? "ri-check-fill text-success fs-18" : "ri-pencil-fill"}></i>
         )
       },
       width: "50px"
@@ -319,8 +327,8 @@ const Recurrence = () => {
       },
       width: "50px"
     },
-   
-  
+
+
   ]
 
   //  Internally, customStyles will deep merges your customStyles with the default styling.
@@ -344,7 +352,7 @@ const Recurrence = () => {
 
   // Export Modal
   const [isExportCSV, setIsExportCSV] = useState(false);
-
+  console.log(validation.values);
   document.title = "Récurrences | Countano";
   return (
     <React.Fragment>
@@ -358,8 +366,9 @@ const Recurrence = () => {
         <DeleteModal
           show={deleteModal}
           onDeleteClick={handleDeleteRecurrence}
-          onCloseClick={() => { setDeleteModal(false); setIsLastRec(false);  
-               }}
+          onCloseClick={() => {
+            setDeleteModal(false); setIsLastRec(false);
+          }}
         />
 
         <Container fluid>
@@ -544,20 +553,38 @@ const Recurrence = () => {
 
                 <Col lg={12}>
                   <div className="mb-2">
-                    <Label for="date-field">Date de la prochaine échéance</Label>
+                    <Label for="date-field">Date de création</Label>
                     <Input
                       type="date"
-                      name="recurrence_data.rec_date_echeance"
+                      name="recurrence_data.rec_date_create"
                       id="date-field"
                       className="form-control"
                       min={moment().add(1, "day").format('YYYY-MM-DD')}
                       placeholder="Selectionnez une date"
                       onBlur={validation.handleBlur}
                       onChange={validation.handleChange}
-                      invalid={validation.errors?.recurrence_data?.rec_date_echeance && validation.touched?.recurrence_data?.rec_date_echeance ? true : false}
+                      invalid={validation.errors?.recurrence_data?.rec_date_create && validation.touched?.recurrence_data?.rec_date_create ? true : false}
                     />
-                    {validation.errors?.recurrence_data?.rec_date_echeance && validation.touched?.recurrence_data?.rec_date_echeance ? (
-                      <FormFeedback type="invalid">{validation.errors?.recurrence_data?.rec_date_echeance}</FormFeedback>
+                    {validation.errors?.recurrence_data?.rec_date_create && validation.touched?.recurrence_data?.rec_date_create ? (
+                      <FormFeedback type="invalid">{validation.errors?.recurrence_data?.rec_date_create}</FormFeedback>
+                    ) : null}
+                  </div>
+                </Col>
+                <Col lg={12}>
+                  <div className="mb-2">
+                    <Label for="date-field">Délai d'échéance</Label>
+                    <Select
+                      options={daysOptions}
+
+                      onChange={(e) => {
+
+                        validation.setValues({ ...validation.values, recurrence_data: { ...validation.values.recurrence_data, ...validation.values.recurrence_data.rec_delai_echeance, rec_delai_echeance: e.value } })
+                      }}
+                      name="choices-single-default"
+                      id="idStatus"
+                    />
+                    {validation.errors?.recurrence_data?.rec_delai_echeance && validation.touched?.recurrence_data?.rec_delai_echeance ? (
+                      <FormFeedback type="invalid">{validation.errors?.recurrence_data?.rec_delai_echeance}</FormFeedback>
                     ) : null}
                   </div>
                 </Col>
