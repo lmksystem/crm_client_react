@@ -334,7 +334,6 @@ const ModalCreate = ({
     }
   }, [achat])
 
-  let match = /^(([A-Za-z0-9]{8})(\d{4})(\d{2})(\d{2})(.*))/.exec(achat?.justificatif);
 
   return (
     <Modal
@@ -872,7 +871,7 @@ const ModalCreate = ({
               </Col>
               <Col lg={6}>
                 {
-                  achat.justificatif && achat.justificatif.split('.').pop() == 'pdf' ?
+                  achat.justificatif && match.length > 4 && achat.justificatif.split('.').pop() == 'pdf' ?
                     <iframe
                       style={{ width: "100%", height: "100%" }}
                       lg={12}
