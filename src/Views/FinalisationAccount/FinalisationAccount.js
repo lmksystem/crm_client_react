@@ -18,7 +18,7 @@ import CompanyStep from './step/CompanyStep';
 import { createOrUpdateUser as onCreateOrUpdateUser, createOrUpdateCompany as onCreateOrUpdateCompany } from '../../slices/thunks';
 import ValideStep from './step/ValideStep';
 
-const FinalisationAccount = (props) => { 
+const FinalisationAccount = (props) => {
   console.log("token");
   document.title = "Finaliser création de compte | Countano";
   const dispatch = useDispatch();
@@ -30,11 +30,11 @@ const FinalisationAccount = (props) => {
 
   const [user, setUser] = useState(null);
   const [company, setCompany] = useState(null);
- 
+
   useEffect(() => {
-    
+
     let token = searchParams.get("token");
-    
+
     if (token) {
       axios.get(`/v1/user/token/${token}`).then((response) => {
         if (response.data) {
@@ -125,7 +125,7 @@ const FinalisationAccount = (props) => {
                 <PasswordStep shipNextStep={(user.use_rank == 1 || user.use_rank == 3)} position={getPosDiv(1, currentStep)} step={currentStep} setStep={setCurrentStep} handlePassword={handlePassword} />
               </Col>
               <Col md={12} lg={8} xl={10}>
-                {(user.use_rank != 1 && user.use_rank != 3) ? <CompanyStep position={getPosDiv(2, currentStep)} step={currentStep} setStep={setCurrentStep} handleCompany={handleCompany} /> : null}
+                {(user.use_rank != 1 && user.use_rank != 3) ? <CompanyStep position={getPosDiv(2, currentStep)} step={currentStep} setStep={setCurrentStep} handleCompany={handleCompany} pays={user.use_pays} /> : null}
               </Col>
               <Col md={12} lg={8} xl={6}>
                 <ValideStep position={getPosDiv(3, currentStep)} step={currentStep} handleSubmit={handleSubmit} />

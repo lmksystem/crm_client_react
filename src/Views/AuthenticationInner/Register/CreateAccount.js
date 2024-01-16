@@ -216,9 +216,8 @@ const CreateAccount = () => {
                                 // console.log(paysName);
                                 validation.setValues({
                                   ...validation.values,
-                                  com_pays: paysName,
+                                  use_pays: paysName,
                                 });
-                                setDialTel(dialCode);
                               }}
                               onBlur={validation.handleBlur}
                               name="com_pays"

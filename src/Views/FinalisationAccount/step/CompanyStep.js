@@ -15,7 +15,7 @@ import paysData from "../../../Components/constants/paysPhone.json";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 
-const CompanyStep = ({ handleCompany, setStep, step, position }) => {
+const CompanyStep = ({ handleCompany, setStep, step, position, pays }) => {
   let isStep = 2;
 
   const [passwordShow, setPasswordShow] = useState(false);
@@ -29,7 +29,7 @@ const CompanyStep = ({ handleCompany, setStep, step, position }) => {
     enableReinitialize: true,
     initialValues: {
       com_name: "",
-      com_pays: "",
+      com_pays: pays,
       com_adresse: "",
       com_ville: "",
       com_cp: "",
@@ -56,10 +56,10 @@ const CompanyStep = ({ handleCompany, setStep, step, position }) => {
     }),
 
     onSubmit: (values) => {
-  
-      let copyValues ={...values};
-      copyValues.com_phone = dialTel+copyValues.com_phone
-      handleCompany(copyValues); 
+
+      let copyValues = { ...values };
+      copyValues.com_phone = dialTel + copyValues.com_phone
+      handleCompany(copyValues);
       setStep(step + 1);
     },
   });
@@ -213,7 +213,7 @@ const CompanyStep = ({ handleCompany, setStep, step, position }) => {
                       Choisissez un pays
                     </option>
                     {paysData.map((e, i) => (
-                      <option key={i} value={`${e.name},${e.dial_code}`}>
+                      <option selected={e.name == pays ? "selected" : ""} key={i} value={`${e.name},${e.dial_code}`}>
                         {e.name}
                       </option>
                     ))}
@@ -238,13 +238,13 @@ const CompanyStep = ({ handleCompany, setStep, step, position }) => {
                     value={validation.values.com_adresse || ""}
                     invalid={
                       validation.touched.com_adresse &&
-                      validation.errors.com_adresse
+                        validation.errors.com_adresse
                         ? true
                         : false
                     }
                   />
                   {validation.touched.com_adresse &&
-                  validation.errors.com_adresse ? (
+                    validation.errors.com_adresse ? (
                     <FormFeedback type="invalid">
                       {validation.errors.com_adresse}
                     </FormFeedback>
@@ -264,13 +264,13 @@ const CompanyStep = ({ handleCompany, setStep, step, position }) => {
                     value={validation.values.com_ville || ""}
                     invalid={
                       validation.touched.com_ville &&
-                      validation.errors.com_ville
+                        validation.errors.com_ville
                         ? true
                         : false
                     }
                   />
                   {validation.touched.com_ville &&
-                  validation.errors.com_ville ? (
+                    validation.errors.com_ville ? (
                     <FormFeedback type="invalid">
                       {validation.errors.com_ville}
                     </FormFeedback>
@@ -314,13 +314,13 @@ const CompanyStep = ({ handleCompany, setStep, step, position }) => {
                     value={validation.values.com_email || ""}
                     invalid={
                       validation.touched.com_email &&
-                      validation.errors.com_email
+                        validation.errors.com_email
                         ? true
                         : false
                     }
                   />
                   {validation.touched.com_email &&
-                  validation.errors.com_email ? (
+                    validation.errors.com_email ? (
                     <FormFeedback type="invalid">
                       {validation.errors.com_email}
                     </FormFeedback>
@@ -340,43 +340,20 @@ const CompanyStep = ({ handleCompany, setStep, step, position }) => {
                     value={validation.values.com_phone || ""}
                     invalid={
                       validation.touched.com_phone &&
-                      validation.errors.com_phone
+                        validation.errors.com_phone
                         ? true
                         : false
                     }
                   />
                   {validation.touched.com_phone &&
-                  validation.errors.com_phone ? (
+                    validation.errors.com_phone ? (
                     <FormFeedback type="invalid">
                       {validation.errors.com_phone}
                     </FormFeedback>
                   ) : null}
                 </Col>
-                <Col lg={4} className="mb-3">
-                  <Label htmlFor="email" className="form-label">
-                    Code NAF
-                  </Label>
-                  <Input
-                    name="com_naf"
-                    className="form-control"
-                    placeholder="Entrer votre code NAF"
-                    type={"text"}
-                    onChange={validation.handleChange}
-                    onBlur={validation.handleBlur}
-                    value={validation.values.com_naf || ""}
-                    invalid={
-                      validation.touched.com_naf && validation.errors.com_naf
-                        ? true
-                        : false
-                    }
-                  />
-                  {validation.touched.com_naf && validation.errors.com_naf ? (
-                    <FormFeedback type="invalid">
-                      {validation.errors.com_naf}
-                    </FormFeedback>
-                  ) : null}
-                </Col>
-                <Col lg={4} className="mb-3">
+
+                <Col lg={6} className="mb-3">
                   <Label htmlFor="email" className="form-label">
                     {numEntreprise}
                   </Label>
@@ -390,21 +367,21 @@ const CompanyStep = ({ handleCompany, setStep, step, position }) => {
                     value={validation.values.com_siren || ""}
                     invalid={
                       validation.touched.com_siren &&
-                      validation.errors.com_siren
+                        validation.errors.com_siren
                         ? true
                         : false
                     }
                   />
                   {validation.touched.com_siren &&
-                  validation.errors.com_siren ? (
+                    validation.errors.com_siren ? (
                     <FormFeedback type="invalid">
                       {validation.errors.com_siren}
                     </FormFeedback>
                   ) : null}
                 </Col>
-                <Col lg={4} className="mb-3">
-                  <Label  className="form-label">
-                  Compte bancaire
+                <Col lg={6} className="mb-3">
+                  <Label className="form-label">
+                    Compte bancaire
                   </Label>
                   <Input
                     name="com_bank_acc"
@@ -416,70 +393,98 @@ const CompanyStep = ({ handleCompany, setStep, step, position }) => {
                     value={validation.values.com_bank_acc || ""}
                     invalid={
                       validation.touched.com_bank_acc &&
-                      validation.errors.com_bank_acc
+                        validation.errors.com_bank_acc
                         ? true
                         : false
                     }
                   />
                   {validation.touched.com_bank_acc &&
-                  validation.errors.com_bank_acc ? (
+                    validation.errors.com_bank_acc ? (
                     <FormFeedback type="invalid">
                       {validation.errors.com_bank_acc}
                     </FormFeedback>
                   ) : null}
                 </Col>
-                <Col lg={6} className="mb-3">
-                  <Label htmlFor="email" className="form-label">
-                    Nom de convention
-                  </Label>
-                  <Input
-                    name="com_conv_name"
-                    className="form-control"
-                    placeholder="Entrer un nom de convention"
-                    type={"text"}
-                    onChange={validation.handleChange}
-                    onBlur={validation.handleBlur}
-                    value={validation.values.com_conv_name || ""}
-                    invalid={
-                      validation.touched.com_conv_name &&
-                      validation.errors.com_conv_name
-                        ? true
-                        : false
-                    }
-                  />
-                  {validation.touched.com_conv_name &&
-                  validation.errors.com_conv_name ? (
-                    <FormFeedback type="invalid">
-                      {validation.errors.com_conv_name}
-                    </FormFeedback>
-                  ) : null}
-                </Col>
-                <Col lg={6} className="mb-3">
-                  <Label htmlFor="email" className="form-label">
-                    Numéro de convention
-                  </Label>
-                  <Input
-                    name="com_conv_num"
-                    className="form-control"
-                    placeholder="Entrer un numéro de convention"
-                    type={"text"}
-                    onChange={validation.handleChange}
-                    onBlur={validation.handleBlur}
-                    value={validation.values.com_conv_num || ""}
-                    invalid={
-                      validation.touched.com_conv_num &&
-                      validation.errors.com_conv_num
-                        ? true
-                        : false
-                    }
-                  />
-                  {validation.touched.com_conv_num &&
-                  validation.errors.com_conv_num ? (
-                    <FormFeedback type="invalid">
-                      {validation.errors.com_conv_num}
-                    </FormFeedback>
-                  ) : null}
-                </Col>
+                {validation.values.com_pays == "France" &&
+                  <>
+                    <Col lg={2} className="mb-3">
+                      <Label htmlFor="email" className="form-label">
+                        Code NAF
+                      </Label>
+                      <Input
+                        name="com_naf"
+                        className="form-control"
+                        placeholder="NAF"
+                        type={"text"}
+                        onChange={validation.handleChange}
+                        onBlur={validation.handleBlur}
+                        value={validation.values.com_naf || ""}
+                        invalid={
+                          validation.touched.com_naf && validation.errors.com_naf
+                            ? true
+                            : false
+                        }
+                      />
+                      {validation.touched.com_naf && validation.errors.com_naf ? (
+                        <FormFeedback type="invalid">
+                          {validation.errors.com_naf}
+                        </FormFeedback>
+                      ) : null}
+                    </Col>
+                    <Col lg={5} className="mb-3">
+
+                      <Label htmlFor="email" className="form-label">
+                        Nom de convention
+                      </Label>
+                      <Input
+                        name="com_conv_name"
+                        className="form-control"
+                        placeholder="Entrer un nom de convention"
+                        type={"text"}
+                        onChange={validation.handleChange}
+                        onBlur={validation.handleBlur}
+                        value={validation.values.com_conv_name || ""}
+                        invalid={
+                          validation.touched.com_conv_name &&
+                            validation.errors.com_conv_name
+                            ? true
+                            : false
+                        }
+                      />
+                      {validation.touched.com_conv_name &&
+                        validation.errors.com_conv_name ? (
+                        <FormFeedback type="invalid">
+                          {validation.errors.com_conv_name}
+                        </FormFeedback>
+                      ) : null}
+                    </Col>
+                    <Col lg={5} className="mb-3">
+                      <Label htmlFor="email" className="form-label">
+                        Numéro de convention
+                      </Label>
+                      <Input
+                        name="com_conv_num"
+                        className="form-control"
+                        placeholder="Entrer un numéro de convention"
+                        type={"text"}
+                        onChange={validation.handleChange}
+                        onBlur={validation.handleBlur}
+                        value={validation.values.com_conv_num || ""}
+                        invalid={
+                          validation.touched.com_conv_num &&
+                            validation.errors.com_conv_num
+                            ? true
+                            : false
+                        }
+                      />
+                      {validation.touched.com_conv_num &&
+                        validation.errors.com_conv_num ? (
+                        <FormFeedback type="invalid">
+                          {validation.errors.com_conv_num}
+                        </FormFeedback>
+                      ) : null}
+                    </Col>
+                  </>}
               </Row>
 
               <div className="mt-4">
