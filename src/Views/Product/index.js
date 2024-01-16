@@ -455,7 +455,7 @@ const Products = () => {
                                 htmlFor="pro_detail-field"
                                 className="form-label"
                               >
-                                Prix
+                                Prix (HT)
                               </Label>
                               <Input
                                 name="pro_prix"

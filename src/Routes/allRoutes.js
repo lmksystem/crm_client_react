@@ -40,6 +40,7 @@ import Reports from "../Views/reports";
 import Profile from "../Views/Admin/User/Profile";
 import CompanyProfil from "../Views/Company";
 import CollaboDetails from "../Views/Collaborateurs/CollaboDetails";
+import CreateAccount from "../Views/AuthenticationInner/Register/CreateAccount";
 
 
 // import PdfPreview from "../Views/Pdf";
@@ -126,6 +127,7 @@ const publicRoutes = [
   { path: "/login", component: <Login /> },
   { path: "/forgot-password", component: <ForgetPasswordPage /> },
   { path: "/register", component: <Register /> },
+  { path: "/inscription", component: <CreateAccount /> },
   { path: "/finalisation-compte", component: <FinalisationAccount /> },
   { path: "/erreur-404", component: <Basic404 /> },
 

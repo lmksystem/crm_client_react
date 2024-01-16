@@ -391,7 +391,7 @@ const TransactionList = () => {
         </Container>
         <Modal id="showModal" isOpen={modal} toggle={toggle} centered size="lg">
           <ModalHeader className="bg-soft-info p-3" toggle={toggle}>
-            Ajouter une transaction
+            Ajouter un encaissement
           </ModalHeader>
           <Form
             className="tablelist-form"

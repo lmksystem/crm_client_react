@@ -72,8 +72,18 @@ const AlertParametrage = () => {
           >
             Rappel d'échéance facture
           </Label>
+
+          <div class="alert alert-primary d-flex flex-column" role="alert">
+            <div>
+              * Une valeur négative enverra un rappel avant la date d'échéance
+            </div>
+            <div>
+
+              * Une valeur positive enverra un rappel après la date d'échéance
+            </div>
+          </div>
           {alertForm.values?.alerts.map((alert, i) => {
-  
+
             let isPositive = alert.aec_delai > 0 && !(alert.aec_delai.toString().includes('+')) && alert.aec_delai.length > 0 ? "+" : "";
 
             return (
@@ -81,7 +91,7 @@ const AlertParametrage = () => {
                 <div className="input-group-text bg-primary border-primary text-white">
                   Nombres de jours
                 </div>
-                
+
                 <Input
                   type="text"
                   name={`alerts[${i}].aec_delai`}
@@ -89,7 +99,7 @@ const AlertParametrage = () => {
                   className="form-control"
                   placeholder="ex: 5"
                   onChange={(e) => {
-                 
+
                     alertForm.handleChange(e);
                   }}
                   onBlur={alertForm.handleBlur}

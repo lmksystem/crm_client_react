@@ -118,7 +118,7 @@ const Achats = () => {
     initialValues: {
       type: "",
       files: filesSelected,
-      facturesExist:facsExist,
+      facturesExist: facsExist,
     },
     validationSchema: Yup.object({
       type: Yup.string().required("Veuillez choisir un type"),
@@ -129,7 +129,7 @@ const Achats = () => {
     onSubmit: (values) => {
       if (!isEdit) {
 
-        if(values?.files?.length> 0){
+        if (values?.files?.length > 0) {
           FileService.uploadFile(values.files).then((res) => {
             if (res.fileName) {
               const newAchat = {
@@ -140,35 +140,35 @@ const Achats = () => {
               dispatch(onCreateUpdateAchat(newAchat));
             }
           });
-        }else if(values?.facturesExist?.length>0){
+        } else if (values?.facturesExist?.length > 0) {
           FileService.copyFiles(values?.facturesExist).then((res) => {
-            let arrayUpdateAchat =[];
+            let arrayUpdateAchat = [];
             for (let index = 0; index < res.data.length; index++) {
               const element = res.data[index];
-              let newAchat ={
-                ach_ent_fk:element.header.fen_ent_fk,
-                ach_date_create: element.header.fen_date_create.slice(0,10),
+              let newAchat = {
+                ach_ent_fk: element.header.fen_ent_fk,
+                ach_date_create: element.header.fen_date_create.slice(0, 10),
                 ach_date_expired: element.header.fen_date_expired,
                 ach_categorie: element.header.fen_sujet,
-                ach_total_amount:parseFloat(element.header.fen_total_ttc),
-                ach_rp:parseFloat(element.header.fen_total_ttc),
-                ach_total_tva:parseFloat(element.header.fen_total_tva),
-                ado_file_name:element.newFileCopy,
-                ach_type:"Revenu",
-                ach_lib:"",
-                ach_num:"",
-                ach_met:"",
+                ach_total_amount: parseFloat(element.header.fen_total_ttc),
+                ach_rp: parseFloat(element.header.fen_total_ttc),
+                ach_total_tva: parseFloat(element.header.fen_total_tva),
+                ado_file_name: element.newFileCopy,
+                ach_type: "Revenu",
+                ach_lib: "",
+                ach_num: "",
+                ach_met: "",
               }
               arrayUpdateAchat.push(newAchat);
             }
-            let objectDispatching ={
-              invoices:arrayUpdateAchat
+            let objectDispatching = {
+              invoices: arrayUpdateAchat
             }
             dispatch(onCreateUpdateAchat(objectDispatching));
-          
+
           });
         }
-       
+
 
         createAchats.resetForm();
       }
@@ -197,7 +197,7 @@ const Achats = () => {
         justificatif: achatH.ado_file_name,
         entity: achatH.ach_ent_fk,
         rp: achatH?.ach_rp,
-        type:achatH?.ach_type,
+        type: achatH?.ach_type,
       });
       setIsEdit(true);
       toggle();
@@ -280,7 +280,12 @@ const Achats = () => {
         },
       },
       {
-        Header: "Titre",
+        Header: "libelle",
+        accessor: "ach_lib",
+        filterable: false,
+      },
+      {
+        Header: "Client / Fournisseur",
         accessor: "ent_name",
         filterable: false,
       },
@@ -315,11 +320,11 @@ const Achats = () => {
         accessor: "ach_total_amount",
         filterable: false,
         Cell: (cell) => {
-        return (
-          <div className="d-flex align-items-center">
-            <div >{cell.row.original.ach_type == "Charge"?"- ":"+ "}{customFormatNumber(parseInt(cell.row.original.ach_total_amount))}</div>
-          </div>
-        );
+          return (
+            <div className="d-flex align-items-center">
+              <div >{cell.row.original.ach_type == "Charge" ? "- " : "+ "}{customFormatNumber(parseInt(cell.row.original.ach_total_amount))}</div>
+            </div>
+          );
         }
       },
       {
@@ -327,11 +332,11 @@ const Achats = () => {
         accessor: "ach_rp",
         filterable: false,
         Cell: (cell) => {
-        return (
-          <div className="d-flex align-items-center">
-            <div >{customFormatNumber(parseFloat(cell.row.original.ach_rp))}</div>
-          </div>
-        );
+          return (
+            <div className="d-flex align-items-center">
+              <div >{customFormatNumber(parseFloat(cell.row.original.ach_rp))}</div>
+            </div>
+          );
         }
       },
       {
@@ -341,10 +346,10 @@ const Achats = () => {
         Cell: (cell) => {
           return (
             <div className="d-flex align-items-center">
-              <div >{moment(cell.value).isValid()? moment(cell.value).format('L'):"Aucune date"}</div>
+              <div >{moment(cell.value).isValid() ? moment(cell.value).format('L') : "Aucune date"}</div>
             </div>
           );
-          }
+        }
       },
       {
         Header: "Echéance",
@@ -353,10 +358,10 @@ const Achats = () => {
         Cell: (cell) => {
           return (
             <div className="d-flex align-items-center">
-              <div >{moment(cell.value).isValid()? moment(cell.value).format('L'):"Aucune date"}</div>
+              <div >{moment(cell.value).isValid() ? moment(cell.value).format('L') : "Aucune date"}</div>
             </div>
           );
-          }
+        }
       },
       {
         Header: "Catégorie",
@@ -383,7 +388,7 @@ const Achats = () => {
             };
           } else if (
             parseFloat(cell.row.original.ach_rp) <
-              Math.abs(parseFloat(cell.row.original.ach_total_amount)) &&
+            Math.abs(parseFloat(cell.row.original.ach_total_amount)) &&
             parseFloat(cell.row.original.ach_rp) > 0
           ) {
             styleCSS = {

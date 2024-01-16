@@ -18,7 +18,8 @@ import CompanyStep from './step/CompanyStep';
 import { createOrUpdateUser as onCreateOrUpdateUser, createOrUpdateCompany as onCreateOrUpdateCompany } from '../../slices/thunks';
 import ValideStep from './step/ValideStep';
 
-const FinalisationAccount = (props) => {
+const FinalisationAccount = (props) => { 
+  console.log("token");
   document.title = "Finaliser création de compte | Countano";
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -29,10 +30,11 @@ const FinalisationAccount = (props) => {
 
   const [user, setUser] = useState(null);
   const [company, setCompany] = useState(null);
-
+ 
   useEffect(() => {
+    
     let token = searchParams.get("token");
-
+    
     if (token) {
       axios.get(`/v1/user/token/${token}`).then((response) => {
         if (response.data) {
@@ -47,6 +49,8 @@ const FinalisationAccount = (props) => {
       }).catch(() => {
         navigate('/erreur-404');
       })
+    } else {
+      navigate('/erreur-404');
     }
   }, [])
 

@@ -255,10 +255,10 @@ const Employees = () => {
         Cell: (cell) => {
           return (
             <div className="d-flex align-items-center">
-              <div >{moment(cell.value).isValid()? moment(cell.value).format('D MMM YYYY'):"Aucune date"}</div>
+              <div >{moment(cell.value).isValid() ? moment(cell.value).format('D MMM YYYY') : "Aucune date"}</div>
             </div>
           );
-          }
+        }
       },
       {
         Header: "Action",
@@ -326,6 +326,8 @@ const Employees = () => {
       setTimeout(() => {
         document.getElementById("start-anime").classList.add("show-cus");
       }, 200);
+    } else {
+      document.getElementById('start-anime').classList.remove("show-cus")
     }
   }, [show]);
 
@@ -453,13 +455,13 @@ const Employees = () => {
                                 value={validation.values.lastname || ""}
                                 invalid={
                                   validation.touched.lastname &&
-                                  validation.errors.lastname
+                                    validation.errors.lastname
                                     ? true
                                     : false
                                 }
                               />
                               {validation.touched.lastname &&
-                              validation.errors.lastname ? (
+                                validation.errors.lastname ? (
                                 <FormFeedback type="invalid">
                                   {validation.errors.lastname}
                                 </FormFeedback>
@@ -488,13 +490,13 @@ const Employees = () => {
                                 value={validation.values.firstname || ""}
                                 invalid={
                                   validation.touched.firstname &&
-                                  validation.errors.firstname
+                                    validation.errors.firstname
                                     ? true
                                     : false
                                 }
                               />
                               {validation.touched.firstname &&
-                              validation.errors.firstname ? (
+                                validation.errors.firstname ? (
                                 <FormFeedback type="invalid">
                                   {validation.errors.firstname}
                                 </FormFeedback>
@@ -525,13 +527,13 @@ const Employees = () => {
                                 value={validation.values.email || ""}
                                 invalid={
                                   validation.touched.email &&
-                                  validation.errors.email
+                                    validation.errors.email
                                     ? true
                                     : false
                                 }
                               />
                               {validation.touched.email &&
-                              validation.errors.email ? (
+                                validation.errors.email ? (
                                 <FormFeedback type="invalid">
                                   {validation.errors.email}
                                 </FormFeedback>
@@ -561,13 +563,13 @@ const Employees = () => {
                                 value={validation.values.date_entree || ""}
                                 invalid={
                                   validation.touched.date_entree &&
-                                  validation.errors.date_entree
+                                    validation.errors.date_entree
                                     ? true
                                     : false
                                 }
                               />
                               {validation.touched.date_entree &&
-                              validation.errors.date_entree ? (
+                                validation.errors.date_entree ? (
                                 <FormFeedback type="invalid">
                                   {validation.errors.date_entree}
                                 </FormFeedback>
@@ -608,7 +610,9 @@ const Employees = () => {
             </Col>
 
             <div id="start-anime">
+
               <Card id="contact-view-detail">
+                <div style={{ position: "absolute", left: 10, top: 5 }}><i onClick={() => setShow(false)} className="ri-close-fill" style={{ cursor: "pointer", fontSize: "20px" }}></i></div>
                 <CardBody className="text-center">
                   <h5 className="mt-4 mb-1">
                     {info.use_lastname + " " + info.use_firstname}
