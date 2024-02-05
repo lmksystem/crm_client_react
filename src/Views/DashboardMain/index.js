@@ -11,6 +11,7 @@ import {
   getTransactionByMonth as onGetTransactionByMonth,
   getDevisByMonth as onGetDevisByMonth,
   getInvoiceByMonth as onGetInvoiceByMonth,
+  getCompany as onGetCompany
 } from "../../slices/thunks";
 import { useDispatch } from "react-redux";
 import Section from "./Section";
@@ -81,6 +82,10 @@ const DashboardMain = () => {
       year:perdiodeCalendar?.start!=null?moment(perdiodeCalendar.start).year():moment().year()
     }));
   }, [perdiodeCalendar]);
+
+  useEffect(() => {
+    dispatch(onGetCompany());
+  }, []);
 
   return (
     <React.Fragment>

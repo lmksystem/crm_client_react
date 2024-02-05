@@ -33,11 +33,12 @@ const InvoiceDetails = () => {
 
   let { id } = useParams();
 
-  const { invoices, transactions, company, etat } = useSelector((state) => ({
+  const { invoices, transactions, company, etat, devise } = useSelector((state) => ({
     company: state?.Company?.company,
     etat: state.Invoice.invoiceEtat,
     invoices: state.Invoice.invoices,
-    transactions: state.Transaction.transactions.filter((t) => t.tra_fen_fk == id)
+    transactions: state.Transaction.transactions.filter((t) => t.tra_fen_fk == id),
+    devise: state.Company.devise
   }));
 
   const [invoice, setInvoice] = useState(invoices.find((f) => f.header.fen_id == id));
@@ -65,7 +66,7 @@ const InvoiceDetails = () => {
   }, [invoices])
 
   useEffect(() => {
-    if(invoice){
+    if (invoice) {
       setSelectedEtat(etat?.find((d) => d.fet_id == invoice?.header.fen_etat)?.fet_name);
       setValueSubject(invoice?.header.fen_sujet)
     }
@@ -437,7 +438,7 @@ const InvoiceDetails = () => {
                           <span id="total-amount">
                             {customFormatNumber(invoice.header.fen_total_ttc)}
                           </span>
-                          €
+                          {devise}
                         </h5>
                       </Col>
                     </Row>
@@ -485,14 +486,14 @@ const InvoiceDetails = () => {
                               </td>
                               <td className="text-end">{ligne.fli_qty}</td>
                               <td className="text-end">
-                                {customFormatNumber(ligne.fli_unit_ht)}€
+                                {customFormatNumber(ligne.fli_unit_ht)}{devise}
                               </td>
                               <td className="text-end">
                                 {ligne.fli_pourcent_remise}%
                               </td>
                               <td className="text-end">{ligne.fli_tva}%</td>
                               <td className="text-end">
-                                {customFormatNumber(ligne.fli_total_ttc)}€
+                                {customFormatNumber(ligne.fli_total_ttc)}{devise}
                               </td>
                             </tr>
                           ))}
@@ -508,7 +509,7 @@ const InvoiceDetails = () => {
                           <tr>
                             <td>Sous total HT</td>
                             <td className="text-end">
-                              {customFormatNumber(invoice.header.fen_total_ht)}€
+                              {customFormatNumber(invoice.header.fen_total_ht)}{devise}
                             </td>
                           </tr>
                           <tr>
@@ -518,7 +519,7 @@ const InvoiceDetails = () => {
                               {customFormatNumber(
                                 invoice.header.fen_total_remise
                               )}
-                              €
+                              {devise}
                             </td>
                           </tr>
                           <tr>
@@ -527,7 +528,7 @@ const InvoiceDetails = () => {
                             </td>
                             <td className="text-end">
                               {customFormatNumber(invoice.header.fen_total_tva)}
-                              €
+                              {devise}
                             </td>
                           </tr>
                           {/* <tr>
@@ -538,7 +539,7 @@ const InvoiceDetails = () => {
                             <th scope="row">Total TTC</th>
                             <th className="text-end">
                               {customFormatNumber(invoice.header.fen_total_ttc)}
-                              €
+                              {devise}
                             </th>
                           </tr>
                         </tbody>
@@ -581,7 +582,7 @@ const InvoiceDetails = () => {
                                     </td>
                                     <td>{element.tra_desc}</td>
                                     <td className="text-end">
-                                      {customFormatNumber(element.tra_value)}€
+                                      {customFormatNumber(element.tra_value)}{devise}
                                     </td>
                                     <td width={40}>
                                       <button
@@ -628,7 +629,7 @@ const InvoiceDetails = () => {
                                   {customFormatNumber(
                                     invoice.header.fen_solde_du
                                   )}
-                                  €
+                                  {devise}
                                 </td>
                                 <td width={40}></td>
                               </tr>
@@ -663,13 +664,13 @@ const InvoiceDetails = () => {
                                   onChange={validation.handleChange}
                                   invalid={
                                     validation.errors?.tra_date &&
-                                    validation.touched?.tra_date
+                                      validation.touched?.tra_date
                                       ? true
                                       : false
                                   }
                                 />
                                 {validation.errors?.tra_date &&
-                                validation.touched?.tra_date ? (
+                                  validation.touched?.tra_date ? (
                                   <FormFeedback type="invalid">
                                     {validation.errors?.tra_date}
                                   </FormFeedback>
@@ -687,13 +688,13 @@ const InvoiceDetails = () => {
                                   placeholder="Description"
                                   invalid={
                                     validation.errors?.tra_desc &&
-                                    validation.touched?.tra_desc
+                                      validation.touched?.tra_desc
                                       ? true
                                       : false
                                   }
                                 />
                                 {validation.errors?.tra_desc &&
-                                validation.touched?.tra_desc ? (
+                                  validation.touched?.tra_desc ? (
                                   <FormFeedback type="invalid">
                                     {validation.errors?.tra_desc}
                                   </FormFeedback>
@@ -711,13 +712,13 @@ const InvoiceDetails = () => {
                                   placeholder="Montant"
                                   invalid={
                                     validation.errors?.tra_value &&
-                                    validation.touched?.tra_value
+                                      validation.touched?.tra_value
                                       ? true
                                       : false
                                   }
                                 />
                                 {validation.errors?.tra_value &&
-                                validation.touched?.tra_value ? (
+                                  validation.touched?.tra_value ? (
                                   <FormFeedback type="invalid">
                                     {validation.errors?.tra_value}
                                   </FormFeedback>

@@ -49,12 +49,13 @@ import { customFormatNumber } from "../../utils/function";
 
 const Salary = () => {
   const dispatch = useDispatch();
-  const { isSalarySuccess, error, employees, salaries } = useSelector(
+  const { isSalarySuccess, error, employees, salaries, devise } = useSelector(
     (state) => ({
       isSalarySuccess: state.Salary.isSalarySuccess,
       employees: state.Employee.employees,
       salaries: state.Salary.salaries,
       error: state.Employee.error,
+      devise: state.Company.devise
     })
   );
   const yearActual = new Date().getFullYear().toString();
@@ -111,7 +112,7 @@ const Salary = () => {
 
   // Créez un objet pour organiser les données par mois
   const [moisDonnees, setMoisDonnee] = useState({});
-  const  MoisComponent = () => {
+  const MoisComponent = () => {
     // Affichez tous les mois de l'année, même ceux sans données
     return (
       <div>
@@ -120,9 +121,8 @@ const Salary = () => {
           let classBySelectMonth =
             moisNom === dateMonthChoice
               ? "list-group-item list-group-item-action list-group-item-info"
-              : `list-group-item list-group-item-action ${
-                  moisDonnees[moisNom]?.length > 0 ? " " : "disabled"
-                }`;
+              : `list-group-item list-group-item-action ${moisDonnees[moisNom]?.length > 0 ? " " : "disabled"
+              }`;
           return (
             <button
               disabled={moisDonnees[moisNom]?.length <= 0 ? true : false}
@@ -134,9 +134,8 @@ const Salary = () => {
               className={classBySelectMonth}
             >
               <p
-                className={`p-0 m-0 ${
-                  moisDonnees[moisNom]?.length > 0 ? "fw-bolder" : ""
-                }`}
+                className={`p-0 m-0 ${moisDonnees[moisNom]?.length > 0 ? "fw-bolder" : ""
+                  }`}
               >
                 {moisNom}
               </p>
@@ -201,19 +200,19 @@ const Salary = () => {
   });
   useEffect(() => {
     if (dateFormat?.length > 3 && salaries) {
-        let moisData = {};
-        for (let index = 0; index < salaries.length; index++) {
-          const element = salaries[index];
-          const moisNom = moisIndices[element?.mois];
-          if (!moisData[moisNom]) {
-            moisData[moisNom] = [];
-          }
-          moisData[moisNom].push(element);
+      let moisData = {};
+      for (let index = 0; index < salaries.length; index++) {
+        const element = salaries[index];
+        const moisNom = moisIndices[element?.mois];
+        if (!moisData[moisNom]) {
+          moisData[moisNom] = [];
         }
-        setMoisDonnee(moisData);
+        moisData[moisNom].push(element);
+      }
+      setMoisDonnee(moisData);
     }
   }, [salaries])
-  
+
 
   // Update Data Salaire
   const handleSalaryClick = useCallback(
@@ -324,10 +323,10 @@ const Salary = () => {
         Cell: (cell) => {
           return (
             <div className="d-flex align-items-center">
-              <div >{customFormatNumber(parseFloat(cell.value))}€</div>
+              <div >{customFormatNumber(parseFloat(cell.value))}{devise}</div>
             </div>
           );
-          }
+        }
       },
       {
         Header: "Brut",
@@ -336,10 +335,10 @@ const Salary = () => {
         Cell: (cell) => {
           return (
             <div className="d-flex align-items-center">
-              <div >{customFormatNumber(parseFloat(cell.value))}€</div>
+              <div >{customFormatNumber(parseFloat(cell.value))}{devise}</div>
             </div>
           );
-          }
+        }
       },
       {
         Header: "Brut chargé",
@@ -348,10 +347,10 @@ const Salary = () => {
         Cell: (cell) => {
           return (
             <div className="d-flex align-items-center">
-              <div >{customFormatNumber(parseFloat(cell.value))}€</div>
+              <div >{customFormatNumber(parseFloat(cell.value))}{devise}</div>
             </div>
           );
-          }
+        }
       },
       {
         Header: "Date versement",
@@ -360,10 +359,10 @@ const Salary = () => {
         Cell: (cell) => {
           return (
             <div className="d-flex align-items-center">
-              <div >{moment(cell.value).isValid()? moment(cell.value).format('D MMM YYYY'):"Aucune date"}</div>
+              <div >{moment(cell.value).isValid() ? moment(cell.value).format('D MMM YYYY') : "Aucune date"}</div>
             </div>
           );
-          }
+        }
       },
       {
         Header: "Action",
@@ -410,7 +409,7 @@ const Salary = () => {
         },
       },
     ],
-    [handleSalaryClick, checkedAll, salaries,moisDonnees]
+    [handleSalaryClick, checkedAll, salaries, moisDonnees]
   );
 
   //Récupération des employés pour le select du formulaire
@@ -419,19 +418,19 @@ const Salary = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    async function ChargeMoisDate(){
+    async function ChargeMoisDate() {
       if (dateFormat?.length > 3) {
         dispatch(onGetSalary(dateFormat))
-          let moisData = {};
-          for (let index = 0; index < salaries.length; index++) {
-            const element = salaries[index];
-            const moisNom = moisIndices[element?.mois];
-            if (!moisData[moisNom]) {
-              moisData[moisNom] = [];
-            }
-            moisData[moisNom].push(element);
+        let moisData = {};
+        for (let index = 0; index < salaries.length; index++) {
+          const element = salaries[index];
+          const moisNom = moisIndices[element?.mois];
+          if (!moisData[moisNom]) {
+            moisData[moisNom] = [];
           }
-          setMoisDonnee(moisData);
+          moisData[moisNom].push(element);
+        }
+        setMoisDonnee(moisData);
       }
     }
     ChargeMoisDate()
@@ -583,7 +582,7 @@ const Salary = () => {
                                   }}
                                   invalid={
                                     validation.touched.salaray_use_id &&
-                                    validation.errors.salaray_use_id
+                                      validation.errors.salaray_use_id
                                       ? true
                                       : false
                                   }
@@ -603,7 +602,7 @@ const Salary = () => {
                                   ))}
                                 </Input>
                                 {validation.touched.salaray_use_id &&
-                                validation.errors.salaray_use_id ? (
+                                  validation.errors.salaray_use_id ? (
                                   <FormFeedback type="invalid">
                                     {validation.errors.salaray_use_id}
                                   </FormFeedback>
@@ -632,13 +631,13 @@ const Salary = () => {
                                   value={validation.values.salaray_date || ""}
                                   invalid={
                                     validation.touched.salaray_date &&
-                                    validation.errors.salaray_date
+                                      validation.errors.salaray_date
                                       ? true
                                       : false
                                   }
                                 />
                                 {validation.touched.salaray_date &&
-                                validation.errors.salaray_date ? (
+                                  validation.errors.salaray_date ? (
                                   <FormFeedback type="invalid">
                                     {validation.errors.salaray_date}
                                   </FormFeedback>
@@ -667,13 +666,13 @@ const Salary = () => {
                                   value={validation.values.salary_net || ""}
                                   invalid={
                                     validation.touched.salary_net &&
-                                    validation.errors.salary_net
+                                      validation.errors.salary_net
                                       ? true
                                       : false
                                   }
                                 />
                                 {validation.touched.salary_net &&
-                                validation.errors.salary_net ? (
+                                  validation.errors.salary_net ? (
                                   <FormFeedback type="invalid">
                                     {validation.errors.salary_net}
                                   </FormFeedback>
@@ -702,13 +701,13 @@ const Salary = () => {
                                   value={validation.values.salary_brut || ""}
                                   invalid={
                                     validation.touched.salary_brut &&
-                                    validation.errors.salary_brut
+                                      validation.errors.salary_brut
                                       ? true
                                       : false
                                   }
                                 />
                                 {validation.touched.salary_brut &&
-                                validation.errors.salary_brut ? (
+                                  validation.errors.salary_brut ? (
                                   <FormFeedback type="invalid">
                                     {validation.errors.salary_brut}
                                   </FormFeedback>
@@ -737,13 +736,13 @@ const Salary = () => {
                                   value={validation.values.salary_charge || ""}
                                   invalid={
                                     validation.touched.salary_charge &&
-                                    validation.errors.salary_charge
+                                      validation.errors.salary_charge
                                       ? true
                                       : false
                                   }
                                 />
                                 {validation.touched.salary_charge &&
-                                validation.errors.salary_charge ? (
+                                  validation.errors.salary_charge ? (
                                   <FormFeedback type="invalid">
                                     {validation.errors.salary_charge}
                                   </FormFeedback>

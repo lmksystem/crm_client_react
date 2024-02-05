@@ -8,16 +8,12 @@ import FeatherIcon from "feather-icons-react/build/FeatherIcon";
 moment.locale("fr");
 
 const Widgets = () => {
-  const {
-    transactionsPeriodPrice,
-    devisCountPeriod,
-    invoiceCountPeriod,
-    entityCountPeriod,
-  } = useSelector((state) => ({
+  const { transactionsPeriodPrice, devisCountPeriod, invoiceCountPeriod, entityCountPeriod, devise } = useSelector((state) => ({
     transactionsPeriodPrice: state.Transaction.transactionsPeriodPrice,
     devisCountPeriod: state.Devis.devisCountPeriod,
     invoiceCountPeriod: state.Invoice.invoiceCountPeriod,
     entityCountPeriod: state.Gestion.entityCountPeriod,
+    devise: state.Company.devise
   }));
 
   function constructWidgetDetails(label, value) {
@@ -59,10 +55,10 @@ const Widgets = () => {
       bgcolor: "primary",
       decimals: 2,
       prefix: "",
-      suffix: "€",
+      suffix: devise,
       separator: " ",
       decimal: ",",
-      icon:"dollar-sign"
+      icon: "dollar-sign"
     },
     {
       id: 2,
@@ -83,7 +79,7 @@ const Widgets = () => {
       prefix: "",
       suffix: "",
       separator: " ",
-      icon:"clipboard"
+      icon: "clipboard"
     },
     {
       id: 3,
@@ -103,7 +99,7 @@ const Widgets = () => {
       decimals: 0,
       prefix: "",
       suffix: "",
-      icon:"file-text"
+      icon: "file-text"
     },
     {
       id: 4,
@@ -117,7 +113,7 @@ const Widgets = () => {
         "badgeClass",
         entityCountPeriod?.pourcentage_gain_perte
       ),
-      icon:"users",
+      icon: "users",
       percentage: entityCountPeriod?.pourcentage_gain_perte || 0,
       counter: entityCountPeriod?.nb_entity_annee_courante || 0,
       bgcolor: "primary",
@@ -132,7 +128,7 @@ const Widgets = () => {
             <CardBody>
               <div className="d-flex align-items-center">
                 <div className="flex-grow-1 overflow-hidden">
-                  <p className="text-uppercase fw-medium text-truncate mb-0" style={{ color:"#ff9f00" }} >
+                  <p className="text-uppercase fw-medium text-truncate mb-0" style={{ color: "#ff9f00" }} >
                     {item.label}
                   </p>
                 </div>
@@ -162,7 +158,7 @@ const Widgets = () => {
                     </span>
                   </h4>
                 </div>
-               {item?.icon && <div className="avatar-sm flex-shrink-0">
+                {item?.icon && <div className="avatar-sm flex-shrink-0">
                   <span className="avatar-title bg-light rounded fs-3">
                     <FeatherIcon
                       icon={item.icon}

@@ -46,11 +46,12 @@ import ExportCSVModal from "../../Components/Common/ExportCSVModal";
 
 const Products = () => {
   const dispatch = useDispatch();
-  const { products, isProductSuccess, error, tva } = useSelector((state) => ({
+  const { products, isProductSuccess, error, tva, devise } = useSelector((state) => ({
     products: state.Product.products,
     isProductSuccess: state.Product.isProductSuccess,
     error: state.Product.error,
     tva: state.Gestion.tva,
+    devise: state.Company.devise
   }));
 
   const [product, setProduct] = useState([]);
@@ -222,7 +223,7 @@ const Products = () => {
         accessor: "pro_prix",
         filterable: false,
         Cell: (cell) => {
-          return <div>{cell.value ? cell.value + "€" : <i>Non renseigné</i>}</div>;
+          return <div>{cell.value ? cell.value + devise : <i>Non renseigné</i>}</div>;
         }
       },
       {

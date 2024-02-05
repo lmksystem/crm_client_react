@@ -1,22 +1,26 @@
 import React from "react";
 import ReactApexChart from "react-apexcharts";
 import getChartColorsArray from "../../Components/Common/ChartsDynamicColor";
+import { useSelector } from "react-redux";
 
 const RevenueCharts = ({ dataColors, series }) => {
   const linechartcustomerColors = getChartColorsArray(dataColors);
 
-  
+  const { devise } = useSelector((state) => ({
+    devise: state?.Company?.devise,
+  }));
+
   function abregerSomme(somme) {
     if (somme < 500) {
-      return somme.toString() + "€";
+      return somme.toString() + devise;
     } else if (somme < 10000) {
-      return (somme / 1000).toFixed(1) + "K €"
+      return (somme / 1000).toFixed(1) + "K " + devise
     } else {
-      return (somme / 1000).toFixed(0) +"K €";
+      return (somme / 1000).toFixed(0) + "K " + devise;
     }
   }
 
-  
+
   var options = {
     chart: {
       height: 350,
@@ -54,7 +58,7 @@ const RevenueCharts = ({ dataColors, series }) => {
     //   title: {
     //     text: 'Vente €'
     //   },
-      
+
     // }],
     xaxis: {
       categories: [
@@ -102,7 +106,7 @@ const RevenueCharts = ({ dataColors, series }) => {
     legend: {
       show: true,
       horizontalAlign: "center",
-      height:70,
+      height: 70,
       offsetX: 0,
       offsetY: -5,
       markers: {
@@ -122,7 +126,7 @@ const RevenueCharts = ({ dataColors, series }) => {
       },
     },
 
-      yaxis: {
+    yaxis: {
       labels: {
         formatter: function (value) {
           return value.toFixed(0); // Formater les valeurs à deux chiffres après la virgule
@@ -136,7 +140,7 @@ const RevenueCharts = ({ dataColors, series }) => {
         {
           formatter: function (y) {
             if (typeof y !== "undefined") {
-              return y.toFixed(0)+ " Devis";
+              return y.toFixed(0) + " Devis";
             }
             return y;
           },
@@ -144,7 +148,7 @@ const RevenueCharts = ({ dataColors, series }) => {
         {
           formatter: function (y) {
             if (typeof y !== "undefined") {
-              return   abregerSomme(y);
+              return abregerSomme(y);
             }
             return y;
           },
@@ -162,7 +166,7 @@ const RevenueCharts = ({ dataColors, series }) => {
   };
   return (
     <React.Fragment>
-      <ReactApexChart 
+      <ReactApexChart
         dir="ltr"
         options={options}
         series={series}

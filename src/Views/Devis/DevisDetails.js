@@ -25,10 +25,11 @@ const DevisDetails = () => {
 
   let { id } = useParams();
 
-  const { etatDevis, devisList, company } = useSelector((state) => ({
+  const { etatDevis, devisList, company, devise } = useSelector((state) => ({
     devisList: state.Devis.devisList,
     etatDevis: state.Devis.etatDevis,
-    company: state.Company.company[0]
+    company: state.Company.company[0],
+    devise: state.Company.devise,
   }));
 
   const dispatch = useDispatch();
@@ -140,7 +141,7 @@ const DevisDetails = () => {
   return (
     <div className="page-content">
       <Container fluid>
-      <ToastContainer closeButton={false} limit={1} />
+        <ToastContainer closeButton={false} limit={1} />
         <BreadCrumb className="d-print-none" title="Devis détaillé" pageTitle="Devis" />
         <ConfirmModal title={'Êtes-vous sûr ?'} text={"Êtes-vous sûr de vouloir envoyer le devis ?"} show={showConfirmModal} onCloseClick={() => setShowConfirmModal(false)} onActionClick={() => sendDevisByEmail()} />
         <ConfirmModal title={'Êtes-vous sûr ?'} text={"Ce devis a déjà été converti en facture, voulez-vous recommencer ?"} show={showConfirmModal2} onCloseClick={() => setShowConfirmModal2(false)} onActionClick={() => { redirectToInvoice() }} />
@@ -165,10 +166,10 @@ const DevisDetails = () => {
                       <div className="flex-shrink-0 mt-sm-0 mt-3">
 
                         {/* <h6><span className="text-muted fw-normal">Legal Registration No:</span><span id="legal-register-no">987654</span></h6> */}
-                        <h6><span className="text-muted fw-normal">Email: </span><span id="email">{devis.contact.dco_email}</span></h6>
-                        <h6><span className="text-muted fw-normal">Téléphone: </span>{devis.contact.dco_phone}</h6>
-                        <h6><span className="text-muted fw-normal">Adresse: </span><span id="email">{devis.contact.dco_address}, {devis.contact.dco_city}</span></h6>
-                        <h6><span className="text-muted fw-normal">Code postal: </span>{devis.contact.dco_cp}</h6>
+                        <h6><span className="text-muted fw-normal">Email: </span><span id="email">{devis.contact?.dco_email}</span></h6>
+                        <h6><span className="text-muted fw-normal">Téléphone: </span>{devis.contact?.dco_phone}</h6>
+                        <h6><span className="text-muted fw-normal">Adresse: </span><span id="email">{devis.contact?.dco_address}, {devis.contact?.dco_city}</span></h6>
+                        <h6><span className="text-muted fw-normal">Code postal: </span>{devis.contact?.dco_cp}</h6>
 
                         {/* <h6 className="mb-0"><span className="text-muted fw-normal">Contact No: </span><span id="contact-no"> +(01) 234 6789</span></h6> */}
                       </div>
@@ -179,32 +180,32 @@ const DevisDetails = () => {
                   <CardBody className="p-4 border-bottom border-bottom-dashed">
                     <Row className="g-3">
                       <Col xs={12} md={6} lg={4} className="col-6 d-flex flex-column">
-                       {!subjectChange ?
-                       <h6 className="text-muted text-uppercase fw-semibold mb-3">{valueSubject}<FeatherIcon onClick={() => { setSubjectChange(() => !subjectChange) }} className={"d-print-none mx-2 cursor-pointer"} size={13} icon={'edit-2'}></FeatherIcon></h6>
-                       
-                       :
-                       <div class="input-group"><input placeholder="Sujet"  type="text" 
-                       defaultValue={devis.header.den_sujet}
-                       class="form-control form-control"
-                       /><button
-                       onClick={
-                        (e)=>{
-                          if(e.target?.previousSibling?.value?.trim()?.length>0){
-                            let devisHeaderCopy = { ...devis.header }
-                            devisHeaderCopy.den_sujet = e.target.previousSibling.value
-                            dispatch(onUpdateDevis(devisHeaderCopy))
-                            setValueSubject( e.target.previousSibling.value)
-                            setSubjectChange(() => false);
-                          }else{
-                            toast.error('Veuillez entrer un sujet', { autoClose: 3000 })
-                          }
-                     
+                        {!subjectChange ?
+                          <h6 className="text-muted text-uppercase fw-semibold mb-3">{valueSubject}<FeatherIcon onClick={() => { setSubjectChange(() => !subjectChange) }} className={"d-print-none mx-2 cursor-pointer"} size={13} icon={'edit-2'}></FeatherIcon></h6>
+
+                          :
+                          <div class="input-group"><input placeholder="Sujet" type="text"
+                            defaultValue={devis.header.den_sujet}
+                            class="form-control form-control"
+                          /><button
+                            onClick={
+                              (e) => {
+                                if (e.target?.previousSibling?.value?.trim()?.length > 0) {
+                                  let devisHeaderCopy = { ...devis.header }
+                                  devisHeaderCopy.den_sujet = e.target.previousSibling.value
+                                  dispatch(onUpdateDevis(devisHeaderCopy))
+                                  setValueSubject(e.target.previousSibling.value)
+                                  setSubjectChange(() => false);
+                                } else {
+                                  toast.error('Veuillez entrer un sujet', { autoClose: 3000 })
+                                }
+
+                              }
+                            }
+                            class="btn btn-primary" type="button">Valider</button></div>
                         }
-                       }
-                       class="btn btn-primary" type="button">Valider</button></div>
-                       }
                       </Col>
-                      <Col  xs={12} md={6} lg={8} className="col-6 d-flex flex-column align-items-end">
+                      <Col xs={12} md={6} lg={8} className="col-6 d-flex flex-column align-items-end">
                         <h6 className="text-muted text-uppercase fw-semibold mb-3">Information Client</h6>
                         <p className="fw-medium mb-2" id="billing-name">{devis.contact.dco_cus_name}</p>
                         <p className="text-muted mb-1" id="billing-address-line-1">{devis.contact.dco_cus_address}</p>
@@ -256,7 +257,7 @@ const DevisDetails = () => {
                       </Col>
                       <Col lg={3}>
                         <p className="text-muted mb-2 text-uppercase fw-semibold">Total</p>
-                        <h5 className="fs-14 mb-0"><span id="total-amount">{customFormatNumber(rounded(devis.header.den_total_ttc, 2))}</span>€</h5>
+                        <h5 className="fs-14 mb-0"><span id="total-amount">{customFormatNumber(rounded(devis.header.den_total_ttc, 2))}</span>{devise}</h5>
                       </Col>
                     </Row>
                   </CardBody>
@@ -287,10 +288,10 @@ const DevisDetails = () => {
                                 <p className="text-muted mb-0">{ligne.dli_detail}</p>
                               </td>
                               <td className="text-end">{ligne.dli_qty}</td>
-                              <td className="text-end">{customFormatNumber(ligne.dli_unit_ht)}€</td>
+                              <td className="text-end">{customFormatNumber(ligne.dli_unit_ht)}{devise}</td>
                               <td className="text-end">{ligne.dli_pourcent_remise}%</td>
                               <td className="text-end">{ligne.dli_tva}%</td>
-                              <td className="text-end">{customFormatNumber(rounded(ligne.dli_total_ttc, 2))}€</td>
+                              <td className="text-end">{customFormatNumber(rounded(ligne.dli_total_ttc, 2))}{devise}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -301,15 +302,15 @@ const DevisDetails = () => {
                         <tbody>
                           <tr>
                             <td>Sous total HT</td>
-                            <td className="text-end">{customFormatNumber(rounded(devis.header.den_total_ht, 2))}€</td>
+                            <td className="text-end">{customFormatNumber(rounded(devis.header.den_total_ht, 2))}{devise}</td>
                           </tr>
                           <tr>
                             <td>Total remise</td>
-                            <td className="text-end">- {customFormatNumber(rounded(devis.header.den_total_remise, 2))}€</td>
+                            <td className="text-end">- {customFormatNumber(rounded(devis.header.den_total_remise, 2))}{devise}</td>
                           </tr>
                           <tr>
                             <td>Total TVA <small className="text-muted"></small></td>
-                            <td className="text-end">{customFormatNumber(rounded(devis.header.den_total_tva, 2))}€</td>
+                            <td className="text-end">{customFormatNumber(rounded(devis.header.den_total_tva, 2))}{devise}</td>
                           </tr>
                           {/* <tr>
                             <td></td>
@@ -317,7 +318,7 @@ const DevisDetails = () => {
                           </tr> */}
                           <tr className="border-top border-top-dashed fs-15">
                             <th scope="row">Total TTC</th>
-                            <th className="text-end">{customFormatNumber(devis.header.den_total_ttc)}€</th>
+                            <th className="text-end">{customFormatNumber(devis.header.den_total_ttc)}{devise}</th>
                           </tr>
                         </tbody>
                       </Table>

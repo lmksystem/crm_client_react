@@ -89,7 +89,7 @@ export function GlobalFilter({
             {/* <div className="mt-lg-0"> */}
                 {/* <form action="#"> */}
                   <Row className=" mb-0 align-items-center justify-content-end ">
-                    <div sty className="col-sm-auto d-flex align-items-center flex-row">
+                    <div className="col-sm-auto d-flex align-items-center flex-row">
                       {flatpickrRef.current?.flatpickr?.selectedDates?.length >
                         0 && (
                         <i

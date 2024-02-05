@@ -11,6 +11,10 @@ const TransactionCharts = ({ chartData }) => {
   const dispatch = useDispatch();
   const linechartcustomerColors = getChartColorsArray('["--vz-primary", "--vz-warning", "--vz-success"]');
 
+  const { devise } = useSelector((state) => ({
+    devise: state?.Company?.devise,
+  }));
+
 
   var options = {
     chart: {
@@ -122,7 +126,7 @@ const TransactionCharts = ({ chartData }) => {
       y: [
         {
           formatter: function (y) {
-            return y + "€";
+            return y + devise;
           },
         },
       ],

@@ -58,14 +58,13 @@ let axios = new APIClient()
 const InvoiceCreate = () => {
   document.title = "Création facture | Countano";
 
-  const { collaborateurs, company, tva, products, prefix_facture } = useSelector((state) => ({
-    prefix_facture: state.Gestion.constantes?.find(
-      (cst) => cst.con_title === "Prefixe facture"
-    ),
+  const { collaborateurs, company, tva, products, prefix_facture, devise } = useSelector((state) => ({
+    prefix_facture: state.Gestion.constantes?.find((cst) => cst.con_title === "Prefixe facture"),
     collaborateurs: state.Gestion.collaborateurs,
     company: state.Company.company[0],
     tva: state.Gestion.tva,
     products: state.Product.products,
+    devise: state.Company.devise
   }));
 
   let { state } = useLocation();
@@ -167,8 +166,8 @@ const InvoiceCreate = () => {
         fen_total_tva: 0,
         fen_total_remise: 0,
         fen_num_fac: prefix_facture?.con_value ? (prefix_facture?.con_value + company?.com_nb_fac) : company?.com_nb_fac,
-        fen_num_tva :"",
-        fen_num_bank :(company && company.com_bank_acc) || "",
+        fen_num_tva: "",
+        fen_num_bank: (company && company.com_bank_acc) || "",
       },
       ligne: []
     },
@@ -391,7 +390,7 @@ const InvoiceCreate = () => {
       getImage(path).then((response) => {
         setImage("data:image/png;base64," + response)
       })
-    } 
+    }
   }, [])
 
 
@@ -424,24 +423,24 @@ const InvoiceCreate = () => {
                   <Row>
                     <Col lg={6} className="d-flex">
                       <div className="profile-user mx-auto  mb-3">
-                      {image &&
-                        <Label for="profile-img-file-input" className="d-block">
-                          
-                          <span
-                            className="overflow-hidden border border-dashed d-flex align-items-center justify-content-center rounded"
-                            style={{ height: "60px", width: "256px" }}
-                          >
-                           <img
-                              src={image}
-                              className="card-logo card-logo-dark user-profile-image img-fluid"
-                              alt="logo"
-                              width="260"
-                            />
+                        {image &&
+                          <Label for="profile-img-file-input" className="d-block">
 
-                          </span>
+                            <span
+                              className="overflow-hidden border border-dashed d-flex align-items-center justify-content-center rounded"
+                              style={{ height: "60px", width: "256px" }}
+                            >
+                              <img
+                                src={image}
+                                className="card-logo card-logo-dark user-profile-image img-fluid"
+                                alt="logo"
+                                width="260"
+                              />
 
-                        </Label>
-                      }
+                            </span>
+
+                          </Label>
+                        }
                       </div>
 
 
@@ -640,7 +639,7 @@ const InvoiceCreate = () => {
                           ) : null}
 
                         </div>
-                        
+
                       </Row>
                     </Col>
                     <Col lg={4} sm={6}>
@@ -855,9 +854,9 @@ const InvoiceCreate = () => {
                           type="text"
                           className="form-control bg-light border-0"
                           id="totalamountInput"
-                          placeholder="€0.00"
+                          placeholder={devise + "0.00"}
                           readOnly
-                          value={"€" + rounded(validation.values.header.fen_total_ttc, 2)}
+                          value={devise + rounded(validation.values.header.fen_total_ttc, 2)}
                         />
                       </div>
                     </Col>
@@ -1015,8 +1014,8 @@ const InvoiceCreate = () => {
                                     type="text"
                                     className="form-control bg-light border-0 product-line-price"
                                     id="productPrice-1"
-                                    placeholder="€0.00"
-                                    value={rounded(validation.values?.ligne[i]?.fli_total_ht, 2) + "€"}
+                                    placeholder={devise + "0.00"}
+                                    value={rounded(validation.values?.ligne[i]?.fli_total_ht, 2) + devise}
                                     readOnly
                                   />
                                   <Label className="btn btn-secondary btn-input-group">ht</Label>
@@ -1025,8 +1024,8 @@ const InvoiceCreate = () => {
                                   <Input
                                     type="text"
                                     className="form-control bg-light border-0 product-line-price"
-                                    placeholder="€0.00"
-                                    value={rounded(validation.values?.ligne[i]?.fli_total_ttc, 2) + "€"}
+                                    placeholder={devise + "0.00"}
+                                    value={rounded(validation.values?.ligne[i]?.fli_total_ttc, 2) + devise}
                                     readOnly
                                   />
                                   <Label className="btn btn-secondary btn-input-group">ttc</Label>
@@ -1085,9 +1084,9 @@ const InvoiceCreate = () => {
                                       type="text"
                                       className="form-control bg-light border-0"
                                       id="cart-subtotal"
-                                      placeholder="€0.00"
+                                      placeholder={devise + "0.00"}
                                       readOnly
-                                      value={"€" + rounded(validation.values.header.fen_total_ht, 2)}
+                                      value={devise + rounded(validation.values.header.fen_total_ht, 2)}
                                     />
                                   </td>
                                 </tr>
@@ -1100,7 +1099,7 @@ const InvoiceCreate = () => {
                                       id="cart-tax"
                                       placeholder="$0.00"
                                       readOnly
-                                      value={"€" + rounded(validation.values.header.fen_total_remise, 2)}
+                                      value={devise + rounded(validation.values.header.fen_total_remise, 2)}
                                     />
                                   </td>
                                 </tr>
@@ -1114,7 +1113,7 @@ const InvoiceCreate = () => {
                                       id="cart-shipping"
                                       placeholder="$0.00"
                                       readOnly
-                                      value={"€" + rounded(validation.values.header.fen_total_tva, 2)}
+                                      value={devise + rounded(validation.values.header.fen_total_tva, 2)}
                                     />
                                   </td>
                                 </tr>
@@ -1127,7 +1126,7 @@ const InvoiceCreate = () => {
                                       id="cart-total"
                                       placeholder="$0.00"
                                       readOnly
-                                      value={"€" + rounded(validation.values.header.fen_total_ttc, 2)}
+                                      value={devise + rounded(validation.values.header.fen_total_ttc, 2)}
                                     />
                                   </td>
                                 </tr>
@@ -1241,7 +1240,7 @@ const InvoiceCreate = () => {
                             fli_name: p.pro_name,
                             fli_detail: p.pro_detail,
                             fli_unit_ht: p.pro_prix,
-                            
+
                           }
 
 
@@ -1256,7 +1255,7 @@ const InvoiceCreate = () => {
                         <Row>
                           <Col lg={6}>{p.pro_name}</Col>
                           <Col className="text-end" lg={2}>{p.pro_tva}%</Col>
-                          <Col className="text-end" lg={4}>{p.pro_prix}€</Col>
+                          <Col className="text-end" lg={4}>{p.pro_prix}{devise}</Col>
                         </Row>
                       </div>
                     )

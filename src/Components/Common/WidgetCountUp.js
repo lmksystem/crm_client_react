@@ -15,11 +15,15 @@ import FeatherIcon from "feather-icons-react";
 import 'react-toastify/dist/ReactToastify.css';
 
 import 'moment/locale/fr'  // without this line it didn't work
+import { useSelector } from "react-redux";
 
 moment.locale('fr')
 
 const WidgetCountUp = ({ data, type, xl = 3, md = 6 }) => {
-
+  const { devise } = useSelector((state) => ({
+    devise: state?.Company?.devise,
+  }));
+  console.log("---------------",devise);
   return (
     <React.Fragment>
       <Col xl={xl} md={md}>
@@ -45,7 +49,7 @@ const WidgetCountUp = ({ data, type, xl = 3, md = 6 }) => {
                 <h4 className="fs-22 fw-semibold ff-secondary mb-4">
                   <CountUp
                     start={0}
-                    prefix={"€"}
+                    prefix={devise}
                     decimals="2"
                     end={data.total}
                     duration={1}

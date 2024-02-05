@@ -21,6 +21,8 @@ const CreateAccount = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch();
 
+  const [accountIsCreated, setAccountIsCreated] = useState(false);
+
   const validation = useFormik({
 
     enableReinitialize: true,
@@ -45,6 +47,7 @@ const CreateAccount = () => {
       dispatch(onCreateOrUpdateUser(values)).then(() => {
         navigate('/admin/users')
       });
+      setAccountIsCreated(true);
     },
   });
 
@@ -70,188 +73,199 @@ const CreateAccount = () => {
 
             <Row className="justify-content-center position-relative">
               <Col md={12} lg={8} xl={6}>
+                {accountIsCreated ?
+                  <Card className={`mt-4 position-absolute w-100 element`} >
+                    <CardBody className="p-4">
+                      <div className="text-center mt-2">
+                        <h5 className="text-primary">Super !</h5>
+                        <p className="text-muted">Un email vous à été envoyer pour finaliser votre inscription, ouvrez le et suivez le lien de redirection !</p>
+                      </div>
+                    </CardBody>
+                  </Card>
+                  :
+                  <Card className={`mt-4 position-absolute w-100 element`} >
+                    <CardBody className="p-4">
+                      <div className="text-center mt-2">
+                        <h5 className="text-primary">Bienvenue !</h5>
+                        <p className="text-muted">Passons à la création de votre compte !</p>
+                      </div>
+                      {/* {error && error ? (<Alert color="danger"> {error} </Alert>) : null} */}
+                      <div className="p-2 mt-4">
 
-                <Card className={`mt-4 position-absolute w-100 element`} >
-                  <CardBody className="p-4">
-                    <div className="text-center mt-2">
-                      <h5 className="text-primary">Bienvenue !</h5>
-                      <p className="text-muted">Passons à la création de votre compte !</p>
-                    </div>
-                    {/* {error && error ? (<Alert color="danger"> {error} </Alert>) : null} */}
-                    <div className="p-2 mt-4">
+                        <Form
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            validation.handleSubmit();
+                            return false;
+                          }}
+                          action="#">
+                          <Row>
+                            <Col lg={12}>
 
-                      <Form
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          validation.handleSubmit();
-                          return false;
-                        }}
-                        action="#">
-                        <Row>
-                          <Col lg={12}>
+                            </Col>
 
-                          </Col>
+                            <Col lg={6}>
+                              <div>
+                                <Label
+                                  htmlFor="use_lastname-field"
+                                  className="form-label"
+                                >
+                                  Nom
+                                </Label>
 
-                          <Col lg={6}>
-                            <div>
-                              <Label
-                                htmlFor="use_lastname-field"
-                                className="form-label"
-                              >
-                                Nom
+                                <Input
+                                  name="use_lastname"
+                                  id="use_lastname-field"
+                                  className="form-control"
+                                  placeholder="Entrer un nom"
+                                  type="text"
+                                  validate={{
+                                    required: { value: true },
+                                  }}
+                                  onChange={validation.handleChange}
+                                  onBlur={validation.handleBlur}
+                                  value={validation.values.use_lastname || ""}
+                                  invalid={
+                                    validation.touched.use_lastname &&
+                                      validation.errors.use_lastname
+                                      ? true
+                                      : false
+                                  }
+                                />
+                                {validation.touched.use_lastname &&
+                                  validation.errors.use_lastname ? (
+                                  <FormFeedback type="invalid">
+                                    {validation.errors.use_lastname}
+                                  </FormFeedback>
+                                ) : null}
+                              </div>
+                            </Col>
+                            <Col lg={6}>
+                              <div>
+                                <Label
+                                  htmlFor="use_firstname-field"
+                                  className="form-label"
+                                >
+                                  Prénom
+                                </Label>
+                                <Input
+                                  name="use_firstname"
+                                  id="use_firstname-field"
+                                  className="form-control"
+                                  placeholder="Entrer un prénom"
+                                  type="text"
+                                  validate={{
+                                    required: { value: true },
+                                  }}
+                                  onChange={validation.handleChange}
+                                  onBlur={validation.handleBlur}
+                                  value={validation.values.use_firstname || ""}
+                                  invalid={
+                                    validation.touched.use_firstname &&
+                                      validation.errors.use_firstname
+                                      ? true
+                                      : false
+                                  }
+                                />
+                                {validation.touched.use_firstname &&
+                                  validation.errors.use_firstname ? (
+                                  <FormFeedback type="invalid">
+                                    {validation.errors.use_firstname}
+                                  </FormFeedback>
+                                ) : null}
+                              </div>
+                            </Col>
+                            <Col lg={6}>
+                              <div>
+                                <Label
+                                  htmlFor="use_email-field"
+                                  className="form-label"
+                                >
+                                  Email
+                                </Label>
+                                <Input
+                                  name="use_email"
+                                  id="use_email-field"
+                                  className="form-control"
+                                  placeholder="Entrer un email"
+                                  type="text"
+                                  validate={{
+                                    required: { value: true },
+                                  }}
+                                  onChange={validation.handleChange}
+                                  onBlur={validation.handleBlur}
+                                  value={validation.values.use_email || ""}
+                                  invalid={
+                                    validation.touched.use_email &&
+                                      validation.errors.use_email
+                                      ? true
+                                      : false
+                                  }
+                                />
+                                {validation.touched.use_email &&
+                                  validation.errors.use_email ? (
+                                  <FormFeedback type="invalid">
+                                    {validation.errors.use_email}
+                                  </FormFeedback>
+                                ) : null}
+                              </div>
+                            </Col>
+                            <Col lg={6} className="mb-3">
+                              <Label htmlFor="com_pays" className="form-label">
+                                Pays
                               </Label>
-
                               <Input
-                                name="use_lastname"
-                                id="use_lastname-field"
-                                className="form-control"
-                                placeholder="Entrer un nom"
-                                type="text"
-                                validate={{
-                                  required: { value: true },
-                                }}
-                                onChange={validation.handleChange}
-                                onBlur={validation.handleBlur}
-                                value={validation.values.use_lastname || ""}
+                                type="select"
+                                className="form-select"
                                 invalid={
-                                  validation.touched.use_lastname &&
-                                    validation.errors.use_lastname
+                                  validation.touched.com_pays && validation.errors.com_pays
                                     ? true
                                     : false
                                 }
-                              />
-                              {validation.touched.use_lastname &&
-                                validation.errors.use_lastname ? (
-                                <FormFeedback type="invalid">
-                                  {validation.errors.use_lastname}
-                                </FormFeedback>
-                              ) : null}
-                            </div>
-                          </Col>
-                          <Col lg={6}>
-                            <div>
-                              <Label
-                                htmlFor="use_firstname-field"
-                                className="form-label"
-                              >
-                                Prénom
-                              </Label>
-                              <Input
-                                name="use_firstname"
-                                id="use_firstname-field"
-                                className="form-control"
-                                placeholder="Entrer un prénom"
-                                type="text"
-                                validate={{
-                                  required: { value: true },
+                                onChange={(e) => {
+                                  const selectedValue = e.target.value;
+                                  const [paysName, dialCode] = selectedValue.split(",");
+                                  // console.log(paysName);
+                                  validation.setValues({
+                                    ...validation.values,
+                                    use_pays: paysName,
+                                  });
                                 }}
-                                onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
-                                value={validation.values.use_firstname || ""}
-                                invalid={
-                                  validation.touched.use_firstname &&
-                                    validation.errors.use_firstname
-                                    ? true
-                                    : false
-                                }
-                              />
-                              {validation.touched.use_firstname &&
-                                validation.errors.use_firstname ? (
-                                <FormFeedback type="invalid">
-                                  {validation.errors.use_firstname}
-                                </FormFeedback>
-                              ) : null}
-                            </div>
-                          </Col>
-                          <Col lg={6}>
-                            <div>
-                              <Label
-                                htmlFor="use_email-field"
-                                className="form-label"
+                                name="com_pays"
+                                id="com_pays-field"
                               >
-                                Email
-                              </Label>
-                              <Input
-                                name="use_email"
-                                id="use_email-field"
-                                className="form-control"
-                                placeholder="Entrer un email"
-                                type="text"
-                                validate={{
-                                  required: { value: true },
-                                }}
-                                onChange={validation.handleChange}
-                                onBlur={validation.handleBlur}
-                                value={validation.values.use_email || ""}
-                                invalid={
-                                  validation.touched.use_email &&
-                                    validation.errors.use_email
-                                    ? true
-                                    : false
-                                }
-                              />
-                              {validation.touched.use_email &&
-                                validation.errors.use_email ? (
-                                <FormFeedback type="invalid">
-                                  {validation.errors.use_email}
-                                </FormFeedback>
-                              ) : null}
-                            </div>
-                          </Col>
-                          <Col lg={6} className="mb-3">
-                            <Label htmlFor="com_pays" className="form-label">
-                              Pays
-                            </Label>
-                            <Input
-                              type="select"
-                              className="form-select"
-                              invalid={
-                                validation.touched.com_pays && validation.errors.com_pays
-                                  ? true
-                                  : false
-                              }
-                              onChange={(e) => {
-                                const selectedValue = e.target.value;
-                                const [paysName, dialCode] = selectedValue.split(",");
-                                // console.log(paysName);
-                                validation.setValues({
-                                  ...validation.values,
-                                  use_pays: paysName,
-                                });
-                              }}
-                              onBlur={validation.handleBlur}
-                              name="com_pays"
-                              id="com_pays-field"
-                            >
-                              <option disabled={false} value={""}>
-                                Choisissez un pays
-                              </option>
-                              {paysData.map((e, i) => (
-                                <option key={i} value={`${e.name},${e.dial_code}`}>
-                                  {e.name}
+                                <option disabled={false} value={""}>
+                                  Choisissez un pays
                                 </option>
-                              ))}
-                            </Input>
-                            {validation.touched.com_pays && validation.errors.com_pays ? (
-                              <FormFeedback type="invalid">
-                                {validation.errors.com_pays}
-                              </FormFeedback>
-                            ) : null}
-                          </Col>
-                        </Row>
+                                {paysData.map((e, i) => (
+                                  <option key={i} value={`${e.name},${e.dial_code}`}>
+                                    {e.name}
+                                  </option>
+                                ))}
+                              </Input>
+                              {validation.touched.com_pays && validation.errors.com_pays ? (
+                                <FormFeedback type="invalid">
+                                  {validation.errors.com_pays}
+                                </FormFeedback>
+                              ) : null}
+                            </Col>
+                          </Row>
 
 
-                        <div className="mt-4">
-                          <Button color="success" /*disabled={error ? null : loading ? true : false}*/ className="btn btn-success w-100" type="submit">
-                            {/* {loading ? <Spinner size="sm" className='me-2'> Loading... </Spinner> : null} */}
-                            Commençons
-                          </Button>
-                        </div>
+                          <div className="mt-4">
+                            <Button color="success" /*disabled={error ? null : loading ? true : false}*/ className="btn btn-success w-100" type="submit">
+                              {/* {loading ? <Spinner size="sm" className='me-2'> Loading... </Spinner> : null} */}
+                              Commençons
+                            </Button>
+                          </div>
 
-                      </Form>
-                    </div>
-                  </CardBody>
-                </Card>
+                        </Form>
+                      </div>
+                    </CardBody>
+                  </Card>
+                }
+
 
               </Col>
             </Row>

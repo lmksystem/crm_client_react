@@ -8,7 +8,7 @@ import {
   getAccountBank as onGetAccountBank,
 } from "../../slices/thunks";
 //redux
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
 import { customFormatNumber } from "../../utils/function";
@@ -16,6 +16,11 @@ import { SketchPicker } from "react-color";
 
 const ItemBank = ({ item }) => {
   const dispatch = useDispatch();
+
+  const { devise } = useSelector((state) => ({
+    devise: state?.Company?.devise,
+  }));
+
   const [libelle, setLibelle] = useState(
     item?.bua_libelle ? item?.bua_libelle : ""
   );
@@ -133,7 +138,7 @@ const ItemBank = ({ item }) => {
               >
                 <p className="p-0 m-0">
                   Solde du compte :{" "}
-                  {customFormatNumber(parseFloat(item.bua_solde))}€
+                  {customFormatNumber(parseFloat(item.bua_solde))} {devise}
                 </p>
                 {item.bua_last_tra && (
                   <p className="p-0 m-0">

@@ -40,14 +40,15 @@ const DevisList = () => {
 
   const dispatch = useDispatch();
 
-  const { devisWidgets, devisRedux, isDevisSuccess, error, etatDevis } = useSelector((state) => ({
+  const { devisWidgets, devisRedux, isDevisSuccess, error, etatDevis, devise } = useSelector((state) => ({
     devisRedux: state.Devis.devisList,
     isDevisSuccess: state.Devis.isDevisSuccess,
     error: state.Devis.error,
     devisWidgets: state.Devis.widgets,
-    etatDevis: state.Devis.etatDevis
+    etatDevis: state.Devis.etatDevis,
+    devise: state.Company.devise
   }));
-
+  
   //delete devis
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteModalMulti, setDeleteModalMulti] = useState(false);
@@ -186,7 +187,7 @@ const DevisList = () => {
         filterable: false,
         Cell: (devis) => (
           <>
-            <div className="fw-semibold ff-secondary">{customFormatNumber(rounded(devis.row.original.header.den_total_ttc, 2))}€</div>
+            <div className="fw-semibold ff-secondary">{customFormatNumber(rounded(devis.row.original.header.den_total_ttc, 2))}{devise}</div>
           </>
         ),
       },
@@ -198,7 +199,7 @@ const DevisList = () => {
         }
       },
     ],
-    [checkedAll, dispatch,etatDevis,devis]
+    [checkedAll, dispatch, etatDevis, devis]
   );
 
   useEffect(() => {
@@ -207,9 +208,9 @@ const DevisList = () => {
 
   useEffect(() => {
     // if (devis) {
-      setDevisList(devis);
+    setDevisList(devis);
     // }
-  }, [devis,etatDevis])
+  }, [devis, etatDevis])
 
 
   useEffect(() => {

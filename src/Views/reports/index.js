@@ -14,8 +14,9 @@ moment.updateLocale('en')
 const Reports = () => {
   document.title = "Rapports | Countano";
 
-  const { report } = useSelector((state) => ({
-    report: state.Report.report
+  const { report, devise } = useSelector((state) => ({
+    report: state.Report.report,
+    devise: state.Company.devise
   }));
 
   const dispatch = useDispatch();
@@ -78,7 +79,7 @@ const Reports = () => {
     tooltip: {
       y: {
         formatter: function (val) {
-          return val + " €"
+          return val + " " + devise
         }
       }
     }

@@ -28,7 +28,7 @@ export const deleteContact = contact => api.delete(url.DELETE_CONTACT + '/' + co
 // get Collaborateurs
 export const getCollaborateurs = () => api.get(url.GET_COLLABORATEUR);
 // get Details Collaborateur 
-export const getDetailsCollabo = (ent_id) => api.get(url.GET_COLLABORATEUR +'/' + ent_id);
+export const getDetailsCollabo = (ent_id) => api.get(url.GET_COLLABORATEUR + '/' + ent_id);
 // add Collaborateurs
 export const addNewCollaborateur = collabo => api.create(url.ADD_NEW_COLLABORATEUR, collabo);
 // update Collaborateurs
@@ -260,7 +260,7 @@ export const linkTransToAchat = data => api.create(url.TRANSACTION_BANK + '/acha
 // update match amount bank link to achat
 export const updateMatchAmount = data => api.create(url.TRANSACTION_BANK + '/amountMatch', data);
 // get categories achat
-export const getCategorieAchat = () => api.get(url.ACHAT+'/categorie');
+export const getCategorieAchat = () => api.get(url.ACHAT + '/categorie');
 
 
 
@@ -291,13 +291,13 @@ export const dowloadExport = (data) => api.get(url.EXPORT, data);
 /*************************/
 
 
-export const getListBank = (pays) => api.get(url.LIST_BANK+"/"+pays)
+export const getListBank = (pays) => api.get(url.LIST_BANK + "/" + pays)
 
 export const getAccountsBankUser = () => api.get(url.BANK_ACCOUNT)
 
 export const insertBankAccount = (data) => api.create(url.BANK_ACCOUNT, data);
 
-export const getAccountBank = (insertHandle="null") => api.get(url.BANK_ACCOUNT + "/link/"+insertHandle);
+export const getAccountBank = (insertHandle = "null") => api.get(url.BANK_ACCOUNT + "/link/" + insertHandle);
 
 export const insertAccountLinkToBank = (data) => api.create(url.BANK_ACCOUNT + "/link", data);
 
@@ -323,6 +323,8 @@ export const deleteUser = (id) => api.delete(url.ADMIN_USER + "/" + id);
 export const createOrUpdateUser = (data) => api.create(url.ADMIN_USER, data);
 
 export const createOrUpdateUserAdmin = (data) => api.create(url.ADMIN_USER_CREATE, data);
+
+export const ForgetPassword = (data) => api.create(`/v1/user/forget-password`, data);
 
 
 /*************************/

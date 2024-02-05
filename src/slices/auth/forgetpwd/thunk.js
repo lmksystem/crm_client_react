@@ -7,36 +7,20 @@ import {
   postFakeForgetPwd,
   postJwtForgetPwd,
 } from "../../../helpers/fakebackend_helper";
+import { ForgetPassword } from "../../../helpers/backend_helper";
+import { toast } from "react-toastify";
 
 const fireBaseBackend = getFirebaseBackend();
 
 export const userForgetPassword = (user, history) => async (dispatch) => {
   try {
-      let response;
-      if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
 
-          response = fireBaseBackend.forgetPassword(
-              user.email
-          )
+    const data = await ForgetPassword(user)
 
-      } else if (process.env.REACT_APP_DEFAULTAUTH === "jwt") {
-          response = postJwtForgetPwd(
-              user.email
-          )
-      } else {
-          response = postFakeForgetPwd(
-              user.email
-          )
-      }
-
-      const data = await response;
-
-      if (data) {
-          dispatch(userForgetPasswordSuccess(
-              "Reset link are sended to your mailbox, check there first"
-          ))
-      }
+    if (data) {
+      toast.success("Un lien vous à été envoyer à votre adresse email.")
+    }
   } catch (forgetError) {
-      dispatch(userForgetPasswordError(forgetError))
+    toast.error("Un lien vous à été envoyer à votre adresse email.");
   }
 }

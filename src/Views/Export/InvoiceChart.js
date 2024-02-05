@@ -2,17 +2,22 @@ import React from "react";
 import ReactApexChart from "react-apexcharts";
 import getChartColorsArray from "../../Components/Common/ChartsDynamicColor";
 import { Card, CardBody } from "reactstrap";
+import { useSelector } from "react-redux";
 
 const InvoiceChart = ({ dataColors, series }) => {
+  const { devise } = useSelector((state) => ({
+    devise: state?.Company?.devise,
+  }));
+
   const linechartcustomerColors = getChartColorsArray(dataColors);
   // console.log("series",series)
   function abregerSomme(somme) {
     if (somme < 500) {
-      return somme.toString() + "€";
+      return somme.toString() + devise;
     } else if (somme < 10000) {
-      return (somme / 1000).toFixed(1) + "K €"
+      return (somme / 1000).toFixed(1) + "K " + devise
     } else {
-      return (somme / 1000).toFixed(0) + "K €";
+      return (somme / 1000).toFixed(0) + "K " + devise;
     }
   }
 
@@ -118,7 +123,7 @@ const InvoiceChart = ({ dataColors, series }) => {
       ],
     },
   };
-  
+
   return (
     <React.Fragment>
       <Card>

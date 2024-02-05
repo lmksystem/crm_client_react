@@ -158,7 +158,7 @@ const InvoiceList = () => {
         filterable: false,
         Cell: (invoice) => (
           <>
-            <div className="fw-semibold ff-secondary">{customFormatNumber(rounded(invoice.row.original.header.fen_total_ttc, 2))}€</div>
+            <div className="fw-semibold ff-secondary">{customFormatNumber(rounded(invoice.row.original.header.fen_total_ttc, 2))}{devise}</div>
           </>
         ),
       },
@@ -171,7 +171,7 @@ const InvoiceList = () => {
           return (
             <>
               <div className="fw-semibold ff-secondary">
-                {customFormatNumber(rounded(transactionOfFac.reduce((previousValue, currentValue) => parseFloat(previousValue) - parseFloat(currentValue.tra_value), parseFloat(invoice.row.original.header.fen_total_ttc)), 2))}€
+                {customFormatNumber(rounded(transactionOfFac.reduce((previousValue, currentValue) => parseFloat(previousValue) - parseFloat(currentValue.tra_value), parseFloat(invoice.row.original.header.fen_total_ttc)), 2))}{devise}
               </div>
             </>
           )

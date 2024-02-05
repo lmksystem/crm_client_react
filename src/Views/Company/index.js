@@ -244,6 +244,7 @@ const CompanyProfil = () => {
                   <Input
                     id="profile-img-file-input"
                     type="file"
+                    accept="image/png, image/jpeg"
                     className="profile-img-file-input"
                     onChange={(e) => onSelectFile(e)}
                   />

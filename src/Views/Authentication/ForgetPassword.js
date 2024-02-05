@@ -21,9 +21,10 @@ import logoLight from "../../assets/images/logo_countano.png";
 // import profile from "../../assets/images/bg.png";
 // import logoLight from "../../assets/images/logo-light.png";
 import ParticlesAuth from "../AuthenticationInner/ParticlesAuth";
+import { ToastContainer } from "react-toastify";
 
 const ForgetPasswordPage = props => {
-  document.title="Mot de passe oublié | Countano";
+  document.title = "Mot de passe oublié | Countano";
 
   const dispatch = useDispatch();
 
@@ -32,13 +33,13 @@ const ForgetPasswordPage = props => {
     enableReinitialize: true,
 
     initialValues: {
-      email: '',
+      use_email: '',
     },
     validationSchema: Yup.object({
-      email: Yup.string().required("Email obligatoire"),
+      use_email: Yup.string().required("Email obligatoire"),
     }),
     onSubmit: (values) => {
-      dispatch(userForgetPassword(values, props.history));
+      dispatch(userForgetPassword(values));
     }
   });
 
@@ -49,20 +50,21 @@ const ForgetPasswordPage = props => {
 
   return (
     <ParticlesAuth>
-      <div className="auth-page-content">        
+      <ToastContainer />
+      <div className="auth-page-content">
         <Container>
-        <Row>
-              <Col lg={12}>
-                <div className="text-center mt-sm-5 mb-4 text-white-50">
-                  <div>
-                    <Link to="/" className="d-inline-block auth-logo">
-                      <img src={logoLight} alt="" height="20" />
-                    </Link>
-                  </div>
-                  <p className="mt-3 fs-15 fw-medium"></p>
+          <Row>
+            <Col lg={12}>
+              <div className="text-center mt-sm-5 mb-4 text-white-50">
+                <div>
+                  <Link to="/" className="d-inline-block auth-logo">
+                    <img src={logoLight} alt="" height="20" />
+                  </Link>
                 </div>
-              </Col>
-            </Row>
+                <p className="mt-3 fs-15 fw-medium"></p>
+              </div>
+            </Col>
+          </Row>
 
           <Row className="justify-content-center">
             <Col md={8} lg={6} xl={5}>
@@ -79,25 +81,15 @@ const ForgetPasswordPage = props => {
                       colors="primary:#0ab39c"
                       className="avatar-xl"
                       style={{ width: "120px", height: "120px" }}
-                      >
+                    >
                     </lord-icon>
 
                   </div>
 
                   <Alert className="alert-borderless alert-warning text-center mb-2 mx-2" role="alert">
-                  Entrez votre email et les instructions vous seront envoyées !
+                    Entrez votre email et les instructions vous seront envoyées !
                   </Alert>
                   <div className="p-2">
-                    {forgetError && forgetError ? (
-                      <Alert color="danger" style={{ marginTop: "13px" }}>
-                        {forgetError}
-                      </Alert>
-                    ) : null}
-                    {forgetSuccessMsg ? (
-                      <Alert color="success" style={{ marginTop: "13px" }}>
-                        {forgetSuccessMsg}
-                      </Alert>
-                    ) : null}
                     <Form
                       onSubmit={(e) => {
                         e.preventDefault();
@@ -108,19 +100,19 @@ const ForgetPasswordPage = props => {
                       <div className="mb-4">
                         <Label className="form-label">Email</Label>
                         <Input
-                          name="email"
+                          name="use_email"
                           className="form-control"
                           placeholder="Email"
                           type="email"
                           onChange={validation.handleChange}
                           onBlur={validation.handleBlur}
-                          value={validation.values.email || ""}
+                          value={validation.values.use_email || ""}
                           invalid={
-                            validation.touched.email && validation.errors.email ? true : false
+                            validation.touched.use_email && validation.errors.use_email ? true : false
                           }
                         />
-                        {validation.touched.email && validation.errors.email ? (
-                          <FormFeedback type="invalid"><div>{validation.errors.email}</div></FormFeedback>
+                        {validation.touched.use_email && validation.errors.use_email ? (
+                          <FormFeedback type="invalid"><div>{validation.errors.use_email}</div></FormFeedback>
                         ) : null}
                       </div>
 
@@ -142,10 +134,6 @@ const ForgetPasswordPage = props => {
       </div>
     </ParticlesAuth>
   );
-};
-
-ForgetPasswordPage.propTypes = {
-  history: PropTypes.object,
 };
 
 export default withRouter(ForgetPasswordPage);

@@ -64,7 +64,8 @@ const ModalCreate = ({
   const [selectedCat, setSelectedCat] = useState([]);
   const userProfile = getLoggedinUser();
 
-  const { invoices, categories } = useSelector((state) => ({
+  const { invoices, categories, devise } = useSelector((state) => ({
+    devise: state.Company.devise,
     invoices: state.Invoice.invoices,
     categories: state.Achat.categories.map((e) => ({ label: e.aca_name, value: e.aca_name })),
   }));
@@ -84,9 +85,7 @@ const ModalCreate = ({
   }
 
   function isInvoiceSelected(invoice_id) {
-    let obj = createAchats?.values?.facturesExist?.find(
-      (item) => item.header.fen_id === invoice_id
-    );
+    let obj = createAchats?.values?.facturesExist?.find((item) => item.header.fen_id === invoice_id);
     if (obj) {
       return true;
     }
@@ -213,19 +212,12 @@ const ModalCreate = ({
     },
     validationSchema: Yup.object({
       montant: Yup.number().required("Veuillez choisir entrer un montant"),
-      entity: Yup.number().required("Veuillez choisir un client/fournisseur"),
-      entityName: Yup.string().required(
-        "Veuillez choisir un client/fournisseur"
-      ),
     }),
 
     onSubmit: (values) => {
       if (isEdit) {
-        let TRANS_ASSOC_DISOC =
-          transFilter?.data?.filter(
-            (item) =>
-              item.type === "assoc" || item.type == "disoc" || item.old == 1
-          ) || [];
+        let TRANS_ASSOC_DISOC = transFilter?.data?.filter((item) => item.type === "assoc" || item.type == "disoc" || item.old == 1) || [];
+
         let newTransAssoc = TRANS_ASSOC_DISOC?.map((trAss) => {
           let newItem = {
             aba_ach_fk: values.id,
@@ -234,9 +226,11 @@ const ModalCreate = ({
             type: trAss.type,
             tba_amount: trAss.tba_amount,
           };
+
           if (trAss.old == 1 && trAss.type == "disoc" && trAss.aba_id) {
             newItem.aba_id = trAss.aba_id;
           }
+
           return newItem;
         });
         const updateAchat = {
@@ -303,11 +297,7 @@ const ModalCreate = ({
   ];
 
   useEffect(() => {
-    if (
-      !isEdit &&
-      createAchats.values.type == "Revenu" &&
-      filesSelected?.files?.length < 1
-    ) {
+    if (!isEdit && createAchats.values.type == "Revenu" && filesSelected?.files?.length < 1) {
       dispatch(onGetInvoices()).then(() => {
         let totalInvoices = invoices.filter((fac) => fac.doc != null);
         setFactures(totalInvoices);
@@ -444,10 +434,7 @@ const ModalCreate = ({
                                     style={{ fontWeight: "bolder" }}
                                     className="p-0 m-0"
                                   >
-                                    {parseFloat(
-                                      fac.header.fen_total_ttc
-                                    ).toFixed(2)}
-                                    € TTC
+                                    {parseFloat(fac.header.fen_total_ttc).toFixed(2)} {devise} TTC
                                   </p>
                                 </div>
                               </div>
@@ -789,7 +776,7 @@ const ModalCreate = ({
                                   }}
                                   value={(cat.aca_montant || "")}
                                 />
-                                <Label className="btn btn-secondary btn-input-group">€</Label>
+                                <Label className="btn btn-secondary btn-input-group">{devise}</Label>
                               </div>
                             </div>
                           ))
@@ -858,7 +845,7 @@ const ModalCreate = ({
                                       </p>
                                     </div>
                                     <div className="flex-shrink-0">
-                                      <div>{customFormatNumber(parseFloat(tra.tba_amount))}€</div>
+                                      <div>{customFormatNumber(parseFloat(tra.tba_amount))} {devise}</div>
                                     </div>
                                   </div>
                                 </ListGroupItem>

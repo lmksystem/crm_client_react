@@ -19,9 +19,8 @@ import { createOrUpdateUser as onCreateOrUpdateUser, createOrUpdateCompany as on
 import ValideStep from './step/ValideStep';
 
 const FinalisationAccount = (props) => {
-  console.log("token");
+
   document.title = "Finaliser création de compte | Countano";
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [searchParams, setSearchParams] = useSearchParams();

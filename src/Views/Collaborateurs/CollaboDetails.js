@@ -23,7 +23,7 @@ moment.locale("fr");
 
 document.title = "Détails Clients - Fournisseur | Countano";
 
-const CollaboDetails = ({}) => {
+const CollaboDetails = ({ }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -31,16 +31,17 @@ const CollaboDetails = ({}) => {
   const [devis, setDevis] = useState([]);
   const [email, setEmail] = useState([]);
 
-  const { collaboDetails, invoices, emails,devisList } = useSelector((state) => ({
+  const { collaboDetails, invoices, emails, devisList, devise } = useSelector((state) => ({
     collaboDetails: state.Gestion.collaboDetails,
     invoices: state.Invoice.invoices,
     emails: state.Email.emails,
-    devisList: state.Devis.devisList
+    devisList: state.Devis.devisList,
+    devise: state?.Company?.devise,
   }));
 
   //5 derniers devis
   useEffect(() => {
-    if(collaboDetails.infoBase){
+    if (collaboDetails.infoBase) {
       dispatch(onGetDevis()).then(() => {
         let copyDevis = [...devisList];
         let arrayFiltered = copyDevis.filter(
@@ -55,12 +56,12 @@ const CollaboDetails = ({}) => {
         setDevis(arrayFiltered);
       });
     }
-    
+
   }, [collaboDetails]);
 
   //5 dernieres factures
   useEffect(() => {
-    if(collaboDetails.infoBase){
+    if (collaboDetails.infoBase) {
       dispatch(onGetInvoices()).then(() => {
         let copyInvoices = [...invoices];
         let arrayFiltered = copyInvoices.filter(
@@ -75,26 +76,26 @@ const CollaboDetails = ({}) => {
         setFactures(arrayFiltered);
       });
     }
-    
+
   }, [collaboDetails]);
 
   //5 derniers emails
   useEffect(() => {
-    if(collaboDetails.infoBase){
-    dispatch(onGetEmail()).then(() => {
-      let copyEmails = [...emails];
-      let arrayFiltered = copyEmails.filter(
-        (e) => e.ema_ent_fk == collaboDetails.infoBase.ent_id
-      );
-      if (arrayFiltered.length > 0) {
-        arrayFiltered.sort((a, b) => b.ema_date_create - a.ema_date_create);
-        let lastFive = arrayFiltered.slice(0, 5);
-        setEmail(lastFive);
-        return;
-      }
-      setEmail(arrayFiltered);
-    });
-  }
+    if (collaboDetails.infoBase) {
+      dispatch(onGetEmail()).then(() => {
+        let copyEmails = [...emails];
+        let arrayFiltered = copyEmails.filter(
+          (e) => e.ema_ent_fk == collaboDetails.infoBase.ent_id
+        );
+        if (arrayFiltered.length > 0) {
+          arrayFiltered.sort((a, b) => b.ema_date_create - a.ema_date_create);
+          let lastFive = arrayFiltered.slice(0, 5);
+          setEmail(lastFive);
+          return;
+        }
+        setEmail(arrayFiltered);
+      });
+    }
   }, [collaboDetails]);
 
   return (
@@ -109,9 +110,9 @@ const CollaboDetails = ({}) => {
             <Row>
               <Col lg={6}>
                 <CardHeader>
-                  <h3 style={{color:"rgb(0, 77, 133)" }}>Détails du client / fournisseur</h3>
+                  <h3 style={{ color: "rgb(0, 77, 133)" }}>Détails du client / fournisseur</h3>
                 </CardHeader>
-                <Card  style={{ height: "250px" }}>
+                <Card style={{ height: "250px" }}>
                   <p className="px-3 py-1 my-1">
                     Prénom : {collaboDetails?.infoBase?.ent_firstname}
                   </p>
@@ -138,7 +139,7 @@ const CollaboDetails = ({}) => {
                   </p>
                 </Card>
                 <CardHeader>
-                  <h3 style={{color:"rgb(0, 77, 133)" }}>5 derniers emails envoyés au client</h3>
+                  <h3 style={{ color: "rgb(0, 77, 133)" }}>5 derniers emails envoyés au client</h3>
                 </CardHeader>
                 <Card>
                   <ListGroup>
@@ -146,8 +147,8 @@ const CollaboDetails = ({}) => {
                       return (
                         <ListGroupItem key={i}>
                           <div className="d-flex align-items-center justify-content-between">
-                            <div className={`${ema.ema_status==1 && "badge-soft-success p-1"} `}>
-                          {ema.ema_status==1?`Envoyé le ${moment(ema.ema_date_create).format("ll")}`:"Non envoyé"}
+                            <div className={`${ema.ema_status == 1 && "badge-soft-success p-1"} `}>
+                              {ema.ema_status == 1 ? `Envoyé le ${moment(ema.ema_date_create).format("ll")}` : "Non envoyé"}
                             </div>
                             <div className="">
                               {ema.ema_type.toUpperCase()}
@@ -161,7 +162,7 @@ const CollaboDetails = ({}) => {
               </Col>
               <Col lg={6}>
                 <CardHeader>
-                  <h3 style={{color:"rgb(0, 77, 133)" }}>5 dernières factures attribuées au client</h3>
+                  <h3 style={{ color: "rgb(0, 77, 133)" }}>5 dernières factures attribuées au client</h3>
                 </CardHeader>
                 <Card>
                   <SimpleBar
@@ -189,36 +190,36 @@ const CollaboDetails = ({}) => {
                         return (
                           <ListGroupItem className={"list-group-item-action"} key={i}>
                             <Link to={`/factures/detail/${fac.header.fen_id}`} className="text-reset">
-                            <div className="d-flex flex-row align-items-center justify-content-between">
-                              <div lassName=" d-flex flex-column">
-                                <p className="m-0">
-                                  {fac.header.fen_sujet} - Faite le{" "}
-                                  {moment(fac.header.fen_date_create).format(
-                                    "ll"
-                                  )}
-                                </p>
-                                <p className="m-0">
-                                  Expire le{" "}
-                                  {moment(fac.header.fen_date_create).format(
-                                    "l"
-                                  )}
-                                </p>
-                              </div>
-                              <div className=" d-flex flex-column justify-content-center  align-items-center">
-                                <div className=" d-flex flex-row align-items-center">
-                                  Statut :{" "}
-                                  <p
-                                    className={`m-0 badge-soft-${classBadge} p-2 mx-1`}
-                                  >
-                                    {fac.header.fet_name}
+                              <div className="d-flex flex-row align-items-center justify-content-between">
+                                <div className=" d-flex flex-column">
+                                  <p className="m-0">
+                                    {fac.header.fen_sujet} - Faite le{" "}
+                                    {moment(fac.header.fen_date_create).format(
+                                      "ll"
+                                    )}
+                                  </p>
+                                  <p className="m-0">
+                                    Expire le{" "}
+                                    {moment(fac.header.fen_date_create).format(
+                                      "l"
+                                    )}
                                   </p>
                                 </div>
+                                <div className=" d-flex flex-column justify-content-center  align-items-center">
+                                  <div className=" d-flex flex-row align-items-center">
+                                    Statut :{" "}
+                                    <p
+                                      className={`m-0 badge-soft-${classBadge} p-2 mx-1`}
+                                    >
+                                      {fac.header.fet_name}
+                                    </p>
+                                  </div>
 
-                                <p className="m-0">
-                                  Montant de {fac.header.fen_total_ttc}€
-                                </p>
+                                  <p className="m-0">
+                                    Montant de {fac.header.fen_total_ttc}{devise}
+                                  </p>
+                                </div>
                               </div>
-                            </div>
                             </Link>
                           </ListGroupItem>
                         );
@@ -227,7 +228,7 @@ const CollaboDetails = ({}) => {
                   </SimpleBar>
                 </Card>
                 <CardHeader>
-                  <h3 style={{color:"rgb(0, 77, 133)" }}>5 derniers devis attribués au client</h3>
+                  <h3 style={{ color: "rgb(0, 77, 133)" }}>5 derniers devis attribués au client</h3>
                 </CardHeader>
                 <Card>
                   <SimpleBar
@@ -240,28 +241,28 @@ const CollaboDetails = ({}) => {
                         return (
                           <ListGroupItem className={"list-group-item-action"} key={i}>
                             <Link to={`/devis/detail/${dev.header.den_id}`} className="text-reset">
-                            <div className="d-flex flex-row align-items-center justify-content-between">
-                              <div lassName=" d-flex flex-column">
-                                <p className="m-0">
-                                  {dev.header.fen_sujet} - Faite le{" "}
-                                  {moment(dev.header.den_date_create).format(
-                                    "ll"
-                                  )}
-                                </p>
-                                <p className="m-0">
-                                  Date de validité{" "}
-                                  {moment(dev.header.den_date_valid).format(
-                                    "l"
-                                  )}
-                                </p>
-                              </div>
-                              <div className=" d-flex flex-column justify-content-center  align-items-center">
+                              <div className="d-flex flex-row align-items-center justify-content-between">
+                                <div className=" d-flex flex-column">
+                                  <p className="m-0">
+                                    {dev.header.fen_sujet} - Faite le{" "}
+                                    {moment(dev.header.den_date_create).format(
+                                      "ll"
+                                    )}
+                                  </p>
+                                  <p className="m-0">
+                                    Date de validité{" "}
+                                    {moment(dev.header.den_date_valid).format(
+                                      "l"
+                                    )}
+                                  </p>
+                                </div>
+                                <div className=" d-flex flex-column justify-content-center  align-items-center">
 
-                                <p className="m-0">
-                                  Montant de {dev.header.den_total_ttc}€
-                                </p>
+                                  <p className="m-0">
+                                    Montant de {dev.header.den_total_ttc}{devise}
+                                  </p>
+                                </div>
                               </div>
-                            </div>
                             </Link>
                           </ListGroupItem>
                         );

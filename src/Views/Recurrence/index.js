@@ -54,7 +54,7 @@ import { removeRecurrenceById } from "../../slices/recurrence/reducer";
 
 const Recurrence = () => {
   const dispatch = useDispatch();
-  const { products, isProductSuccess, error, collaborateurs, recurrences, isRecurrenceAdd, recurrenceOfEntity } = useSelector((state) => ({
+  const { products, isProductSuccess, error, collaborateurs, recurrences, isRecurrenceAdd, recurrenceOfEntity, devise } = useSelector((state) => ({
     recurrenceOfEntity: state.Recurrence.recurrenceOfEntity,
     collaborateurs: state.Gestion.collaborateurs,
     products: state.Product.products,
@@ -62,6 +62,7 @@ const Recurrence = () => {
     isProductSuccess: state.Product.isProductSuccess,
     isRecurrenceAdd: state.Recurrence.isRecurrenceAdd,
     error: state.Product.error,
+    devise: state.Company.devise
   }));
   let daysOptions = [
     {
@@ -238,7 +239,7 @@ const Recurrence = () => {
         Cell: (cell) => {
           let recurrenceMotantArray = cell.row.original.recurrences?.map((r) => r.rec_montant * r.rec_pro_qty);
           let montantTotal = recurrenceMotantArray.reduce((partialSum, a) => partialSum + a, 0);
-          return <div>{customFormatNumber(montantTotal)}€</div>;
+          return <div>{customFormatNumber(montantTotal)}{devise}</div>;
         }
       },
       {
@@ -289,7 +290,7 @@ const Recurrence = () => {
             </div>
           )
         }
-        return (row.rec_montant + "€")
+        return (row.rec_montant + devise)
 
       }
       ,
@@ -477,7 +478,7 @@ const Recurrence = () => {
                         <Row>
                           <Col lg={6}>{p.pro_name}</Col>
                           <Col className="text-end" lg={2}>{p.pro_tva}%</Col>
-                          <Col className="text-end" lg={4}>{p.pro_prix}€</Col>
+                          <Col className="text-end" lg={4}>{p.pro_prix}{devise}</Col>
                         </Row>
                       </div>
                     )
@@ -719,7 +720,7 @@ const Recurrence = () => {
                           />
 
 
-                          <label className="btn btn-secondary btn-input-group form-label">€</label>
+                          <label className="btn btn-secondary btn-input-group form-label">{devise}</label>
                         </div>
 
                       </div>

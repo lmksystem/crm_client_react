@@ -41,6 +41,7 @@ import Profile from "../Views/Admin/User/Profile";
 import CompanyProfil from "../Views/Company";
 import CollaboDetails from "../Views/Collaborateurs/CollaboDetails";
 import CreateAccount from "../Views/AuthenticationInner/Register/CreateAccount";
+import ResertPassword from "../Views/Authentication/ResertPassword";
 
 
 // import PdfPreview from "../Views/Pdf";
@@ -82,7 +83,7 @@ const userRoute = [
 
   // Recurrence 
   { path: "/recurrence", component: <Recurrence />, rank: 0 },
-  
+
   // Rapport 
   { path: "/rapports", component: <Reports />, rank: 0 },
 
@@ -90,7 +91,7 @@ const userRoute = [
   { path: "/export", component: <Export />, rank: 0 },
 
 
-  { path: "/company/profile", component: <CompanyProfil />, rank: 0  },
+  { path: "/company/profile", component: <CompanyProfil />, rank: 0 },
 
   {
     path: "/",
@@ -105,9 +106,9 @@ const adminRoute = [
   { path: "/admin", component: <DashboardAdmin />, rank: 1 },
 
   { path: "/admin/users", component: <UserAdmin />, rank: 1 },
-  
+
   { path: "/admin/user/", component: <FormUser />, rank: 1 },
-  
+
   { path: "/profile", component: <Profile />, rank: 1 },
 
   {
@@ -126,6 +127,7 @@ const publicRoutes = [
   { path: "/logout", component: <Logout /> },
   { path: "/login", component: <Login /> },
   { path: "/forgot-password", component: <ForgetPasswordPage /> },
+  { path: "/reset-password/:token", component: <ResertPassword /> },
   { path: "/register", component: <Register /> },
   { path: "/inscription", component: <CreateAccount /> },
   { path: "/finalisation-compte", component: <FinalisationAccount /> },

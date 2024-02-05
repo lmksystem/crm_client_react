@@ -24,7 +24,7 @@ import {
   getInvoices as onGetInvoices,
   getTransactionList as onGetTransactionList,
   addNewTransaction as onAddNewTransaction,
-  deleteTransaction  as onDeleteTransaction 
+  deleteTransaction as onDeleteTransaction
 } from "../../slices/thunks";
 
 //redux
@@ -49,20 +49,14 @@ const TransactionList = () => {
 
   const dispatch = useDispatch();
 
-  const {
-    invoices,
-    transactionsList,
-    transactions,
-    isTransactionsListSuccess,
-    error,
-    collaborateurs,
-  } = useSelector((state) => ({
+  const { invoices, transactionsList, transactions, isTransactionsListSuccess, error, collaborateurs, devise } = useSelector((state) => ({
     invoices: state.Invoice.invoices,
     transactionsList: state.Transaction.transactionsList,
     transactions: state.Transaction.transactions,
     isTransactionsListSuccess: state.Transaction.isTransactionsListSuccess,
     error: state.Transaction.error,
     collaborateurs: state.Gestion.collaborateurs,
+    devise: state.Company.devise
   }));
 
   const [chartData, setChartData] = useState([]);
@@ -230,7 +224,7 @@ const TransactionList = () => {
         Cell: (cell) => (
           <>
             <div className="fw-semibold ff-secondary">
-              {customFormatNumber(cell.row.original.tra_value)}€
+              {customFormatNumber(cell.row.original.tra_value)}{devise}
             </div>
           </>
         ),
@@ -416,7 +410,7 @@ const TransactionList = () => {
                       });
                     }}
                     options={invoices.map((i) => ({
-                      label: i.header.fen_num_fac+" - "+i.header.fen_sujet,
+                      label: i.header.fen_num_fac + " - " + i.header.fen_sujet,
                       value: i.header.fen_id,
                     }))}
                     name="choices-single-default"
@@ -442,7 +436,7 @@ const TransactionList = () => {
                     id="idStatus"
                   ></Select>
                   {validation.errors?.tra_ent_fk &&
-                  validation.touched?.tra_ent_fk ? (
+                    validation.touched?.tra_ent_fk ? (
                     <FormFeedback type="invalid">
                       {validation.errors?.tra_date}
                     </FormFeedback>
@@ -462,13 +456,13 @@ const TransactionList = () => {
                     onChange={validation.handleChange}
                     invalid={
                       validation.errors?.tra_date &&
-                      validation.touched?.tra_date
+                        validation.touched?.tra_date
                         ? true
                         : false
                     }
                   />
                   {validation.errors?.tra_date &&
-                  validation.touched?.tra_date ? (
+                    validation.touched?.tra_date ? (
                     <FormFeedback type="invalid">
                       {validation.errors?.tra_date}
                     </FormFeedback>
@@ -486,13 +480,13 @@ const TransactionList = () => {
                     placeholder="Description"
                     invalid={
                       validation.errors?.tra_desc &&
-                      validation.touched?.tra_desc
+                        validation.touched?.tra_desc
                         ? true
                         : false
                     }
                   />
                   {validation.errors?.tra_desc &&
-                  validation.touched?.tra_desc ? (
+                    validation.touched?.tra_desc ? (
                     <FormFeedback type="invalid">
                       {validation.errors?.tra_desc}
                     </FormFeedback>
@@ -510,13 +504,13 @@ const TransactionList = () => {
                     placeholder="Montant de la transaction"
                     invalid={
                       validation.errors?.tra_value &&
-                      validation.touched?.tra_value
+                        validation.touched?.tra_value
                         ? true
                         : false
                     }
                   />
                   {validation.errors?.tra_value &&
-                  validation.touched?.tra_value ? (
+                    validation.touched?.tra_value ? (
                     <FormFeedback type="invalid">
                       {validation.errors?.tra_value}
                     </FormFeedback>

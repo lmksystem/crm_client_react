@@ -51,14 +51,13 @@ import ConfirmModal from "../../Components/Common/ConfirmModal";
 
 
 const InvoiceCreate = () => {
-  const { collaborateurs, company, tva, products, prefix_devis } = useSelector((state) => ({
+  const { collaborateurs, company, tva, products, prefix_devis, devise } = useSelector((state) => ({
     collaborateurs: state.Gestion.collaborateurs,
     company: state.Company.company[0],
     tva: state.Gestion.tva,
     products: state.Product.products,
-    prefix_devis: state.Gestion.constantes?.find(
-      (cst) => cst.con_title === "Prefixe devis"
-    ),
+    devise: state.Company.devise,
+    prefix_devis: state.Gestion.constantes?.find((cst) => cst.con_title === "Prefixe devis"),
   }));
 
   let { state } = useLocation();
@@ -128,13 +127,13 @@ const InvoiceCreate = () => {
 
   const submitFormData = (sendEmail) => {
     try {
-    dispatch(onAddNewDevis({ devis: validation.values, send: sendEmail }))
-    // .then(() => {
+      dispatch(onAddNewDevis({ devis: validation.values, send: sendEmail }))
+      // .then(() => {
       console.log("je vais navvigate")
       validation.resetForm();
       navigate("/devis/liste");
 
-    // });
+      // });
     } catch (error) {
       console.log(error)
     }
@@ -457,7 +456,7 @@ const InvoiceCreate = () => {
                             />
                             {validation.errors?.header?.den_sujet && validation.touched?.header?.den_sujet ? (
                               <FormFeedback type="invalid">{validation.errors?.header?.den_sujet}</FormFeedback>
-                            ) : null} 
+                            ) : null}
 
                           </div>
                         </Col>
@@ -807,9 +806,9 @@ const InvoiceCreate = () => {
                           type="text"
                           className="form-control bg-light border-0"
                           id="totalamountInput"
-                          placeholder="€0.00"
+                          placeholder={devise + "0.00"}
                           readOnly
-                          value={"€" + rounded(validation.values.header.den_total_ttc, 2)}
+                          value={devise + rounded(validation.values.header.den_total_ttc, 2)}
                         />
                       </div>
                     </Col>
@@ -966,8 +965,8 @@ const InvoiceCreate = () => {
                                     type="text"
                                     className="form-control bg-light border-0 product-line-price"
                                     id="productPrice-1"
-                                    placeholder="€0.00"
-                                    value={"€" + rounded(validation.values?.ligne[i]?.dli_total_ht, 2)}
+                                    placeholder={devise + "0.00"}
+                                    value={devise + rounded(validation.values?.ligne[i]?.dli_total_ht, 2)}
                                     readOnly
                                   />
                                   <Label className="btn btn-secondary btn-input-group">ht</Label>
@@ -976,8 +975,8 @@ const InvoiceCreate = () => {
                                   <Input
                                     type="text"
                                     className="form-control bg-light border-0 product-line-price"
-                                    placeholder="€0.00"
-                                    value={"€" + rounded(validation.values?.ligne[i]?.dli_total_ttc, 2)}
+                                    placeholder={devise + "0.00"}
+                                    value={devise + rounded(validation.values?.ligne[i]?.dli_total_ttc, 2)}
                                     readOnly
                                   />
                                   <Label className="btn btn-secondary btn-input-group">ttc</Label>
@@ -1036,9 +1035,9 @@ const InvoiceCreate = () => {
                                       type="text"
                                       className="form-control bg-light border-0"
                                       id="cart-subtotal"
-                                      placeholder="€0.00"
+                                      placeholder={devise + "0.00"}
                                       readOnly
-                                      value={"€" + rounded(validation.values.header.den_total_ht, 2)}
+                                      value={devise + rounded(validation.values.header.den_total_ht, 2)}
                                     />
                                   </td>
                                 </tr>
@@ -1051,7 +1050,7 @@ const InvoiceCreate = () => {
                                       id="cart-tax"
                                       placeholder="$0.00"
                                       readOnly
-                                      value={"€" + rounded(validation.values.header.den_total_remise, 2)}
+                                      value={devise + rounded(validation.values.header.den_total_remise, 2)}
                                     />
                                   </td>
                                 </tr>
@@ -1064,7 +1063,7 @@ const InvoiceCreate = () => {
                                       id="cart-shipping"
                                       placeholder="$0.00"
                                       readOnly
-                                      value={"€" + rounded(validation.values.header.den_total_tva, 2)}
+                                      value={devise + rounded(validation.values.header.den_total_tva, 2)}
                                     />
                                   </td>
                                 </tr>
@@ -1077,7 +1076,7 @@ const InvoiceCreate = () => {
                                       id="cart-total"
                                       placeholder="$0.00"
                                       readOnly
-                                      value={"€" + rounded(validation.values.header.den_total_ttc, 2)}
+                                      value={devise + rounded(validation.values.header.den_total_ttc, 2)}
                                     />
                                   </td>
                                 </tr>
@@ -1232,7 +1231,7 @@ const InvoiceCreate = () => {
                         <Row>
                           <Col lg={6}>{p.pro_name}</Col>
                           <Col className="text-end" lg={2}>{p.pro_tva}%</Col>
-                          <Col className="text-end" lg={4}>{p.pro_prix}€</Col>
+                          <Col className="text-end" lg={4}>{p.pro_prix}{devise}</Col>
                         </Row>
                       </div>
                     )

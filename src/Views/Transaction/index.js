@@ -46,13 +46,13 @@ import { customFormatNumber } from "../../utils/function";
 const TransactionBank = () => {
   const dispatch = useDispatch();
   const userProfile = getLoggedinUser();
-  const { isTransactionBankSuccess, error, transactions, achats } = useSelector(
-    (state) => ({
-      isTransactionBankSuccess: state.TransactionBank.isTransactionBankSuccess,
-      transactions: state.TransactionBank.transactionsBank,
-      error: state.Employee.error,
-      achats: state.Achat.achats,
-    })
+  const { isTransactionBankSuccess, error, transactions, achats, devise } = useSelector((state) => ({
+    isTransactionBankSuccess: state.TransactionBank.isTransactionBankSuccess,
+    transactions: state.TransactionBank.transactionsBank,
+    error: state.Employee.error,
+    achats: state.Achat.achats,
+    devise: state.Company.devise
+  })
   );
   const [achatEvol, setAchatEvol] = useState(false);
   const dateActuelle = moment(); // Obtenir la date actuelle
@@ -89,25 +89,25 @@ const TransactionBank = () => {
     },
     data: transactions
       ? transactions
-          ?.filter((transaction, index, self) => {
-            return (
-              index ===
-              self.findIndex(
-                (t) => t.bua_account_id === transaction.bua_account_id
-              )
-            );
-          })
-          .map((e) => {
-            let tabVal = [];
-            tabVal.push({ value: e.bua_account_id });
-            if (e.bua_libelle?.length > 0) {
-              tabVal.push({ value: e.bua_libelle });
-            }
-            return tabVal;
-          })
-          .reduce((acc, tableau) => {
-            return acc.concat(tableau);
-          }, [])
+        ?.filter((transaction, index, self) => {
+          return (
+            index ===
+            self.findIndex(
+              (t) => t.bua_account_id === transaction.bua_account_id
+            )
+          );
+        })
+        .map((e) => {
+          let tabVal = [];
+          tabVal.push({ value: e.bua_account_id });
+          if (e.bua_libelle?.length > 0) {
+            tabVal.push({ value: e.bua_libelle });
+          }
+          return tabVal;
+        })
+        .reduce((acc, tableau) => {
+          return acc.concat(tableau);
+        }, [])
       : [],
     value: isFilterBy,
   };
@@ -153,7 +153,7 @@ const TransactionBank = () => {
       nojustify: transaction && transaction?.tba_justify === 1 ? true : false,
       file_justify: (transaction && transaction.ado_file_name) || "",
     },
-    onSubmit: (values) => {},
+    onSubmit: (values) => { },
   });
 
   const matchAmount = useFormik({
@@ -206,13 +206,12 @@ const TransactionBank = () => {
                   style={{ marginLeft: "25%" }}
                   tabindex="0"
                   data-toggle="tooltip"
-                  title={`${
-                    cell.value != null
+                  title={`${cell.value != null
                       ? (cell.row.original?.bua_libelle
-                          ? cell.row.original?.bua_libelle + " / "
-                          : "") + cell.value
+                        ? cell.row.original?.bua_libelle + " / "
+                        : "") + cell.value
                       : ""
-                  }`}
+                    }`}
                 >
                   <div
                     className="align-self-center"
@@ -228,8 +227,8 @@ const TransactionBank = () => {
                 <p className="p-0 m-0">
                   {cell.value != null
                     ? (cell.row.original?.bua_libelle
-                        ? cell.row.original?.bua_libelle + " / "
-                        : "") + cell.value
+                      ? cell.row.original?.bua_libelle + " / "
+                      : "") + cell.value
                     : ""}
                 </p>
               )}
@@ -247,7 +246,7 @@ const TransactionBank = () => {
             <div className="d-flex align-items-center">
               <p className="p-0 m-0">
                 {cell.value != null
-                  ? customFormatNumber(parseFloat(cell.value)) + "€"
+                  ? customFormatNumber(parseFloat(cell.value)) + devise
                   : ""}
               </p>
             </div>
@@ -263,7 +262,7 @@ const TransactionBank = () => {
             <div className="d-flex align-items-center">
               <p className="p-0 m-0">
                 {cell.value != null
-                  ? customFormatNumber(parseFloat(cell.value)) + "€"
+                  ? customFormatNumber(parseFloat(cell.value)) + devise
                   : ""}
               </p>
             </div>
@@ -280,8 +279,8 @@ const TransactionBank = () => {
               <p className="p-0 m-0">
                 {cell.value != null
                   ? (cell.row.original?.tba_justify == 0
-                      ? "0.00"
-                      : customFormatNumber(parseFloat(cell.value))) + "€"
+                    ? "0.00"
+                    : customFormatNumber(parseFloat(cell.value))) + devise
                   : ""}
               </p>
             </div>
@@ -322,7 +321,7 @@ const TransactionBank = () => {
             };
           } else if (
             cell.row.original.tba_rp <
-              Math.abs(parseFloat(cell.row.original.tba_amount)) &&
+            Math.abs(parseFloat(cell.row.original.tba_amount)) &&
             cell.row.original.tba_rp > 0
           ) {
             styleCSS = {
@@ -587,13 +586,13 @@ const TransactionBank = () => {
                               value={matchAmount.values.amount || ""}
                               invalid={
                                 matchAmount.touched.amount &&
-                                matchAmount.errors.amount
+                                  matchAmount.errors.amount
                                   ? true
                                   : false
                               }
                             />
                             {matchAmount.touched.methode &&
-                            matchAmount.errors.amount ? (
+                              matchAmount.errors.amount ? (
                               <FormFeedback type="invalid">
                                 {matchAmount.errors.amount}
                               </FormFeedback>
@@ -618,9 +617,9 @@ const TransactionBank = () => {
                       lg={12}
                       src={
                         !process.env.NODE_ENV ||
-                        process.env.NODE_ENV === "development"
+                          process.env.NODE_ENV === "development"
                           ? // : `${api.API_PDF}/${userProfile.use_com_fk}/achat/${doc}`
-                            `${api.API_URL}/v1/achat/doc/${doc}/${userProfile.use_com_fk}`
+                          `${api.API_URL}/v1/achat/doc/${doc}/${userProfile.use_com_fk}`
                           : `${api.API_PDF}/${userProfile.use_com_fk}/achat/${doc}`
                       }
                       title={doc}
@@ -770,11 +769,10 @@ const TransactionBank = () => {
                                             onClick={() => {
                                               handleAssociateAchat(ach);
                                             }}
-                                            className={` ${
-                                              isSelected(ach.ach_id)
+                                            className={` ${isSelected(ach.ach_id)
                                                 ? "bg-light text-grey tit"
                                                 : ""
-                                            }`}
+                                              }`}
                                           >
                                             <div className="d-flex">
                                               <div className="flex-grow-1 ">
@@ -800,9 +798,9 @@ const TransactionBank = () => {
                                                     ? "- "
                                                     : "+ "}
                                                   {isSelected(ach.ach_id)
-                                                    ? customFormatNumber(parseFloat(ach.aba_match_amount ))
+                                                    ? customFormatNumber(parseFloat(ach.aba_match_amount))
                                                     : customFormatNumber(parseFloat(ach.ach_rp))}{" "}
-                                                  €
+                                                  {devise}
                                                 </div>
                                                 {isSelected(ach.ach_id) ? (
                                                   <button

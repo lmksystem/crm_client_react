@@ -2,8 +2,11 @@ import { createSlice, current } from "@reduxjs/toolkit";
 import { addLicense, createOrUpdateCompany, deleteLicense, getCompany, getLicense, updateCompany } from './thunk';
 import { toast } from "react-toastify";
 
+import paysData from "../../Components/constants/paysISO.json";
+
 export const initialState = {
   company: {},
+  devise: "€",
   license: [],
   error: {},
   isCompanySuccess: false,
@@ -23,6 +26,8 @@ const companySlice = createSlice({
 
     builder.addCase(getCompany.fulfilled, (state, action) => {
       state.company = action.payload.data;
+      let pays = paysData.pays.find((p) => p.nom == action.payload.data[0].com_pays);
+      state.devise = paysData.pays.find((p) => p.nom == action.payload.data[0].com_pays)?.symbole;
       state.isCompanyCreated = false;
       state.isCompanySuccess = true;
     });
@@ -71,7 +76,7 @@ const companySlice = createSlice({
     builder.addCase(getLicense.rejected, (state, action) => {
       state.error = action.payload.error || null;
     });
-   
+
     builder.addCase(deleteLicense.fulfilled, (state, action) => {
       state.license = action.payload.data;
     });
