@@ -40,7 +40,7 @@ const CompanyStep = ({ handleCompany, setStep, step, position, pays }) => {
       com_conv_num: "",
       com_siren: "",
       com_bank_acc: "",
-
+      com_nif: "",
     },
 
     validationSchema: Yup.object({
@@ -128,7 +128,7 @@ const CompanyStep = ({ handleCompany, setStep, step, position, pays }) => {
     } else if (validation.values.com_pays == "Belgium") {
       setNumEntreprise("Numéro d’entreprise");
     } else if (africanCountries.includes(validation.values.com_pays)) {
-      setNumEntreprise("NIF");
+      setNumEntreprise("NINEA");
     } else {
       setNumEntreprise("Identifiant d'entreprise");
     }
@@ -485,6 +485,36 @@ const CompanyStep = ({ handleCompany, setStep, step, position, pays }) => {
                       ) : null}
                     </Col>
                   </>}
+
+
+                <Col lg={6} className="mb-3">
+                  <Label htmlFor="email" className="form-label">
+                    NIF
+                  </Label>
+                  <Input
+                    name="com_nif"
+                    className="form-control"
+                    placeholder="Entre un code NIF"
+                    type={"text"}
+                    onChange={validation.handleChange}
+                    onBlur={validation.handleBlur}
+                    value={validation.values.com_nif || ""}
+                    invalid={
+                      validation.touched.com_nif &&
+                        validation.errors.com_nif
+                        ? true
+                        : false
+                    }
+                  />
+                  {validation.touched.com_nif &&
+                    validation.errors.com_nif ? (
+                    <FormFeedback type="invalid">
+                      {validation.errors.com_nif}
+                    </FormFeedback>
+                  ) : null}
+                </Col>
+
+
               </Row>
 
               <div className="mt-4">

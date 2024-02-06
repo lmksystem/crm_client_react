@@ -39,13 +39,13 @@ const InvoiceList = () => {
 
   const dispatch = useDispatch();
 
-  const { invoiceWidgets, invoices, transactions, isInvoiceSuccess, error } = useSelector((state) => ({
+  const { invoiceWidgets, invoices, transactions, isInvoiceSuccess, error, devise } = useSelector((state) => ({
     invoices: state.Invoice.invoices,
     isInvoiceSuccess: state.Invoice.isInvoiceSuccess,
     invoiceWidgets: state.Invoice.widgets,
     error: state.Invoice.error,
-    transactions: state.Transaction.transactions
-
+    transactions: state.Transaction.transactions,
+    devise: state.Company.devise
   }));
 
   const [customFiltered, setCustomFiltered] = useState(null);
@@ -199,8 +199,7 @@ const InvoiceList = () => {
           <BreadCrumb title="Factures" pageTitle="Facturation" />
           <h3>Statistiques de l'année</h3>
           <Row className="d-flex  justify-content-around ">
-            {invoiceWidgets?.filter(e=>e.icon!="none")?.map((widget,i) => {
-              console.log(widget)
+            {invoiceWidgets?.filter(e => e.icon != "none")?.map((widget, i) => {
               return <WidgetCountUp key={i} data={widget} type={"Factures"} />
             })}
           </Row>
