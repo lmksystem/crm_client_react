@@ -32,7 +32,7 @@ const WidgetCountUp = ({ data, type, xl = 3, md = 6 }) => {
             <div className="d-flex align-items-center">
               <div className="flex-grow-1">
                 <p style={{ color:"#ff9f00" }}  className="text-uppercase fw-medium  mb-0">
-                  {type} {data.name}
+                  {type} {data.name}s
                 </p>
               </div>
               <div className="flex-shrink-0">
