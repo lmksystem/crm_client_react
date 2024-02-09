@@ -103,6 +103,7 @@ const InvoiceList = () => {
         accessor: "header.fen_num_fac",
         filterable: false,
         Cell: (cell) => {
+          console.log(cell.row.original.header.fen_num_fac);
           return <Link to={`/factures/detail/${cell.row.original.header.fen_id}`} className="fw-medium link-primary">{cell.row.original.header.fen_num_fac}</Link>;
         },
       },

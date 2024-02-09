@@ -70,6 +70,7 @@ const CompanyProfil = () => {
       com_conv_num: company?.com_conv_num || "",
       com_siren: company?.com_siren || "",
       com_bank_acc: company?.com_bank_acc || "",
+      com_nif: company?.com_nif || "",
 
     },
 
@@ -79,7 +80,7 @@ const CompanyProfil = () => {
       com_ville: Yup.string().required("Veuillez entrer une ville"),
       com_cp: Yup.string().required("Veuillez entrer un code postal"),
       com_email: Yup.string().required("Veuillez entrer un email"),
-      com_phone: Yup.string().required( "Veuillez entrer un numéro de téléphone" ),
+      com_phone: Yup.string().required("Veuillez entrer un numéro de téléphone"),
     }),
 
     onSubmit: (values) => {
@@ -200,7 +201,7 @@ const CompanyProfil = () => {
   useEffect(() => {
     if (companyredux?.length > 0) {
       setCompany(companyredux[0]);
-      
+
       if (companyredux[0].com_logo) {
         let path = (companyredux[0].com_id + "/" + companyredux[0].com_logo).replaceAll('/', " ")
         getImage(path).then((response) => {
@@ -208,15 +209,15 @@ const CompanyProfil = () => {
         })
       }
 
-        if (companyredux[0].com_pays == "France") {
-          setNumEntreprise("Siren");
-        } else if (companyredux[0].com_pays  == "Belgium") {
-          setNumEntreprise("Numéro d’entreprise");
-        } else if (africanCountries.includes(companyredux[0].com_pays )) {
-          setNumEntreprise("NIF");
-        } else {
-          setNumEntreprise("Identifiant d'entreprise");
-        }
+      if (companyredux[0].com_pays == "France") {
+        setNumEntreprise("Siren");
+      } else if (companyredux[0].com_pays == "Belgium") {
+        setNumEntreprise("Numéro d’entreprise");
+      } else if (africanCountries.includes(companyredux[0].com_pays)) {
+        setNumEntreprise("NINEA");
+      } else {
+        setNumEntreprise("Identifiant d'entreprise");
+      }
 
 
     }
@@ -461,7 +462,7 @@ const CompanyProfil = () => {
                 </Col>
                 <Col lg={4} className="mb-3">
                   <Label className="form-label">
-                  {numEntreprise}
+                    {numEntreprise}
                   </Label>
                   <Input
                     name="com_siren"
@@ -486,8 +487,8 @@ const CompanyProfil = () => {
                   ) : null}
                 </Col>
                 <Col lg={4} className="mb-3">
-                  <Label  className="form-label">
-                  Compte bancaire
+                  <Label className="form-label">
+                    Compte bancaire
                   </Label>
                   <Input
                     name="com_bank_acc"
@@ -560,6 +561,32 @@ const CompanyProfil = () => {
                     validation.errors.com_conv_num ? (
                     <FormFeedback type="invalid">
                       {validation.errors.com_conv_num}
+                    </FormFeedback>
+                  ) : null}
+                </Col>
+                <Col lg={6} className="mb-3">
+                  <Label htmlFor="com_nif" className="form-label">
+                    NIF
+                  </Label>
+                  <Input
+                    name="com_nif"
+                    className="form-control"
+                    placeholder="Entre un code NIF"
+                    type={"text"}
+                    onChange={validation.handleChange}
+                    onBlur={validation.handleBlur}
+                    value={validation.values.com_nif || ""}
+                    invalid={
+                      validation.touched.com_nif &&
+                        validation.errors.com_nif
+                        ? true
+                        : false
+                    }
+                  />
+                  {validation.touched.com_nif &&
+                    validation.errors.com_nif ? (
+                    <FormFeedback type="invalid">
+                      {validation.errors.com_nif}
                     </FormFeedback>
                   ) : null}
                 </Col>

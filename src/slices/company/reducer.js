@@ -21,12 +21,14 @@ const companySlice = createSlice({
     updateLogo(state, action) {
       state.company[0].com_logo = action.payload;
     },
+    updateCompanyData(state, action) {
+      state.company[0] = action.payload;
+    },
   },
   extraReducers: (builder) => {
 
     builder.addCase(getCompany.fulfilled, (state, action) => {
       state.company = action.payload.data;
-      let pays = paysData.pays.find((p) => p.nom == action.payload.data[0].com_pays);
       state.devise = paysData.pays.find((p) => p.nom == action.payload.data[0].com_pays)?.symbole;
       state.isCompanyCreated = false;
       state.isCompanySuccess = true;
@@ -47,6 +49,7 @@ const companySlice = createSlice({
     });
 
     builder.addCase(updateCompany.fulfilled, (state, action) => {
+      console.log(action.payload.data);
       state.company = action.payload.data;
       toast.success("Mise à jour d'entrerpise résussie", { autoClose: 3000 })
       state.isCompanySuccess = true;
@@ -88,6 +91,6 @@ const companySlice = createSlice({
   },
 });
 
-export const { updateLogo } = companySlice.actions
+export const { updateLogo, updateCompanyData } = companySlice.actions
 
 export default companySlice.reducer;

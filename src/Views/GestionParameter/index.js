@@ -6,23 +6,12 @@ import * as moment from "moment";
 // Import Images
 import dummyImg from "../../assets/images/users/user-dummy-img.jpg";
 
-import {
-  Col,
-  Container,
-  Row,
-  Card,
-  CardBody,
-  Label,
-  Input,
-  Form,
-} from "reactstrap";
+import { Col, Container, Row, Card, CardBody, Label, Input, Form, Button, InputGroup, InputGroupText } from "reactstrap";
 
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 
 //Import actions
-import {
-  handleConstantes as onHandleConstantes,
-} from "../../slices/thunks";
+import { handleConstantes as onHandleConstantes, updateCompany } from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
 
@@ -36,26 +25,23 @@ import ExportCSVModal from "../../Components/Common/ExportCSVModal";
 
 import TvaParameter from "./tvaParameter";
 import AlertParametrage from "./AlertParametrage";
+import { updateCompanyData } from "../../slices/company/reducer";
 
 const GestionParameter = () => {
   const dispatch = useDispatch();
-  const { tva, isTvaSuccess, error, prefix_facture, prefix_devis, date_start_exercice } =
-    useSelector((state) => ({
-      prefix_facture: state.Gestion.constantes?.find(
-        (cst) => cst?.con_title === "Prefixe facture"
-      ) || { con_title: "Prefixe facture", con_value: "" },
-      prefix_devis: state.Gestion.constantes?.find(
-        (cst) => cst?.con_title === "Prefixe devis"
-      ) || { con_title: "Prefixe devis", con_value: "" },
-      date_start_exercice: state.Gestion.constantes?.find(
-        (cst) => cst?.con_title === "Date démarrage exercice"
-      ) || { con_title: "Date démarrage exercice", con_value: null },
-      tva: state.Gestion.tva,
-      constanteComp: state.Gestion.constantes,
-      isTvaSuccess: state.Gestion.isTvaSuccess,
-      error: state.Gestion.error,
-    }));
-
+  const { tva, company, prefix_facture, prefix_devis, date_start_exercice, nb_fac, nb_dev } = useSelector((state) => ({
+    nb_fac: state.Invoice.invoices.length,
+    nb_dev: state.Devis.devisList.length,
+    prefix_facture: state.Gestion.constantes?.find((cst) => cst?.con_title === "Prefixe facture") || { con_title: "Prefixe facture", con_value: "" },
+    prefix_devis: state.Gestion.constantes?.find((cst) => cst?.con_title === "Prefixe devis") || { con_title: "Prefixe devis", con_value: "" },
+    date_start_exercice: state.Gestion.constantes?.find((cst) => cst?.con_title === "Date démarrage exercice") || { con_title: "Date démarrage exercice", con_value: null },
+    tva: state.Gestion.tva,
+    constanteComp: state.Gestion.constantes,
+    isTvaSuccess: state.Gestion.isTvaSuccess,
+    error: state.Gestion.error,
+    company: state.Company.company[0]
+  }));
+console.log( company);
   // Formulaire constante
   const constanteForm = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
@@ -64,36 +50,51 @@ const GestionParameter = () => {
     initialValues: {
       prefixe_libelle_fac: prefix_facture?.con_value || "",
       prefixe_libelle_dev: prefix_devis?.con_value || "",
-      date_start_exercice: date_start_exercice?.con_value || "",
+      date_start_exercice: date_start_exercice?.con_value || ""
     },
     onSubmit: (values) => {
       let newPrefixeFacture = {
         ...prefix_facture,
-        con_value: values.prefixe_libelle_fac,
+        con_value: values.prefixe_libelle_fac
       };
       let newPrefixeDevis = {
         ...prefix_devis,
-        con_value: values.prefixe_libelle_dev,
+        con_value: values.prefixe_libelle_dev
       };
       let newStartExercice = {
         ...date_start_exercice,
-        con_value: values?.date_start_exercice? values?.date_start_exercice.toString() : "",
+        con_value: values?.date_start_exercice ? values?.date_start_exercice.toString() : ""
       };
 
       let newPrefixes = [newPrefixeFacture, newPrefixeDevis, newStartExercice];
+
+      let error = false;
+
+      if (values.prefixe_libelle_dev == prefix_facture.con_value && company?.com_nb_dev == 1 ) {
+      
+      }
+
+      dispatch(updateCompany(company[0]));
       dispatch(onHandleConstantes(newPrefixes));
       return;
 
       // constanteForm.resetForm();
-    },
+    }
   });
 
+  const resetPrefixeDevis = () => {
+    let newCompany = { ...company[0], com_nb_dev: 1 };
+    dispatch(updateCompanyData(newCompany));
+  };
 
-
+  const resetPrefixeFacture = () => {
+    let newCompany = { ...company[0], com_nb_fac: 1 };
+    dispatch(updateCompanyData(newCompany));
+  };
 
   // Export Modal
   const [isExportCSV, setIsExportCSV] = useState(false);
-
+  console.log(company?.com_nb_dev);
   document.title = "Paramétrage | Countano";
   return (
     <React.Fragment>
@@ -105,7 +106,10 @@ const GestionParameter = () => {
         />
 
         <Container fluid>
-          <BreadCrumb title="Paramétrage" pageTitle="" />
+          <BreadCrumb
+            title="Paramétrage"
+            pageTitle=""
+          />
           <Row>
             <Col lg={12}>
               <Card>
@@ -115,50 +119,61 @@ const GestionParameter = () => {
                     e.preventDefault();
                     constanteForm.handleSubmit();
                     return false;
-                  }}
-                >
+                  }}>
                   <CardBody>
                     <Row lg={12}>
                       <Col lg={6}>
                         <div className="m-2">
                           <Label
                             htmlFor="prefixe_libelle_fac-field"
-                            className="form-label"
-                          >
+                            className="form-label">
                             Préfixe de facture
                           </Label>
-                          <Input
-                            name="prefixe_libelle_fac"
-                            id="prefixe_libelle_fac-field"
-                            className="form-control"
-                            placeholder="Entrer un préfixe"
-                            type="text"
-                            onChange={constanteForm.handleChange}
-                            onBlur={constanteForm.handleBlur}
-                            value={
-                              constanteForm.values.prefixe_libelle_fac || ""
-                            }
-                          />
+
+                          <div className="input-group">
+                            <InputGroup>
+                              <Input
+                                name="prefixe_libelle_fac"
+                                id="prefixe_libelle_fac-field"
+                                className="form-control"
+                                placeholder="Entrer un préfixe"
+                                type="text"
+                                onChange={constanteForm.handleChange}
+                                onBlur={constanteForm.handleBlur}
+                                value={constanteForm.values.prefixe_libelle_fac || ""}
+                              />
+                              <InputGroupText style={{ width: "80px", justifyContent: "center" }}>{company?.com_nb_fac}</InputGroupText>
+                              <Button onClick={() => {resetPrefixeFacture()}}>Reset</Button>
+                            </InputGroup>
+                          </div>
                         </div>
                         <div className="m-2">
                           <Label
                             htmlFor="prefixe_libelle_dev-field"
-                            className="form-label"
-                          >
+                            className="form-label">
                             Préfixe de devis
                           </Label>
-                          <Input
-                            name="prefixe_libelle_dev"
-                            id="prefixe_libelle_dev-field"
-                            className="form-control"
-                            placeholder="Entrer un préfixe"
-                            type="text"
-                            onChange={constanteForm.handleChange}
-                            onBlur={constanteForm.handleBlur}
-                            value={
-                              constanteForm.values.prefixe_libelle_dev || ""
-                            }
-                          />
+                          <div className="input-group">
+                            <InputGroup>
+                              <Input
+                                name="prefixe_libelle_dev"
+                                id="prefixe_libelle_dev-field"
+                                className="form-control"
+                                placeholder="Entrer un préfixe"
+                                type="text"
+                                onChange={constanteForm.handleChange}
+                                onBlur={constanteForm.handleBlur}
+                                value={constanteForm.values.prefixe_libelle_dev || ""}
+                              />
+                              <InputGroupText style={{ width: "80px", justifyContent: "center" }}>{company?.com_nb_dev}</InputGroupText>
+                              <Button
+                                onClick={() => {
+                                  resetPrefixeDevis(company[0].com_nb_dev);
+                                }}>
+                                Reset
+                              </Button>
+                            </InputGroup>
+                          </div>
                         </div>
                       </Col>
 
@@ -166,8 +181,7 @@ const GestionParameter = () => {
                         <div className="m-2">
                           <Label
                             htmlFor="date_start_exercice-field"
-                            className="form-label"
-                          >
+                            className="form-label">
                             Date démarrage exercice
                           </Label>
                           <Input
@@ -177,19 +191,19 @@ const GestionParameter = () => {
                             type="date"
                             onChange={constanteForm.handleChange}
                             onBlur={constanteForm.handleBlur}
-                            value={constanteForm?.values?.date_start_exercice|| ""}
-
+                            value={constanteForm?.values?.date_start_exercice || ""}
                           />
                         </div>
                       </Col>
                     </Row>
-                    <Row className="mx-auto" lg={12}>
+                    <Row
+                      className="mx-auto"
+                      lg={12}>
                       <div className="m-2">
                         <button
                           type="submit"
                           className="btn btn-success"
-                          id="add-btn"
-                        >
+                          id="add-btn">
                           Enregistrer
                         </button>
                       </div>

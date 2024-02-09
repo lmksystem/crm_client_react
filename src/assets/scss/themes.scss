@@ -2,10 +2,10 @@
 @import "../scss/config/modern/bootstrap.scss";
 @import "../scss/config/modern/app.scss";
 @import "../scss/config/modern/custom.scss";
-@import"./shepherd.css";
+@import "./shepherd.css";
 @import "./mermaid.min.css";
 
-//RTL 
+//RTL
 // @import "../scss/rtl/components-rtl";
 // @import "../scss/rtl/layouts-rtl";
 // @import "../scss/rtl/plugins-rtl";
@@ -26,15 +26,12 @@ body {
 
 .is-hide {
   height: 0;
-
 }
 
 .is-open {
   height: auto;
   transition: height 2s;
 }
-
-
 
 #fco_name * {
   border-radius: 15px;
@@ -105,8 +102,8 @@ body {
 
   .fc {
     .fc-toolbar {
-      >* {
-        >* {
+      > * {
+        > * {
           float: none;
         }
       }
@@ -139,8 +136,7 @@ body {
 //   max-height: 43px !important;
 // }
 
-@each $color,
-$value in $theme-colors {
+@each $color, $value in $theme-colors {
   .simplebar-track-#{$color} {
     .simplebar-scrollbar:before {
       background: $value !important;
@@ -167,7 +163,7 @@ $value in $theme-colors {
   }
 }
 
-// Authentication pages 
+// Authentication pages
 #tsparticles {
   canvas {
     position: absolute !important;
@@ -220,7 +216,6 @@ $value in $theme-colors {
 }
 
 .react-dual-listbox {
-
   input:disabled,
   select:disabled {
     background-color: $input-disabled-bg !important;
@@ -259,7 +254,6 @@ $value in $theme-colors {
   display: flex;
   justify-content: space-between;
 }
-
 
 .centerState {
   left: 0;
@@ -311,11 +305,21 @@ iframe img {
   width: 97vw;
 }
 
-.container-img-achat{
+.container-img-achat {
   overflow-y: scroll;
   height: 700px;
 }
 
 .image-achat-doc {
   width: 100%;
+}
+
+.prefixe {
+  display: flex;
+  flex-direction: row;
+  .input-group-text {
+ 
+  }
+
+  width: 80px;
 }
