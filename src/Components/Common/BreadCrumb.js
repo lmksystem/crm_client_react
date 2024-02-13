@@ -12,34 +12,38 @@ const BreadCrumb = ({ title, pageTitle }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { listAccountsBank } = useSelector((state) => ({
-    listAccountsBank: state.BankAccount.listAccountsBank,
+    listAccountsBank: state.BankAccount.listAccountsBank
   }));
   const userProfile = getLoggedinUser();
   const [dateExpired, setDateExpired] = useState(null);
 
   function findClosestDateWithin15Days(dateArray = []) {
     // Obtenez la date actuelle
+
     const currentDate = moment();
     let closestDate = null;
     let closestDifference = Infinity;
     for (const dateStr of dateArray) {
       const dateObj = moment(dateStr);
-      const differenceInDays = currentDate.diff(dateObj, 'days');
+
+      const differenceInDays = currentDate.diff(dateObj, "days");
+      console.log(differenceInDays, differenceInDays >= -15, differenceInDays <= 0, Math.abs(differenceInDays) < closestDifference);
       if (differenceInDays >= -15 && differenceInDays <= 0 && Math.abs(differenceInDays) < closestDifference) {
         closestDate = dateStr;
       }
     }
-    setDateExpired(closestDate)
+    console.log(closestDate);
+    setDateExpired(closestDate);
   }
 
   useEffect(() => {
     dispatch(onGetAccountBank("null")).then(() => {
       if (listAccountsBank) {
         let newArrayDate = listAccountsBank?.map((e) => e.bac_date_expired) || [];
-        findClosestDateWithin15Days(newArrayDate)
+        console.log(newArrayDate);
+        findClosestDateWithin15Days(newArrayDate);
       }
-
-    })
+    });
   }, []);
 
   return (
@@ -62,29 +66,32 @@ const BreadCrumb = ({ title, pageTitle }) => {
         </Col>
       </Row>
       <Row>
-        {dateExpired != null && <Col xs={12}>
-          {userProfile.use_rank == 0 && (
-            <div
-              style={{
-                color: "#721c24",
-                backgroundColor: "#f8d7da",
-                borderColor: "#f5c6cb",
-              }}
-              className="alert d-sm-flex align-items-center justify-content-between "
-            >
-              Veuillez mettre à jour vos comptes bancaires avant le {moment(dateExpired).format('D MMM YYYY')}
+        {console.log(dateExpired)}
+        <Col xs={12}>
+          <div
+            style={{
+              height: 0,
+              overflow: "hidden",
+              color: "#721c24",
+              backgroundColor: "#f8d7da",
+              borderColor: "#f5c6cb",
+              borderRadius: "2px",
+              marginBottom: "15px"
+            }}
+            className={`d-sm-flex ${dateExpired != null && userProfile.use_rank == 0 ? "showing-anime" : ""}`}>
+            <span className="d-flex align-items-center justify-content-between  m-3 w-100">
+              Veuillez mettre à jour vos comptes bancaires avant le {moment(dateExpired).format("D MMM YYYY")}
               <button
                 onClick={() => {
                   navigate("/bankaccount");
                 }}
                 type="button"
-                class="btn btn-light my-3"
-              >
+                className="btn btn-light my-3">
                 Accéder aux comptes
               </button>
-            </div>
-          )}
-        </Col>}
+            </span>
+          </div>
+        </Col>
       </Row>
     </React.Fragment>
   );

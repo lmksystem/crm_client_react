@@ -49,14 +49,14 @@ const companySlice = createSlice({
     });
 
     builder.addCase(updateCompany.fulfilled, (state, action) => {
-      console.log(action.payload.data);
-      state.company = action.payload.data;
+      state.company[0] = action.payload.data;
       toast.success("Mise à jour d'entrerpise résussie", { autoClose: 3000 })
       state.isCompanySuccess = true;
 
     });
 
     builder.addCase(updateCompany.rejected, (state, action) => {
+      console.log("rejected ",action.payload);
       state.error = action.payload.error || null;
 
     });

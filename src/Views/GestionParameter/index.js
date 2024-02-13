@@ -26,12 +26,11 @@ import ExportCSVModal from "../../Components/Common/ExportCSVModal";
 import TvaParameter from "./tvaParameter";
 import AlertParametrage from "./AlertParametrage";
 import { updateCompanyData } from "../../slices/company/reducer";
+import { toast } from "react-toastify";
 
 const GestionParameter = () => {
   const dispatch = useDispatch();
-  const { tva, company, prefix_facture, prefix_devis, date_start_exercice, nb_fac, nb_dev } = useSelector((state) => ({
-    nb_fac: state.Invoice.invoices.length,
-    nb_dev: state.Devis.devisList.length,
+  const { tva, company, prefix_facture, prefix_devis, date_start_exercice } = useSelector((state) => ({
     prefix_facture: state.Gestion.constantes?.find((cst) => cst?.con_title === "Prefixe facture") || { con_title: "Prefixe facture", con_value: "" },
     prefix_devis: state.Gestion.constantes?.find((cst) => cst?.con_title === "Prefixe devis") || { con_title: "Prefixe devis", con_value: "" },
     date_start_exercice: state.Gestion.constantes?.find((cst) => cst?.con_title === "Date démarrage exercice") || { con_title: "Date démarrage exercice", con_value: null },
@@ -41,7 +40,12 @@ const GestionParameter = () => {
     error: state.Gestion.error,
     company: state.Company.company[0]
   }));
-console.log( company);
+
+  const [numberDev, setNumberDev] = useState(company.com_nb_dev);
+  const [numberFac, setNumberFac] = useState(company.com_nb_fac);
+  const [devNumberAsChange, setDevNumberAsChange] = useState(false);
+  const [facNumberAsChange, setFacNumberAsChange] = useState(false);
+
   // Formulaire constante
   const constanteForm = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
@@ -68,13 +72,26 @@ console.log( company);
 
       let newPrefixes = [newPrefixeFacture, newPrefixeDevis, newStartExercice];
 
-      let error = false;
-
-      if (values.prefixe_libelle_dev == prefix_facture.con_value && company?.com_nb_dev == 1 ) {
-      
+      // Update facture number to 1
+      if (values.prefixe_libelle_fac != prefix_facture.con_value) {
+        let data = { ...company, com_nb_fac: 1 };
+        dispatch(updateCompany(data));
+      } else if (facNumberAsChange) {
+        setFacNumberAsChange(false);
+        setNumberFac(company.com_nb_fac);
+        toast.warning("Attention ! Si vous ne changez pas le préfixe vous risquez d'avoir les mêmes numéros de facture.");
       }
 
-      dispatch(updateCompany(company[0]));
+      // Update devis number to 1
+      if (values.prefixe_libelle_dev != prefix_devis.con_value) {
+        let data = { ...company, com_nb_dev: 1 };
+        dispatch(updateCompany(data));
+      } else if (devNumberAsChange) {
+        setDevNumberAsChange(false);
+        setNumberDev(company.com_nb_dev);
+        toast.warning("Attention ! Si vous ne changez pas le préfixe vous risquez d'avoir les mêmes numéros de devis.");
+      }
+
       dispatch(onHandleConstantes(newPrefixes));
       return;
 
@@ -83,18 +100,20 @@ console.log( company);
   });
 
   const resetPrefixeDevis = () => {
-    let newCompany = { ...company[0], com_nb_dev: 1 };
-    dispatch(updateCompanyData(newCompany));
+    setDevNumberAsChange(true);
+    setNumberDev(1);
+    // dispatch(updateCompanyData(newCompany));
   };
 
   const resetPrefixeFacture = () => {
-    let newCompany = { ...company[0], com_nb_fac: 1 };
-    dispatch(updateCompanyData(newCompany));
+    setFacNumberAsChange(true);
+    setNumberFac(1);
+    // dispatch(updateCompanyData(newCompany));
   };
 
   // Export Modal
   const [isExportCSV, setIsExportCSV] = useState(false);
-  console.log(company?.com_nb_dev);
+
   document.title = "Paramétrage | Countano";
   return (
     <React.Fragment>
@@ -142,8 +161,13 @@ console.log( company);
                                 onBlur={constanteForm.handleBlur}
                                 value={constanteForm.values.prefixe_libelle_fac || ""}
                               />
-                              <InputGroupText style={{ width: "80px", justifyContent: "center" }}>{company?.com_nb_fac}</InputGroupText>
-                              <Button onClick={() => {resetPrefixeFacture()}}>Reset</Button>
+                              <InputGroupText style={{ width: "80px", justifyContent: "center" }}>{numberFac}</InputGroupText>
+                              <Button
+                                onClick={() => {
+                                  resetPrefixeFacture();
+                                }}>
+                                Reset
+                              </Button>
                             </InputGroup>
                           </div>
                         </div>
@@ -165,10 +189,10 @@ console.log( company);
                                 onBlur={constanteForm.handleBlur}
                                 value={constanteForm.values.prefixe_libelle_dev || ""}
                               />
-                              <InputGroupText style={{ width: "80px", justifyContent: "center" }}>{company?.com_nb_dev}</InputGroupText>
+                              <InputGroupText style={{ width: "80px", justifyContent: "center" }}>{numberDev}</InputGroupText>
                               <Button
                                 onClick={() => {
-                                  resetPrefixeDevis(company[0].com_nb_dev);
+                                  resetPrefixeDevis();
                                 }}>
                                 Reset
                               </Button>

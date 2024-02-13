@@ -1,41 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { Card, CardBody, Col, Container, Input, Label, Row, Button, Form, FormFeedback, Alert, Spinner } from 'reactstrap';
+import React, { useEffect, useState } from "react";
+import { Card, CardBody, Col, Container, Input, Label, Row, Button, Form, FormFeedback, Alert, Spinner } from "reactstrap";
 import ParticlesAuth from "../AuthenticationInner/ParticlesAuth";
 
 //redux
 import { useSelector, useDispatch } from "react-redux";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import withRouter from "../../Components/Common/withRouter";
 // Formik validation
 import * as Yup from "yup";
 import { useFormik } from "formik";
 
 // actions
-import { loginUser, socialLogin, resetLoginFlag } from "../../slices/thunks";
+import { loginUser, socialLogin, resetLoginFlag, logoutUser } from "../../slices/thunks";
 
 import logoLight from "../../assets/images/logo_countano.png";
 
 const Login = (props) => {
   const dispatch = useDispatch();
-  const { user, collaborateurs } = useSelector(state => ({
+  const navigate = useNavigate();
+
+  const { user, collaborateurs } = useSelector((state) => ({
     user: state.Account.user,
-    collaborateurs: state.Gestion.collaborateurs,
+    collaborateurs: state.Gestion.collaborateurs
   }));
 
   const token = JSON.parse(sessionStorage.getItem("authUser"));
 
-  const [userLogin, setUserLogin] = useState([]);
+  const [userLogin, setUserLogin] = useState({});
   const [passwordShow, setPasswordShow] = useState(false);
-
-  useEffect(() => {
-    if (user && user) {
-      setUserLogin({
-        email: user.user.email,
-        password: user.user.confirm_password
-      });
-    }
-  }, [user]);
 
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
@@ -43,22 +36,21 @@ const Login = (props) => {
 
     initialValues: {
       email: userLogin.email || "",
-      password: userLogin.password || "",
+      password: userLogin.password || ""
     },
     validationSchema: Yup.object({
       email: Yup.string().required("Veillez entrer un email"),
-      password: Yup.string().required("Veillez entrer un mot de passe"),
+      password: Yup.string().required("Veillez entrer un mot de passe")
     }),
     onSubmit: (values) => {
-      
       dispatch(loginUser(values, props.router.navigate));
     }
   });
 
-  const { error, errorFlag, loading } = useSelector(state => ({
+  const { error, errorFlag, loading } = useSelector((state) => ({
     error: state.Login.error,
     loading: state.Login.loading,
-    errorFlag: state.Login.errorFlag,
+    errorFlag: state.Login.errorFlag
   }));
 
   useEffect(() => {
@@ -68,6 +60,22 @@ const Login = (props) => {
       }, 3000);
     }
   }, [dispatch, errorFlag]);
+
+  useEffect(() => {
+  
+    if (user && user) {
+      setUserLogin({
+        email: user.user.email,
+        password: user.user.confirm_password
+      });
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (token) {
+      navigate('/dashboard');
+    }
+  }, []);
 
   document.title = "Connexion | Countano";
   return (
@@ -79,8 +87,14 @@ const Login = (props) => {
               <Col lg={12}>
                 <div className="text-center mt-sm-5 mb-4 text-white-50">
                   <div>
-                    <Link to="/" className="d-inline-block auth-logo">
-                      <img src={logoLight} alt="" height="20" />
+                    <Link
+                      to="/"
+                      className="d-inline-block auth-logo">
+                      <img
+                        src={logoLight}
+                        alt=""
+                        height="20"
+                      />
                     </Link>
                   </div>
                   <p className="mt-3 fs-15 fw-medium"></p>
@@ -89,14 +103,17 @@ const Login = (props) => {
             </Row>
 
             <Row className="justify-content-center">
-              <Col md={8} lg={6} xl={5}>
+              <Col
+                md={8}
+                lg={6}
+                xl={5}>
                 <Card className="mt-4">
                   <CardBody className="p-4">
                     <div className="text-center mt-2">
                       <h5 className="text-primary">Bienvenue !</h5>
                       <p className="text-muted">Connectez-vous pour continuer sur Countano.</p>
                     </div>
-                    {error && error ? (<Alert color="danger"> {error} </Alert>) : null}
+                    {error && error ? <Alert color="danger"> {error} </Alert> : null}
                     <div className="p-2 mt-4">
                       <Form
                         onSubmit={(e) => {
@@ -105,9 +122,12 @@ const Login = (props) => {
                           return false;
                         }}
                         action="#">
-
                         <div className="mb-3">
-                          <Label htmlFor="email" className="form-label">Email</Label>
+                          <Label
+                            htmlFor="email"
+                            className="form-label">
+                            Email
+                          </Label>
                           <Input
                             name="email"
                             className="form-control"
@@ -116,20 +136,24 @@ const Login = (props) => {
                             onChange={validation.handleChange}
                             onBlur={validation.handleBlur}
                             value={validation.values.email || ""}
-                            invalid={
-                              validation.touched.email && validation.errors.email ? true : false
-                            }
+                            invalid={validation.touched.email && validation.errors.email ? true : false}
                           />
-                          {validation.touched.email && validation.errors.email ? (
-                            <FormFeedback type="invalid">{validation.errors.email}</FormFeedback>
-                          ) : null}
+                          {validation.touched.email && validation.errors.email ? <FormFeedback type="invalid">{validation.errors.email}</FormFeedback> : null}
                         </div>
 
                         <div className="mb-3">
                           <div className="float-end">
-                            <Link to="/forgot-password" className="text-muted">Mot de passe oublié?</Link>
+                            <Link
+                              to="/forgot-password"
+                              className="text-muted">
+                              Mot de passe oublié?
+                            </Link>
                           </div>
-                          <Label className="form-label" htmlFor="password-input">Mot de passe</Label>
+                          <Label
+                            className="form-label"
+                            htmlFor="password-input">
+                            Mot de passe
+                          </Label>
                           <div className="position-relative auth-pass-inputgroup mb-3">
                             <Input
                               name="password"
@@ -139,38 +163,56 @@ const Login = (props) => {
                               placeholder="Entrer un mot de passe"
                               onChange={validation.handleChange}
                               onBlur={validation.handleBlur}
-                              invalid={
-                                validation.touched.password && validation.errors.password ? true : false
-                              }
+                              invalid={validation.touched.password && validation.errors.password ? true : false}
                             />
-                            {validation.touched.password && validation.errors.password ? (
-                              <FormFeedback type="invalid">{validation.errors.password}</FormFeedback>
-                            ) : null}
-                            <button className="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted" type="button" id="password-addon" onClick={() => setPasswordShow(!passwordShow)}><i className="ri-eye-fill align-middle"></i></button>
+                            {validation.touched.password && validation.errors.password ? <FormFeedback type="invalid">{validation.errors.password}</FormFeedback> : null}
+                            <button
+                              className="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted"
+                              type="button"
+                              id="password-addon"
+                              onClick={() => setPasswordShow(!passwordShow)}>
+                              <i className="ri-eye-fill align-middle"></i>
+                            </button>
                           </div>
                         </div>
 
                         <div className="form-check">
-                          <Input className="form-check-input" type="checkbox" value="" id="auth-remember-check" />
-                          <Label className="form-check-label" htmlFor="auth-remember-check">Se souvenir de moi</Label>
+                          <Input
+                            className="form-check-input"
+                            type="checkbox"
+                            value=""
+                            id="auth-remember-check"
+                          />
+                          <Label
+                            className="form-check-label"
+                            htmlFor="auth-remember-check">
+                            Se souvenir de moi
+                          </Label>
                         </div>
 
                         <div className="mt-4">
-                          <Button color="success" disabled={error ? null : loading ? true : false} className="btn btn-success w-100" type="submit">
-                            {loading ? <Spinner size="sm" className='me-2'> Loading... </Spinner> : null}
+                          <Button
+                            color="success"
+                            disabled={error ? null : loading ? true : false}
+                            className="btn btn-success w-100"
+                            type="submit">
+                            {loading ? (
+                              <Spinner
+                                size="sm"
+                                className="me-2">
+                                {" "}
+                                Loading...{" "}
+                              </Spinner>
+                            ) : null}
                             Connexion
                           </Button>
                         </div>
-
                       </Form>
                     </div>
                   </CardBody>
                 </Card>
 
-                <div className="mt-4 text-center">
-                  {/* <p className="mb-0">Don't have an account ? <Link to="/register" className="fw-semibold text-primary text-decoration-underline"> Signup </Link> </p> */}
-                </div>
-
+                <div className="mt-4 text-center">{/* <p className="mb-0">Don't have an account ? <Link to="/register" className="fw-semibold text-primary text-decoration-underline"> Signup </Link> </p> */}</div>
               </Col>
             </Row>
           </Container>

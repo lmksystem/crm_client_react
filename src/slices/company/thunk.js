@@ -26,8 +26,7 @@ export const createOrUpdateCompany = createAsyncThunk("company/createOrUpdateCom
 
 export const updateCompany = createAsyncThunk("company/updateCompany", async (data) => {
   try {
-    const response = await updateCompanyApi(data);
-    console.log(response);
+    const response = updateCompanyApi(data);
     return response;
   } catch (error) {
     return error;

@@ -6,7 +6,7 @@ import moment from 'moment';
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import { createOrUpdateUser as onCreateOrUpdateUser } from "../../../slices/thunks"
+import { logoutUser, createOrUpdateUser as onCreateOrUpdateUser } from "../../../slices/thunks"
 import { useNavigate } from "react-router-dom";
 import ParticlesAuth from "../ParticlesAuth";
 import { Link } from "feather-icons-react/build/IconComponents";
@@ -18,7 +18,6 @@ moment.locale('fr')
 const CreateAccount = () => {
   document.title = "Création d'un compte | Countano";
 
-  const navigate = useNavigate()
   const dispatch = useDispatch();
 
   const [accountIsCreated, setAccountIsCreated] = useState(false);
@@ -43,10 +42,8 @@ const CreateAccount = () => {
 
     onSubmit: (values) => {
       values.use_rank = 0;
-
-      dispatch(onCreateOrUpdateUser(values)).then(() => {
-        navigate('/admin/users')
-      });
+      dispatch(logoutUser());
+      dispatch(onCreateOrUpdateUser(values))
       setAccountIsCreated(true);
     },
   });

@@ -23,7 +23,7 @@ const WidgetCountUp = ({ data, type, xl = 3, md = 6 }) => {
   const { devise } = useSelector((state) => ({
     devise: state?.Company?.devise,
   }));
-  console.log("---------------",devise);
+
   return (
     <React.Fragment>
       <Col xl={xl} md={md}>
@@ -32,7 +32,7 @@ const WidgetCountUp = ({ data, type, xl = 3, md = 6 }) => {
             <div className="d-flex align-items-center">
               <div className="flex-grow-1">
                 <p style={{ color:"#ff9f00" }}  className="text-uppercase fw-medium  mb-0">
-                  {type} {data.name}s
+                  {type} {data.name}
                 </p>
               </div>
               <div className="flex-shrink-0">
@@ -49,7 +49,7 @@ const WidgetCountUp = ({ data, type, xl = 3, md = 6 }) => {
                 <h4 className="fs-22 fw-semibold ff-secondary mb-4">
                   <CountUp
                     start={0}
-                    prefix={devise}
+                    suffix={devise}
                     decimals="2"
                     end={data.total}
                     duration={1}

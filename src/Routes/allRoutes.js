@@ -128,7 +128,7 @@ const publicRoutes = [
   { path: "/login", component: <Login /> },
   { path: "/forgot-password", component: <ForgetPasswordPage /> },
   { path: "/reset-password/:token", component: <ResertPassword /> },
-  { path: "/register", component: <Register /> },
+  // { path: "/register", component: <Register /> },
   { path: "/inscription", component: <CreateAccount /> },
   { path: "/finalisation-compte", component: <FinalisationAccount /> },
   { path: "/erreur-404", component: <Basic404 /> },

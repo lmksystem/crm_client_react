@@ -62,7 +62,7 @@ const FormUser = () => {
           <BreadCrumb title="Création" pageTitle="Utilisateur" />
           <Card>
             <CardBody>
-              <div class="alert alert-warning" role="alert">
+              <div className="alert alert-warning" role="alert">
                 * Lors de l'enregistrement de l'utilisateur un email lui sera envoyé pour qu'il puisse créer son entreprise
               </div>
               <Row>

@@ -15,7 +15,6 @@ import logoLight from "../../assets/images/logo_countano.png";
 import axios from 'axios';
 import PasswordStep from './step/PasswordStep';
 import CompanyStep from './step/CompanyStep';
-import { createOrUpdateUser as onCreateOrUpdateUser, createOrUpdateCompany as onCreateOrUpdateCompany } from '../../slices/thunks';
 import ValideStep from './step/ValideStep';
 
 const FinalisationAccount = (props) => {

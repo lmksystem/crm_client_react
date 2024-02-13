@@ -73,7 +73,7 @@ const ForgetPasswordPage = props => {
                 <CardBody className="p-4">
                   <div className="text-center mt-2">
                     <h5 className="text-primary">Mot de passe oublié ?</h5>
-                    <p className="text-muted">Réinitialisé le mot de passe</p>
+                    <p className="text-muted">Réinitialiser le mot de passe</p>
 
                     <lord-icon
                       src="https://cdn.lordicon.com/rhvddzym.json"
@@ -125,7 +125,7 @@ const ForgetPasswordPage = props => {
               </Card>
 
               <div className="mt-4 text-center">
-                <p className="mb-0">Je me rappel de mon mot de passe... <Link to="/login" className="fw-semibold text-primary text-decoration-underline"> Cliquez ici</Link> </p>
+                <p className="mb-0">Je me rappelle de mon mot de passe... <Link to="/login" className="fw-semibold text-primary text-decoration-underline"> Cliquez ici</Link> </p>
               </div>
 
             </Col>
