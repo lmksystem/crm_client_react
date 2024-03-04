@@ -75,13 +75,13 @@ const TransactionCharts = ({ chartData }) => {
     xaxis: {
       categories: [
         "Janvier",
-        "Febier",
+        "Février",
         "Mars",
         "Avril",
         "Mai",
         "Juin",
         "Juillet",
-        "août",
+        "Août",
         "Septembre",
         "Octobre",
         "Novembre",

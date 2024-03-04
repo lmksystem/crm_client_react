@@ -1,13 +1,11 @@
-//Include Both Helper File with needed methods
-import { getFirebaseBackend } from "../../../helpers/firebase_helper";
+
 import {
   postLogin,
-  postSocialLogin,
-} from "../../../helpers/fakebackend_helper";
+} from "../../../helpers/backend_helper";
 
 import { loginSuccess, logoutUserSuccess, apiError, reset_login_flag } from './reducer';
 
-const fireBaseBackend = getFirebaseBackend();
+
 
 export const loginUser = (user, history) => async (dispatch) => {
 
@@ -21,12 +19,6 @@ export const loginUser = (user, history) => async (dispatch) => {
     if (data.user) {
       sessionStorage.setItem("authUser", JSON.stringify(data.user));
       dispatch(loginSuccess(data.user));
-    
-      if (data.user.use_rank == 1) {
-        history('/admin')
-      } else {
-        history('/dashboard')
-      }
 
     } else {
       dispatch(apiError(data.error));

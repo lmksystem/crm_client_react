@@ -1,11 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export const initialState = {
-  user: "",
+  user: null,
   error: "",
   loading: false,
   isUserLogout: false,
-  errorFlag: false,
+  errorFlag: false
 };
 
 const loginSlice = createSlice({
@@ -17,30 +17,24 @@ const loginSlice = createSlice({
       state.loading = true;
       state.isUserLogout = false;
       state.errorFlag = true;
-
     },
     loginSuccess(state, action) {
-      state.user = action.payload.user
+      state.user = action.payload;
       state.loading = false;
       state.errorFlag = false;
     },
     logoutUserSuccess(state, action) {
-      state.user = initialState;
-      state.isUserLogout = true
+      state.user = null;
+      state.isUserLogout = true;
     },
     reset_login_flag(state) {
-      state.error = null
+      state.error = null;
       state.loading = false;
       state.errorFlag = false;
     }
-  },
+  }
 });
 
-export const {
-  apiError,
-  loginSuccess,
-  logoutUserSuccess,
-  reset_login_flag
-} = loginSlice.actions
+export const { apiError, loginSuccess, logoutUserSuccess, reset_login_flag } = loginSlice.actions;
 
 export default loginSlice.reducer;

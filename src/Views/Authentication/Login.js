@@ -12,19 +12,16 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 
 // actions
-import { loginUser, socialLogin, resetLoginFlag, logoutUser } from "../../slices/thunks";
+import { loginUser, resetLoginFlag } from "../../slices/thunks";
 
 import logoLight from "../../assets/images/logo_countano.png";
 
 const Login = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const { user, collaborateurs } = useSelector((state) => ({
-    user: state.Account.user,
-    collaborateurs: state.Gestion.collaborateurs
+  const { user } = useSelector((state) => ({
+    user: state.Login.user
   }));
-
   const token = JSON.parse(sessionStorage.getItem("authUser"));
 
   const [userLogin, setUserLogin] = useState({});
@@ -62,20 +59,21 @@ const Login = (props) => {
   }, [dispatch, errorFlag]);
 
   useEffect(() => {
-  
-    if (user && user) {
-      setUserLogin({
-        email: user.user.email,
-        password: user.user.confirm_password
-      });
-    }
-  }, [user]);
-
-  useEffect(() => {
     if (token) {
-      navigate('/dashboard');
+      navigate("/dashboard");
     }
   }, []);
+
+  useEffect(() => {
+  
+    if (user) {
+      if (user.use_rank == 1) {
+        navigate("/admin");
+      } else {
+        navigate("/dashboard");
+      }
+    }
+  }, [user]);
 
   document.title = "Connexion | Countano";
   return (

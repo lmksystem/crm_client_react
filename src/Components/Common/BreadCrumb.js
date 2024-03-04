@@ -2,49 +2,57 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Col, Row } from "reactstrap";
 import { useProfile } from "../Hooks/UserHooks";
-import { getAccountBank as onGetAccountBank } from "../../slices/thunks";
+import { getBankUserAccount, getAccountBank as onGetAccountBank } from "../../slices/thunks";
 import { useSelector, useDispatch } from "react-redux";
 import * as moment from "moment";
 import FluidText from "./FluidText";
 import { getLoggedinUser } from "../../helpers/api_helper";
+import { toast } from "react-toastify";
 
 const BreadCrumb = ({ title, pageTitle }) => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { listAccountsBank } = useSelector((state) => ({
-    listAccountsBank: state.BankAccount.listAccountsBank
-  }));
   const userProfile = getLoggedinUser();
   const [dateExpired, setDateExpired] = useState(null);
 
   function findClosestDateWithin15Days(dateArray = []) {
     // Obtenez la date actuelle
-
     const currentDate = moment();
     let closestDate = null;
     let closestDifference = Infinity;
     for (const dateStr of dateArray) {
       const dateObj = moment(dateStr);
-
       const differenceInDays = currentDate.diff(dateObj, "days");
-      console.log(differenceInDays, differenceInDays >= -15, differenceInDays <= 0, Math.abs(differenceInDays) < closestDifference);
+      console.log(dateStr);
       if (differenceInDays >= -15 && differenceInDays <= 0 && Math.abs(differenceInDays) < closestDifference) {
         closestDate = dateStr;
       }
     }
-    console.log(closestDate);
+
     setDateExpired(closestDate);
   }
 
   useEffect(() => {
-    dispatch(onGetAccountBank("null")).then(() => {
-      if (listAccountsBank) {
-        let newArrayDate = listAccountsBank?.map((e) => e.bac_date_expired) || [];
-        console.log(newArrayDate);
+    // dispatch(onGetAccountBank("null"));
+    getBankUserAccount()
+      .then((res) => {
+        let newArrayDate = res?.map((e) => e.bac_date_expired) || [];
+        console.log(res);
         findClosestDateWithin15Days(newArrayDate);
-      }
-    });
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Erreur de récupération des listes de banque", { autoClose: 3000 });
+      });
   }, []);
+
+  // useEffect(() => {
+  //   // dispatch(onGetAccountBank("null")).then(() => {
+  //   //   if (listAccountsBank) {
+  //   //     let newArrayDate = listAccountsBank?.map((e) => e.bac_date_expired) || [];
+  //   //     findClosestDateWithin15Days(newArrayDate);
+  //   //   }
+  //   // });
+  // }, []);
 
   return (
     <React.Fragment>
@@ -66,7 +74,6 @@ const BreadCrumb = ({ title, pageTitle }) => {
         </Col>
       </Row>
       <Row>
-        {console.log(dateExpired)}
         <Col xs={12}>
           <div
             style={{

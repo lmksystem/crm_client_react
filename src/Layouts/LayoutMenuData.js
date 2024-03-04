@@ -52,28 +52,18 @@ const Navdata = () => {
     if (isUserAdmin !== "UserAdmin") {
       setIsUserAdmin(false);
     }
-  }, [
-    history,
-    iscurrentState,
-    isBanque,
-    isComptability,
-    isFacture,
-    isGestion,
-    isPaie,
-    isRapport,
-    isEmployee,
-  ]);
+  }, [history, iscurrentState, isBanque, isComptability, isFacture, isGestion, isPaie, isRapport, isEmployee]);
 
   const menuItems = [
     {
       label: "Menu",
-      isHeader: true,
+      isHeader: true
     },
     {
       id: "dashboard",
       label: "Tableau de bord",
       icon: "las la-tachometer-alt",
-      link: "/#",
+      link: "/"
     },
     {
       id: "gestion",
@@ -91,21 +81,21 @@ const Navdata = () => {
           id: "clients-fournisseurs",
           label: "Clients / Fournisseurs",
           link: "/client-fournisseur",
-          parentId: "gestion",
+          parentId: "gestion"
         },
         {
           id: "contacts",
           label: "Contacts",
           link: "/contacts",
-          parentId: "gestion",
+          parentId: "gestion"
         },
         {
           id: "produits",
           label: "Produits",
           link: "/produits",
-          parentId: "gestion",
-        },
-      ],
+          parentId: "gestion"
+        }
+      ]
     },
     {
       id: "facturation",
@@ -116,7 +106,6 @@ const Navdata = () => {
         e.preventDefault();
         setIsFacture(!isFacture);
         setIscurrentState("Facturation");
-
       },
       stateVariables: isFacture,
       subItems: [
@@ -124,27 +113,27 @@ const Navdata = () => {
           id: "devis",
           label: "Devis",
           link: "/devis/liste",
-          parentId: "facturation",
+          parentId: "facturation"
         },
         {
           id: "invoices",
           label: "Factures",
           link: "/factures/liste",
-          parentId: "facturation",
+          parentId: "facturation"
         },
         {
           id: "recurrence",
           label: "Récurrences",
           link: "/recurrence",
-          parentId: "facturation",
+          parentId: "facturation"
         },
         {
           id: "reglements",
           label: "Encaissements",
           link: "/transaction/liste",
-          parentId: "facturation",
-        },
-      ],
+          parentId: "facturation"
+        }
+      ]
     },
     {
       id: "comptability",
@@ -155,7 +144,6 @@ const Navdata = () => {
         e.preventDefault();
         setIsComptability(!isComptability);
         setIscurrentState("Comptabilité");
-
       },
       stateVariables: isComptability,
       subItems: [
@@ -163,11 +151,9 @@ const Navdata = () => {
           id: "export",
           label: "Export",
           link: "/export",
-          isChildItem: false,
-          click: function (e) { },
-          parentId: "comptability",
-        },
-      ],
+          parentId: "comptability"
+        }
+      ]
     },
     {
       id: "banque",
@@ -178,7 +164,6 @@ const Navdata = () => {
         e.preventDefault();
         setIsBanque(!isBanque);
         setIscurrentState("Banque");
-
       },
       stateVariables: isBanque,
       subItems: [
@@ -186,21 +171,21 @@ const Navdata = () => {
           id: "factures-achats",
           label: "Mes comptes bancaires",
           link: "/bankaccount",
-          parentId: "banque",
+          parentId: "banque"
         },
         {
           id: "transactions-bancaires",
           label: "Transactions bancaires",
           link: "/transaction/bank",
-          parentId: "banque",
+          parentId: "banque"
         },
         {
           id: "factures-achats",
           label: "Factures Achats",
           link: "/achat",
-          parentId: "banque",
-        },
-      ],
+          parentId: "banque"
+        }
+      ]
     },
     {
       id: "report",
@@ -211,9 +196,8 @@ const Navdata = () => {
         e.preventDefault();
         setIsRapport(!isRapport);
         setIscurrentState("Rapports");
-
       },
-      stateVariables: isRapport,
+      stateVariables: isRapport
       // subItems: [],
     },
     {
@@ -225,7 +209,6 @@ const Navdata = () => {
         e.preventDefault();
         setIsEmployee(!isEmployee);
         setIscurrentState("Employés");
-
       },
       stateVariables: isEmployee,
       subItems: [
@@ -233,22 +216,22 @@ const Navdata = () => {
           id: "liste-employee",
           label: "Liste des employés",
           link: "/employees",
-          parentId: "employee",
+          parentId: "employee"
         },
         {
           id: "salaires",
           label: "Salaires",
           link: "/salary",
-          parentId: "employee",
-        },
-      ],
+          parentId: "employee"
+        }
+      ]
     },
     {
       id: "getion-parameter",
       label: "Paramétrage",
       link: "/gestion/parametre",
-      icon: "mdi mdi-cog-outline",
-    },
+      icon: "mdi mdi-cog-outline"
+    }
   ];
 
   let menuItemsAdmin = [
@@ -256,7 +239,7 @@ const Navdata = () => {
       id: "admin-dashboard",
       label: "Admin",
       link: "/admin",
-      icon: "mdi mdi-cog-outline",
+      icon: "mdi mdi-cog-outline"
     },
     {
       id: "user-admin",
@@ -268,9 +251,21 @@ const Navdata = () => {
         setIsUserAdmin(!isUserAdmin);
         setIscurrentState("UserAdmin");
       },
-      stateVariables: isUserAdmin,
+      stateVariables: isUserAdmin
     },
-  ]
+    {
+      id: "entreprise-admin",
+      label: "Entreprise",
+      link: "/admin/entreprises",
+      icon: "las la-address-book",
+      click: function (e) {
+        e.preventDefault();
+        setIsUserAdmin(!isUserAdmin);
+        setIscurrentState("UserAdmin");
+      },
+      stateVariables: isUserAdmin
+    }
+  ];
 
   return <React.Fragment>{userProfile.use_rank == 0 ? menuItems : menuItemsAdmin}</React.Fragment>;
 };

@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getListBank as getListBankApi, getAccountsBankUser as getAccountsBankUserApi, insertBankAccount as insertBankAccountApi, getAccountBank as getAccountBankApi, insertAccountLinkToBank as insertAccountLinkToBankApi } from "../../helpers/backend_helper";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 export const getListBank = createAsyncThunk("bankAccount/getListBank", async (pays) => {
   try {
@@ -66,3 +67,42 @@ export const insertAccountLinkToBank = createAsyncThunk("bankAccount/insertAccou
     return error;
   }
 });
+
+/**
+ *  NOUVELLE VERSION DES BANK
+ */
+
+/**
+ * Permet de recuperer les comptes bancaire de leur societe
+ * @returns
+ */
+export const getBankUserAccount = () => {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`/v1/userBank`)
+      .then((res) => {
+        console.log(res.data);
+        resolve(res.data);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};
+
+/**
+ * Retire un compte bancaire
+ * @param {*} id
+ */
+export const removeBankAccountApi = (id) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .delete("/v1/bankAccount?id=" + id)
+      .then(() => {
+        resolve(id);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};

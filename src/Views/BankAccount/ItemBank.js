@@ -9,17 +9,22 @@ import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
 import { customFormatNumber } from "../../utils/function";
 import { SketchPicker } from "react-color";
+import DeleteModal from "../../Components/Common/DeleteModal";
+import axios from "axios";
 
-const ItemBank = ({ item }) => {
+const ItemBank = ({ item, remove }) => {
   const dispatch = useDispatch();
 
   const { devise } = useSelector((state) => ({
     devise: state?.Company?.devise
   }));
 
+  const [showModalDelete, setShowModalDelete] = useState(false);
+
   const [libelle, setLibelle] = useState(item?.bua_libelle ? item?.bua_libelle : "");
   const [display_Cust, setdisplay_Cust] = useState(false);
   const [colorCust, setcolorCust] = useState(item?.bua_color || "rgba(95, 208, 243, 1)");
+
   const onSwatchHover_Cust = (color) => {
     const format1 = "rgba(" + color.rgb.r + "," + color.rgb.g + "," + color.rgb.b + "," + color.rgb.a + ")";
     setcolorCust(format1);
@@ -30,6 +35,15 @@ const ItemBank = ({ item }) => {
 
   return (
     <>
+      <DeleteModal
+        show={showModalDelete}
+        onCloseClick={() => setShowModalDelete(false)}
+        onDeleteClick={() => {
+        
+          remove(item.bua_id);
+        }}
+        text="êtes-vous sûr de vouloir supprimer ce compte ?"
+      />
       <ListGroupItem
         data-id="1"
         style={{}}
@@ -38,6 +52,11 @@ const ItemBank = ({ item }) => {
           onClick={handleCust}
           style={{ position: "absolute", backgroundColor: "lightgray", width: 30, height: 30, justifyContent: "center", alignItems: "center", display: "flex", borderRadius: 50, top: 3, left: 5 }}>
           <i class="fs-5 mdi mdi-cog-outline"></i>
+        </div>
+        <div
+          onClick={() => setShowModalDelete(true)}
+          style={{ position: "absolute", backgroundColor: "lightgray", width: 30, height: 30, justifyContent: "center", alignItems: "center", display: "flex", borderRadius: 50, bottom: 3, left: 5, color: "red" }}>
+          <i className="las la-trash"></i>
         </div>
         {display_Cust ? (
           <div
@@ -106,6 +125,7 @@ const ItemBank = ({ item }) => {
                         bua_libelle: libelle
                       })
                     );
+                    handleCust();
                   }}
                   className="btn btn-outline-success"
                   type="button">
@@ -130,11 +150,12 @@ const ItemBank = ({ item }) => {
               background: colorCust,
               borderRadius: "50px",
               border: "1px solid lightgray",
-              position: "absolute", 
+              position: "absolute",
               left: "108px",
               top: 6
             }}
           />
+
           <img
             style={{ height: "100px", width: "100px", objectFit: "cover" }}
             src={item.bac_logo}

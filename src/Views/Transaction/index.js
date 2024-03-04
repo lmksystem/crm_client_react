@@ -2,32 +2,12 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import moment from "moment";
 import { api } from "../../config";
 // import process from "process";
-import {
-  Col,
-  Container,
-  Row,
-  Card,
-  CardBody,
-  Label,
-  Input,
-  Form,
-  ListGroup,
-  ListGroupItem,
-  Modal,
-  ModalHeader,
-  ModalBody,
-} from "reactstrap";
+import { Col, Container, Row, Card, CardBody, Label, Input, Form, ListGroup, ListGroupItem, Modal, ModalHeader, ModalBody } from "reactstrap";
 
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 
 //Import actions
-import {
-  getTransactionBank as onGetTransactionBank,
-  getAchatLinkTransaction as onGetAchatLinkTransaction,
-  updateJustifyTransactionBank as onUpdateJustifyTransactionBank,
-  linkTransToAchat as onLinkTransToAchat,
-  updateMatchAmount as onUpdateMatchAmount,
-} from "../../slices/thunks";
+import { getTransactionBank as onGetTransactionBank, getAchatLinkTransaction as onGetAchatLinkTransaction, updateJustifyTransactionBank as onUpdateJustifyTransactionBank, linkTransToAchat as onLinkTransToAchat, updateMatchAmount as onUpdateMatchAmount } from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
 import TableContainer from "../../Components/Common/TableContainer";
@@ -52,8 +32,7 @@ const TransactionBank = () => {
     error: state.Employee.error,
     achats: state.Achat.achats,
     devise: state.Company.devise
-  })
-  );
+  }));
   const [achatEvol, setAchatEvol] = useState(false);
   const dateActuelle = moment(); // Obtenir la date actuelle
   const dateNow = moment(dateActuelle, "DD MMM YYYY");
@@ -61,7 +40,7 @@ const TransactionBank = () => {
   const formattedDate = premiereDateAnnee.format("DD MMM YYYY"); // Formatage de la date
   const [perdiodeCalendar, setPeriodeCalendar] = useState({
     start: formattedDate.replace(/\./g, ","),
-    end: dateNow,
+    end: dateNow
   });
 
   const [transaction, setTransaction] = useState({});
@@ -74,12 +53,10 @@ const TransactionBank = () => {
   const [modal, setModal] = useState(false);
   const [achatFilter, setAchatFilter] = useState({
     data: [],
-    searchTerm: "",
+    searchTerm: ""
   });
 
-  const oneIsSelected = achatFilter?.data?.filter(
-    (ele) => ele.type == "assoc" || (ele.old == 1 && ele.type !== "dissoc")
-  );
+  const oneIsSelected = achatFilter?.data?.filter((ele) => ele.type == "assoc" || (ele.old == 1 && ele.type !== "dissoc"));
 
   const [isFilterBy, setIsFilterBy] = useState("null");
   const filterAccounts = {
@@ -89,27 +66,22 @@ const TransactionBank = () => {
     },
     data: transactions
       ? transactions
-        ?.filter((transaction, index, self) => {
-          return (
-            index ===
-            self.findIndex(
-              (t) => t.bua_account_id === transaction.bua_account_id
-            )
-          );
-        })
-        .map((e) => {
-          let tabVal = [];
-          tabVal.push({ value: e.bua_account_id });
-          if (e.bua_libelle?.length > 0) {
-            tabVal.push({ value: e.bua_libelle });
-          }
-          return tabVal;
-        })
-        .reduce((acc, tableau) => {
-          return acc.concat(tableau);
-        }, [])
+          ?.filter((transaction, index, self) => {
+            return index === self.findIndex((t) => t.bua_account_id === transaction.bua_account_id);
+          })
+          .map((e) => {
+            let tabVal = [];
+            tabVal.push({ value: e.bua_account_id });
+            if (e.bua_libelle?.length > 0) {
+              tabVal.push({ value: e.bua_libelle });
+            }
+            return tabVal;
+          })
+          .reduce((acc, tableau) => {
+            return acc.concat(tableau);
+          }, [])
       : [],
-    value: isFilterBy,
+    value: isFilterBy
   };
 
   const [TTD, setTTD] = useState([]);
@@ -120,7 +92,7 @@ const TransactionBank = () => {
       setDoc(null);
       setAchatFilter({
         data: [],
-        searchTerm: "",
+        searchTerm: ""
       });
       setTransaction(null);
     } else {
@@ -136,7 +108,7 @@ const TransactionBank = () => {
         tba_amount: transData.tba_amount,
         tba_justify: transData?.tba_justify == 1 ? false : true,
         file_justify: transData.ado_file_name,
-        tba_rp: transData.tba_rp,
+        tba_rp: transData.tba_rp
       });
       dispatch(onGetAchatLinkTransaction(transData?.tba_id));
     },
@@ -151,9 +123,9 @@ const TransactionBank = () => {
 
     initialValues: {
       nojustify: transaction && transaction?.tba_justify === 1 ? true : false,
-      file_justify: (transaction && transaction.ado_file_name) || "",
+      file_justify: (transaction && transaction.ado_file_name) || ""
     },
-    onSubmit: (values) => { },
+    onSubmit: (values) => {}
   });
 
   const matchAmount = useFormik({
@@ -161,12 +133,10 @@ const TransactionBank = () => {
     enableReinitialize: true,
 
     initialValues: {
-      amount: priceMatchAmount,
+      amount: priceMatchAmount
     },
     validationSchema: Yup.object({
-      amount: Yup.number().required(
-        "Veuillez choisir entrer un montant associé"
-      ),
+      amount: Yup.number().required("Veuillez choisir entrer un montant associé")
     }),
     onSubmit: (values) => {
       let copy_achatActif = { ...achatActif };
@@ -180,7 +150,7 @@ const TransactionBank = () => {
       setAchatActif(null);
       setModal(false);
       // setDoc(null);
-    },
+    }
   });
   // Column
   const columns = useMemo(
@@ -189,12 +159,17 @@ const TransactionBank = () => {
         accessor: "tba_id",
         hiddenColumns: true,
         Cell: (cell) => {
-          return <input type="hidden" value={cell.value} />;
-        },
+          return (
+            <input
+              type="hidden"
+              value={cell.value}
+            />
+          );
+        }
       },
       {
         Header: "Compte bancaire",
-        accessor: "bua_account_id",
+        accessor: "bua_iban",
         filterable: false,
         Cell: (cell) => {
           console.log(cell.row.original?.bua_color);
@@ -206,35 +181,22 @@ const TransactionBank = () => {
                   style={{ marginLeft: "25%" }}
                   tabindex="0"
                   data-toggle="tooltip"
-                  title={`${cell.value != null
-                      ? (cell.row.original?.bua_libelle
-                        ? cell.row.original?.bua_libelle + " / "
-                        : "") + cell.value
-                      : ""
-                    }`}
-                >
+                  title={`${cell.value != null ? (cell.row.original?.bua_libelle ? cell.row.original?.bua_libelle + " / " : "") + cell.value : ""}`}>
                   <div
                     className="align-self-center"
                     style={{
                       backgroundColor: `${cell.row.original?.bua_color}`,
                       height: 20,
                       width: 20,
-                      borderRadius: 50,
-                    }}
-                  ></div>
+                      borderRadius: 50
+                    }}></div>
                 </span>
               ) : (
-                <p className="p-0 m-0">
-                  {cell.value != null
-                    ? (cell.row.original?.bua_libelle
-                      ? cell.row.original?.bua_libelle + " / "
-                      : "") + cell.value
-                    : ""}
-                </p>
+                <p className="p-0 m-0">{cell.value != null ? (cell.row.original?.bua_libelle ? cell.row.original?.bua_libelle + " / " : "") + cell.value : ""}</p>
               )}
             </div>
           );
-        },
+        }
       },
 
       {
@@ -244,14 +206,10 @@ const TransactionBank = () => {
         Cell: (cell) => {
           return (
             <div className="d-flex align-items-center">
-              <p className="p-0 m-0">
-                {cell.value != null
-                  ? customFormatNumber(parseFloat(cell.value)) + devise
-                  : ""}
-              </p>
+              <p className="p-0 m-0">{cell.value != null ? customFormatNumber(parseFloat(cell.value)) + devise : ""}</p>
             </div>
           );
-        },
+        }
       },
       {
         Header: "Crédit",
@@ -260,14 +218,10 @@ const TransactionBank = () => {
         Cell: (cell) => {
           return (
             <div className="d-flex align-items-center">
-              <p className="p-0 m-0">
-                {cell.value != null
-                  ? customFormatNumber(parseFloat(cell.value)) + devise
-                  : ""}
-              </p>
+              <p className="p-0 m-0">{cell.value != null ? customFormatNumber(parseFloat(cell.value)) + devise : ""}</p>
             </div>
           );
-        },
+        }
       },
       {
         Header: "Reste à pointer",
@@ -276,16 +230,10 @@ const TransactionBank = () => {
         Cell: (cell) => {
           return (
             <div className="d-flex align-items-center">
-              <p className="p-0 m-0">
-                {cell.value != null
-                  ? (cell.row.original?.tba_justify == 0
-                    ? "0.00"
-                    : customFormatNumber(parseFloat(cell.value))) + devise
-                  : ""}
-              </p>
+              <p className="p-0 m-0">{cell.value != null ? (cell.row.original?.tba_justify == 0 ? "0.00" : customFormatNumber(parseFloat(cell.value))) + devise : ""}</p>
             </div>
           );
-        },
+        }
       },
 
       {
@@ -295,20 +243,14 @@ const TransactionBank = () => {
 
         Cell: (cell) => {
           let styleCSS = {};
-          if (
-            cell.row.original.tba_rp == 0 ||
-            cell.row.original?.tba_justify == 0
-          ) {
+          if (cell.row.original.tba_rp == 0 || cell.row.original?.tba_justify == 0) {
             styleCSS = {
               width: "20px",
               height: "20px",
               borderRadius: "50%",
-              backgroundColor: "green",
+              backgroundColor: "green"
             };
-          } else if (
-            cell.row.original.tba_rp ==
-            Math.abs(parseFloat(cell.row.original.tba_amount))
-          ) {
+          } else if (cell.row.original.tba_rp == Math.abs(parseFloat(cell.row.original.tba_amount))) {
             styleCSS = {
               width: "20px",
               height: "20px",
@@ -317,34 +259,30 @@ const TransactionBank = () => {
               backgroundColor: "transparent",
               alignItems: "center",
               justifyContent: "center",
-              display: "flex",
+              display: "flex"
             };
-          } else if (
-            cell.row.original.tba_rp <
-            Math.abs(parseFloat(cell.row.original.tba_amount)) &&
-            cell.row.original.tba_rp > 0
-          ) {
+          } else if (cell.row.original.tba_rp < Math.abs(parseFloat(cell.row.original.tba_amount)) && cell.row.original.tba_rp > 0) {
             styleCSS = {
               width: "10px",
               height: "20px",
               borderBottomRightRadius: "10px",
               borderTopRightRadius: "10px",
               backgroundColor: "orange",
-              marginLeft: 8,
+              marginLeft: 8
             };
           }
           return (
             <div className="d-flex align-items-center mx-4">
               <div style={styleCSS}>
-                {cell.row.original.tba_rp ==
-                  Math.abs(parseFloat(cell.row.original.tba_amount)) &&
-                  cell.row.original?.tba_justify == 1 && (
-                    <i style={{ color: "red" }} className="las la-times"></i>
-                  )}
+                {cell.row.original.tba_rp == Math.abs(parseFloat(cell.row.original.tba_amount)) && cell.row.original?.tba_justify == 1 && (
+                  <i
+                    style={{ color: "red" }}
+                    className="las la-times"></i>
+                )}
               </div>
             </div>
           );
-        },
+        }
       },
       {
         Header: "Date",
@@ -353,18 +291,16 @@ const TransactionBank = () => {
         Cell: (cell) => {
           return (
             <div className="d-flex align-items-center">
-              <p className="p-0 m-0">
-                {cell.value != null ? moment(cell.value).format("L") : ""}
-              </p>
+              <p className="p-0 m-0">{cell.value != null ? moment(cell.value).format("L") : ""}</p>
             </div>
           );
-        },
+        }
       },
       {
         Header: "Description",
         accessor: "tba_desc",
-        filterable: false,
-      },
+        filterable: false
+      }
     ],
     [transactions, achatEvol]
   );
@@ -390,15 +326,9 @@ const TransactionBank = () => {
   };
   const filterData = () => {
     let newArrayFiltred = achatFilter?.data?.map((achatItem) => {
-      if (
-        parseFloat(transaction.tba_amount) > 0 &&
-        achatItem.ach_type == "Revenu"
-      ) {
+      if (parseFloat(transaction.tba_amount) > 0 && achatItem.ach_type == "Revenu") {
         return achatItem;
-      } else if (
-        parseFloat(transaction.tba_amount) < 0 &&
-        achatItem.ach_type == "Charge"
-      ) {
+      } else if (parseFloat(transaction.tba_amount) < 0 && achatItem.ach_type == "Charge") {
         return achatItem;
       } else {
         return {};
@@ -408,9 +338,7 @@ const TransactionBank = () => {
     return newArrayFiltred?.filter((item) => {
       // Définissez ici les propriétés sur lesquelles vous souhaitez effectuer la recherche
       const searchFields = [item.ach_lib, item.ach_rp, item.ach_date_create];
-      return searchFields.some((field) =>
-        field?.toLowerCase()?.includes(achatFilter?.searchTerm?.toLowerCase())
-      );
+      return searchFields.some((field) => field?.toLowerCase()?.includes(achatFilter?.searchTerm?.toLowerCase()));
     });
   };
 
@@ -418,10 +346,7 @@ const TransactionBank = () => {
     let obj = achatFilter?.data?.find((item) => item.ach_id === id);
 
     if (obj) {
-      if (
-        (obj.old === 1 && obj.type != "disoc") ||
-        (obj.old === 0 && obj.type == "assoc")
-      ) {
+      if ((obj.old === 1 && obj.type != "disoc") || (obj.old === 0 && obj.type == "assoc")) {
         return true;
       }
     }
@@ -435,7 +360,7 @@ const TransactionBank = () => {
     if (achats) {
       setAchatFilter({
         data: achats,
-        searchTerm: "",
+        searchTerm: ""
       });
     }
   }, [achats]);
@@ -461,12 +386,8 @@ const TransactionBank = () => {
   useEffect(() => {
     dispatch(
       onGetTransactionBank({
-        dateDebut: perdiodeCalendar.start
-          ? moment(perdiodeCalendar.start).format("YYYY-MM-DD")
-          : null,
-        dateFin: perdiodeCalendar.end
-          ? moment(perdiodeCalendar.end).format("YYYY-MM-DD")
-          : null,
+        dateDebut: perdiodeCalendar.start ? moment(perdiodeCalendar.start).format("YYYY-MM-DD") : null,
+        dateFin: perdiodeCalendar.end ? moment(perdiodeCalendar.end).format("YYYY-MM-DD") : null
       })
     );
   }, [dispatch, perdiodeCalendar, isFilterBy, achats]);
@@ -476,10 +397,7 @@ const TransactionBank = () => {
       if (isFilterBy != "null") {
         let transFiltered = transactions
           ?.filter((tra) => {
-            return (
-              tra.bua_account_id === isFilterBy ||
-              tra.bua_libelle === isFilterBy
-            );
+            return tra.bua_account_id === isFilterBy || tra.bua_libelle === isFilterBy;
           })
           .map((tra) => tra);
         let tempProps = JSON?.parse(JSON.stringify(transFiltered));
@@ -488,10 +406,7 @@ const TransactionBank = () => {
             tra.tba_assoc = 0;
           } else if (tra.tba_rp == 0 || tra.tba_justify == 0) {
             tra.tba_assoc = 2;
-          } else if (
-            tra.tba_rp < Math.abs(parseFloat(tra?.tba_amount)) &&
-            tra.tba_rp > 0
-          ) {
+          } else if (tra.tba_rp < Math.abs(parseFloat(tra?.tba_amount)) && tra.tba_rp > 0) {
             tra.tba_assoc = 1;
           } else {
             tra.tba_assoc = -1;
@@ -508,10 +423,7 @@ const TransactionBank = () => {
             tra.tba_assoc = 0;
           } else if (tra.tba_rp == 0 || tra.tba_justify == 0) {
             tra.tba_assoc = 2;
-          } else if (
-            tra.tba_rp < Math.abs(parseFloat(tra?.tba_amount)) &&
-            tra.tba_rp > 0
-          ) {
+          } else if (tra.tba_rp < Math.abs(parseFloat(tra?.tba_amount)) && tra.tba_rp > 0) {
             tra.tba_assoc = 1;
           } else {
             tra.tba_assoc = -1;
@@ -541,36 +453,34 @@ const TransactionBank = () => {
                 setDoc(null);
                 setPriceMatchAmount(0);
               }}
-              centered
-            >
+              centered>
               <ModalHeader
                 toggle={() => {
                   setModal(false);
                   setDoc(null);
                   setPriceMatchAmount(0);
                 }}
-                className="bg-soft-info p-3"
-              >
+                className="bg-soft-info p-3">
                 Document de transaction
               </ModalHeader>
               <ModalBody>
                 <Row className="mt-1 d-flex flex-column">
-                  <Col lg={12} className="d-flex flex-row align-items-center">
+                  <Col
+                    lg={12}
+                    className="d-flex flex-row align-items-center">
                     <Form
                       className="tablelist-form"
                       onSubmit={(e) => {
                         e.preventDefault();
                         matchAmount.handleSubmit();
                         return false;
-                      }}
-                    >
+                      }}>
                       <Row className="mb-4">
                         <Col lg={8}>
                           <div>
                             <Label
                               htmlFor="amount-field"
-                              className="form-label"
-                            >
+                              className="form-label">
                               Montant associé
                             </Label>
                             <Input
@@ -584,51 +494,44 @@ const TransactionBank = () => {
                               }}
                               onBlur={matchAmount.handleBlur}
                               value={matchAmount.values.amount || ""}
-                              invalid={
-                                matchAmount.touched.amount &&
-                                  matchAmount.errors.amount
-                                  ? true
-                                  : false
-                              }
+                              invalid={matchAmount.touched.amount && matchAmount.errors.amount ? true : false}
                             />
-                            {matchAmount.touched.methode &&
-                              matchAmount.errors.amount ? (
-                              <FormFeedback type="invalid">
-                                {matchAmount.errors.amount}
-                              </FormFeedback>
-                            ) : null}
+                            {matchAmount.touched.methode && matchAmount.errors.amount ? <FormFeedback type="invalid">{matchAmount.errors.amount}</FormFeedback> : null}
                           </div>
                         </Col>
-                        <Col className="d-flex align-items-end" lg={4}>
+                        <Col
+                          className="d-flex align-items-end"
+                          lg={4}>
                           <button
                             type="submit"
                             className="btn btn-success"
-                            id="add-btn"
-                          >
+                            id="add-btn">
                             Valider
                           </button>
                         </Col>
                       </Row>
                     </Form>
                   </Col>
-                  <Col lg={12} className="d-flex justify-content-center">
+                  <Col
+                    lg={12}
+                    className="d-flex justify-content-center">
                     <iframe
                       style={{ width: "100%", height: 550 }}
                       lg={12}
                       src={
-                        !process.env.NODE_ENV ||
-                          process.env.NODE_ENV === "development"
+                        !process.env.NODE_ENV || process.env.NODE_ENV === "development"
                           ? // : `${api.API_PDF}/${userProfile.use_com_fk}/achat/${doc}`
-                          `${api.API_URL}/v1/achat/doc/${doc}/${userProfile.use_com_fk}`
+                            `${api.API_URL}/v1/achat/doc/${doc}/${userProfile.use_com_fk}`
                           : `${api.API_PDF}/${userProfile.use_com_fk}/achat/${doc}`
                       }
-                      title={doc}
-                    ></iframe>
+                      title={doc}></iframe>
                   </Col>
                 </Row>
               </ModalBody>
             </Modal>
-            <Col className="view-animate" xxl={show ? 7 : 12}>
+            <Col
+              className="view-animate"
+              xxl={show ? 7 : 12}>
               <Card id="contactList">
                 <CardBody className="pt-0">
                   <div>
@@ -659,7 +562,10 @@ const TransactionBank = () => {
                       <Loader error={error} />
                     )}
                   </div>
-                  <ToastContainer closeButton={false} limit={1} />
+                  <ToastContainer
+                    closeButton={false}
+                    limit={1}
+                  />
                 </CardBody>
               </Card>
             </Col>
@@ -673,8 +579,7 @@ const TransactionBank = () => {
                       } else {
                         toggle();
                       }
-                    }}
-                  >
+                    }}>
                     <i className="las la-chevron-circle-left la-2x m-2"></i>
                   </div>
 
@@ -689,13 +594,17 @@ const TransactionBank = () => {
                           e.preventDefault();
                           validation.handleSubmit();
                           return false;
-                        }}
-                      >
+                        }}>
                         <div className="p-3">
-                          <Input type="hidden" id="id-field" />
+                          <Input
+                            type="hidden"
+                            id="id-field"
+                          />
 
                           {oneIsSelected.length < 1 && (
-                            <Col lg={8} className="mt-3 mb-3">
+                            <Col
+                              lg={8}
+                              className="mt-3 mb-3">
                               <div className="form-switch">
                                 <Input
                                   name="nojustify"
@@ -703,31 +612,24 @@ const TransactionBank = () => {
                                   className="form-check-input"
                                   type="checkbox"
                                   role="switch"
-                                  checked={
-                                    transaction?.tba_justify ||
-                                    transaction?.tba_justify == 1
-                                  }
+                                  checked={transaction?.tba_justify || transaction?.tba_justify == 1}
                                   onChange={() => {
                                     dispatch(
                                       onUpdateJustifyTransactionBank({
                                         tba_id: transaction?.id,
-                                        tba_justify:
-                                          !transaction?.tba_justify == false
-                                            ? 1
-                                            : 0,
+                                        tba_justify: !transaction?.tba_justify == false ? 1 : 0
                                       })
                                     );
                                     setTransaction({
                                       ...transaction,
-                                      tba_justify: !transaction?.tba_justify,
+                                      tba_justify: !transaction?.tba_justify
                                     });
                                   }}
                                   onBlur={validation.handleBlur}
                                 />
                                 <Label
                                   htmlFor="nojustify-field"
-                                  className="form-label mx-3"
-                                >
+                                  className="form-label mx-3">
                                   Pas de justificatif nécessaire
                                 </Label>
                               </div>
@@ -738,10 +640,7 @@ const TransactionBank = () => {
                           {!transaction?.tba_justify && (
                             <Col lg={11}>
                               <div>
-                                <p className="text-muted">
-                                  Associer la transaction à un/plusieurs
-                                  achat(s)
-                                </p>
+                                <p className="text-muted">Associer la transaction à un/plusieurs achat(s)</p>
                                 <div id="users">
                                   <Row className="mb-2">
                                     <Col lg={12}>
@@ -758,9 +657,10 @@ const TransactionBank = () => {
 
                                   <SimpleBar
                                     style={{ height: "242px" }}
-                                    className="mx-n3"
-                                  >
-                                    <ListGroup className="list mb-0" flush>
+                                    className="mx-n3">
+                                    <ListGroup
+                                      className="list mb-0"
+                                      flush>
                                       {filteredData?.map((ach) => {
                                         return (
                                           <ListGroupItem
@@ -769,38 +669,24 @@ const TransactionBank = () => {
                                             onClick={() => {
                                               handleAssociateAchat(ach);
                                             }}
-                                            className={` ${isSelected(ach.ach_id)
-                                                ? "bg-light text-grey tit"
-                                                : ""
-                                              }`}
-                                          >
+                                            className={` ${isSelected(ach.ach_id) ? "bg-light text-grey tit" : ""}`}>
                                             <div className="d-flex">
                                               <div className="flex-grow-1 ">
                                                 <div className="d-flex">
-                                                  <h5 className="fs-13 mb-1">
-                                                    {ach.ent_name}
-                                                  </h5>
-                                                  {isSelected(ach.ach_id) ? (
-                                                    <i className="las la-link mx-2"></i>
-                                                  ) : null}
+                                                  <h5 className="fs-13 mb-1">{ach.ent_name}</h5>
+                                                  {isSelected(ach.ach_id) ? <i className="las la-link mx-2"></i> : null}
                                                 </div>
 
                                                 <p
                                                   className="born timestamp text-muted mb-0"
-                                                  data-timestamp="12345"
-                                                >
-                                                  {moment(ach.ach_date_create).format('L')}
+                                                  data-timestamp="12345">
+                                                  {moment(ach.ach_date_create).format("L")}
                                                 </p>
                                               </div>
                                               <div className="flex-shrink-0 d-flex flex-md-column align-items-end">
                                                 <div>
-                                                  {ach.ach_type == "Charge"
-                                                    ? "- "
-                                                    : "+ "}
-                                                  {isSelected(ach.ach_id)
-                                                    ? customFormatNumber(parseFloat(ach.aba_match_amount))
-                                                    : customFormatNumber(parseFloat(ach.ach_rp))}{" "}
-                                                  {devise}
+                                                  {ach.ach_type == "Charge" ? "- " : "+ "}
+                                                  {isSelected(ach.ach_id) ? customFormatNumber(parseFloat(ach.aba_match_amount)) : customFormatNumber(parseFloat(ach.ach_rp))} {devise}
                                                 </div>
                                                 {isSelected(ach.ach_id) ? (
                                                   <button
@@ -808,21 +694,14 @@ const TransactionBank = () => {
                                                     onClick={(e) => {
                                                       e.stopPropagation();
                                                       setDoc(ach.ado_file_name);
-                                                      setOldPriceAmount(
-                                                        ach.aba_match_amount
-                                                      );
-                                                      setPriceMatchAmount(
-                                                        ach.aba_match_amount
-                                                      );
+                                                      setOldPriceAmount(ach.aba_match_amount);
+                                                      setPriceMatchAmount(ach.aba_match_amount);
                                                       setAchatActif(ach);
                                                       setModal(true);
                                                     }}
-                                                    className="btn btn-secondary d-flex align-items-center mt-2"
-                                                  >
+                                                    className="btn btn-secondary d-flex align-items-center mt-2">
                                                     <i className="las la-eye mx-2"></i>
-                                                    <p className="m-0 font-weight-bold">
-                                                      {ach.ado_file_name}
-                                                    </p>
+                                                    <p className="m-0 font-weight-bold">{ach.ado_file_name}</p>
                                                   </button>
                                                 ) : null}
                                               </div>

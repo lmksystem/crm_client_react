@@ -1,35 +1,94 @@
 import React, { useEffect, useState } from "react";
-import { CardBody, Container, Card, Form, Row, Col, Label, FormFeedback, Input, Button, CardHeader, Table } from "reactstrap";
-import BreadCrumb from "../../Components/Common/BreadCrumb";
-import * as Yup from "yup";
-import { useFormik } from "formik";
-import { useDispatch, useSelector } from "react-redux";
-import { getCompany as onGetCompany, updateCompany as onUpdateCompany, updateLogoAction as onUpdateLogoAction, addLicense as onAddLicense, getLicense as onGetLicense, deleteLicense as onDeleteLicense } from "../../slices/thunks";
-import { ToastContainer, toast } from "react-toastify";
-import axios from "axios";
-import { api } from "../../config";
-import { getImage } from "../../utils/getImages";
-import SimpleBar from "simplebar-react";
-import DeleteModal from "../../Components/Common/DeleteModal";
+import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormFeedback, Input, Label, Row, Table } from "reactstrap";
+import BreadCrumb from "../../../Components/Common/BreadCrumb";
 
-const CompanyProfil = () => {
+import { useDispatch } from "react-redux";
+import moment from "moment";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import DeleteModal from "../../../Components/Common/DeleteModal";
+import SimpleBar from "simplebar-react";
+import { useParams } from "react-router-dom";
+import { getImage } from "../../../utils/getImages";
+
+const africanCountries = [
+  "Algérie",
+  "Angola",
+  "Bénin",
+  "Botswana",
+  "Burkina Faso",
+  "Burundi",
+  "Cameroun",
+  "Cap-Vert",
+  "République centrafricaine",
+  "Tchad",
+  "Comores",
+  "Congo (Brazzaville)",
+  "Congo (Kinshasa)",
+  "Côte d'Ivoire",
+  "Djibouti",
+  "Égypte",
+  "Guinée équatoriale",
+  "Érythrée",
+  "Éthiopie",
+  "Gabon",
+  "Gambie",
+  "Ghana",
+  "Guinée",
+  "Guinée-Bissau",
+  "Côte d'Ivoire",
+  "Kenya",
+  "Lesotho",
+  "Libéria",
+  "Libye",
+  "Madagascar",
+  "Malawi",
+  "Mali",
+  "Mauritanie",
+  "Maurice",
+  "Mayotte",
+  "Maroc",
+  "Mozambique",
+  "Namibie",
+  "Niger",
+  "Nigeria",
+  "Rwanda",
+  "Réunion",
+  "Sao Tomé-et-Principe",
+  "Sénégal",
+  "Seychelles",
+  "Sierra Leone",
+  "Somalie",
+  "Afrique du Sud",
+  "Soudan du Sud",
+  "Soudan",
+  "Swaziland",
+  "Tanzanie",
+  "Togo",
+  "Tunisie",
+  "Ouganda",
+  "Sahara occidental",
+  "Zambie",
+  "Zimbabwe"
+];
+
+moment.locale("fr");
+
+const FormCompany = () => {
   const dispatch = useDispatch();
 
-  const { companyredux, error, license } = useSelector((state) => ({
-    companyredux: state?.Company?.company,
-    license: state.Company.license
-  }));
-  // console.log(license);
-  const [company, setCompany] = useState({});
+  const { id } = useParams();
+
+  const [company, setCompany] = useState(null);
+  const [license, setLicense] = useState([]);
+  const [modules, setModules] = useState(null);
   const [image, setImage] = useState("");
   const [numEntreprise, setNumEntreprise] = useState("Identifiant d'entreprise");
   const [addActifView, setAddActifView] = useState(false);
   const [selectedId, setSelectedId] = useState(false);
   const [showModalDelete, setShowModalDelete] = useState(false);
-
-  useEffect(() => {
-    dispatch(onGetCompany());
-  }, []);
 
   const validation = useFormik({
     enableReinitialize: true,
@@ -63,138 +122,90 @@ const CompanyProfil = () => {
     }
   });
 
-  const validationUser = useFormik({
-    enableReinitialize: true,
-    initialValues: {
-      use_rank: 3,
-      use_lastname: "",
-      use_firstname: "",
-      use_email: ""
-    },
+  // const validationUser = useFormik({
+  //   enableReinitialize: true,
+  //   initialValues: {
+  //     use_rank: 3,
+  //     use_lastname: "",
+  //     use_firstname: "",
+  //     use_email: ""
+  //   },
 
-    validationSchema: Yup.object({
-      use_lastname: Yup.string().required("Veuillez entrer un nom d'entreprise"),
-      use_firstname: Yup.string().required("Veuillez entrer une adresse"),
-      use_email: Yup.string().required("Veuillez entrer une ville")
-    }),
+  //   validationSchema: Yup.object({
+  //     use_lastname: Yup.string().required("Veuillez entrer un nom d'entreprise"),
+  //     use_firstname: Yup.string().required("Veuillez entrer une adresse"),
+  //     use_email: Yup.string().required("Veuillez entrer une ville")
+  //   }),
 
-    onSubmit: (values) => {
-      if (license.length < 5) {
-        dispatch(onAddLicense(values));
-        setAddActifView(false);
-      } else {
-        toast.error(`Nombre de licence atteint (Max: ${company.com_license_nb})`, { autoClose: 3000 });
-      }
-    }
-  });
+  //   onSubmit: (values) => {
+  //     if (license.length < 5) {
+  //       dispatch(onAddLicense(values));
+  //       setAddActifView(false);
+  //     } else {
+  //       toast.error(`Nombre de licence atteint (Max: ${company.com_license_nb})`, { autoClose: 3000 });
+  //     }
+  //   }
+  // });
 
-  const deleteUser = () => {
-    dispatch(onDeleteLicense(selectedId));
-    setShowModalDelete(false);
+  const changeModule = (moduleId) => {
+    axios
+      .post("/v1/admin/modules", { com_mod_fk: moduleId, com_id: company.com_id })
+      .then((res) => {
+        setCompany({ ...company, com_mod_fk: moduleId });
+      })
+      .catch((err) => {
+        toast.error("Un erreur s'est produite");
+        console.log(err);
+      });
   };
 
-  const onSelectFile = (e) => {
-    const url = "/v1/company/logo";
-    const formData = new FormData();
-    console.log(e.target.files[0]);
-    formData.append("file", e.target.files[0]);
-    const config = {
-      headers: {
-        "content-type": "multipart/form-data"
-      }
-    };
-
-    axios.post(url, formData, config).then((response) => {
-      dispatch(onUpdateLogoAction(response.data.com_logo));
-    });
-  };
-  const africanCountries = [
-    "Algérie",
-    "Angola",
-    "Bénin",
-    "Botswana",
-    "Burkina Faso",
-    "Burundi",
-    "Cameroun",
-    "Cap-Vert",
-    "République centrafricaine",
-    "Tchad",
-    "Comores",
-    "Congo (Brazzaville)",
-    "Congo (Kinshasa)",
-    "Côte d'Ivoire",
-    "Djibouti",
-    "Égypte",
-    "Guinée équatoriale",
-    "Érythrée",
-    "Éthiopie",
-    "Gabon",
-    "Gambie",
-    "Ghana",
-    "Guinée",
-    "Guinée-Bissau",
-    "Côte d'Ivoire",
-    "Kenya",
-    "Lesotho",
-    "Libéria",
-    "Libye",
-    "Madagascar",
-    "Malawi",
-    "Mali",
-    "Mauritanie",
-    "Maurice",
-    "Mayotte",
-    "Maroc",
-    "Mozambique",
-    "Namibie",
-    "Niger",
-    "Nigeria",
-    "Rwanda",
-    "Réunion",
-    "Sao Tomé-et-Principe",
-    "Sénégal",
-    "Seychelles",
-    "Sierra Leone",
-    "Somalie",
-    "Afrique du Sud",
-    "Soudan du Sud",
-    "Soudan",
-    "Swaziland",
-    "Tanzanie",
-    "Togo",
-    "Tunisie",
-    "Ouganda",
-    "Sahara occidental",
-    "Zambie",
-    "Zimbabwe"
-  ];
   useEffect(() => {
-    if (companyredux?.length > 0) {
-      setCompany(companyredux[0]);
+    if (company) {
+      if (company.com_logo) {
+        let path = (company.com_id + "/" + company.com_logo).replaceAll("/", " ");
 
-      if (companyredux[0].com_logo) {
-        let path = (companyredux[0].com_id + "/" + companyredux[0].com_logo).replaceAll("/", " ");
         getImage(path).then((response) => {
           setImage("data:image/png;base64," + response);
         });
       }
-      console.log(africanCountries.includes(companyredux[0].com_pays), companyredux[0].com_pays);
-      if (companyredux[0].com_pays == "France") {
+      if (company.com_pays == "France") {
         setNumEntreprise("Siren");
-      } else if (companyredux[0].com_pays == "Belgium") {
+      } else if (company.com_pays == "Belgium") {
         setNumEntreprise("Numéro d’entreprise");
-      } else if (africanCountries.includes(companyredux[0].com_pays)) {
+      } else if (africanCountries.includes(company.com_pays)) {
         setNumEntreprise("NINEA");
       } else {
         setNumEntreprise("Identifiant d'entreprise");
       }
     }
-  }, [companyredux]);
+  }, [company]);
 
   useEffect(() => {
-    dispatch(onGetLicense());
+    axios
+      .get(`/v1/admin/company/${id}`)
+      .then((res) => {
+        setCompany(res);
+        validation.setValues(res);
+      })
+      .catch((err) => {
+        toast.error("Une erreur s'est produite");
+        console.log(err);
+      });
   }, []);
 
+  useEffect(() => {
+    axios.get(`/v1/admin/modules`).then((res) => {
+      console.log(res);
+      setModules(res);
+    });
+  }, []);
+
+  useEffect(() => {
+    axios.get(`/v1/admin/licences/${id}`).then((res) => {
+      setLicense(res);
+    });
+  }, []);
+  
   return (
     <React.Fragment>
       <div className="page-content">
@@ -202,15 +213,11 @@ const CompanyProfil = () => {
           closeButton={false}
           limit={1}
         />
-        <DeleteModal
-          show={showModalDelete}
-          onCloseClick={() => setShowModalDelete(false)}
-          onDeleteClick={() => deleteUser()}
-        />
+
         <Container fluid>
           <BreadCrumb
             title="Entreprise"
-            pageTitle="Profil"
+            pageTitle="Admin"
           />
         </Container>
 
@@ -218,23 +225,16 @@ const CompanyProfil = () => {
           <CardHeader>
             <Row>
               <Col
-                lg={12}
+                lg={6}
                 className="d-flex">
                 <div className="profile-user mx-auto  mb-3">
-                  <Input
-                    id="profile-img-file-input"
-                    type="file"
-                    accept="image/png, image/jpeg"
-                    className="profile-img-file-input"
-                    onChange={(e) => onSelectFile(e)}
-                  />
                   <Label
                     for="profile-img-file-input"
                     className="d-block">
                     <span
                       className="overflow-hidden border border-dashed d-flex align-items-center justify-content-center rounded"
                       style={{ height: "auto", minHeight: 80, width: "356px" }}>
-                      {company.com_logo ? (
+                      {company?.com_logo ? (
                         <img
                           src={image}
                           className="card-logo user-profile-image img-fluid"
@@ -242,11 +242,22 @@ const CompanyProfil = () => {
                           width="260"
                         />
                       ) : (
-                        <i className="text-muted position-absolute">Cliquer ici pour ajouter votre logo</i>
+                        <i>Aucun logo</i>
                       )}
                     </span>
                   </Label>
                 </div>
+              </Col>
+              <Col lg={6}>
+                <select
+                  onChange={(e) => changeModule(e.target.value)}
+                  value={company?.com_mod_fk}
+                  className="form-control">
+                  {modules &&
+                    modules.map((module) => {
+                      return <option value={module.mod_id}>{module.mod_name}</option>;
+                    })}
+                </select>
               </Col>
             </Row>
           </CardHeader>
@@ -254,7 +265,7 @@ const CompanyProfil = () => {
             <Form
               onSubmit={(e) => {
                 e.preventDefault();
-                validation.handleSubmit();
+
                 return false;
               }}
               action="#">
@@ -268,6 +279,7 @@ const CompanyProfil = () => {
                     Nom de l'entreprise
                   </Label>
                   <Input
+                    disabled
                     name="com_name"
                     className="form-control"
                     placeholder="Entrer un nom"
@@ -288,6 +300,7 @@ const CompanyProfil = () => {
                     Adresse
                   </Label>
                   <Input
+                    disabled
                     name="com_adresse"
                     className="form-control"
                     placeholder="Entrer une adresse"
@@ -308,6 +321,7 @@ const CompanyProfil = () => {
                     Ville
                   </Label>
                   <Input
+                    disabled
                     name="com_ville"
                     className="form-control"
                     placeholder="Entrer une ville"
@@ -328,6 +342,7 @@ const CompanyProfil = () => {
                     Code postal
                   </Label>
                   <Input
+                    disabled
                     name="com_cp"
                     className="form-control"
                     placeholder="Entrer un code postal"
@@ -348,6 +363,7 @@ const CompanyProfil = () => {
                     Email
                   </Label>
                   <Input
+                    disabled
                     name="com_email"
                     className="form-control"
                     placeholder="Entrer un email"
@@ -368,6 +384,7 @@ const CompanyProfil = () => {
                     Téléphone
                   </Label>
                   <Input
+                    disabled
                     name="com_phone"
                     className="form-control"
                     placeholder="Entrer un téléphone"
@@ -385,6 +402,7 @@ const CompanyProfil = () => {
                   className="mb-3">
                   <Label className="form-label">{numEntreprise}</Label>
                   <Input
+                    disabled
                     name="com_siren"
                     className="form-control"
                     placeholder={`Entrer votre ${numEntreprise}`}
@@ -401,6 +419,7 @@ const CompanyProfil = () => {
                   className="mb-3">
                   <Label className="form-label">Compte bancaire</Label>
                   <Input
+                    disabled
                     name="com_bank_acc"
                     className="form-control"
                     placeholder={`Entrer votre compte bancaire`}
@@ -423,6 +442,7 @@ const CompanyProfil = () => {
                         Code NAF
                       </Label>
                       <Input
+                        disabled
                         name="com_naf"
                         className="form-control"
                         placeholder="Entrer votre code NAF"
@@ -443,6 +463,7 @@ const CompanyProfil = () => {
                         Nom de convention
                       </Label>
                       <Input
+                        disabled
                         name="com_conv_name"
                         className="form-control"
                         placeholder="Entrer un nom de convention"
@@ -463,6 +484,7 @@ const CompanyProfil = () => {
                         Numéro de convention
                       </Label>
                       <Input
+                        disabled
                         name="com_conv_num"
                         className="form-control"
                         placeholder="Entrer un numéro de convention"
@@ -477,7 +499,7 @@ const CompanyProfil = () => {
                   </>
                 )}
 
-                {/* <Col
+                <Col
                   lg={6}
                   className="mb-3">
                   <Label
@@ -486,6 +508,7 @@ const CompanyProfil = () => {
                     NIF
                   </Label>
                   <Input
+                    disabled
                     name="com_nif"
                     className="form-control"
                     placeholder="Entre un code NIF"
@@ -496,18 +519,8 @@ const CompanyProfil = () => {
                     invalid={validation.touched.com_nif && validation.errors.com_nif ? true : false}
                   />
                   {validation.touched.com_nif && validation.errors.com_nif ? <FormFeedback type="invalid">{validation.errors.com_nif}</FormFeedback> : null}
-                </Col> */}
+                </Col>
               </Row>
-
-              <div className="mt-4">
-                <Button
-                  color="success"
-                  /*disabled={error ? null : loading ? true : false}*/ className="btn btn-success w-100"
-                  type="submit">
-                  {/* {loading ? <Spinner size="sm" className='me-2'> Loading... </Spinner> : null} */}
-                  Valider les informations
-                </Button>
-              </div>
             </Form>
           </CardBody>
         </Card>
@@ -525,14 +538,7 @@ const CompanyProfil = () => {
                       <th scope="col">Nom</th>
                       <th scope="col">Prénom</th>
                       <th scope="col">Email</th>
-                      <th className="text-end">
-                        <button
-                          onClick={() => setAddActifView(() => true)}
-                          className="d-print-none btn btn-secondary btn-icon "
-                          style={{ width: "25px", height: "25px" }}>
-                          +
-                        </button>
-                      </th>
+                      <th scope="col">Type</th>
                     </tr>
                   </thead>
                   <tbody className="border-bottom border-bottom-dashed fs-15">
@@ -544,17 +550,7 @@ const CompanyProfil = () => {
                             <td>{element.use_lastname}</td>
                             <td>{element.use_firstname}</td>
                             <td>{element.use_email}</td>
-                            <td width={40}>
-                              <button
-                                onClick={() => {
-                                  setShowModalDelete(() => true);
-                                  setSelectedId(element.use_id);
-                                }}
-                                className="btn btn-danger btn-icon "
-                                style={{ width: "25px", height: "25px" }}>
-                                <div style={{ position: "absolute", transform: "rotate(45deg)" }}>+</div>
-                              </button>
-                            </td>
+                            <td>{element.use_rank == 0 ? "Propriétaire du compte" : "Utilisateur"}</td>
                           </tr>
                         );
                       })}
@@ -582,6 +578,7 @@ const CompanyProfil = () => {
                     <Row>
                       <Col lg={3}>
                         <Input
+                          disabled
                           type="text"
                           className="form-control border-1 mb-2"
                           id="use_lastname"
@@ -596,6 +593,7 @@ const CompanyProfil = () => {
                       </Col>
                       <Col lg={3}>
                         <Input
+                          disabled
                           type="text"
                           className="form-control border-1 mb-2"
                           id="use_firstname"
@@ -610,6 +608,7 @@ const CompanyProfil = () => {
                       </Col>
                       <Col lg={2}>
                         <Input
+                          disabled
                           type="email"
                           className="form-control border-1 mb-2"
                           id="use_email"
@@ -658,4 +657,4 @@ const CompanyProfil = () => {
   );
 };
 
-export default CompanyProfil;
+export default FormCompany;

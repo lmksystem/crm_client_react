@@ -1,20 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import {
-  Col,
-  Row,
-  Button,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownItem,
-  DropdownMenu,
-  Input,
-} from "reactstrap";
+import React, { useEffect, useState } from "react";
+import { Col, Row, Button, UncontrolledDropdown, DropdownToggle, DropdownItem, DropdownMenu, Input } from "reactstrap";
 import { Link } from "react-router-dom";
 import Flatpickr from "react-flatpickr";
 import Select from "react-select";
-import { French } from "flatpickr/dist/l10n/fr.js"
-import { allstatus } from '../../common/data/invoiceList';
-import { allstatusDevis } from '../../common/data/devisList';
+import { French } from "flatpickr/dist/l10n/fr.js";
+import { allstatus } from "../../common/data/invoiceList";
+import { allstatusDevis } from "../../common/data/devisList";
+import moment from "moment";
 
 const ProductsGlobalFilter = () => {
   return (
@@ -23,10 +15,8 @@ const ProductsGlobalFilter = () => {
         <div>
           <Link
             to="/apps-ecommerce-add-product"
-            className="btn btn-success"
-          >
-            <i className="ri-add-line align-bottom me-1"></i> Add
-            Product
+            className="btn btn-success">
+            <i className="ri-add-line align-bottom me-1"></i> Add Product
           </Link>
         </div>
       </div>
@@ -46,9 +36,9 @@ const CustomersGlobalFilter = () => {
         { label: "Status", value: "Status" },
         { label: "All", value: "All" },
         { label: "Active", value: "Active" },
-        { label: "Block", value: "Block" },
-      ],
-    },
+        { label: "Block", value: "Block" }
+      ]
+    }
   ];
 
   return (
@@ -65,7 +55,7 @@ const CustomersGlobalFilter = () => {
                   altInput: true,
                   altFormat: "F j, Y",
                   mode: "multiple",
-                  dateFormat: "d.m.y",
+                  dateFormat: "d.m.y"
                 }}
               />
             </div>
@@ -80,8 +70,7 @@ const CustomersGlobalFilter = () => {
                 }}
                 options={customerstatus}
                 name="choices-single-default"
-                id="idStatus"
-              ></Select>
+                id="idStatus"></Select>
             </div>
           </Col>
 
@@ -89,8 +78,7 @@ const CustomersGlobalFilter = () => {
             <div>
               <button
                 type="button"
-                className="btn btn-secondary w-100"
-              >
+                className="btn btn-secondary w-100">
                 {" "}
                 <i className="ri-equalizer-fill me-2 align-bottom"></i>
                 Filters
@@ -125,9 +113,9 @@ const OrderGlobalFilter = () => {
         { label: "Cancelled", value: "Cancelled" },
         { label: "Pickups", value: "Pickups" },
         { label: "Returns", value: "Returns" },
-        { label: "Delivered", value: "Delivered" },
-      ],
-    },
+        { label: "Delivered", value: "Delivered" }
+      ]
+    }
   ];
 
   const orderpayement = [
@@ -138,13 +126,15 @@ const OrderGlobalFilter = () => {
         { label: "Mastercard", value: "Mastercard" },
         { label: "Paypal", value: "Paypal" },
         { label: "Visa", value: "Visa" },
-        { label: "COD", value: "COD" },
-      ],
-    },
+        { label: "COD", value: "COD" }
+      ]
+    }
   ];
   return (
     <React.Fragment>
-      <Col sm={6} className="col-xxl-2">
+      <Col
+        sm={6}
+        className="col-xxl-2">
         <div>
           <Flatpickr
             className="form-control"
@@ -154,13 +144,15 @@ const OrderGlobalFilter = () => {
               altInput: true,
               altFormat: "F j, Y",
               mode: "multiple",
-              dateFormat: "d.m.y",
+              dateFormat: "d.m.y"
             }}
           />
         </div>
       </Col>
 
-      <Col sm={4} className="col-xxl-2">
+      <Col
+        sm={4}
+        className="col-xxl-2">
         <div>
           <Select
             value={orderStatus}
@@ -169,12 +161,13 @@ const OrderGlobalFilter = () => {
             }}
             options={orderstatus}
             name="choices-single-default"
-            id="idStatus"
-          ></Select>
+            id="idStatus"></Select>
         </div>
       </Col>
 
-      <Col sm={4} className="col-xxl-2">
+      <Col
+        sm={4}
+        className="col-xxl-2">
         <div>
           <Select
             value={orderPayement}
@@ -183,14 +176,17 @@ const OrderGlobalFilter = () => {
             }}
             options={orderpayement}
             name="choices-payment-default"
-            id="idPayment"
-          ></Select>
+            id="idPayment"></Select>
         </div>
       </Col>
 
-      <Col sm={4} className="col-xxl-1">
+      <Col
+        sm={4}
+        className="col-xxl-1">
         <div>
-          <button type="button" className="btn btn-secondary w-100">
+          <button
+            type="button"
+            className="btn btn-secondary w-100">
             {" "}
             <i className="ri-equalizer-fill me-1 align-bottom"></i>
             Filters
@@ -214,8 +210,8 @@ const ContactsGlobalFilter = () => {
         { label: "Owner", value: "Owner" },
         { label: "Company", value: "Company" },
         { label: "Location", value: "Location" }
-      ],
-    },
+      ]
+    }
   ];
   return (
     <React.Fragment>
@@ -229,9 +225,7 @@ const ContactsGlobalFilter = () => {
               handlesortBy();
             }}
             options={sortbyname}
-            id="choices-single-default"
-          >
-          </Select>
+            id="choices-single-default"></Select>
         </div>
       </div>
     </React.Fragment>
@@ -250,9 +244,9 @@ const CompaniesGlobalFilter = () => {
       options: [
         { label: "Owner", value: "Owner" },
         { label: "Company", value: "Company" },
-        { label: "Location", value: "Location" },
-      ],
-    },
+        { label: "Location", value: "Location" }
+      ]
+    }
   ];
   return (
     <React.Fragment>
@@ -266,8 +260,7 @@ const CompaniesGlobalFilter = () => {
               handlesortBy();
             }}
             options={sortbyname}
-            id="choices-single-default"
-          ></Select>
+            id="choices-single-default"></Select>
         </div>
       </div>
     </React.Fragment>
@@ -277,9 +270,15 @@ const CompaniesGlobalFilter = () => {
 const CryptoOrdersGlobalFilter = () => {
   return (
     <React.Fragment>
-      <Col xl={2} md={6}>
+      <Col
+        xl={2}
+        md={6}>
         <div className="input-group">
-          <span className="input-group-text" id="basic-addon1"><i className="ri-calendar-2-line"></i></span>
+          <span
+            className="input-group-text"
+            id="basic-addon1">
+            <i className="ri-calendar-2-line"></i>
+          </span>
           <Flatpickr
             placeholder="Select date"
             className="form-control"
@@ -290,23 +289,37 @@ const CryptoOrdersGlobalFilter = () => {
           />
         </div>
       </Col>
-      <Col xl={2} md={4}>
-        <select className="form-control" data-choices data-choices-search-false name="choices-single-default"
+      <Col
+        xl={2}
+        md={4}>
+        <select
+          className="form-control"
+          data-choices
+          data-choices-search-false
+          name="choices-single-default"
           id="choices-single-default">
           <option defaultValue="">Select Type</option>
           <option value="Buy">Sell</option>
           <option value="Sell">Buy</option>
         </select>
       </Col>
-      <Col xl={2} md={4}>
-        <select className="form-control" data-choices data-choices-search-false name="choices-single-default2"
+      <Col
+        xl={2}
+        md={4}>
+        <select
+          className="form-control"
+          data-choices
+          data-choices-search-false
+          name="choices-single-default2"
           id="choices-single-default2">
           <option defaultValue="">Select Status</option>
           <option value="Successful">Successful</option>
           <option value="Cancelled">Cancelled</option>
         </select>
       </Col>
-      <Col xl={1} md={4}>
+      <Col
+        xl={1}
+        md={4}>
         <button className="btn btn-success w-100">Filters</button>
       </Col>
     </React.Fragment>
@@ -322,43 +335,43 @@ const InvoiceListGlobalSearch = ({ origneData, data, setData, value }) => {
    * Fonction de trier des factures
    */
   const filteredData = () => {
-  
     let newData = [...origneData];
 
     if (isText) {
-      newData = newData.filter((e) => e.contact.fco_cus_email.toLowerCase().includes(isText) || e.contact.fco_cus_name.toLowerCase().includes(isText) || e.header.fen_sujet.toLowerCase().includes(isText) || e.header.fen_total_ttc.toString().includes(isText))
+      newData = newData.filter((e) => e.contact.fco_cus_email.toLowerCase().includes(isText) || e.contact.fco_cus_name.toLowerCase().includes(isText) || e.header.fen_sujet.toLowerCase().includes(isText) || e.header.fen_total_ttc.toString().includes(isText));
     }
 
     if (isDate) {
-      newData = newData.filter((e) => isDate.includes(e.header.fen_date_expired))
+      newData = newData.filter((e) => isDate.includes(moment(e.header.fen_date_create).format('YYYY-MM-DD')));
     }
 
     if (isEtat) {
-      newData = newData.filter((e) => e.header.fen_etat.toLowerCase() == isEtat.toLowerCase())
+      newData = newData.filter((e) => e.header.fen_etat.toLowerCase() == isEtat.toLowerCase());
     }
 
     setData(() => newData);
-  }
+  };
 
   useEffect(() => {
     if (origneData.length) {
       if (isEtat || isText || isDate) {
         filteredData();
       } else {
-        setData(origneData)
+        setData(origneData);
       }
     }
-  }, [isText, isDate, isEtat])
+  }, [isText, isDate, isEtat]);
 
   return (
     <React.Fragment>
       <Row>
-
-        <Col sm={4} xxl={5} >
+        <Col
+          sm={4}
+          xxl={5}>
           <div className={"search-box me-2 mb-2 d-flex col-12"}>
             <input
               onChange={(e) => {
-                setisText(e.target.value != "" ? e.target.value : null)
+                setisText(e.target.value != "" ? e.target.value : null);
               }}
               id="search-bar-0"
               type="text"
@@ -370,10 +383,13 @@ const InvoiceListGlobalSearch = ({ origneData, data, setData, value }) => {
           </div>
         </Col>
 
-        <Col sm={4} xxl={3} className=' mb-2'>
+        <Col
+          sm={4}
+          xxl={3}
+          className=" mb-2">
           <Flatpickr
             onChange={(date, dateStr) => {
-              setisDate(dateStr ? dateStr.split(', ') : null);
+              setisDate(dateStr ? dateStr.split(", ") : null);
             }}
             className="form-control bg-light border-light"
             id="invoice-date-picker"
@@ -384,31 +400,34 @@ const InvoiceListGlobalSearch = ({ origneData, data, setData, value }) => {
               enableTime: false,
               altFormat: "F j, Y",
               mode: "multiple",
-              dateFormat: "Y-m-d",
+              dateFormat: "Y-m-d"
             }}
-
           />
         </Col>
 
-        <Col sm={4} xxl={3}>
+        <Col
+          sm={4}
+          xxl={3}>
           <div className="input-light">
             <Input
-              type='select'
+              type="select"
               onChange={(e) => {
-                setisEtat(e.target.value)
+                setisEtat(e.target.value);
               }}
               // options={allstatus}
               name="choices-single-default"
-              id="idStatus"
-            >
-              {allstatus?.map((e, i) => (<option key={i} value={e.value}>{e.label}</option>))}
+              id="idStatus">
+              {allstatus?.map((e, i) => (
+                <option
+                  key={i}
+                  value={e.value}>
+                  {e.label}
+                </option>
+              ))}
             </Input>
           </div>
         </Col>
-
-
       </Row>
-
 
       {/* <Col sm={4} xxl={1}>
         <Button color="primary" className="w-100">
@@ -416,7 +435,6 @@ const InvoiceListGlobalSearch = ({ origneData, data, setData, value }) => {
           Filters
         </Button>
       </Col> */}
-
     </React.Fragment>
   );
 };
@@ -430,43 +448,43 @@ const DevisListGlobalSearch = ({ origneData, data, setData, value }) => {
    * Fonction de trier des devis
    */
   const filteredData = () => {
-  
     let newData = [...origneData];
 
     if (isText) {
-      newData = newData.filter((e) => e.contact.dco_cus_email.toLowerCase().includes(isText) || e.contact.dco_cus_name.toLowerCase().includes(isText) || e.header.den_sujet.toLowerCase().includes(isText) || e.header.den_total_ttc.toString().includes(isText))
+      newData = newData.filter((e) => e.contact.dco_cus_email.toLowerCase().includes(isText) || e.contact.dco_cus_name.toLowerCase().includes(isText) || e.header.den_sujet.toLowerCase().includes(isText) || e.header.den_total_ttc.toString().includes(isText));
     }
 
     if (isDate) {
-      newData = newData.filter((e) => isDate.includes(e.header.den_date_valid))
+      newData = newData.filter((e) => isDate.includes(e.header.den_date_valid));
     }
 
     if (isEtat) {
-      newData = newData.filter((e) => e.header.den_etat.toLowerCase() == isEtat.toLowerCase())
+      newData = newData.filter((e) => e.header.den_etat.toLowerCase() == isEtat.toLowerCase());
     }
 
     setData(() => newData);
-  }
+  };
 
   useEffect(() => {
     if (origneData.length) {
       if (isEtat || isText || isDate) {
         filteredData();
       } else {
-        setData(origneData)
+        setData(origneData);
       }
     }
-  }, [isText, isDate, isEtat])
+  }, [isText, isDate, isEtat]);
 
   return (
     <React.Fragment>
       <Row>
-
-        <Col sm={4} xxl={5} >
+        <Col
+          sm={4}
+          xxl={5}>
           <div className={"search-box me-2 mb-2 d-flex col-12"}>
             <input
               onChange={(e) => {
-                setisText(e.target.value != "" ? e.target.value : null)
+                setisText(e.target.value != "" ? e.target.value : null);
               }}
               id="search-bar-0"
               type="text"
@@ -478,10 +496,13 @@ const DevisListGlobalSearch = ({ origneData, data, setData, value }) => {
           </div>
         </Col>
 
-        <Col sm={4} xxl={3} className=' mb-2'>
+        <Col
+          sm={4}
+          xxl={3}
+          className=" mb-2">
           <Flatpickr
             onChange={(date, dateStr) => {
-              setisDate(dateStr ? dateStr.split(', ') : null);
+              setisDate(dateStr ? dateStr.split(", ") : null);
             }}
             className="form-control bg-light border-light"
             id="invoice-date-picker"
@@ -492,31 +513,34 @@ const DevisListGlobalSearch = ({ origneData, data, setData, value }) => {
               enableTime: false,
               altFormat: "F j, Y",
               mode: "multiple",
-              dateFormat: "Y-m-d",
+              dateFormat: "Y-m-d"
             }}
-
           />
         </Col>
 
-        <Col sm={4} xxl={3}>
+        <Col
+          sm={4}
+          xxl={3}>
           <div className="input-light">
             <Input
-              type='select'
+              type="select"
               onChange={(e) => {
-                setisEtat(e.target.value)
+                setisEtat(e.target.value);
               }}
               // options={allstatus}
               name="choices-single-default"
-              id="idStatus"
-            >
-              {allstatusDevis?.map((e, i) => (<option key={i} value={e.value}>{e.label}</option>))}
+              id="idStatus">
+              {allstatusDevis?.map((e, i) => (
+                <option
+                  key={i}
+                  value={e.value}>
+                  {e.label}
+                </option>
+              ))}
             </Input>
           </div>
         </Col>
-
-
       </Row>
-
     </React.Fragment>
   );
 };
@@ -529,39 +553,39 @@ const TransactionListGlobalSearch = ({ origneData, data, setData, value }) => {
    * Fonction de trier des devis
    */
   const filteredData = () => {
-  
     let newData = [...origneData];
 
     if (isText) {
-      newData = newData.filter((e) => e.contact.dco_cus_email.toLowerCase().includes(isText) || e.contact.dco_cus_name.toLowerCase().includes(isText) || e.header.den_sujet.toLowerCase().includes(isText) || e.header.den_total_ttc.toString().includes(isText))
+      newData = newData.filter((e) => e.contact.dco_cus_email.toLowerCase().includes(isText) || e.contact.dco_cus_name.toLowerCase().includes(isText) || e.header.den_sujet.toLowerCase().includes(isText) || e.header.den_total_ttc.toString().includes(isText));
     }
 
     if (isDate) {
-      newData = newData.filter((e) => isDate.includes(e.header.den_date_create))
+      newData = newData.filter((e) => isDate.includes(e.header.den_date_create));
     }
 
     setData(() => newData);
-  }
+  };
 
   useEffect(() => {
     if (origneData.length) {
-      if ( isText || isDate) {
+      if (isText || isDate) {
         filteredData();
       } else {
-        setData(origneData)
+        setData(origneData);
       }
     }
-  }, [isText, isDate])
+  }, [isText, isDate]);
 
   return (
     <React.Fragment>
       <Row>
-
-        <Col sm={4} xxl={5} >
+        <Col
+          sm={4}
+          xxl={5}>
           <div className={"search-box me-2 mb-2 d-flex col-12"}>
             <input
               onChange={(e) => {
-                setisText(e.target.value != "" ? e.target.value : null)
+                setisText(e.target.value != "" ? e.target.value : null);
               }}
               id="search-bar-0"
               type="text"
@@ -573,10 +597,13 @@ const TransactionListGlobalSearch = ({ origneData, data, setData, value }) => {
           </div>
         </Col>
 
-        <Col sm={4} xxl={3} className=' mb-2'>
+        <Col
+          sm={4}
+          xxl={3}
+          className=" mb-2">
           <Flatpickr
             onChange={(date, dateStr) => {
-              setisDate(dateStr ? dateStr.split(', ') : null);
+              setisDate(dateStr ? dateStr.split(", ") : null);
             }}
             className="form-control bg-light border-light"
             id="invoice-date-picker"
@@ -587,13 +614,11 @@ const TransactionListGlobalSearch = ({ origneData, data, setData, value }) => {
               enableTime: false,
               altFormat: "F j, Y",
               mode: "multiple",
-              dateFormat: "Y-m-d",
+              dateFormat: "Y-m-d"
             }}
-
           />
         </Col>
       </Row>
-
     </React.Fragment>
   );
 };
@@ -601,7 +626,9 @@ const TransactionListGlobalSearch = ({ origneData, data, setData, value }) => {
 const TicketsListGlobalFilter = () => {
   return (
     <React.Fragment>
-      <Col xxl={3} sm={4}>
+      <Col
+        xxl={3}
+        sm={4}>
         <Flatpickr
           className="form-control"
           placeholder="Select date range"
@@ -611,9 +638,16 @@ const TicketsListGlobalFilter = () => {
           }}
         />
       </Col>
-      <Col xxl={3} sm={4}>
+      <Col
+        xxl={3}
+        sm={4}>
         <div className="input-light">
-          <select className="form-control" data-choices data-choices-search-false name="choices-single-default" id="idStatus">
+          <select
+            className="form-control"
+            data-choices
+            data-choices-search-false
+            name="choices-single-default"
+            id="idStatus">
             <option value="">Status</option>
             <option defaultValue="all">All</option>
             <option value="Open">Open</option>
@@ -623,8 +657,14 @@ const TicketsListGlobalFilter = () => {
           </select>
         </div>
       </Col>
-      <Col xxl={1} sm={4}>
-        <button type="button" className="btn btn-secondary w-100"> <i className="ri-equalizer-fill me-1 align-bottom"></i>
+      <Col
+        xxl={1}
+        sm={4}>
+        <button
+          type="button"
+          className="btn btn-secondary w-100">
+          {" "}
+          <i className="ri-equalizer-fill me-1 align-bottom"></i>
           Filters
         </button>
       </Col>
@@ -635,10 +675,22 @@ const TicketsListGlobalFilter = () => {
 const NFTRankingGlobalFilter = () => {
   return (
     <React.Fragment>
-      <Col xxl={2} sm={4} className="ms-auto">
+      <Col
+        xxl={2}
+        sm={4}
+        className="ms-auto">
         <div>
-          <select className="form-control" data-choices data-choices-search-false name="choices-single-default" id="idStatus">
-            <option value="All Time" defaultValue>All Time</option>
+          <select
+            className="form-control"
+            data-choices
+            data-choices-search-false
+            name="choices-single-default"
+            id="idStatus">
+            <option
+              value="All Time"
+              defaultValue>
+              All Time
+            </option>
             <option value="1 Day">1 Day</option>
             <option value="7 Days">7 Days</option>
             <option value="15 Days">15 Days</option>
@@ -667,9 +719,14 @@ const TaskListGlobalFilter = () => {
 
       <div className="col-xxl-3 col-sm-4">
         <div className="input-light">
-          <select className="form-control" data-choices data-choices-search-false name="status" id="idStatus">
+          <select
+            className="form-control"
+            data-choices
+            data-choices-search-false
+            name="status"
+            id="idStatus">
             <option value="">Status</option>
-            <option defaultValue="all"  >All</option>
+            <option defaultValue="all">All</option>
             <option value="New">New</option>
             <option value="Pending">Pending</option>
             <option value="Inprogress">Inprogress</option>
@@ -678,7 +735,11 @@ const TaskListGlobalFilter = () => {
         </div>
       </div>
       <div className="col-xxl-1 col-sm-4">
-        <button type="button" className="btn btn-secondary w-100"> <i className="ri-equalizer-fill me-1 align-bottom"></i>
+        <button
+          type="button"
+          className="btn btn-secondary w-100">
+          {" "}
+          <i className="ri-equalizer-fill me-1 align-bottom"></i>
           Filters
         </button>
       </div>
@@ -686,12 +747,4 @@ const TaskListGlobalFilter = () => {
   );
 };
 
-
-export {
-  
-  CustomersGlobalFilter,
-  
-  InvoiceListGlobalSearch,
-  DevisListGlobalSearch,
-  TransactionListGlobalSearch
-};
+export { CustomersGlobalFilter, InvoiceListGlobalSearch, DevisListGlobalSearch, TransactionListGlobalSearch };

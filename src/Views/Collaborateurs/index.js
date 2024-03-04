@@ -339,7 +339,7 @@ const Collaborateurs = () => {
     } else if (validation.values.ent_pays == "Belgium") {
       setNumEntreprise("Numéro d’entreprise");
     } else if (africanCountries.includes(validation.values.ent_pays)) {
-      setNumEntreprise("NIF");
+      setNumEntreprise("NINEA");
     } else {
       setNumEntreprise("Identifiant d'entreprise");
     }
@@ -676,36 +676,6 @@ const Collaborateurs = () => {
                       <ModalBody>
                         <input type="hidden" id="id-field" />
                         <Row className="g-3">
-                          {/* <Col lg={12}>
-                            <div className="text-center">
-                              <div className="position-relative d-inline-block">
-                                <div className="position-absolute bottom-0 end-0">
-                                  <Label htmlFor="company-logo-input" className="mb-0">
-                                    <div className="avatar-xs cursor-pointer">
-                                      <div className="avatar-title bg-light border rounded-circle text-muted">
-                                        <i className="ri-image-fill"></i>
-                                      </div>
-                                    </div>
-                                  </Label>
-                                  <Input name="ent_img_url" className="form-control d-none" id="company-logo-input" type="file"
-                                    accept="image/png, image/gif, image/jpeg"
-                                    onChange={validation.handleChange}
-                                    onBlur={validation.handleBlur}
-                                    value={validation.values.ent_img_url || ""}
-                                    invalid={
-                                      validation.touched.ent_img_url && validation.errors.ent_img_url ? true : false
-                                    }
-                                  />
-                                </div>
-                                <div className="avatar-lg p-1">
-                                  <div className="avatar-title bg-light rounded-circle">
-                                    <img src={multiUser} alt="multiUser" id="companylogo-img" className="avatar-md rounded-circle object-cover" />
-                                  </div>
-                                </div>
-                              </div>
-                              <h5 className="fs-13 mt-3">Collaborateur Logo</h5>
-                            </div>
-                          </Col> */}
                           <h5>Informations Générales</h5>
                           <Col
                             lg={4}
@@ -1169,7 +1139,7 @@ const Collaborateurs = () => {
                                 name="ent_bic"
                                 id="ent_bic-field"
                                 className="form-control"
-                                placeholder="Entrer ent_bic"
+                                placeholder="Entrer bic"
                                 type="text"
                                 validate={{
                                   required: { value: true },
@@ -1204,7 +1174,7 @@ const Collaborateurs = () => {
                                 name="ent_siren"
                                 id="ent_siren-field"
                                 className="form-control"
-                                placeholder={`Entrer votre ${numEntreprise}`}
+                                placeholder={`Entrer ${numEntreprise.toLowerCase()}`}
                                 type="text"
                                 validate={{
                                   required: { value: true },
