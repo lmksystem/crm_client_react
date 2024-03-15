@@ -12,6 +12,7 @@ import { deleteUser as onDeleteUser } from "../../../slices/thunks";
 import { APIClient } from "../../../helpers/api_helper";
 import { ToastContainer, toast } from "react-toastify";
 import * as url from "../../../helpers/url_helper";
+import FeatherIcon from "feather-icons-react/build/FeatherIcon";
 
 const api = new APIClient();
 
@@ -31,11 +32,14 @@ const UserAdmin = () => {
   let navigate = useNavigate();
 
   const resendEmailSignup = (id) => {
-    api.get(url.ADMIN_USER + "/" + id).then(() => {
-      toast.success("Envoie réussi");
-    }).catch(() => {
-      toast.error("echec de l'envoie");
-    });
+    api
+      .get(url.ADMIN_USER + "/" + id)
+      .then(() => {
+        toast.success("Envoie réussi");
+      })
+      .catch(() => {
+        toast.error("echec de l'envoie");
+      });
   };
 
   useEffect(() => {
@@ -49,6 +53,26 @@ const UserAdmin = () => {
         Header: "ID",
         accessor: "use_id",
         filterable: false
+      },
+      {
+        Header: "Entreprise",
+        accessor: "com_name",
+        filterable: false,
+        Cell: (cell) => {
+          return (
+            <div style={{ display: "flex" }}>
+              <span style={{ flex: 1 }}>{cell.row.original.com_name} </span>
+              <span
+                onClick={() => navigate("/admin/entreprise/" + cell.row.original.com_id)}
+                style={{ flex: 1 }}>
+                <FeatherIcon
+                  color="blue"
+                  size="15"
+                  icon={"eye"}></FeatherIcon>
+              </span>
+            </div>
+          );
+        }
       },
       {
         Header: "Nom",
@@ -72,11 +96,7 @@ const UserAdmin = () => {
           return moment(cell.row.original.use_created).format("DD MMM YYYY");
         }
       },
-      {
-        Header: "Entreprise",
-        accessor: "com_name",
-        filterable: false
-      },
+
       {
         Header: "Email Entreprise",
         accessor: "com_email"

@@ -32,7 +32,7 @@ const FinalisationAccount = (props) => {
   useEffect(() => {
 
     let token = searchParams.get("token");
-    
+ 
     if (token) {
       axios.get(`/v1/user/token/${token}`).then((response) => {
         if (response.data) {
