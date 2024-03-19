@@ -21,6 +21,7 @@ const CompanyProfil = () => {
   }));
   // console.log(license);
   const [company, setCompany] = useState({});
+  const [module, setModule] = useState(null);
   const [image, setImage] = useState("");
   const [numEntreprise, setNumEntreprise] = useState("Identifiant d'entreprise");
   const [addActifView, setAddActifView] = useState(false);
@@ -79,14 +80,20 @@ const CompanyProfil = () => {
     }),
 
     onSubmit: (values) => {
-      if (license.length < 5) {
+      if (license.length < module.mod_nb_user) {
         dispatch(onAddLicense(values));
         setAddActifView(false);
       } else {
-        toast.error(`Nombre de licence atteint (Max: ${company.com_license_nb})`, { autoClose: 3000 });
+        toast.warning(`Nombre de licence atteint (Max: ${module.mod_nb_user})`, { autoClose: 3000 });
       }
     }
   });
+
+  const getCompanyAndModule = () => {
+    axios.get("/v1/admin/company/" + companyredux[0].com_id).then((res) => {
+      setModule({ mod_id: res.mod_id, mod_name: res.mod_name, mod_nb_fac: res.mod_nb_fac, mod_nb_user: res.mod_nb_user });
+    });
+  };
 
   const deleteUser = () => {
     dispatch(onDeleteLicense(selectedId));
@@ -168,6 +175,7 @@ const CompanyProfil = () => {
     "Zambie",
     "Zimbabwe"
   ];
+
   useEffect(() => {
     if (companyredux?.length > 0) {
       setCompany(companyredux[0]);
@@ -178,7 +186,7 @@ const CompanyProfil = () => {
           setImage("data:image/png;base64," + response);
         });
       }
-      console.log(africanCountries.includes(companyredux[0].com_pays), companyredux[0].com_pays);
+
       if (companyredux[0].com_pays == "France") {
         setNumEntreprise("Siren");
       } else if (companyredux[0].com_pays == "Belgium") {
@@ -193,6 +201,7 @@ const CompanyProfil = () => {
 
   useEffect(() => {
     dispatch(onGetLicense());
+    getCompanyAndModule();
   }, []);
 
   return (

@@ -183,7 +183,7 @@ const VerticalLayout = (props) => {
                           if (user.com_mod_fk == 1 && dateCreateAccount.diff(moment(), "days") <= -14 && subItem.link != "/" && subItem.link != "/dashboard") {
                             isLock = false;
                           }
-                          console.log(dateCreateAccount.diff(moment(), "days") );
+                       
                         }
 
                         return (
