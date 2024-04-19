@@ -118,6 +118,7 @@ const publicRoutes = [
   // Authentication Page
   { path: "/logout", component: <Logout /> },
   { path: "/login", component: <Login /> },
+  { path: "/", component: <Login /> },
   { path: "/forgot-password", component: <ForgetPasswordPage /> },
   { path: "/reset-password/:token", component: <ResertPassword /> },
   { path: "/inscription", component: <CreateAccount /> },

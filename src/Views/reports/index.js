@@ -66,7 +66,7 @@ const Reports = () => {
       colors: ['transparent']
     },
     xaxis: {
-      categories: ['Janv', 'Févr', 'Mars', 'Avr', 'Mai', 'Juin', 'Juill', 'Août', 'Sept', 'Oct', 'Nov', 'déc'],
+      categories: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
     },
     yaxis: {
       title: {

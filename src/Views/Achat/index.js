@@ -291,7 +291,6 @@ const Achats = () => {
       },
       {
         Header: "Statut",
-        // accessor: "ach_status",
         filterable: false,
         Cell: (cell) => {
           let status = "";

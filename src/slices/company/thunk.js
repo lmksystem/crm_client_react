@@ -54,7 +54,7 @@ export const getLicense = createAsyncThunk("company/getLicense", () => {
 export const deleteLicense = createAsyncThunk("company/deleteLicense", (id) => {
   try {
     const response = deleteLicenseApi(id);
-    return response;
+    return id;
   } catch (error) {
     return error;
   }

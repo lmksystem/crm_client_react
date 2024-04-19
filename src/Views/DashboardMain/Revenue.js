@@ -48,20 +48,6 @@ const Revenue = ({ perdiodeCalendar }) => {
       <Card>
         <CardHeader className="border-0 align-items-center d-flex">
           <h4 className="card-title mb-0 flex-grow-1">Revenus - {perdiodeCalendar?.start != null ? moment(perdiodeCalendar.start).year() : moment().year()}</h4>
-          {/* <div className="d-flex gap-1">
-            <button type="button" className="btn btn-soft-secondary btn-sm" onClick={() => { onChangeChartPeriod("all"); }}>
-              ALL
-            </button>
-            <button type="button" className="btn btn-soft-secondary btn-sm" onClick={() => { onChangeChartPeriod("month"); }}>
-              1M
-            </button>
-            <button type="button" className="btn btn-soft-secondary btn-sm" onClick={() => { onChangeChartPeriod("halfyear"); }}>
-              6M
-            </button>
-            <button type="button" className="btn btn-soft-primary btn-sm" onClick={() => { onChangeChartPeriod("year"); }}>
-              1Y
-            </button>
-          </div> */}
         </CardHeader>
 
         <CardHeader className="p-0 border-0 bg-soft-light">

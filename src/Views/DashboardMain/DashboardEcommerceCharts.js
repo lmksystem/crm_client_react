@@ -7,42 +7,41 @@ const RevenueCharts = ({ dataColors, series }) => {
   const linechartcustomerColors = getChartColorsArray(dataColors);
 
   const { devise } = useSelector((state) => ({
-    devise: state?.Company?.devise,
+    devise: state?.Company?.devise
   }));
 
   function abregerSomme(somme) {
     if (somme < 500) {
       return somme.toString() + devise;
     } else if (somme < 10000) {
-      return (somme / 1000).toFixed(1) + "K " + devise
+      return (somme / 1000).toFixed(1) + "K " + devise;
     } else {
       return (somme / 1000).toFixed(0) + "K " + devise;
     }
   }
-
 
   var options = {
     chart: {
       height: 350,
       type: "line",
       toolbar: {
-        show: false,
-      },
+        show: false
+      }
     },
     stroke: {
       curve: "straight",
       dashArray: [0, 0, 8],
-      width: [2, 0, 2.2],
+      width: [2, 0, 2.2]
     },
     fill: {
-      opacity: [0.1, 0.9, 1],
+      opacity: [0.1, 0.9, 1]
     },
     markers: {
       size: [0, 0, 0],
       strokeWidth: 2,
       hover: {
-        size: 4,
-      },
+        size: 4
+      }
     },
     // yaxis: [{
     //   title: {
@@ -61,47 +60,34 @@ const RevenueCharts = ({ dataColors, series }) => {
 
     // }],
     xaxis: {
-      categories: [
-        "Janvier",
-        "Février",
-        "Mars",
-        "Avril",
-        "Mai",
-        "Juin",
-        "Juillet",
-        "Août",
-        "Septembre",
-        "Octobre",
-        "Novembre",
-        "Décembre",
-      ],
+      categories: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
       axisTicks: {
-        show: false,
+        show: false
       },
       axisBorder: {
-        show: false,
+        show: false
       },
       floating: true,
-      decimalsInFloat: 2,
+      decimalsInFloat: 2
     },
     grid: {
       show: true,
       xaxis: {
         lines: {
-          show: true,
-        },
+          show: true
+        }
       },
       yaxis: {
         lines: {
-          show: false,
-        },
+          show: false
+        }
       },
       padding: {
         top: 0,
         right: -2,
         bottom: 15,
-        left: 10,
-      },
+        left: 10
+      }
     },
     legend: {
       show: true,
@@ -112,18 +98,18 @@ const RevenueCharts = ({ dataColors, series }) => {
       markers: {
         width: 9,
         height: 9,
-        radius: 6,
+        radius: 6
       },
       itemMargin: {
         horizontal: 10,
-        vertical: 0,
-      },
+        vertical: 0
+      }
     },
     plotOptions: {
       bar: {
         columnWidth: "30%",
-        barHeight: "70%",
-      },
+        barHeight: "70%"
+      }
     },
 
     yaxis: {
@@ -143,15 +129,15 @@ const RevenueCharts = ({ dataColors, series }) => {
               return y.toFixed(0) + " Devis";
             }
             return y;
-          },
+          }
         },
         {
           formatter: function (y) {
             if (typeof y !== "undefined") {
-              return abregerSomme(y);
+              return y + " " + devise;
             }
-            return y;
-          },
+            return y + " " + devise;
+          }
         },
         {
           formatter: function (y) {
@@ -159,10 +145,10 @@ const RevenueCharts = ({ dataColors, series }) => {
               return y.toFixed(0) + " Factures";
             }
             return y;
-          },
-        },
-      ],
-    },
+          }
+        }
+      ]
+    }
   };
   return (
     <React.Fragment>
@@ -186,24 +172,25 @@ const StoreVisitsCharts = ({ dataColors }) => {
     labels: ["Direct", "Social", "Email", "Other", "Referrals"],
     chart: {
       height: 333,
-      type: "donut",
+      type: "donut"
     },
     legend: {
-      position: "bottom",
+      position: "bottom"
     },
     stroke: {
-      show: false,
+      show: false
     },
     dataLabels: {
       dropShadow: {
-        enabled: false,
-      },
+        enabled: false
+      }
     },
-    colors: chartDonutBasicColors,
+    colors: chartDonutBasicColors
   };
   return (
     <React.Fragment>
-      <ReactApexChart dir="ltr"
+      <ReactApexChart
+        dir="ltr"
         options={options}
         series={series}
         type="donut"
