@@ -79,12 +79,17 @@ const InvoiceDetails = () => {
   };
 
   const downloadPdf = () => {
-    // window.open(`${api.API_URL}/v1/pdf/download/facture/${invoice.header.fen_com_fk}/${invoice.header.fen_date_create}/${invoice.doc.fdo_file_name}`, 'download');
     axios.get(`${api.API_URL}/v1/pdf/download/facture/${invoice.header.fen_id}`, {
       mode: 'no-cors',
       responseType: 'blob'
     }).then((response) => {
       try {
+        //TEST POUR LES ACHAT
+        // let blob = new Blob([response], { type: "application/pdf" });
+        // var file = window.URL.createObjectURL(blob);
+        // console.log(file);
+        // document.querySelector("iframe").src = file;
+
         let elm = document.createElement('a');  // CREATE A LINK ELEMENT IN DOM
         elm.href = URL.createObjectURL(response);  // SET LINK ELEMENTS CONTENTS
         elm.setAttribute('download', invoice.header.fen_num_fac + ".pdf"); // SET ELEMENT CREATED 'ATTRIBUTE' TO DOWNLOAD, FILENAME PARAM AUTOMATICALLY
@@ -783,6 +788,9 @@ const InvoiceDetails = () => {
               </Row>
             </Card>
             {/* </Preview> */}
+            {/* <div id="my-container" class="ng-scope pdfobject-container">
+              <iframe id="test_preview" src={""} type="application/pdf" width="100%" height="100%"></iframe>
+          </div> */}
           </Col>
         </Row>
         <ToastContainer closeButton={false} limit={1} />
