@@ -22,7 +22,7 @@ const BreadCrumb = ({ title, pageTitle }) => {
     for (const dateStr of dateArray) {
       const dateObj = moment(dateStr);
       const differenceInDays = currentDate.diff(dateObj, "days");
-      console.log(dateStr);
+      
       if (differenceInDays >= -15 && differenceInDays <= 0 && Math.abs(differenceInDays) < closestDifference) {
         closestDate = dateStr;
       }
@@ -36,7 +36,7 @@ const BreadCrumb = ({ title, pageTitle }) => {
     getBankUserAccount()
       .then((res) => {
         let newArrayDate = res?.map((e) => e.bac_date_expired) || [];
-        console.log(res);
+        
         findClosestDateWithin15Days(newArrayDate);
       })
       .catch((err) => {

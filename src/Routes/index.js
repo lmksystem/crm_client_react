@@ -66,7 +66,7 @@ const Index = () => {
                 isSelected = true;
               }
 
-              if (isSelected) {
+              if (isSelected || true) {
                 return (
                   <Route
                     path={route.path}

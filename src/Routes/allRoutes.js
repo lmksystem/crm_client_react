@@ -43,6 +43,8 @@ import CreateAccount from "../Views/AuthenticationInner/Register/CreateAccount";
 import ResertPassword from "../Views/Authentication/ResertPassword";
 import EntrepriseAdmin from "../Views/Admin/company";
 import FormCompany from "../Views/Admin/company/FormCompany";
+import FormAchat from "../Views/Achat/FormAchat";
+import CreateOrEditAchat from "../Views/Achat/CreateOrEditAchat";
 
 // import PdfPreview from "../Views/Pdf";
 
@@ -89,7 +91,9 @@ const userRoute = [
 
   { id: 22, path: "/company/profile", component: <CompanyProfil />, rank: 0 },
 
-  { id: 23, path: "/", exact: true, component: <Navigate to="/dashboard" />, rank: 0 }
+  { id: 23, path: "/", exact: true, component: <Navigate to="/dashboard" />, rank: 0 },
+
+  { id: 24, path: "/achat/edition", component: <CreateOrEditAchat />, rank: 0 }
 ];
 
 // const testArrayOffert = "['/contacts', '/client-fournisseur', '/client-fournisseur/detail', '/gestion/parametre', '/produits', '/dashboard', '/factures/liste', '/factures/detail/:id', '/factures/creation', '/devis/liste', '/devis/detail/:id', '/devis/creation', '/devis/edition/:id', '/recurrence', '/transaction/liste', '/employees', '/salary', '/transaction/bank', '/achat', '/bankaccount', '/rapports', '/export', '/company/profile', '/']";
@@ -122,7 +126,7 @@ const publicRoutes = [
   { path: "/forgot-password", component: <ForgetPasswordPage /> },
   { path: "/reset-password/:token", component: <ResertPassword /> },
   { path: "/inscription", component: <CreateAccount /> },
-  { path: "/finalisation-compte", component: <FinalisationAccount /> },
+  { path: "/finalisation-compte", component: <FinalisationAccount /> }
   // { path: "*", component: <Basic404 /> }
 ];
 

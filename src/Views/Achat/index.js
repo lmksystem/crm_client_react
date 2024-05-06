@@ -1,27 +1,13 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { isEmpty } from "lodash";
 
-import {
-  Col,
-  Container,
-  Row,
-  Card,
-  CardHeader,
-  CardBody,
-} from "reactstrap";
+import { Col, Container, Row, Card, CardHeader, CardBody } from "reactstrap";
 
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import DeleteModal from "../../Components/Common/DeleteModal";
 
 //Import actions
-import {
-  getEmployees as onGetEmployees,
-  getAchat as onGetAchat,
-  getTransactionBankAchat as onGetTransactionBankAchat,
-  createUpdateAchat as onCreateUpdateAchat,
-  getCollaborateurs as onGetCollaborateurs,
-  deleteAchat as onDeleteAchat,
-} from "../../slices/thunks";
+import { getEmployees as onGetEmployees, getAchat as onGetAchat, getCollaborateurs as onGetCollaborateurs, deleteAchat as onDeleteAchat } from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
 import TableContainer from "../../Components/Common/TableContainer";
@@ -37,17 +23,18 @@ import ModalCreate from "./ModalCreate";
 import FileService from "../../utils/FileService";
 import { customFormatNumber } from "../../utils/function";
 import moment from "moment";
+import { useNavigate } from "react-router-dom";
 
 const Achats = () => {
   const dispatch = useDispatch();
-  const { isAchatSuccess, achats, error, transactions, collaborateurs } =
-    useSelector((state) => ({
-      isAchatSuccess: state.Achat.isAchatSuccess,
-      achats: state.Achat.achats,
-      error: state.Achat.error,
-      collaborateurs: state.Gestion.collaborateurs,
-      transactions: state.TransactionBank.transactionsBank,
-    }));
+  const navigate = useNavigate();
+  const { isAchatSuccess, achats, error, transactions, collaborateurs } = useSelector((state) => ({
+    isAchatSuccess: state.Achat.isAchatSuccess,
+    achats: state.Achat.achats,
+    error: state.Achat.error,
+    collaborateurs: state.Gestion.collaborateurs,
+    transactions: state.TransactionBank.transactionsBank
+  }));
 
   const [achat, setAchat] = useState({});
 
@@ -58,14 +45,9 @@ const Achats = () => {
 
   const [isEdit, setIsEdit] = useState(false);
 
-  const [filesSelected, setFilesSelected] = useState([]);
-
-  const [facsExist, setFacsExist] = useState([]);
-
-
   const [transFilter, setTransFilter] = useState({
     data: [],
-    searchTerm: "",
+    searchTerm: ""
   });
 
   //delete Conatct
@@ -76,24 +58,9 @@ const Achats = () => {
 
   const [modal, setModal] = useState(false);
 
-
-  function setInfosModal() {
-    setFilesSelected([]);
-    setFacsExist([]);
-  }
-
   const toggle = useCallback(() => {
     if (modal) {
-      if (!isEdit) {
-        setInfosModal();
-      }
-      setAchat({});
-      setTransFilter({
-        data: [],
-        searchTerm: "",
-      });
       setModal(false);
-      setIsEdit(false);
     } else {
       setModal(true);
     }
@@ -111,99 +78,6 @@ const Achats = () => {
     setAchat(achat);
     setDeleteModal(true);
   };
-
-  const createAchats = useFormik({
-    enableReinitialize: true,
-
-    initialValues: {
-      type: "",
-      files: filesSelected,
-      facturesExist: facsExist,
-    },
-    validationSchema: Yup.object({
-      type: Yup.string().required("Veuillez choisir un type"),
-      // files: Yup.array()
-      //   .min(1)
-      //   .required("Veuillez choisir un/plusieurs fichier(s)"),
-    }),
-    onSubmit: (values) => {
-      if (!isEdit) {
-
-        if (values?.files?.length > 0) {
-          FileService.uploadFile(values.files).then((res) => {
-            if (res.fileName) {
-              const newAchat = {
-                ach_type: values.type,
-                files: res.fileName,
-              };
-              // save new Achat
-              dispatch(onCreateUpdateAchat(newAchat));
-            }
-          });
-        } else if (values?.facturesExist?.length > 0) {
-          FileService.copyFiles(values?.facturesExist).then((res) => {
-            let arrayUpdateAchat = [];
-            for (let index = 0; index < res.data.length; index++) {
-              const element = res.data[index];
-              let newAchat = {
-                ach_ent_fk: element.header.fen_ent_fk,
-                ach_date_create: element.header.fen_date_create.slice(0, 10),
-                ach_date_expired: element.header.fen_date_expired,
-                ach_categorie: element.header.fen_sujet,
-                ach_total_amount: parseFloat(element.header.fen_total_ttc),
-                ach_rp: parseFloat(element.header.fen_total_ttc),
-                ach_total_tva: parseFloat(element.header.fen_total_tva),
-                ado_file_name: element.newFileCopy,
-                ach_type: "Revenu",
-                ach_lib: "",
-                ach_num: "",
-                ach_met: "",
-              }
-              arrayUpdateAchat.push(newAchat);
-            }
-            let objectDispatching = {
-              invoices: arrayUpdateAchat
-            }
-            dispatch(onCreateUpdateAchat(objectDispatching));
-
-          });
-        }
-
-
-        createAchats.resetForm();
-      }
-      toggle();
-    },
-  });
-
-
-  // Update Data
-  const handleContactClick = useCallback(
-    (arg) => {
-      const achatH = arg;
-      if (achatH?.ach_id) {
-        dispatch(onGetTransactionBankAchat(achatH?.ach_id));
-      }
-      setAchat({
-        id: achatH?.ach_id,
-        montant: achatH?.ach_total_amount,
-        tva: achatH?.ach_total_tva,
-        libelle: achatH.ach_lib,
-        categorie: achatH.ach_categorie,
-        methode: achatH.ach_met,
-        dateEcheance: achatH.ach_date_expired,
-        dateAchat: achatH.ach_date_create,
-        numero: achatH.ach_num,
-        justificatif: achatH.ado_file_name,
-        entity: achatH.ach_ent_fk,
-        rp: achatH?.ach_rp,
-        type: achatH?.ach_type,
-      });
-      setIsEdit(true);
-      toggle();
-    },
-    [toggle]
-  );
 
   // Checked All
   const checkedAll = useCallback(() => {
@@ -240,9 +114,7 @@ const Achats = () => {
 
   const deleteCheckbox = () => {
     const ele = document.querySelectorAll(".contactCheckBox:checked");
-    ele.length > 0
-      ? setIsMultiDeleteButton(true)
-      : setIsMultiDeleteButton(false);
+    ele.length > 0 ? setIsMultiDeleteButton(true) : setIsMultiDeleteButton(false);
     setSelectedCheckBoxDelete(ele);
   };
 
@@ -269,38 +141,37 @@ const Achats = () => {
             />
           );
         },
-        id: "checkDelete",
+        id: "checkDelete"
       },
       {
         Header: "",
         accessor: "ach_id",
         hiddenColumns: true,
         Cell: (cell) => {
-          return <input type="hidden" value={cell.value} />;
-        },
+          return (
+            <input
+              type="hidden"
+              value={cell.value}
+            />
+          );
+        }
       },
       {
         Header: "libelle",
         accessor: "ach_lib",
-        filterable: false,
+        filterable: false
       },
       {
         Header: "Client / Fournisseur",
         accessor: "ent_name",
-        filterable: false,
+        filterable: false
       },
       {
         Header: "Statut",
         filterable: false,
         Cell: (cell) => {
           let status = "";
-          if (
-            cell.row.original.ach_total_amount <= 0 ||
-            cell.row.original.ach_total_amount == null ||
-            cell.row.original.ach_categorie?.length == 0 ||
-            cell.row.original?.ach_date_create == "" ||
-            cell.row.original.ach_date_create == null
-          ) {
+          if (cell.row.original.ach_total_amount <= 0 || cell.row.original.ach_total_amount == null || cell.row.original.ach_categorie?.length == 0 || cell.row.original?.ach_date_create == "" || cell.row.original.ach_date_create == null) {
             status = "A traiter";
           } else if (parseFloat(cell.row.original.ach_rp) != 0) {
             status = "A associer";
@@ -312,7 +183,7 @@ const Achats = () => {
               <p className="m-0">{status}</p>
             </div>
           );
-        },
+        }
       },
       {
         Header: "Montant",
@@ -321,7 +192,10 @@ const Achats = () => {
         Cell: (cell) => {
           return (
             <div className="d-flex align-items-center">
-              <div >{cell.row.original.ach_type == "Charge" ? "- " : "+ "}{customFormatNumber(parseInt(cell.row.original.ach_total_amount))}</div>
+              <div>
+                {cell.row.original.ach_type == "Charge" ? "- " : "+ "}
+                {customFormatNumber(parseInt(cell.row.original.ach_total_amount))}
+              </div>
             </div>
           );
         }
@@ -333,7 +207,7 @@ const Achats = () => {
         Cell: (cell) => {
           return (
             <div className="d-flex align-items-center">
-              <div >{customFormatNumber(parseFloat(cell.row.original.ach_rp))}</div>
+              <div>{customFormatNumber(parseFloat(cell.row.original.ach_rp))}</div>
             </div>
           );
         }
@@ -345,7 +219,7 @@ const Achats = () => {
         Cell: (cell) => {
           return (
             <div className="d-flex align-items-center">
-              <div >{moment(cell.value).isValid() ? moment(cell.value).format('L') : "Aucune date"}</div>
+              <div>{moment(cell.value).isValid() ? moment(cell.value).format("L") : "Aucune date"}</div>
             </div>
           );
         }
@@ -357,7 +231,7 @@ const Achats = () => {
         Cell: (cell) => {
           return (
             <div className="d-flex align-items-center">
-              <div >{moment(cell.value).isValid() ? moment(cell.value).format('L') : "Aucune date"}</div>
+              <div>{moment(cell.value).isValid() ? moment(cell.value).format("L") : "Aucune date"}</div>
             </div>
           );
         }
@@ -365,7 +239,7 @@ const Achats = () => {
       {
         Header: "Catégorie",
         accessor: "ach_categorie",
-        filterable: false,
+        filterable: false
       },
       {
         Header: "Association",
@@ -374,22 +248,15 @@ const Achats = () => {
         Cell: (cell) => {
           let styleCSS = {};
           let elementDisplay = ``;
-          if (
-            parseFloat(cell.row.original.ach_rp) == 0 &&
-            parseFloat(cell.row.original.ach_total_amount) != 0
-          ) {
+          if (parseFloat(cell.row.original.ach_rp) == 0 && parseFloat(cell.row.original.ach_total_amount) != 0) {
             styleCSS = {
               width: "15px",
               height: "15px",
               borderRadius: "50%",
               backgroundColor: "green",
-              marginLeft: "15%",
+              marginLeft: "15%"
             };
-          } else if (
-            parseFloat(cell.row.original.ach_rp) <
-            Math.abs(parseFloat(cell.row.original.ach_total_amount)) &&
-            parseFloat(cell.row.original.ach_rp) > 0
-          ) {
+          } else if (parseFloat(cell.row.original.ach_rp) < Math.abs(parseFloat(cell.row.original.ach_total_amount)) && parseFloat(cell.row.original.ach_rp) > 0) {
             styleCSS = {
               width: "10px",
               height: "15px",
@@ -397,7 +264,7 @@ const Achats = () => {
               borderTopRightRadius: "10px",
               backgroundColor: "orange",
               // marginLeft:8,
-              marginLeft: "16%",
+              marginLeft: "16%"
             };
           } else {
             styleCSS = {
@@ -410,10 +277,12 @@ const Achats = () => {
               justifyContent: "center",
               display: "flex",
               marginLeft: "15%",
-              overflow: "hidden",
+              overflow: "hidden"
             };
             elementDisplay = (
-              <i style={{ color: "red" }} className="las la-times"></i>
+              <i
+                style={{ color: "red" }}
+                className="las la-times"></i>
             );
           }
           return (
@@ -421,7 +290,7 @@ const Achats = () => {
               <div style={styleCSS}>{elementDisplay}</div>
             </div>
           );
-        },
+        }
       },
       {
         Header: "Action",
@@ -432,21 +301,19 @@ const Achats = () => {
               style={{
                 display: "flex",
                 justifyContent: "flex-start",
-                alignItems: "center",
-              }}
-            >
+                alignItems: "center"
+              }}>
               <i
                 style={{ marginLeft: "14%" }}
                 onClick={() => {
                   const achatData = cellProps.row.original;
                   onClickDelete(achatData);
                 }}
-                className="ri-delete-bin-fill align-bottom me-2 text-danger"
-              ></i>
+                className="ri-delete-bin-fill align-bottom me-2 text-danger"></i>
             </div>
           );
-        },
-      },
+        }
+      }
     ],
     []
   );
@@ -454,17 +321,8 @@ const Achats = () => {
   useEffect(() => {
     dispatch(onGetEmployees());
     dispatch(onGetAchat());
-
     dispatch(onGetCollaborateurs());
   }, [dispatch]);
-
-  // useEffect(() => {
-  //   if(achat.id){
-  //     dispatch(
-  //       onGetTransactionBankAchat(achat.id)
-  //     );
-  //   }
-  // }, [achat])
 
   useEffect(() => {
     if (!isEmpty(achats)) {
@@ -499,9 +357,14 @@ const Achats = () => {
           onCloseClick={() => setDeleteModalMulti(false)}
         />
         <Container fluid>
-          <BreadCrumb title="Factures Achats" pageTitle="Banque / Achat" />
+          <BreadCrumb
+            title="Factures Achats"
+            pageTitle="Banque / Achat"
+          />
           <Row>
-            <Col className="view-animate" xxl={show ? 9 : 12}>
+            <Col
+              className="view-animate"
+              xxl={show ? 9 : 12}>
               <Card id="contactList">
                 <CardHeader>
                   <div className="d-flex align-items-center flex-wrap gap-2">
@@ -510,10 +373,8 @@ const Achats = () => {
                         className="btn btn-secondary add-btn"
                         onClick={() => {
                           setModal(true);
-                        }}
-                      >
-                        <i className="ri-add-fill me-1 align-bottom"></i>{" "}
-                        Ajouter un achat
+                        }}>
+                        <i className="ri-add-fill me-1 align-bottom"></i> Ajouter un achat
                       </button>
                     </div>
                     <div className="flex-shrink-0">
@@ -521,8 +382,7 @@ const Achats = () => {
                         {isMultiDeleteButton && (
                           <button
                             className="btn btn-danger"
-                            onClick={() => setDeleteModalMulti(true)}
-                          >
+                            onClick={() => setDeleteModalMulti(true)}>
                             <i className="ri-delete-bin-2-line"></i>
                           </button>
                         )}
@@ -545,7 +405,8 @@ const Achats = () => {
                         theadClass="table-light"
                         actionItem={(row) => {
                           const achatData = row.original;
-                          handleContactClick(achatData);
+                          // handleContactClick(achatData);
+                          navigate("/achat/edition", { state: [achatData.ach_id] });
                         }}
                         // handleContactClick={handleContactClicks}
                         isContactsFilter={true}
@@ -565,14 +426,14 @@ const Achats = () => {
                     setAchat={setAchat}
                     achat={achat}
                     transactions={transactions}
-                    createAchats={createAchats}
-                    filesSelected={createAchats.values}
-                    setFilesSelected={createAchats.setValues}
                     collaborateurs={collaborateurs}
                     transFilter={transFilter}
                     setTransFilter={setTransFilter}
                   />
-                  <ToastContainer closeButton={false} limit={1} />
+                  <ToastContainer
+                    closeButton={false}
+                    limit={1}
+                  />
                 </CardBody>
               </Card>
             </Col>

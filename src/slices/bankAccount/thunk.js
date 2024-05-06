@@ -81,7 +81,6 @@ export const getBankUserAccount = () => {
     axios
       .get(`/v1/userBank`)
       .then((res) => {
-        console.log(res.data);
         resolve(res.data);
       })
       .catch((err) => {

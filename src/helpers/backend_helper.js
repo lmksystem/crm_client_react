@@ -250,6 +250,8 @@ export const deleteSalary = sal_id => api.delete(url.SALARY + "/delete/" + sal_i
 
 export const getAchat = () => api.get(url.ACHAT);
 
+export const getOnceAchat = (ach_id) => api.get(url.ACHAT + "/" + ach_id);
+
 export const createUpdateAchat = data => api.create(url.ACHAT, data);
 
 export const deleteAchat = ach_id => api.delete(url.ACHAT + "/delete/" + ach_id);

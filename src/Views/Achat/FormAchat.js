@@ -1,0 +1,532 @@
+import React, { useEffect, useState } from "react";
+import { Button, Card, CardBody, Col, Container, Form, Input, Label, ListGroup, ListGroupItem, Row } from "reactstrap";
+import BreadCrumb from "../../Components/Common/BreadCrumb";
+import { ToastContainer } from "react-toastify";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import Select from "react-select";
+import CreatableSelect from "react-select/creatable";
+import axios from "axios";
+import SimpleBar from "simplebar-react";
+import { getCollaborateurs } from "../../helpers/backend_helper";
+import { api } from "../../config";
+import moment from "moment";
+import { useSelector } from "react-redux";
+
+function FormAchat({ data }) {
+  const { categoriesList, devise } = useSelector((state) => ({
+    devise: state.Company.devise,
+    categoriesList: state.Achat.categories.map((e) => ({ label: e.aca_name, value: e.aca_name }))
+  }));
+
+  const [achat, setAchat] = useState(data);
+  const [selectedCat, setSelectedCat] = useState([]);
+  const [collaborateurs, setCollaborateurs] = useState(null);
+  const [transactions, setTransactions] = useState(null);
+  const [transactionFilter, setTransactionFilter] = useState("");
+
+  const validation = useFormik({
+    // enableReinitialize : use this flag when initial values needs to be changed
+    enableReinitialize: true,
+
+    initialValues: {
+      ach_id: (achat && achat.ach_id) || "",
+      ach_com_fk: (achat && achat.ach_com_fk) || "",
+      ach_ent_fk: (achat && achat.ach_ent_fk) || "",
+      ach_date_create: (achat && moment(achat.ach_date_create).format("YYYY-MM-DD")) || "",
+      ach_date_expired: (achat && moment(achat.ach_date_expired).format("YYYY-MM-DD")) || "",
+      ach_categorie: (achat && achat.ach_categorie) || "",
+      ach_lib: (achat && achat.ach_lib) || "",
+      ach_num: (achat && achat.ach_num) || "",
+      ach_met: (achat && achat.ach_met) || "",
+      ach_total_amount: (achat && achat.ach_total_amount) || "",
+      ach_total_tva: (achat && achat.ach_total_tva) || "",
+      ach_rp: (achat && achat.ach_rp) || "",
+      ach_type: (achat && achat.ach_type) || ""
+    },
+    validationSchema: Yup.object({
+      ach_total_amount: Yup.number().required("Veuillez choisir entrer un ach_total_amount")
+    }),
+
+    onSubmit: (values) => {
+      axios.post("/v1/achatV2", values).then((res) => {
+        submitCat(selectedCat);
+      });
+    }
+  });
+
+  const previewAchat = (ach_id) => {
+    axios
+      .get(`${api.API_URL}/v1/pdf/download/achat/${ach_id}`, {
+        mode: "no-cors",
+        responseType: "blob"
+      })
+      .then((response) => {
+        try {
+          if (achat.ado_file_name.split(".").pop() == "pdf") {
+            let blob = new Blob([response], { type: "application/pdf" });
+            var file = window.URL.createObjectURL(blob);
+            document.querySelector("#iframe-" + data.ach_id).src = file;
+          } else {
+            let blob = new Blob([response], { type: "image/jpg" });
+            var file = window.URL.createObjectURL(blob);
+            document.querySelector(".image-achat-doc-" + data.ach_id).src = file;
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      });
+  };
+
+  const getCategorieByAchatId = async (ach_id) => {
+    return axios.get("/v1/achat/categorie/" + ach_id).then((res) => {
+      return res.data;
+    });
+  };
+
+  /**
+   * Permet d'ajouter et supprimer les categories
+   * @param {*} arraySelected
+   */
+  const onChangeCategorie = (arraySelected) => {
+    let selected = [];
+
+    // // On retirer les categorie si l'user les a supprimer
+    // let filterRemoved = selectedCat.filter((cat) => {console.log("is find ",cat,arraySelected.findIndex((e) => cat.aca_name == e.value) != -1);return arraySelected.findIndex((e) => cat.aca_name == e.value) > 0});
+    // // console.log(filterRemoved);
+
+    // Boucle sur les nouvelle valeur
+    for (let i = 0; i < arraySelected.length; i++) {
+      const element = arraySelected[i];
+
+      // On recupere l'index des valeurs si elle sont déjà presente dans le state des categorie
+      let index = selectedCat.findIndex((cat, i) => cat.aca_name == element.value);
+
+      if (index != -1) {
+        // Si on trouve la valeur on push dans le nouveau state les ancien valeur pour ne pas les perdre
+        selected.push(selectedCat[index]);
+      } else {
+        // Si non on l'ajoute avec les valeur par defaut
+        selected.push({ aca_name: element.value, aca_montant: 0, aca_tva: 0 });
+      }
+    }
+
+    setSelectedCat(selected);
+  };
+
+  const submitCat = (categories) => {
+    let data = categories.map((cat) => ({ ...cat, aca_ach_fk: achat.ach_id }));
+
+    if (data.length > 0) {
+      axios.post("/v1/achat/categorie", { data }).then((res) => {
+        console.log(res);
+      });
+    }
+  };
+
+  const getTransaction = async () => {
+    return axios.get("/v1/transactionBank").then((res) => {
+      return res.data;
+    });
+  };
+
+  const associateAchatTransaction = (trasaction) => {
+    axios.post("").then(() => {
+      
+    })
+  }
+
+  useEffect(() => {
+    if (data && data.ado_file_name) {
+      previewAchat(data.ach_id);
+      getCategorieByAchatId(data.ach_id).then((res) => {
+        setSelectedCat(res);
+      });
+    }
+  }, [data]);
+
+  useEffect(() => {
+    getCollaborateurs().then((res) => {
+      setCollaborateurs(res.data);
+    });
+    getTransaction().then((transactions) => {
+      setTransactions(transactions);
+    });
+  }, []);
+
+  return (
+    <React.Fragment>
+      <ToastContainer
+        closeButton={false}
+        limit={1}
+      />
+      <Form
+        onSubmit={(e) => {
+          e.preventDefault();
+          console.log("sub");
+          validation.handleSubmit();
+        }}>
+        <Row className="g-3">
+          <Col lg={6}>
+            <Row className="g-3">
+              <Col lg={6}>
+                <div>
+                  <Label
+                    htmlFor="ach_lib-field"
+                    className="form-label">
+                    Libellé
+                  </Label>
+                  <Input
+                    name="ach_lib"
+                    id="ach_lib-field"
+                    className="form-control"
+                    placeholder="Entrer un libellé"
+                    type="text"
+                    onChange={validation.handleChange}
+                    onBlur={validation.handleBlur}
+                    value={validation.values.ach_lib || ""}
+                    invalid={validation.touched.ach_lib && validation.errors.ach_lib ? true : false}
+                  />
+                  {validation.touched.ach_lib && validation.errors.ach_lib ? <FormFeedback type="invalid">{validation.errors.ach_lib}</FormFeedback> : null}
+                </div>
+              </Col>
+              <Col lg={6}>
+                <div>
+                  <Label
+                    htmlFor="entity-field"
+                    className="form-label">
+                    Client/Fournisseur*
+                  </Label>
+
+                  <Select
+                    defaultValue={data.ent_id ? { label: data.ent_name, value: data.ent_id } : { label: "Sélectionner...", value: null }}
+                    invalid={(validation.touched.entity && validation.errors.entity) || (validation.touched.entityName && validation.errors.entityName) ? true : false}
+                    placeholder={"Selectionnez un client/fournisseur"}
+                    onChange={(res) => {
+                      validation.setValues({
+                        ...validation.values,
+                        ach_ent_fk: res.value
+                      });
+                    }}
+                    options={
+                      collaborateurs &&
+                      collaborateurs.map((i) => ({
+                        label: i.ent_name,
+                        value: i.ent_id
+                      }))
+                    }
+                    name="choices-single-default"
+                    id="entity"></Select>
+                  {(validation.touched.entity && validation.errors.entity) || (validation.touched.entityName && validation.errors.entityName) ? (
+                    <FormFeedback
+                      type="invalid"
+                      style={{ display: "block" }}>
+                      {validation.errors.entityName}
+                    </FormFeedback>
+                  ) : null}
+                </div>
+              </Col>
+              <Col lg={6}>
+                <div>
+                  <Label
+                    htmlFor="ach_total_amount-field"
+                    className="form-label">
+                    Montant Total TTC
+                  </Label>
+                  <Input
+                    name="ach_total_amount"
+                    id="ach_total_amount-field"
+                    className="form-control"
+                    placeholder="Entrer le montant total"
+                    type="number"
+                    onChange={validation.handleChange}
+                    onBlur={validation.handleBlur}
+                    value={validation.values.ach_total_amount || ""}
+                    invalid={validation.touched.ach_total_amount && validation.errors.ach_total_amount ? true : false}
+                  />
+                  {validation.touched.ach_total_amount && validation.errors.ach_total_amount ? <FormFeedback type="invalid">{validation.errors.ach_total_amount}</FormFeedback> : null}
+                </div>
+              </Col>
+              <Col lg={6}>
+                <div>
+                  <Label
+                    htmlFor="ach_total_tva-field"
+                    className="form-label">
+                    Total TVA
+                  </Label>
+                  <Input
+                    name="ach_total_tva"
+                    id="ach_total_tva-field"
+                    className="form-control"
+                    placeholder="Entrer le total TVA"
+                    type="number"
+                    onChange={validation.handleChange}
+                    onBlur={validation.handleBlur}
+                    value={validation.values.ach_total_tva || ""}
+                    invalid={validation.touched.ach_total_tva && validation.errors.ach_total_tva ? true : false}
+                  />
+                  {validation.touched.ach_total_tva && validation.errors.ach_total_tva ? <FormFeedback type="invalid">{validation.errors.ach_total_tva}</FormFeedback> : null}
+                </div>
+              </Col>
+
+              <Col lg={6}>
+                <div>
+                  <Label
+                    htmlFor="ach_date_create-field"
+                    className="form-label">
+                    Date d'achat
+                  </Label>
+                  <Input
+                    name="ach_date_create"
+                    id="ach_date_create-field"
+                    className="form-control"
+                    placeholder="Entrer une méthode"
+                    type="date"
+                    onChange={validation.handleChange}
+                    onBlur={validation.handleBlur}
+                    value={validation.values.ach_date_create || ""}
+                    invalid={validation.touched.ach_date_create && validation.errors.ach_date_create ? true : false}
+                  />
+                  {validation.touched.ach_date_create && validation.errors.ach_date_create ? <FormFeedback type="invalid">{validation.errors.ach_date_create}</FormFeedback> : null}
+                </div>
+              </Col>
+              <Col lg={6}>
+                <div>
+                  <Label
+                    htmlFor="ach_date_expired-field"
+                    className="form-label">
+                    Date d'échéance
+                  </Label>
+                  <Input
+                    name="ach_date_expired"
+                    id="ach_date_expired-field"
+                    className="form-control"
+                    placeholder="Entrer une catégorie"
+                    type="date"
+                    onChange={validation.handleChange}
+                    onBlur={validation.handleBlur}
+                    value={validation.values.ach_date_expired || ""}
+                    invalid={validation.touched.ach_date_expired && validation.errors.ach_date_expired ? true : false}
+                  />
+                  {validation.touched.ach_date_expired && validation.errors.ach_date_expired ? <FormFeedback type="invalid">{validation.errors.ach_date_expired}</FormFeedback> : null}
+                </div>
+              </Col>
+
+              <Col lg={6}>
+                <div>
+                  <Label
+                    htmlFor="ach_num-field"
+                    className="form-label">
+                    Numéro d'achat
+                  </Label>
+                  <Input
+                    name="ach_num"
+                    id="ach_num-field"
+                    className="form-control"
+                    placeholder="Entrer un numéro"
+                    type="text"
+                    onChange={validation.handleChange}
+                    onBlur={validation.handleBlur}
+                    value={validation.values.ach_num || ""}
+                    invalid={validation.touched.ach_num && validation.errors.ach_num ? true : false}
+                  />
+                  {validation.touched.ach_num && validation.errors.ach_num ? <FormFeedback type="invalid">{validation.errors.ach_num}</FormFeedback> : null}
+                </div>
+              </Col>
+              <Col lg={6}>
+                <div>
+                  <Label
+                    htmlFor="ach_met-field"
+                    className="form-label">
+                    Méthode
+                  </Label>
+                  <Input
+                    name="ach_met"
+                    id="ach_met-field"
+                    className="form-control"
+                    placeholder="Entrer une méthode"
+                    type="text"
+                    onChange={validation.handleChange}
+                    onBlur={validation.handleBlur}
+                    value={validation.values.ach_met || ""}
+                    invalid={validation.touched.ach_met && validation.errors.ach_met ? true : false}
+                  />
+                  {validation.touched.ach_met && validation.errors.ach_met ? <FormFeedback type="invalid">{validation.errors.ach_met}</FormFeedback> : null}
+                </div>
+              </Col>
+
+              <Col lg={12}>
+                <div>
+                  <Label
+                    htmlFor="categorie-field"
+                    className="form-label">
+                    Catégorie*
+                  </Label>
+
+                  <CreatableSelect
+                    styles={{ zIndex: 5 }}
+                    placeholder={"Ajouter vos catégories..."}
+                    noOptionsMessage={() => "Aucune option (écrire pour en ajouter)"}
+                    formatCreateLabel={(val) => `Créer "${val}"`}
+                    isMulti
+                    isClearable
+                    closeMenuOnSelect={false}
+                    options={[{ options: categoriesList }]}
+                    onChange={onChangeCategorie}
+                    value={selectedCat.map((c) => ({ label: c.aca_name, value: c.aca_name }))}
+                  />
+
+                  {validation.touched.categorie && validation.errors.categorie ? <FormFeedback type="invalid">{validation.errors.categorie}</FormFeedback> : null}
+                  <p className="mt-2">Liste de catégories</p>
+                  {selectedCat
+                    ? selectedCat.map((cat, i) => (
+                        <div
+                          key={i}
+                          className="d-flex flex-row">
+                          <div style={{ alignItems: "center", display: "flex", width: "30%" }}>{cat.aca_name}</div>
+                          <div className="mx-2 input-group">
+                            <Input
+                              name=""
+                              id=""
+                              style={{ flex: 1, height: 25, fontSize: 12, textAlign: "right" }}
+                              className="form-control"
+                              placeholder="TVA"
+                              type="number"
+                              onChange={(e) => {
+                                let copy = [...selectedCat];
+                                copy[i].aca_tva = e.target.value;
+                                setSelectedCat(copy);
+                              }}
+                              value={cat.aca_tva || ""}
+                            />
+                            <Label
+                              style={{ whiteSpace: "nowrap", zIndex: 0, height: 25, fontSize: 10 }}
+                              className="btn btn-secondary btn-input-group">
+                              %
+                            </Label>
+                          </div>
+                          <div className="mx-2 input-group">
+                            <Input
+                              style={{ flex: 1, height: 25, fontSize: 12, textAlign: "right" }}
+                              name=""
+                              id=""
+                              className="form-control"
+                              placeholder="Montant"
+                              type="number"
+                              onChange={(e) => {
+                                let copy = [...selectedCat];
+                                copy[i].aca_montant = e.target.value;
+                                setSelectedCat(copy);
+                              }}
+                              value={cat.aca_montant || ""}
+                            />
+                            <Label
+                              style={{ whiteSpace: "nowrap", zIndex: 0, width: "auto", height: 25, fontSize: 10 }}
+                              className="btn btn-secondary btn-input-group">
+                              {devise}
+                            </Label>
+                          </div>
+                        </div>
+                      ))
+                    : null}
+                </div>
+              </Col>
+              <Col lg={12}>
+                <div>
+                  <p className="text-muted">Associer une/plusieurs transaction(s) à l'achat</p>
+                  <div id="users">
+                    <Row className="mb-2">
+                      <Col lg={12}>
+                        <div>
+                          <input
+                            className="search form-control"
+                            placeholder="Chercher une transaction"
+                            value={transactionFilter}
+                            onChange={(e) => setTransactionFilter(e.target.value)}
+                          />
+                        </div>
+                      </Col>
+                    </Row>
+
+                    <SimpleBar
+                      style={{ height: "215px" }}
+                      className="mx-n3">
+                      <ListGroup
+                        className="list mb-0"
+                        flush>
+                        {transactions?.length > 0 &&
+                          transactions
+                            ?.filter((trans) => trans.tba_desc?.toLowerCase()?.includes(transactionFilter) || trans.tba_amount?.toLowerCase()?.includes(transactionFilter))
+                            ?.map((tra, i) => {
+                              return (
+                                <ListGroupItem
+                                  key={i}
+                                  className={` ${false ? "bg-light text-grey tit" : ""}`}
+                                  onClick={() => {
+                                    associateAchatTransaction(tra);
+                                  }}
+                                  data-id="1">
+                                  <div className={`d-flex`}>
+                                    <div className="flex-grow-1">
+                                      <h5 className="fs-13 mb-1 text-dark">
+                                        {false ? <i className="las la-link"></i> : null}
+                                        {tra.bua_ach_lib?.length > 0 ? tra?.bua_ach_lib : tra?.bua_account_id}
+                                      </h5>
+                                      <h5 className="fs-13 mb-1 text-dark">{tra?.tba_desc?.length > 0 ? tra?.tba_desc : ""}</h5>
+                                      <p
+                                        className="born timestamp text-muted mb-0"
+                                        data-timestamp="12345">
+                                        {moment(tra.tba_bkg_date).format("L")}
+                                      </p>
+                                    </div>
+                                    <div className="flex-shrink-0">
+                                      <div>
+                                        {parseFloat(tra.tba_amount)} {devise}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </ListGroupItem>
+                              );
+                            })}
+                      </ListGroup>
+                    </SimpleBar>
+                  </div>
+                </div>
+              </Col>
+            </Row>
+          </Col>
+          <Col lg={6}>
+            {window.innerWidth > 992 ? (
+              achat && achat.ado_file_name ? (
+                achat.ado_file_name.split(".").pop() == "pdf" ? (
+                  <iframe
+                    id={"iframe-" + data.ach_id}
+                    style={{ width: "100%", height: "100%" }}
+                    lg={12}
+                    src={""}
+                    title={achat.ado_file_name}></iframe>
+                ) : (
+                  <div className="container-img-achat">
+                    <img
+                      className={"image-achat-doc-" + achat.ach_id}
+                      src={`${api.API_URL}/public/pdf/${achat?.ach_com_fk}/achat/${achat.ado_date_create.split("-")[0]}/${achat.ado_date_create.split("-")[1]}/${achat?.ado_file_name}`}
+                    />
+                  </div>
+                )
+              ) : null
+            ) : (
+              ""
+            )}
+          </Col>
+        </Row>
+        <Button
+          className="btn btn-primary"
+          type="submit">
+          Valider
+        </Button>
+      </Form>
+    </React.Fragment>
+  );
+}
+
+export default FormAchat;
