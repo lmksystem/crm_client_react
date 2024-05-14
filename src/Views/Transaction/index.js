@@ -324,6 +324,7 @@ const TransactionBank = () => {
     dispatch(onLinkTransToAchat(newObj));
     setAchatEvol(!achatEvol);
   };
+
   const filterData = () => {
     let newArrayFiltred = achatFilter?.data?.map((achatItem) => {
       if (parseFloat(transaction.tba_amount) > 0 && achatItem.ach_type == "Revenu") {

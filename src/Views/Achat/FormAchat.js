@@ -19,10 +19,11 @@ function FormAchat({ data }) {
     categoriesList: state.Achat.categories.map((e) => ({ label: e.aca_name, value: e.aca_name }))
   }));
 
-  const [achat, setAchat] = useState(data);
+  const [achatBank, setAchatBank] = useState([]);
   const [selectedCat, setSelectedCat] = useState([]);
   const [collaborateurs, setCollaborateurs] = useState(null);
   const [transactions, setTransactions] = useState(null);
+
   const [transactionFilter, setTransactionFilter] = useState("");
 
   const validation = useFormik({
@@ -30,19 +31,19 @@ function FormAchat({ data }) {
     enableReinitialize: true,
 
     initialValues: {
-      ach_id: (achat && achat.ach_id) || "",
-      ach_com_fk: (achat && achat.ach_com_fk) || "",
-      ach_ent_fk: (achat && achat.ach_ent_fk) || "",
-      ach_date_create: (achat && moment(achat.ach_date_create).format("YYYY-MM-DD")) || "",
-      ach_date_expired: (achat && moment(achat.ach_date_expired).format("YYYY-MM-DD")) || "",
-      ach_categorie: (achat && achat.ach_categorie) || "",
-      ach_lib: (achat && achat.ach_lib) || "",
-      ach_num: (achat && achat.ach_num) || "",
-      ach_met: (achat && achat.ach_met) || "",
-      ach_total_amount: (achat && achat.ach_total_amount) || "",
-      ach_total_tva: (achat && achat.ach_total_tva) || "",
-      ach_rp: (achat && achat.ach_rp) || "",
-      ach_type: (achat && achat.ach_type) || ""
+      ach_id: (data && data.ach_id) || "",
+      ach_com_fk: (data && data.ach_com_fk) || "",
+      ach_ent_fk: (data && data.ach_ent_fk) || "",
+      ach_date_create: (data && moment(data.ach_date_create).format("YYYY-MM-DD")) || "",
+      ach_date_expired: (data && moment(data.ach_date_expired).format("YYYY-MM-DD")) || "",
+      ach_categorie: (data && data.ach_categorie) || "",
+      ach_lib: (data && data.ach_lib) || "",
+      ach_num: (data && data.ach_num) || "",
+      ach_met: (data && data.ach_met) || "",
+      ach_total_amount: (data && data.ach_total_amount) || "",
+      ach_total_tva: (data && data.ach_total_tva) || "",
+      ach_rp: (data && data.ach_rp) || "",
+      ach_type: (data && data.ach_type) || ""
     },
     validationSchema: Yup.object({
       ach_total_amount: Yup.number().required("Veuillez choisir entrer un ach_total_amount")
@@ -63,7 +64,7 @@ function FormAchat({ data }) {
       })
       .then((response) => {
         try {
-          if (achat.ado_file_name.split(".").pop() == "pdf") {
+          if (data.ado_file_name.split(".").pop() == "pdf") {
             let blob = new Blob([response], { type: "application/pdf" });
             var file = window.URL.createObjectURL(blob);
             document.querySelector("#iframe-" + data.ach_id).src = file;
@@ -115,7 +116,7 @@ function FormAchat({ data }) {
   };
 
   const submitCat = (categories) => {
-    let data = categories.map((cat) => ({ ...cat, aca_ach_fk: achat.ach_id }));
+    let data = categories.map((cat) => ({ ...cat, aca_ach_fk: data.ach_id }));
 
     if (data.length > 0) {
       axios.post("/v1/achat/categorie", { data }).then((res) => {
@@ -130,11 +131,54 @@ function FormAchat({ data }) {
     });
   };
 
-  const associateAchatTransaction = (trasaction) => {
-    axios.post("").then(() => {
-      
-    })
-  }
+  const getAchatBank = async () => {
+    return axios.get("/v1/achatBank").then((res) => {
+      return res.data;
+    });
+  };
+
+  const associateAchatTransaction = (transaction, achat) => {
+    transaction = { ...transaction };
+    achat = { ...achat };
+
+    let newAchatBank = { aba_ach_fk: data.ach_id, aba_tba_fk: transaction.tba_id, aba_com_fk: data.ach_com_fk };
+    let resultat = parseFloat(validation.values.ach_rp) - parseFloat(transaction.tba_rp);
+    console.log(transaction, achat);
+    if (resultat >= 0) {
+      achat.ach_rp = resultat;
+      newAchatBank.aba_match_amount = transaction.tba_rp;
+      transaction.tba_rp = 0;
+    } else {
+      transaction.tba_rp = transaction.tba_rp - validation.values.ach_rp;
+      newAchatBank.aba_match_amount = validation.values.ach_rp;
+      achat.ach_rp = 0;
+    }
+
+    axios.post("/v1/achatBank", { achat, transaction, newAchatBank }).then((res) => {
+      setTransactions(() => transactions.map((e) => (transaction.tba_id == e.tba_id ? { ...e, tba_rp: transaction.tba_rp } : e)));
+      validation.setValues({ ...validation.values, ach_rp: achat.ach_rp });
+      setAchatBank([...achatBank, res.data]);
+    });
+  };
+
+  /**
+   * Permet de disocier la trasaction de l'achat
+   * @param {*} transaction
+   * @param {*} achat
+   * @param {*} achatBankSelected Achat bank à supprimer
+   */
+  const dissociationAchatTransation = (transaction, achat, achatBankSelected) => {
+    transaction = { ...transaction };
+    console.log(validation.values);
+    validation.values.ach_rp = parseFloat(validation.values.ach_rp) + parseFloat(achatBankSelected.aba_match_amount);
+    transaction.tba_rp = parseFloat(transaction.tba_rp) + parseFloat(achatBankSelected.aba_match_amount);
+
+    axios.delete("/v1/achatBank", { data: { achat, transaction, achatBank: achatBankSelected } }).then((res) => {
+      setTransactions(() => transactions.map((e) => (transaction.tba_id == e.tba_id ? { ...e, tba_rp: transaction.tba_rp } : e)));
+      validation.setValues({ ...validation.values, ach_rp: validation.values.ach_rp });
+      setAchatBank(achatBank.map((aba) => aba.aba_id != res.data));
+    });
+  };
 
   useEffect(() => {
     if (data && data.ado_file_name) {
@@ -142,6 +186,22 @@ function FormAchat({ data }) {
       getCategorieByAchatId(data.ach_id).then((res) => {
         setSelectedCat(res);
       });
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (data && data.ado_file_name) {
+      previewAchat(data.ach_id);
+      getCategorieByAchatId(data.ach_id).then((res) => {
+        setSelectedCat(res);
+      });
+      getAchatBank()
+        .then((res) => {
+          setAchatBank(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   }, [data]);
 
@@ -458,20 +518,26 @@ function FormAchat({ data }) {
                           transactions
                             ?.filter((trans) => trans.tba_desc?.toLowerCase()?.includes(transactionFilter) || trans.tba_amount?.toLowerCase()?.includes(transactionFilter))
                             ?.map((tra, i) => {
+                              let achatBankSelected = achatBank && achatBank.find((a) => a.aba_tba_fk == tra.tba_id);
                               return (
                                 <ListGroupItem
                                   key={i}
-                                  className={` ${false ? "bg-light text-grey tit" : ""}`}
+                                  className={` ${achatBankSelected ? "bg-light text-grey tit" : ""}`}
                                   onClick={() => {
-                                    associateAchatTransaction(tra);
+                                    if (!achatBankSelected) {
+                                      associateAchatTransaction(tra, validation.values);
+                                    } else {
+                                      dissociationAchatTransation(tra, validation.values, achatBankSelected);
+                                    }
                                   }}
                                   data-id="1">
                                   <div className={`d-flex`}>
                                     <div className="flex-grow-1">
                                       <h5 className="fs-13 mb-1 text-dark">
-                                        {false ? <i className="las la-link"></i> : null}
+                                        {achatBankSelected ? <i className="las la-link"></i> : null}
                                         {tra.bua_ach_lib?.length > 0 ? tra?.bua_ach_lib : tra?.bua_account_id}
                                       </h5>
+                                      <h5>rp : {tra.tba_rp}</h5>
                                       <h5 className="fs-13 mb-1 text-dark">{tra?.tba_desc?.length > 0 ? tra?.tba_desc : ""}</h5>
                                       <p
                                         className="born timestamp text-muted mb-0"
@@ -497,19 +563,19 @@ function FormAchat({ data }) {
           </Col>
           <Col lg={6}>
             {window.innerWidth > 992 ? (
-              achat && achat.ado_file_name ? (
-                achat.ado_file_name.split(".").pop() == "pdf" ? (
+              data && data.ado_file_name ? (
+                data.ado_file_name.split(".").pop() == "pdf" ? (
                   <iframe
                     id={"iframe-" + data.ach_id}
                     style={{ width: "100%", height: "100%" }}
                     lg={12}
                     src={""}
-                    title={achat.ado_file_name}></iframe>
+                    title={data.ado_file_name}></iframe>
                 ) : (
                   <div className="container-img-achat">
                     <img
-                      className={"image-achat-doc-" + achat.ach_id}
-                      src={`${api.API_URL}/public/pdf/${achat?.ach_com_fk}/achat/${achat.ado_date_create.split("-")[0]}/${achat.ado_date_create.split("-")[1]}/${achat?.ado_file_name}`}
+                      className={"image-achat-doc-" + data.ach_id}
+                      src={`${api.API_URL}/public/pdf/${data?.ach_com_fk}/achat/${data.ado_date_create.split("-")[0]}/${data.ado_date_create.split("-")[1]}/${data?.ado_file_name}`}
                     />
                   </div>
                 )

@@ -107,7 +107,7 @@ const ModalCreate = ({ modal, toggle, setModal, setIsEdit, isEdit, setAchat }) =
         } else if (values?.facturesExist?.length > 0) {
           FileService.copyFiles(values?.facturesExist).then((res) => {
             let arrayUpdateAchat = [];
-            console.log(res);
+
             if (res.status == 200) {
               for (let index = 0; index < res.data.length; index++) {
                 const element = res.data[index];
@@ -135,7 +135,7 @@ const ModalCreate = ({ modal, toggle, setModal, setIsEdit, isEdit, setAchat }) =
             }
           });
         }
-        
+
         if (navigateData.length > 0) {
           navigate("/achat/edition", { state: navigateData });
         }
