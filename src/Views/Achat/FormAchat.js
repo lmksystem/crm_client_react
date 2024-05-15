@@ -75,6 +75,8 @@ function FormAchat({ data }) {
         } catch (err) {
           console.log(err);
         }
+      }).catch((err) => {
+        console.log(err);
       });
   };
 
@@ -132,7 +134,7 @@ function FormAchat({ data }) {
 
   const associateAchatTransaction = (trasaction) => {
     axios.post("").then(() => {
-      
+
     })
   }
 
@@ -380,54 +382,54 @@ function FormAchat({ data }) {
                   <p className="mt-2">Liste de catégories</p>
                   {selectedCat
                     ? selectedCat.map((cat, i) => (
-                        <div
-                          key={i}
-                          className="d-flex flex-row">
-                          <div style={{ alignItems: "center", display: "flex", width: "30%" }}>{cat.aca_name}</div>
-                          <div className="mx-2 input-group">
-                            <Input
-                              name=""
-                              id=""
-                              style={{ flex: 1, height: 25, fontSize: 12, textAlign: "right" }}
-                              className="form-control"
-                              placeholder="TVA"
-                              type="number"
-                              onChange={(e) => {
-                                let copy = [...selectedCat];
-                                copy[i].aca_tva = e.target.value;
-                                setSelectedCat(copy);
-                              }}
-                              value={cat.aca_tva || ""}
-                            />
-                            <Label
-                              style={{ whiteSpace: "nowrap", zIndex: 0, height: 25, fontSize: 10 }}
-                              className="btn btn-secondary btn-input-group">
-                              %
-                            </Label>
-                          </div>
-                          <div className="mx-2 input-group">
-                            <Input
-                              style={{ flex: 1, height: 25, fontSize: 12, textAlign: "right" }}
-                              name=""
-                              id=""
-                              className="form-control"
-                              placeholder="Montant"
-                              type="number"
-                              onChange={(e) => {
-                                let copy = [...selectedCat];
-                                copy[i].aca_montant = e.target.value;
-                                setSelectedCat(copy);
-                              }}
-                              value={cat.aca_montant || ""}
-                            />
-                            <Label
-                              style={{ whiteSpace: "nowrap", zIndex: 0, width: "auto", height: 25, fontSize: 10 }}
-                              className="btn btn-secondary btn-input-group">
-                              {devise}
-                            </Label>
-                          </div>
+                      <div
+                        key={i}
+                        className="d-flex flex-row">
+                        <div style={{ alignItems: "center", display: "flex", width: "30%" }}>{cat.aca_name}</div>
+                        <div className="mx-2 input-group">
+                          <Input
+                            name=""
+                            id=""
+                            style={{ flex: 1, height: 25, fontSize: 12, textAlign: "right" }}
+                            className="form-control"
+                            placeholder="TVA"
+                            type="number"
+                            onChange={(e) => {
+                              let copy = [...selectedCat];
+                              copy[i].aca_tva = e.target.value;
+                              setSelectedCat(copy);
+                            }}
+                            value={cat.aca_tva || ""}
+                          />
+                          <Label
+                            style={{ whiteSpace: "nowrap", zIndex: 0, height: 25, fontSize: 10 }}
+                            className="btn btn-secondary btn-input-group">
+                            %
+                          </Label>
                         </div>
-                      ))
+                        <div className="mx-2 input-group">
+                          <Input
+                            style={{ flex: 1, height: 25, fontSize: 12, textAlign: "right" }}
+                            name=""
+                            id=""
+                            className="form-control"
+                            placeholder="Montant"
+                            type="number"
+                            onChange={(e) => {
+                              let copy = [...selectedCat];
+                              copy[i].aca_montant = e.target.value;
+                              setSelectedCat(copy);
+                            }}
+                            value={cat.aca_montant || ""}
+                          />
+                          <Label
+                            style={{ whiteSpace: "nowrap", zIndex: 0, width: "auto", height: 25, fontSize: 10 }}
+                            className="btn btn-secondary btn-input-group">
+                            {devise}
+                          </Label>
+                        </div>
+                      </div>
+                    ))
                     : null}
                 </div>
               </Col>
