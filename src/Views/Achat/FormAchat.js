@@ -12,6 +12,7 @@ import { getCollaborateurs } from "../../helpers/backend_helper";
 import { api } from "../../config";
 import moment from "moment";
 import { useSelector } from "react-redux";
+import { getAchat } from "../../slices/thunks";
 
 function FormAchat({ data }) {
   const { categoriesList, devise } = useSelector((state) => ({
@@ -76,9 +77,7 @@ function FormAchat({ data }) {
         } catch (err) {
           console.log(err);
         }
-      }).catch((err) => {
-        console.log(err);
-      });
+      })
   };
 
   const getCategorieByAchatId = async (ach_id) => {
@@ -128,7 +127,7 @@ function FormAchat({ data }) {
   };
 
   const getTransaction = async () => {
-    return axios.get("/v1/transactionBank").then((res) => {
+    return axios.get("/v1/transactionBankPositiveRp").then((res) => {
       return res.data;
     });
   };
@@ -214,6 +213,7 @@ function FormAchat({ data }) {
     getTransaction().then((transactions) => {
       setTransactions(transactions);
     });
+    getAchat
   }, []);
 
   return (

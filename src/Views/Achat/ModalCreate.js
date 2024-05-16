@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 
-import { Col, Row, Label, Input, Modal, ModalHeader, ModalBody, Form, ModalFooter, FormFeedback, ListGroupItem, ListGroup } from "reactstrap";
+import { Col, Row, Label, Input, Modal, ModalHeader, ModalBody, Form, ModalFooter, FormFeedback, ListGroupItem, ListGroup, Spinner } from "reactstrap";
 import "react-toastify/dist/ReactToastify.css";
 import SimpleBar from "simplebar-react";
 import * as Yup from "yup";
@@ -13,11 +13,13 @@ import makeAnimated from "react-select/animated";
 import axios from "axios";
 import FileService from "../../utils/FileService";
 import { useNavigate } from "react-router-dom";
+import Loader from "../../Components/Common/Loader";
 
 const ModalCreate = ({ modal, toggle, setModal, setIsEdit, isEdit, setAchat }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [factures, setFactures] = useState([]);
+  const [loader, setLoader] = useState(false);
 
   const { invoices, devise } = useSelector((state) => ({
     devise: state.Company.devise,
@@ -71,6 +73,7 @@ const ModalCreate = ({ modal, toggle, setModal, setIsEdit, isEdit, setAchat }) =
       //files: Yup.array().min(1).required("Veuillez choisir un/plusieurs fichier(s)")
     }),
     onSubmit: async (values) => {
+      setLoader(() => true);
       try {
         let navigateData = [];
         if (values?.files?.length > 0) {
@@ -141,7 +144,8 @@ const ModalCreate = ({ modal, toggle, setModal, setIsEdit, isEdit, setAchat }) =
         }
 
         createAchats.resetForm();
-      } catch (error) {}
+        setLoader(() => false);
+      } catch (error) { }
     }
   });
 
@@ -166,146 +170,156 @@ const ModalCreate = ({ modal, toggle, setModal, setIsEdit, isEdit, setAchat }) =
   }, [createAchats.values.type]);
 
   return (
-    <Modal
-      style={{ maxWidth: isEdit ? "90%" : "auto" }}
-      id="showModal"
-      isOpen={modal}
-      toggle={toggle}
-      centered>
-      <ModalHeader
-        className="bg-soft-info p-3"
-        toggle={toggle}>
-        {!!isEdit ? "Modifier le détail de l'achat" : "Ajouter une/plusieurs factures d'achat"}
-      </ModalHeader>
+    <>
+      <Modal
+        style={{ maxWidth: isEdit ? "90%" : "auto" }}
+        id="showModal"
+        isOpen={modal}
+        toggle={toggle}
+        centered>
+        <ModalHeader
+          className="bg-soft-info p-3"
+          toggle={toggle}>
+          {!!isEdit ? "Modifier le détail de l'achat" : "Ajouter une/plusieurs factures d'achat"}
+        </ModalHeader>
 
-      <Form
-        className="tablelist-form"
-        onSubmit={(e) => {
-          e.preventDefault();
-          console.log("sub");
-          createAchats.handleSubmit();
-        }}>
-        <ModalBody>
-          <Input
-            type="hidden"
-            id="id-field"
-          />
+        <Form
+          className="tablelist-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            console.log("sub");
+            createAchats.handleSubmit();
+          }}>
+          <ModalBody>
+            <Input
+              type="hidden"
+              id="id-field"
+            />
 
-          <Row className="g-3">
-            <Col lg={12}>
-              <div>
-                <Label
-                  htmlFor="type-field"
-                  className="form-label">
-                  Type
-                </Label>
-
-                <Input
-                  type="select"
-                  className="form-select mb-0"
-                  validate={{
-                    required: { value: true }
-                  }}
-                  invalid={createAchats.touched.type && createAchats.errors.type ? true : false}
-                  value={createAchats.values.type}
-                  onChange={createAchats.handleChange}
-                  onBlur={createAchats.handleBlur}
-                  name="type"
-                  id="type-field">
-                  <option
-                    disabled={true}
-                    value={""}>
-                    Choisir un type
-                  </option>
-                  {typesAchat.map((e, i) => (
-                    <option
-                      key={i}
-                      value={e.value}>
-                      {e.label}
-                    </option>
-                  ))}
-                </Input>
-                {createAchats.touched.type && createAchats.errors.type ? <FormFeedback type="invalid">{createAchats.errors.type}</FormFeedback> : null}
-              </div>
-            </Col>
-            {createAchats.values.type == "Revenu" && createAchats.values.files < 1 && (
+            <Row className="g-3">
               <Col lg={12}>
                 <div>
-                  <h5>Choisir des factures existantes</h5>
+                  <Label
+                    htmlFor="type-field"
+                    className="form-label">
+                    Type
+                  </Label>
+
+                  <Input
+                    type="select"
+                    className="form-select mb-0"
+                    validate={{
+                      required: { value: true }
+                    }}
+                    invalid={createAchats.touched.type && createAchats.errors.type ? true : false}
+                    value={createAchats.values.type}
+                    onChange={createAchats.handleChange}
+                    onBlur={createAchats.handleBlur}
+                    name="type"
+                    id="type-field">
+                    <option
+                      disabled={true}
+                      value={""}>
+                      Choisir un type
+                    </option>
+                    {typesAchat.map((e, i) => (
+                      <option
+                        key={i}
+                        value={e.value}>
+                        {e.label}
+                      </option>
+                    ))}
+                  </Input>
+                  {createAchats.touched.type && createAchats.errors.type ? <FormFeedback type="invalid">{createAchats.errors.type}</FormFeedback> : null}
                 </div>
-                <SimpleBar
-                  style={{ height: "150px" }}
-                  className="mx-n3">
-                  <ListGroup
-                    className="list mb-0"
-                    flush>
-                    {factures?.map((fac, i) => {
-                      return (
-                        <ListGroupItem
-                          key={i}
-                          className={` ${isInvoiceSelected(fac.header.fen_id) ? "bg-light text-grey tit" : ""}`}
-                          onClick={() => {
-                            handleFacture(fac);
-                          }}
-                          data-id="1">
-                          <div className={`d-flex justify-content-between`}>
-                            <div className="d-flex  flex-column">
-                              <p
-                                style={{ fontWeight: "bolder" }}
-                                className="p-0 m-0 font-weight-bold">
-                                {fac.contact.fco_name}
-                              </p>
-                              <p className="p-0 m-0">{fac.header.fen_date_create.slice(0, 10)}</p>
-                            </div>
-                            <div>
-                              <p
-                                style={{ fontWeight: "bolder" }}
-                                className="p-0 m-0">
-                                {parseFloat(fac.header.fen_total_ttc).toFixed(2)} {devise} TTC
-                              </p>
-                            </div>
-                          </div>
-                        </ListGroupItem>
-                      );
-                    })}
-                  </ListGroup>
-                </SimpleBar>
               </Col>
-            )}
-            {createAchats.values.type && createAchats.values.facturesExist < 1 && (
-              <Col lg={12}>
-                <DropFileComponents
-                  setValues={createAchats.setValues}
-                  values={createAchats.values}
-                  touched={createAchats.touched.files}
-                  errors={createAchats.errors.files}
-                />
-              </Col>
-            )}
-          </Row>
-        </ModalBody>
-        <ModalFooter>
-          <div className="hstack gap-2 justify-content-end">
-            <button
-              type="button"
-              className="btn btn-light"
-              onClick={() => {
-                setModal(false);
-                setIsEdit(false);
-                setAchat({});
-              }}>
-              Fermer
-            </button>
-            <button
-              type="submit"
-              className="btn btn-success"
-              id="add-btn">
-              Ajouter
-            </button>
-          </div>
-        </ModalFooter>
-      </Form>
-    </Modal>
+              {createAchats.values.type == "Revenu" && createAchats.values.files < 1 && (
+                <Col lg={12}>
+                  <div>
+                    <h5>Choisir des factures existantes</h5>
+                  </div>
+                  <SimpleBar
+                    style={{ height: "150px" }}
+                    className="mx-n3">
+                    <ListGroup
+                      className="list mb-0"
+                      flush>
+                      {factures?.map((fac, i) => {
+                        return (
+                          <ListGroupItem
+                            key={i}
+                            className={` ${isInvoiceSelected(fac.header.fen_id) ? "bg-light text-grey tit" : ""}`}
+                            onClick={() => {
+                              handleFacture(fac);
+                            }}
+                            data-id="1">
+                            <div className={`d-flex justify-content-between`}>
+                              <div className="d-flex  flex-column">
+                                <p
+                                  style={{ fontWeight: "bolder" }}
+                                  className="p-0 m-0 font-weight-bold">
+                                  {fac.contact.fco_name}
+                                </p>
+                                <p className="p-0 m-0">{fac.header.fen_date_create.slice(0, 10)}</p>
+                              </div>
+                              <div>
+                                <p
+                                  style={{ fontWeight: "bolder" }}
+                                  className="p-0 m-0">
+                                  {parseFloat(fac.header.fen_total_ttc).toFixed(2)} {devise} TTC
+                                </p>
+                              </div>
+                            </div>
+                          </ListGroupItem>
+                        );
+                      })}
+                    </ListGroup>
+                  </SimpleBar>
+                </Col>
+              )}
+              {createAchats.values.type && createAchats.values.facturesExist < 1 && (
+                <Col lg={12}>
+                  <DropFileComponents
+                    setValues={createAchats.setValues}
+                    values={createAchats.values}
+                    touched={createAchats.touched.files}
+                    errors={createAchats.errors.files}
+                  />
+                </Col>
+              )}
+            </Row>
+          </ModalBody>
+          <ModalFooter>
+            <div className="hstack gap-2 justify-content-end">
+              <button
+                type="button"
+                className="btn btn-light"
+                onClick={() => {
+                  setModal(false);
+                  setIsEdit(false);
+                  setAchat({});
+                }}>
+                Fermer
+              </button>
+              <button
+                disabled={loader}
+                type="submit"
+                className="btn btn-success"
+                id="add-btn">
+                {loader ?
+                  <Spinner size={"sm"}></Spinner>
+                  :
+                  "Ajouter"
+                }
+
+
+              </button>
+            </div>
+          </ModalFooter>
+        </Form>
+      </Modal>
+
+    </>
   );
 };
 

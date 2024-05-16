@@ -45,7 +45,7 @@ export function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFil
                     className="form-select mb-0"
                     value={selectFilter.value}
                     onChange={selectFilter.handleChange}
-                    // onBlur={validation.handleBlur}
+                  // onBlur={validation.handleBlur}
                   >
                     <option value={"null"}>Filtrer par {selectFilter.by}</option>
                     {selectFilter?.data.map((e, i) => (
@@ -189,6 +189,7 @@ const TableContainer = ({
     state: { pageIndex, pageSize }
   } = useTable(
     {
+      autoResetPage: false,
       columns,
       data,
       defaultColumn: { Filter: DefaultColumnFilter },
@@ -271,6 +272,7 @@ const TableContainer = ({
         className={divClass}
         style={{ minHeight: 230 }}>
         <Table
+
           hover
           {...getTableProps()}
           className={tableClass}>
@@ -316,7 +318,7 @@ const TableContainer = ({
                       }
                     }}>
                     {row.cells.map((cell) => {
-                      // console.log(cell)
+
                       return (
                         <td
                           key={cell.id}
