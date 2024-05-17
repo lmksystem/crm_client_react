@@ -4,35 +4,14 @@ import { Link, useLocation } from "react-router-dom";
 // Import Images
 import multiUser from "../../assets/images/users/multi-user.jpg";
 
-import {
-  Col,
-  Container,
-  Row,
-  Card,
-  CardHeader,
-  CardBody,
-  ModalBody,
-  Label,
-  Input,
-  Modal,
-  ModalHeader,
-  Form,
-  ModalFooter,
-  Table,
-  FormFeedback,
-} from "reactstrap";
+import { Col, Container, Row, Card, CardHeader, CardBody, ModalBody, Label, Input, Modal, ModalHeader, Form, ModalFooter, Table, FormFeedback } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import DeleteModal from "../../Components/Common/DeleteModal";
 import { isEmpty } from "lodash";
 import paysData from "../../Components/constants/paysPhone.json";
 
 //Import actions
-import {
-  getCollaborateurs as onGetCollaborateur,
-  addNewCollaborateur as onAddNewCollaborateur,
-  updateCollaborateur as onUpdateCollaborateur,
-  deleteCollaborateurs as onDeleteCollaborateur,
-} from "../../slices/thunks";
+import { getCollaborateurs as onGetCollaborateur, addNewCollaborateur as onAddNewCollaborateur, updateCollaborateur as onUpdateCollaborateur, deleteCollaborateurs as onDeleteCollaborateur } from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
 import TableContainer from "../../Components/Common/TableContainer";
@@ -52,13 +31,11 @@ import { api } from "../../config";
 const Collaborateurs = () => {
   const dispatch = useDispatch();
 
-  const { collaborateurs, isCollaborateurSuccess, error } = useSelector(
-    (state) => ({
-      collaborateurs: state.Gestion.collaborateurs,
-      isCollaborateurSuccess: state.Gestion.isCollaborateurSuccess,
-      error: state.Gestion.error,
-    })
-  );
+  const { collaborateurs, isCollaborateurSuccess, error } = useSelector((state) => ({
+    collaborateurs: state.Gestion.collaborateurs,
+    isCollaborateurSuccess: state.Gestion.isCollaborateurSuccess,
+    error: state.Gestion.error
+  }));
 
   useEffect(() => {
     dispatch(onGetCollaborateur());
@@ -128,29 +105,26 @@ const Collaborateurs = () => {
       ent_bic: (collaborateur && collaborateur.ent_bic) || "",
       ent_iban: (collaborateur && collaborateur.ent_iban) || "",
       ent_siren: (collaborateur && collaborateur.ent_siren) || "",
-      ent_methode_payment:
-        (collaborateur && collaborateur.ent_methode_payment) || "",
+      ent_methode_payment: (collaborateur && collaborateur.ent_methode_payment) || "",
       ent_tva_intracom: (collaborateur && collaborateur.ent_tva_intracom) || "",
       type: {
         // { eti_removed: 1 } permet au backend de savoir si il doit l'inserrer ou non  (1 : non / 0: oui)
         client: (collaborateur && collaborateur.type?.client) || {
-          eti_removed: 1,
+          eti_removed: 1
         },
         prospect: (collaborateur && collaborateur.type?.prospect) || {
-          eti_removed: 1,
+          eti_removed: 1
         },
         fournisseur: (collaborateur && collaborateur.type?.fournisseur) || {
-          eti_removed: 1,
-        },
-      },
+          eti_removed: 1
+        }
+      }
     },
 
     validationSchema: Yup.object({
       ent_lastname: Yup.string().required("Veuillez entrer un nom"),
       ent_firstname: Yup.string().required("Veuillez entrer un prénom"),
-      ent_phone: Yup.number()
-        .required("Veuillez entrer un téléphone")
-        .label("Le téléphone ne doit pas contenir de lettre"),
+      ent_phone: Yup.number().required("Veuillez entrer un téléphone").label("Le téléphone ne doit pas contenir de lettre"),
       ent_email: Yup.string().required("Veuillez entrer un email"),
       ent_name: Yup.string().required("Veuillez entrer un nom d'entreprise"),
       ent_adresse: Yup.string().required("Veuillez entrer une adresse"),
@@ -163,10 +137,7 @@ const Collaborateurs = () => {
       ent_iban: Yup.string(),
       ent_siren: Yup.string(),
       ent_methode_payment: Yup.string(),
-      ent_tva_intracom: Yup.string().matches(
-        /^[A-Za-z]{2}[0-9]{9}$/,
-        "Le champ doit contenir 2 lettres suivies de 9 chiffres."
-      ),
+      ent_tva_intracom: Yup.string().matches(/^[A-Za-z]{2}[0-9]{9}$/, "Le champ doit contenir 2 lettres suivies de 9 chiffres.")
       // type: Yup.object().shape({
       //   client: Yup.object().shape({
       //     eti_removed: Yup.boolean().oneOf(
@@ -206,18 +177,18 @@ const Collaborateurs = () => {
         ent_iban: values.ent_iban,
         ent_siren: values.ent_siren,
         ent_methode_payment: values.ent_methode_payment,
-        ent_tva_intracom: values.ent_tva_intracom,
+        ent_tva_intracom: values.ent_tva_intracom
       };
 
       const company_type = {
         fournisseur: values.type.fournisseur,
         client: values.type.client,
-        prospect: values.type.prospect,
+        prospect: values.type.prospect
       };
 
       let data = {
         company: { ...companyData },
-        company_type: { ...company_type },
+        company_type: { ...company_type }
       };
 
       if (isEdit) {
@@ -232,7 +203,7 @@ const Collaborateurs = () => {
 
       validation.resetForm();
       toggle();
-    },
+    }
   });
 
   // Update Data
@@ -260,8 +231,8 @@ const Collaborateurs = () => {
         type: {
           client: collaborateur.type.client,
           prospect: collaborateur.type.prospect,
-          fournisseur: collaborateur.type.fournisseur,
-        },
+          fournisseur: collaborateur.type.fournisseur
+        }
       });
 
       setIsEdit(true);
@@ -327,11 +298,9 @@ const Collaborateurs = () => {
     "Uganda",
     "Western Sahara",
     "Zambia",
-    "Zimbabwe",
+    "Zimbabwe"
   ];
-  const [numEntreprise, setNumEntreprise] = useState(
-    "Identifiant d'entreprise"
-  );
+  const [numEntreprise, setNumEntreprise] = useState("Identifiant d'entreprise");
 
   useEffect(() => {
     if (validation.values.ent_pays == "France") {
@@ -380,9 +349,7 @@ const Collaborateurs = () => {
 
   const deleteCheckbox = () => {
     const ele = document.querySelectorAll(".companyCheckBox:checked");
-    ele.length > 0
-      ? setIsMultiDeleteButton(true)
-      : setIsMultiDeleteButton(false);
+    ele.length > 0 ? setIsMultiDeleteButton(true) : setIsMultiDeleteButton(false);
     setSelectedCheckBoxDelete(ele);
   };
 
@@ -408,7 +375,7 @@ const Collaborateurs = () => {
             />
           );
         },
-        id: "#",
+        id: "#"
       },
       {
         id: "logo",
@@ -428,19 +395,13 @@ const Collaborateurs = () => {
                 {
                   company.row.original.ent_img_url ? (
                     <img
-                      src={
-                        api.API_URL +
-                        "/images/" +
-                        company.row.original.ent_img_url
-                      }
+                      src={api.API_URL + "/images/" + company.row.original.ent_img_url}
                       alt=""
                       className="avatar-xxs rounded-circle"
                     />
                   ) : (
                     <div className="flex-shrink-0 avatar-xs me-2">
-                      <div className="avatar-title bg-soft-success text-success rounded-circle fs-13">
-                        {LETTERS_CLI}
-                      </div>
+                      <div className="avatar-title bg-soft-success text-success rounded-circle fs-13">{LETTERS_CLI}</div>
                     </div>
                   )
                   // <img src={multiUser} alt="" className="avatar-xxs rounded-circle" />
@@ -448,20 +409,20 @@ const Collaborateurs = () => {
               </div>
             </>
           );
-        },
+        }
       },
       {
         Header: "Entreprise",
-        accessor: "ent_name",
+        accessor: "ent_name"
       },
 
       {
         Header: "Email",
-        accessor: "ent_email",
+        accessor: "ent_email"
       },
       {
         Header: "Téléphone",
-        accessor: "ent_phone",
+        accessor: "ent_phone"
       },
       {
         Header: "Localisation",
@@ -470,11 +431,10 @@ const Collaborateurs = () => {
           let collaborateur = cellProps.row.original;
           return (
             <>
-              {collaborateur.ent_adresse} {collaborateur.ent_cp},{" "}
-              {collaborateur.ent_ville}
+              {collaborateur.ent_adresse} {collaborateur.ent_cp}, {collaborateur.ent_ville}
             </>
           );
-        },
+        }
       },
       {
         Header: "Action",
@@ -483,43 +443,46 @@ const Collaborateurs = () => {
           // console.log(collaborateur);
           return (
             <ul className="list-inline hstack gap-2 mb-0">
-              <li className="list-inline-item" title="View">
+              <li
+                className="list-inline-item"
+                title="View">
                 <Link
                   to="#"
                   onClick={() => {
                     setInfo(collaborateur);
                     setShow(true);
-                  }}
-                >
+                  }}>
                   <i className="ri-eye-fill align-bottom text-primary"></i>
                 </Link>
               </li>
-              <li className="list-inline-item" title="Edit">
+              <li
+                className="list-inline-item"
+                title="Edit">
                 <Link
                   className="edit-item-btn"
                   to="#"
                   onClick={() => {
                     handleCompanyClick(collaborateur);
-                  }}
-                >
+                  }}>
                   <i className="ri-pencil-fill align-bottom text-primary"></i>
                 </Link>
               </li>
-              <li className="list-inline-item" title="Delete">
+              <li
+                className="list-inline-item"
+                title="Delete">
                 <Link
                   className="remove-item-btn"
                   onClick={() => {
                     onClickDelete(collaborateur);
                   }}
-                  to="#"
-                >
+                  to="#">
                   <i className="ri-delete-bin-fill align-bottom text-danger"></i>
                 </Link>
               </li>
             </ul>
           );
-        },
-      },
+        }
+      }
     ],
     [handleCompanyClick, checkedAll]
   );
@@ -533,17 +496,13 @@ const Collaborateurs = () => {
         ...validation.values.type,
         [e.target.name]: {
           ...validation.values.type[e.target.name],
-          eti_removed: value ? 0 : 1,
-        },
-      },
+          eti_removed: value ? 0 : 1
+        }
+      }
     });
   };
   const isAtLeastOneCheckboxChecked = (type) => {
-    return (
-      type.client.eti_removed === 0 ||
-      type.prospect.eti_removed === 0 ||
-      type.fournisseur.eti_removed === 0
-    );
+    return type.client.eti_removed === 0 || type.prospect.eti_removed === 0 || type.fournisseur.eti_removed === 0;
   };
   useEffect(() => {
     if (show) {
@@ -587,7 +546,10 @@ const Collaborateurs = () => {
         />
 
         <Container fluid>
-          <BreadCrumb title="Clients / Fournisseurs" pageTitle="Gestion" />
+          <BreadCrumb
+            title="Clients / Fournisseurs"
+            pageTitle="Gestion"
+          />
 
           <Row>
             <Col lg={12}>
@@ -600,13 +562,9 @@ const Collaborateurs = () => {
                         onClick={() => {
                           setIsEdit(false);
                           toggle();
-                        }}
-                      >
+                        }}>
                         <i className="ri-add-fill me-1 align-bottom "></i>
-                        <p className="p-0 m-0">
-                          {" "}
-                          Ajouter un client / fournisseur
-                        </p>
+                        <p className="p-0 m-0"> Ajouter un client / fournisseur</p>
                       </button>
                     </div>
                     <div className="flex-shrink-0">
@@ -614,16 +572,14 @@ const Collaborateurs = () => {
                         {isMultiDeleteButton && (
                           <button
                             className="btn btn-soft-danger"
-                            onClick={() => setDeleteModalMulti(true)}
-                          >
+                            onClick={() => setDeleteModalMulti(true)}>
                             <i className="ri-delete-bin-2-line"></i>
                           </button>
                         )}
 
                         <button
                           className="btn btn-soft-success"
-                          onClick={() => setIsExportCSV(true)}
-                        >
+                          onClick={() => setIsExportCSV(true)}>
                           Export
                         </button>
                       </div>
@@ -632,7 +588,9 @@ const Collaborateurs = () => {
                 </CardHeader>
               </Card>
             </Col>
-            <Col className="view-animate" xxl={show ? 9 : 12}>
+            <Col
+              className="view-animate"
+              xxl={show ? 9 : 12}>
               <Card id="companyList">
                 <CardBody className="pt-0">
                   <div>
@@ -660,9 +618,10 @@ const Collaborateurs = () => {
                     isOpen={modal}
                     toggle={toggle}
                     centered
-                    size="lg"
-                  >
-                    <ModalHeader className="bg-soft-info p-3" toggle={toggle}>
+                    size="lg">
+                    <ModalHeader
+                      className="bg-soft-info p-3"
+                      toggle={toggle}>
                       {!!isEdit ? "Modifier" : "Ajouter"}
                     </ModalHeader>
                     <Form
@@ -671,32 +630,28 @@ const Collaborateurs = () => {
                         e.preventDefault();
                         validation.handleSubmit();
                         return false;
-                      }}
-                    >
+                      }}>
                       <ModalBody>
-                        <input type="hidden" id="id-field" />
+                        <input
+                          type="hidden"
+                          id="id-field"
+                        />
                         <Row className="g-3">
                           <h5>Informations Générales</h5>
                           <Col
                             lg={4}
-                            className="d-flex justify-content-center align-items-end"
-                          >
+                            className="d-flex justify-content-center align-items-end">
                             <div>
                               <Label
                                 htmlFor="isclient-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 Client
                               </Label>
 
                               <Input
                                 className="form-check-input  ms-2"
                                 type="checkbox"
-                                checked={
-                                  validation.values.type.client.eti_removed == 0
-                                    ? true
-                                    : false
-                                }
+                                checked={validation.values.type.client.eti_removed == 0 ? true : false}
                                 onChange={(e) => handleTypeEntity(e)}
                                 name="client"
                                 id="isclient-field"
@@ -705,24 +660,17 @@ const Collaborateurs = () => {
                           </Col>
                           <Col
                             lg={4}
-                            className="d-flex justify-content-center align-items-end"
-                          >
+                            className="d-flex justify-content-center align-items-end">
                             <div>
                               <Label
                                 htmlFor="isfournisseur-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 Fournisseur
                               </Label>
                               <Input
                                 type="checkbox"
                                 className="form-check-input ms-2"
-                                checked={
-                                  validation.values.type.fournisseur
-                                    .eti_removed == 0
-                                    ? true
-                                    : false
-                                }
+                                checked={validation.values.type.fournisseur.eti_removed == 0 ? true : false}
                                 onChange={(e) => handleTypeEntity(e)}
                                 name="fournisseur"
                                 id="isfournisseur-field"
@@ -731,38 +679,27 @@ const Collaborateurs = () => {
                           </Col>
                           <Col
                             lg={4}
-                            className="d-flex justify-content-center align-items-end"
-                          >
+                            className="d-flex justify-content-center align-items-end">
                             <div>
                               <Label
                                 htmlFor="isfournisseur-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 Prospect
                               </Label>
                               <Input
                                 type="checkbox"
                                 className="form-check-input ms-2"
-                                checked={
-                                  validation.values.type.prospect.eti_removed ==
-                                  0
-                                    ? true
-                                    : false
-                                }
+                                checked={validation.values.type.prospect.eti_removed == 0 ? true : false}
                                 onChange={(e) => handleTypeEntity(e)}
                                 name="prospect"
                                 id="isfournisseur-field"
                               />
                             </div>
                           </Col>
-                          {validation.touched.type &&
-                          !isAtLeastOneCheckboxChecked(
-                            validation.values.type
-                          ) ? (
+                          {validation.touched.type && !isAtLeastOneCheckboxChecked(validation.values.type) ? (
                             <FormFeedback
                               type="invalid"
-                              style={{ display: "block" }}
-                            >
+                              style={{ display: "block" }}>
                               Sélectionnez au moins une option
                             </FormFeedback>
                           ) : null}
@@ -770,8 +707,7 @@ const Collaborateurs = () => {
                             <div>
                               <Label
                                 htmlFor="ent_lastname-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 Nom
                               </Label>
 
@@ -782,32 +718,21 @@ const Collaborateurs = () => {
                                 placeholder="Entrer un nom"
                                 type="text"
                                 validate={{
-                                  required: { value: true },
+                                  required: { value: true }
                                 }}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.ent_lastname || ""}
-                                invalid={
-                                  validation.touched.ent_lastname &&
-                                  validation.errors.ent_lastname
-                                    ? true
-                                    : false
-                                }
+                                invalid={validation.touched.ent_lastname && validation.errors.ent_lastname ? true : false}
                               />
-                              {validation.touched.ent_lastname &&
-                              validation.errors.ent_lastname ? (
-                                <FormFeedback type="invalid">
-                                  {validation.errors.ent_lastname}
-                                </FormFeedback>
-                              ) : null}
+                              {validation.touched.ent_lastname && validation.errors.ent_lastname ? <FormFeedback type="invalid">{validation.errors.ent_lastname}</FormFeedback> : null}
                             </div>
                           </Col>
                           <Col lg={6}>
                             <div>
                               <Label
                                 htmlFor="ent_firstname-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 Prénom
                               </Label>
                               <Input
@@ -817,32 +742,21 @@ const Collaborateurs = () => {
                                 placeholder="Entrer un prénom"
                                 type="text"
                                 validate={{
-                                  required: { value: true },
+                                  required: { value: true }
                                 }}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.ent_firstname || ""}
-                                invalid={
-                                  validation.touched.ent_firstname &&
-                                  validation.errors.ent_firstname
-                                    ? true
-                                    : false
-                                }
+                                invalid={validation.touched.ent_firstname && validation.errors.ent_firstname ? true : false}
                               />
-                              {validation.touched.ent_firstname &&
-                              validation.errors.ent_firstname ? (
-                                <FormFeedback type="invalid">
-                                  {validation.errors.ent_firstname}
-                                </FormFeedback>
-                              ) : null}
+                              {validation.touched.ent_firstname && validation.errors.ent_firstname ? <FormFeedback type="invalid">{validation.errors.ent_firstname}</FormFeedback> : null}
                             </div>
                           </Col>
                           <Col lg={8}>
                             <div>
                               <Label
                                 htmlFor="ent_name-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 Entreprise
                               </Label>
 
@@ -853,32 +767,21 @@ const Collaborateurs = () => {
                                 placeholder="Entrer un nom d'entreprise"
                                 type="text"
                                 validate={{
-                                  required: { value: true },
+                                  required: { value: true }
                                 }}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.ent_name || ""}
-                                invalid={
-                                  validation.touched.ent_name &&
-                                  validation.errors.ent_name
-                                    ? true
-                                    : false
-                                }
+                                invalid={validation.touched.ent_name && validation.errors.ent_name ? true : false}
                               />
-                              {validation.touched.ent_name &&
-                              validation.errors.ent_name ? (
-                                <FormFeedback type="invalid">
-                                  {validation.errors.ent_name}
-                                </FormFeedback>
-                              ) : null}
+                              {validation.touched.ent_name && validation.errors.ent_name ? <FormFeedback type="invalid">{validation.errors.ent_name}</FormFeedback> : null}
                             </div>
                           </Col>
                           <Col lg={4}>
                             <div>
                               <Label
                                 htmlFor="ent_pays-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 Pays
                               </Label>
 
@@ -886,43 +789,35 @@ const Collaborateurs = () => {
                                 type="select"
                                 className="form-select mb-0"
                                 validate={{
-                                  required: { value: true },
+                                  required: { value: true }
                                 }}
-                                invalid={
-                                  validation.touched.ent_pays &&
-                                  validation.errors.ent_pays
-                                    ? true
-                                    : false
-                                }
+                                invalid={validation.touched.ent_pays && validation.errors.ent_pays ? true : false}
                                 value={validation.values.ent_pays}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 name="ent_pays"
-                                id="ent_pays-field"
-                              >
-                                <option disabled={true} value={""}>
+                                id="ent_pays-field">
+                                <option
+                                  disabled={true}
+                                  value={""}>
                                   Choisir un pays
                                 </option>
                                 {paysData.map((e, i) => (
-                                  <option key={i} value={e.name}>
+                                  <option
+                                    key={i}
+                                    value={e.name}>
                                     {e.name}
                                   </option>
                                 ))}
                               </Input>
-                              {validation.touched.ent_pays &&
-                              validation.errors.ent_pays ? (
-                                <FormFeedback type="invalid">
-                                  {validation.errors.ent_pays}
-                                </FormFeedback>
-                              ) : null}
+                              {validation.touched.ent_pays && validation.errors.ent_pays ? <FormFeedback type="invalid">{validation.errors.ent_pays}</FormFeedback> : null}
                             </div>
                           </Col>
                           <Col lg={6}>
                             <div>
                               <Label
                                 htmlFor="ent_adresse-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 Adresse
                               </Label>
                               <Input
@@ -932,32 +827,21 @@ const Collaborateurs = () => {
                                 placeholder="Entrer une adresse"
                                 type="text"
                                 validate={{
-                                  required: { value: true },
+                                  required: { value: true }
                                 }}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.ent_adresse || ""}
-                                invalid={
-                                  validation.touched.ent_adresse &&
-                                  validation.errors.ent_adresse
-                                    ? true
-                                    : false
-                                }
+                                invalid={validation.touched.ent_adresse && validation.errors.ent_adresse ? true : false}
                               />
-                              {validation.touched.ent_adresse &&
-                              validation.errors.ent_adresse ? (
-                                <FormFeedback type="invalid">
-                                  {validation.errors.ent_adresse}
-                                </FormFeedback>
-                              ) : null}
+                              {validation.touched.ent_adresse && validation.errors.ent_adresse ? <FormFeedback type="invalid">{validation.errors.ent_adresse}</FormFeedback> : null}
                             </div>
                           </Col>
                           <Col lg={2}>
                             <div>
                               <Label
                                 htmlFor="ent_cp-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 Code postal
                               </Label>
                               <Input
@@ -967,32 +851,21 @@ const Collaborateurs = () => {
                                 placeholder="Entrer un code postal"
                                 type="text"
                                 validate={{
-                                  required: { value: true },
+                                  required: { value: true }
                                 }}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.ent_cp || ""}
-                                invalid={
-                                  validation.touched.ent_cp &&
-                                  validation.errors.ent_cp
-                                    ? true
-                                    : false
-                                }
+                                invalid={validation.touched.ent_cp && validation.errors.ent_cp ? true : false}
                               />
-                              {validation.touched.ent_cp &&
-                              validation.errors.ent_cp ? (
-                                <FormFeedback type="invalid">
-                                  {validation.errors.ent_cp}
-                                </FormFeedback>
-                              ) : null}
+                              {validation.touched.ent_cp && validation.errors.ent_cp ? <FormFeedback type="invalid">{validation.errors.ent_cp}</FormFeedback> : null}
                             </div>
                           </Col>
                           <Col lg={4}>
                             <div>
                               <Label
                                 htmlFor="ent_ville-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 Ville
                               </Label>
                               <Input
@@ -1002,32 +875,21 @@ const Collaborateurs = () => {
                                 placeholder="Entrer une ville"
                                 type="text"
                                 validate={{
-                                  required: { value: true },
+                                  required: { value: true }
                                 }}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.ent_ville || ""}
-                                invalid={
-                                  validation.touched.ent_ville &&
-                                  validation.errors.ent_ville
-                                    ? true
-                                    : false
-                                }
+                                invalid={validation.touched.ent_ville && validation.errors.ent_ville ? true : false}
                               />
-                              {validation.touched.ent_ville &&
-                              validation.errors.ent_ville ? (
-                                <FormFeedback type="invalid">
-                                  {validation.errors.ent_ville}
-                                </FormFeedback>
-                              ) : null}
+                              {validation.touched.ent_ville && validation.errors.ent_ville ? <FormFeedback type="invalid">{validation.errors.ent_ville}</FormFeedback> : null}
                             </div>
                           </Col>
                           <Col lg={7}>
                             <div>
                               <Label
                                 htmlFor="ent_email-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 Email
                               </Label>
                               <Input
@@ -1037,32 +899,21 @@ const Collaborateurs = () => {
                                 placeholder="Entrer un email"
                                 type="text"
                                 validate={{
-                                  required: { value: true },
+                                  required: { value: true }
                                 }}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.ent_email || ""}
-                                invalid={
-                                  validation.touched.ent_email &&
-                                  validation.errors.ent_email
-                                    ? true
-                                    : false
-                                }
+                                invalid={validation.touched.ent_email && validation.errors.ent_email ? true : false}
                               />
-                              {validation.touched.ent_email &&
-                              validation.errors.ent_email ? (
-                                <FormFeedback type="invalid">
-                                  {validation.errors.ent_email}
-                                </FormFeedback>
-                              ) : null}
+                              {validation.touched.ent_email && validation.errors.ent_email ? <FormFeedback type="invalid">{validation.errors.ent_email}</FormFeedback> : null}
                             </div>
                           </Col>
                           <Col lg={5}>
                             <div>
                               <Label
                                 htmlFor="ent_phone-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 Téléphone
                               </Label>
                               <Input
@@ -1072,32 +923,21 @@ const Collaborateurs = () => {
                                 placeholder="Entrer un téléphone"
                                 type="text"
                                 validate={{
-                                  required: { value: true },
+                                  required: { value: true }
                                 }}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.ent_phone || ""}
-                                invalid={
-                                  validation.touched.ent_phone &&
-                                  validation.errors.ent_phone
-                                    ? true
-                                    : false
-                                }
+                                invalid={validation.touched.ent_phone && validation.errors.ent_phone ? true : false}
                               />
-                              {validation.touched.ent_phone &&
-                              validation.errors.ent_phone ? (
-                                <FormFeedback type="invalid">
-                                  {validation.errors.ent_phone}
-                                </FormFeedback>
-                              ) : null}
+                              {validation.touched.ent_phone && validation.errors.ent_phone ? <FormFeedback type="invalid">{validation.errors.ent_phone}</FormFeedback> : null}
                             </div>
                           </Col>
                           <Col lg={8}>
                             <div>
                               <Label
                                 htmlFor="ent_iban-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 IBAN
                               </Label>
                               <Input
@@ -1107,32 +947,21 @@ const Collaborateurs = () => {
                                 placeholder="Entrer un iban"
                                 type="text"
                                 validate={{
-                                  required: { value: true },
+                                  required: { value: true }
                                 }}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.ent_iban || ""}
-                                invalid={
-                                  validation.touched.ent_iban &&
-                                  validation.errors.ent_iban
-                                    ? true
-                                    : false
-                                }
+                                invalid={validation.touched.ent_iban && validation.errors.ent_iban ? true : false}
                               />
-                              {validation.touched.ent_iban &&
-                              validation.errors.ent_iban ? (
-                                <FormFeedback type="invalid">
-                                  {validation.errors.ent_iban}
-                                </FormFeedback>
-                              ) : null}
+                              {validation.touched.ent_iban && validation.errors.ent_iban ? <FormFeedback type="invalid">{validation.errors.ent_iban}</FormFeedback> : null}
                             </div>
                           </Col>
                           <Col lg={4}>
                             <div>
                               <Label
                                 htmlFor="ent_bic-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 BIC
                               </Label>
                               <Input
@@ -1142,32 +971,21 @@ const Collaborateurs = () => {
                                 placeholder="Entrer bic"
                                 type="text"
                                 validate={{
-                                  required: { value: true },
+                                  required: { value: true }
                                 }}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.ent_bic || ""}
-                                invalid={
-                                  validation.touched.ent_bic &&
-                                  validation.errors.ent_bic
-                                    ? true
-                                    : false
-                                }
+                                invalid={validation.touched.ent_bic && validation.errors.ent_bic ? true : false}
                               />
-                              {validation.touched.ent_bic &&
-                              validation.errors.ent_bic ? (
-                                <FormFeedback type="invalid">
-                                  {validation.errors.ent_bic}
-                                </FormFeedback>
-                              ) : null}
+                              {validation.touched.ent_bic && validation.errors.ent_bic ? <FormFeedback type="invalid">{validation.errors.ent_bic}</FormFeedback> : null}
                             </div>
                           </Col>
                           <Col lg={12}>
                             <div>
                               <Label
                                 htmlFor="ent_siren-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 {numEntreprise}
                               </Label>
                               <Input
@@ -1177,32 +995,21 @@ const Collaborateurs = () => {
                                 placeholder={`Entrer ${numEntreprise.toLowerCase()}`}
                                 type="text"
                                 validate={{
-                                  required: { value: true },
+                                  required: { value: true }
                                 }}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.ent_siren || ""}
-                                invalid={
-                                  validation.touched.ent_siren &&
-                                  validation.errors.ent_siren
-                                    ? true
-                                    : false
-                                }
+                                invalid={validation.touched.ent_siren && validation.errors.ent_siren ? true : false}
                               />
-                              {validation.touched.ent_siren &&
-                              validation.errors.ent_siren ? (
-                                <FormFeedback type="invalid">
-                                  {validation.errors.ent_siren}
-                                </FormFeedback>
-                              ) : null}
+                              {validation.touched.ent_siren && validation.errors.ent_siren ? <FormFeedback type="invalid">{validation.errors.ent_siren}</FormFeedback> : null}
                             </div>
                           </Col>
                           <Col lg={6}>
                             <div>
                               <Label
                                 htmlFor="ent_methode_payment-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 Méthode de paiement par défaut
                               </Label>
                               <Input
@@ -1212,34 +1019,21 @@ const Collaborateurs = () => {
                                 placeholder="Entrer methode de paiement"
                                 type="text"
                                 validate={{
-                                  required: { value: true },
+                                  required: { value: true }
                                 }}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
-                                value={
-                                  validation.values.ent_methode_payment || ""
-                                }
-                                invalid={
-                                  validation.touched.ent_methode_payment &&
-                                  validation.errors.ent_methode_payment
-                                    ? true
-                                    : false
-                                }
+                                value={validation.values.ent_methode_payment || ""}
+                                invalid={validation.touched.ent_methode_payment && validation.errors.ent_methode_payment ? true : false}
                               />
-                              {validation.touched.ent_methode_payment &&
-                              validation.errors.ent_methode_payment ? (
-                                <FormFeedback type="invalid">
-                                  {validation.errors.ent_methode_payment}
-                                </FormFeedback>
-                              ) : null}
+                              {validation.touched.ent_methode_payment && validation.errors.ent_methode_payment ? <FormFeedback type="invalid">{validation.errors.ent_methode_payment}</FormFeedback> : null}
                             </div>
                           </Col>
                           <Col lg={6}>
                             <div>
                               <Label
                                 htmlFor="ent_tva_intracom-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 TVA INTRACOM
                               </Label>
                               <Input
@@ -1254,25 +1048,14 @@ const Collaborateurs = () => {
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.ent_tva_intracom || ""}
-                                invalid={
-                                  validation.touched.ent_tva_intracom &&
-                                  validation.errors.ent_tva_intracom
-                                    ? true
-                                    : false
-                                }
+                                invalid={validation.touched.ent_tva_intracom && validation.errors.ent_tva_intracom ? true : false}
                               />
-                              {validation.touched.ent_tva_intracom &&
-                              validation.errors.ent_tva_intracom ? (
-                                <FormFeedback type="invalid">
-                                  {validation.errors.ent_tva_intracom}
-                                </FormFeedback>
-                              ) : null}
+                              {validation.touched.ent_tva_intracom && validation.errors.ent_tva_intracom ? <FormFeedback type="invalid">{validation.errors.ent_tva_intracom}</FormFeedback> : null}
                             </div>
                           </Col>
                           <Label
                             htmlFor="ent_info-field"
-                            className="form-label"
-                          >
+                            className="form-label">
                             Information complémentaire
                           </Label>
 
@@ -1283,25 +1066,15 @@ const Collaborateurs = () => {
                             placeholder="Information"
                             type="select"
                             validate={{
-                              required: { value: false },
+                              required: { value: false }
                             }}
                             onChange={validation.handleChange}
                             onBlur={validation.handleBlur}
                             value={validation.values.ent_info || ""}
-                            invalid={
-                              validation.touched.ent_info &&
-                              validation.errors.ent_info
-                                ? "true"
-                                : "false"
-                            }
+                            invalid={validation.touched.ent_info && validation.errors.ent_info ? "true" : "false"}
                             rows={5}
                           />
-                          {validation.touched.ent_info &&
-                          validation.errors.ent_info ? (
-                            <FormFeedback type="invalid">
-                              {validation.errors.ent_info}
-                            </FormFeedback>
-                          ) : null}
+                          {validation.touched.ent_info && validation.errors.ent_info ? <FormFeedback type="invalid">{validation.errors.ent_info}</FormFeedback> : null}
                         </Row>
                       </ModalBody>
                       <ModalFooter>
@@ -1311,16 +1084,14 @@ const Collaborateurs = () => {
                             className="btn btn-light"
                             onClick={() => {
                               setModal(false);
-                            }}
-                          >
+                            }}>
                             {" "}
                             Fermer{" "}
                           </button>
                           <button
                             type="submit"
                             className="btn btn-success"
-                            id="add-btn"
-                          >
+                            id="add-btn">
                             {" "}
                             {!!isEdit ? "Modifier" : "Ajouter"}{" "}
                           </button>
@@ -1328,7 +1099,10 @@ const Collaborateurs = () => {
                       </ModalFooter>
                     </Form>
                   </Modal>
-                  <ToastContainer closeButton={false} limit={1} />
+                  <ToastContainer
+                    closeButton={false}
+                    limit={1}
+                  />
                 </CardBody>
               </Card>
             </Col>
@@ -1340,8 +1114,7 @@ const Collaborateurs = () => {
                       <i
                         onClick={() => setShow(false)}
                         className="ri-close-fill"
-                        style={{ cursor: "pointer", fontSize: "20px" }}
-                      ></i>
+                        style={{ cursor: "pointer", fontSize: "20px" }}></i>
                     </div>
                     <div className="position-relative d-inline-block">
                       {/* <img
@@ -1354,36 +1127,28 @@ const Collaborateurs = () => {
                       </span>
                     </div>
                     <h5 className="mt-4 mb-1">{info.ent_name}</h5>
-                    <h6 className="text-muted">
-                      {info.ent_lastname + " " + info.ent_firstname}
-                    </h6>
+                    <h6 className="text-muted">{info.ent_lastname + " " + info.ent_firstname}</h6>
 
                     <ul className="list-inline mb-0">
                       <li className="list-inline-item avatar-xs">
                         <Link
                           to={`tel:${info.ent_phone}`}
-                          className="avatar-title bg-soft-success text-success fs-15 rounded"
-                        >
+                          className="avatar-title bg-soft-success text-success fs-15 rounded">
                           <i className="ri-phone-line"></i>
                         </Link>
                       </li>
                       <li className="list-inline-item avatar-xs">
                         <Link
                           to={`mailto:${info.ent_email}`}
-                          className="avatar-title bg-soft-danger text-danger fs-15 rounded"
-                        >
+                          className="avatar-title bg-soft-danger text-danger fs-15 rounded">
                           <i className="ri-mail-line"></i>
                         </Link>
                       </li>
                     </ul>
                   </CardBody>
                   <CardBody>
-                    <h6 className="text-muted text-uppercase fw-semibold mb-3">
-                      Information complémentaire
-                    </h6>
-                    <p className="text-muted mb-4">
-                      {info.ent_info || "Non renseigné"}
-                    </p>
+                    <h6 className="text-muted text-uppercase fw-semibold mb-3">Information complémentaire</h6>
+                    <p className="text-muted mb-4">{info.ent_info || "Non renseigné"}</p>
                     <div className="table-responsive table-card">
                       <Table className="table table-borderless mb-0">
                         <tbody>

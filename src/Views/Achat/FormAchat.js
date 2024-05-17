@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, CardBody, Col, Container, Form, Input, Label, ListGroup, ListGroupItem, Row } from "reactstrap";
+import { Alert, Button, Card, CardBody, Col, Container, Form, FormFeedback, Input, Label, ListGroup, ListGroupItem, Row } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { ToastContainer } from "react-toastify";
 import { useFormik } from "formik";
@@ -13,13 +13,18 @@ import { api } from "../../config";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { getAchat } from "../../slices/thunks";
+import ConfirmModal from "../../Components/Common/ConfirmModal";
+import { useNavigate } from "react-router-dom";
 
 function FormAchat({ data }) {
+  const navigate = useNavigate();
+
   const { categoriesList, devise } = useSelector((state) => ({
     devise: state.Company.devise,
     categoriesList: state.Achat.categories.map((e) => ({ label: e.aca_name, value: e.aca_name }))
   }));
 
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [achatBank, setAchatBank] = useState([]);
   const [selectedCat, setSelectedCat] = useState([]);
   const [collaborateurs, setCollaborateurs] = useState(null);
@@ -47,12 +52,14 @@ function FormAchat({ data }) {
       ach_type: (data && data.ach_type) || ""
     },
     validationSchema: Yup.object({
-      ach_total_amount: Yup.number().required("Veuillez choisir entrer un ach_total_amount")
+      ach_total_amount: Yup.number().positive("Le total doit être positive").required("Veuillez choisir entrer un total")
     }),
 
     onSubmit: (values) => {
       axios.post("/v1/achatV2", values).then((res) => {
-        submitCat(selectedCat);
+        submitCat(selectedCat).then(() => {
+          navigate("/achat");
+        });
       });
     }
   });
@@ -77,7 +84,7 @@ function FormAchat({ data }) {
         } catch (err) {
           console.log(err);
         }
-      })
+      });
   };
 
   const getCategorieByAchatId = async (ach_id) => {
@@ -116,24 +123,22 @@ function FormAchat({ data }) {
     setSelectedCat(selected);
   };
 
-  const submitCat = (categories) => {
+  const submitCat = async (categories) => {
     let data = categories.map((cat) => ({ ...cat, aca_ach_fk: data.ach_id }));
 
     if (data.length > 0) {
-      axios.post("/v1/achat/categorie", { data }).then((res) => {
-        console.log(res);
-      });
+      await axios.post("/v1/achat/categorie", { data });
     }
   };
 
   const getTransaction = async () => {
-    return axios.get("/v1/transactionBankPositiveRp").then((res) => {
+    return axios.get("/v1/transactionBank?type=" + data.ach_type).then((res) => {
       return res.data;
     });
   };
 
-  const getAchatBank = async () => {
-    return axios.get("/v1/achatBank").then((res) => {
+  const getAchatBank = async (ach_id) => {
+    return axios.get(`/v1/achatBank?aba_ach_fk=${ach_id}`).then((res) => {
       return res.data;
     });
   };
@@ -144,7 +149,6 @@ function FormAchat({ data }) {
 
     let newAchatBank = { aba_ach_fk: data.ach_id, aba_tba_fk: transaction.tba_id, aba_com_fk: data.ach_com_fk };
     let resultat = parseFloat(validation.values.ach_rp) - parseFloat(transaction.tba_rp);
-    console.log(transaction, achat);
     if (resultat >= 0) {
       achat.ach_rp = resultat;
       newAchatBank.aba_match_amount = transaction.tba_rp;
@@ -157,8 +161,8 @@ function FormAchat({ data }) {
 
     axios.post("/v1/achatBank", { achat, transaction, newAchatBank }).then((res) => {
       setTransactions(() => transactions.map((e) => (transaction.tba_id == e.tba_id ? { ...e, tba_rp: transaction.tba_rp } : e)));
-      validation.setValues({ ...validation.values, ach_rp: achat.ach_rp });
       setAchatBank([...achatBank, res.data]);
+      validation.setValues({ ...validation.values, ach_rp: achat.ach_rp });
     });
   };
 
@@ -170,15 +174,24 @@ function FormAchat({ data }) {
    */
   const dissociationAchatTransation = (transaction, achat, achatBankSelected) => {
     transaction = { ...transaction };
-    console.log(validation.values);
-    validation.values.ach_rp = parseFloat(validation.values.ach_rp) + parseFloat(achatBankSelected.aba_match_amount);
+    achat = { ...achat };
+
+    achat.ach_rp = parseFloat(achat.ach_rp) + parseFloat(achatBankSelected.aba_match_amount);
     transaction.tba_rp = parseFloat(transaction.tba_rp) + parseFloat(achatBankSelected.aba_match_amount);
 
     axios.delete("/v1/achatBank", { data: { achat, transaction, achatBank: achatBankSelected } }).then((res) => {
       setTransactions(() => transactions.map((e) => (transaction.tba_id == e.tba_id ? { ...e, tba_rp: transaction.tba_rp } : e)));
-      validation.setValues({ ...validation.values, ach_rp: validation.values.ach_rp });
-      setAchatBank(achatBank.map((aba) => aba.aba_id != res.data));
+      setAchatBank(achatBank.filter((aba) => aba.aba_id != res.data));
+      validation.setValues({ ...validation.values, ach_rp: achat.ach_rp });
     });
+  };
+
+  const onChangeTotal = () => {
+    validation.handleChange;
+  };
+
+  const toggleShowConfirmModal = () => {
+    setShowConfirmModal(() => !showConfirmModal);
   };
 
   useEffect(() => {
@@ -196,7 +209,7 @@ function FormAchat({ data }) {
       getCategorieByAchatId(data.ach_id).then((res) => {
         setSelectedCat(res);
       });
-      getAchatBank()
+      getAchatBank(data.ach_id)
         .then((res) => {
           setAchatBank(res);
         })
@@ -213,7 +226,6 @@ function FormAchat({ data }) {
     getTransaction().then((transactions) => {
       setTransactions(transactions);
     });
-    getAchat
   }, []);
 
   return (
@@ -222,10 +234,22 @@ function FormAchat({ data }) {
         closeButton={false}
         limit={1}
       />
+      <ConfirmModal
+        title={"Attention !"}
+        text={"La modification du montant entraine la dissociation des transaction. Comfirmer ?"}
+        textClose="Non"
+        show={showConfirmModal}
+        onCloseClick={() => {
+          toggleShowConfirmModal();
+        }}
+        onActionClick={() => {
+          toggleShowConfirmModal();
+          onChangeTotal();
+        }}
+      />
       <Form
         onSubmit={(e) => {
           e.preventDefault();
-          console.log("sub");
           validation.handleSubmit();
         }}>
         <Row className="g-3">
@@ -302,7 +326,7 @@ function FormAchat({ data }) {
                     placeholder="Entrer le montant total"
                     type="number"
                     onChange={validation.handleChange}
-                    onBlur={validation.handleBlur}
+                    onBlur={achatBank.length > 0 ? toggleShowConfirmModal : onChangeTotal}
                     value={validation.values.ach_total_amount || ""}
                     invalid={validation.touched.ach_total_amount && validation.errors.ach_total_amount ? true : false}
                   />
@@ -442,54 +466,54 @@ function FormAchat({ data }) {
                   <p className="mt-2">Liste de catégories</p>
                   {selectedCat
                     ? selectedCat.map((cat, i) => (
-                      <div
-                        key={i}
-                        className="d-flex flex-row">
-                        <div style={{ alignItems: "center", display: "flex", width: "30%" }}>{cat.aca_name}</div>
-                        <div className="mx-2 input-group">
-                          <Input
-                            name=""
-                            id=""
-                            style={{ flex: 1, height: 25, fontSize: 12, textAlign: "right" }}
-                            className="form-control"
-                            placeholder="TVA"
-                            type="number"
-                            onChange={(e) => {
-                              let copy = [...selectedCat];
-                              copy[i].aca_tva = e.target.value;
-                              setSelectedCat(copy);
-                            }}
-                            value={cat.aca_tva || ""}
-                          />
-                          <Label
-                            style={{ whiteSpace: "nowrap", zIndex: 0, height: 25, fontSize: 10 }}
-                            className="btn btn-secondary btn-input-group">
-                            %
-                          </Label>
+                        <div
+                          key={i}
+                          className="d-flex flex-row">
+                          <div style={{ alignItems: "center", display: "flex", width: "30%" }}>{cat.aca_name}</div>
+                          <div className="mx-2 input-group">
+                            <Input
+                              name=""
+                              id=""
+                              style={{ flex: 1, height: 25, fontSize: 12, textAlign: "right" }}
+                              className="form-control"
+                              placeholder="TVA"
+                              type="number"
+                              onChange={(e) => {
+                                let copy = [...selectedCat];
+                                copy[i].aca_tva = e.target.value;
+                                setSelectedCat(copy);
+                              }}
+                              value={cat.aca_tva || ""}
+                            />
+                            <Label
+                              style={{ whiteSpace: "nowrap", zIndex: 0, height: 25, fontSize: 10 }}
+                              className="btn btn-secondary btn-input-group">
+                              %
+                            </Label>
+                          </div>
+                          <div className="mx-2 input-group">
+                            <Input
+                              style={{ flex: 1, height: 25, fontSize: 12, textAlign: "right" }}
+                              name=""
+                              id=""
+                              className="form-control"
+                              placeholder="Montant"
+                              type="number"
+                              onChange={(e) => {
+                                let copy = [...selectedCat];
+                                copy[i].aca_montant = e.target.value;
+                                setSelectedCat(copy);
+                              }}
+                              value={cat.aca_montant || ""}
+                            />
+                            <Label
+                              style={{ whiteSpace: "nowrap", zIndex: 0, width: "auto", height: 25, fontSize: 10 }}
+                              className="btn btn-secondary btn-input-group">
+                              {devise}
+                            </Label>
+                          </div>
                         </div>
-                        <div className="mx-2 input-group">
-                          <Input
-                            style={{ flex: 1, height: 25, fontSize: 12, textAlign: "right" }}
-                            name=""
-                            id=""
-                            className="form-control"
-                            placeholder="Montant"
-                            type="number"
-                            onChange={(e) => {
-                              let copy = [...selectedCat];
-                              copy[i].aca_montant = e.target.value;
-                              setSelectedCat(copy);
-                            }}
-                            value={cat.aca_montant || ""}
-                          />
-                          <Label
-                            style={{ whiteSpace: "nowrap", zIndex: 0, width: "auto", height: 25, fontSize: 10 }}
-                            className="btn btn-secondary btn-input-group">
-                            {devise}
-                          </Label>
-                        </div>
-                      </div>
-                    ))
+                      ))
                     : null}
                 </div>
               </Col>
@@ -520,7 +544,11 @@ function FormAchat({ data }) {
                           transactions
                             ?.filter((trans) => trans.tba_desc?.toLowerCase()?.includes(transactionFilter) || trans.tba_amount?.toLowerCase()?.includes(transactionFilter))
                             ?.map((tra, i) => {
-                              let achatBankSelected = achatBank && achatBank.find((a) => a.aba_tba_fk == tra.tba_id);
+                              let achatBankSelected = achatBank && achatBank.find((a) => a.aba_tba_fk == tra.tba_id && a.aba_ach_fk == data.ach_id);
+
+                              if (!achatBankSelected && tra.tba_rp <= 0) {
+                                return;
+                              }
                               return (
                                 <ListGroupItem
                                   key={i}
@@ -539,7 +567,7 @@ function FormAchat({ data }) {
                                         {achatBankSelected ? <i className="las la-link"></i> : null}
                                         {tra.bua_ach_lib?.length > 0 ? tra?.bua_ach_lib : tra?.bua_account_id}
                                       </h5>
-                                      <h5>rp : {tra.tba_rp}</h5>
+
                                       <h5 className="fs-13 mb-1 text-dark">{tra?.tba_desc?.length > 0 ? tra?.tba_desc : ""}</h5>
                                       <p
                                         className="born timestamp text-muted mb-0"

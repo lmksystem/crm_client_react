@@ -330,6 +330,7 @@ const Achats = () => {
       setIsEdit(false);
     }
   }, [achats]);
+  
   useEffect(() => {
     if (show) {
       setTimeout(() => {

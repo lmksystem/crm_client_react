@@ -299,7 +299,7 @@ const TransactionList = () => {
             <Col lg={12}>
               <Card id="invoiceList">
                 <CardHeader className="border-0">
-                  <div className="d-flex flex-column">
+                  <div className="d-flex align-items-start flex-column">
                     <div
                       className="d-flex flex-row"
                       lg={12}>
