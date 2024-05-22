@@ -14,7 +14,7 @@ const DashboardMain = () => {
   document.title = "Accueil | Countano";
 
   const dispatch = useDispatch();
-  const [totalTva, setTotalTva] = useState(0);
+ 
   const dateActuelle = moment(); // Obtenez la date actuelle
   const dateNow = moment(dateActuelle, "DD MMM YYYY");
   const premiereDateAnnee = dateActuelle.startOf("year"); // Obtenez la première date de l'année
@@ -64,12 +64,7 @@ const DashboardMain = () => {
         year: perdiodeCalendar?.start != null ? moment(perdiodeCalendar.start).year() : moment().year()
       })
     );
-    getInvoicesPaid({
-      dateDebut: perdiodeCalendar.start ? moment(perdiodeCalendar.start).format("YYYY-MM-DD") : null,
-      dateFin: perdiodeCalendar.end ? moment(perdiodeCalendar.end).format("YYYY-MM-DD") : null
-    }).then((res) => {
-      setTotalTva(res.data.reduce((accumulator, currentValue) => accumulator + currentValue.fen_total_tva, 0));
-    });
+
   }, [perdiodeCalendar]);
 
   useEffect(() => {
@@ -86,7 +81,7 @@ const DashboardMain = () => {
           />
           <Row>
             <Col>
-              <h5>Total de TVA dû : {totalTva}</h5>
+
               <div className="h-100">
                 <Section
                   perdiodeCalendar={perdiodeCalendar}

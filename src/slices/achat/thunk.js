@@ -26,9 +26,10 @@ export const createUpdateAchat= createAsyncThunk("achat/createUpdateAchat", asyn
   }
 });
 
-export const getAchat = createAsyncThunk("achat/getAchat", async (year) => {
+export const getAchat = createAsyncThunk("achat/getAchat", async () => {
   try {
-    const response = await getAchatApi(year);
+    const response = await getAchatApi();
+    console.log(response);
     return response;
   }
   catch (error) {

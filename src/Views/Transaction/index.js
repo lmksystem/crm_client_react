@@ -7,7 +7,7 @@ import { Col, Container, Row, Card, CardBody, Label, Input, Form, ListGroup, Lis
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 
 //Import actions
-import { getCollaborateurs as onGetCollaborateur, getAchatLinkTransaction as onGetAchatLinkTransaction, updateJustifyTransactionBank as onUpdateJustifyTransactionBank, linkTransToAchat as onLinkTransToAchat, updateMatchAmount as onUpdateMatchAmount } from "../../slices/thunks";
+import { getCollaborateurs as onGetCollaborateur, getAchatLinkTransaction as onGetAchatLinkTransaction, updateJustifyTransactionBank as onUpdateJustifyTransactionBank, linkTransToAchat as onLinkTransToAchat, updateMatchAmount as onUpdateMatchAmount, getBankUserAccount } from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
 import TableContainer from "../../Components/Common/TableContainer";
@@ -23,7 +23,7 @@ import SimpleBar from "simplebar-react";
 import { getLoggedinUser } from "../../helpers/api_helper";
 import { customFormatNumber } from "../../utils/function";
 import axios from "axios";
-import { getTransactionBank } from "../../helpers/backend_helper";
+import { getAccountsBankUser, getTransactionBank } from "../../helpers/backend_helper";
 
 const TransactionBank = () => {
   const dispatch = useDispatch();
@@ -46,6 +46,7 @@ const TransactionBank = () => {
     end: dateNow
   });
 
+  const [userAccount, setUserAccount] = useState([]);
   const [achatBankActif, setAchatBankActif] = useState(null);
   const [achatBank, setAchatBank] = useState([]);
   const [transactions, setTransactions] = useState(null);
@@ -63,8 +64,6 @@ const TransactionBank = () => {
     searchTerm: ""
   });
 
-  const oneIsSelected = achatFilter?.data?.filter((ele) => ele.type == "assoc" || (ele.old == 1 && ele.type !== "dissoc"));
-
   const [isFilterBy, setIsFilterBy] = useState("null");
 
   const filterAccounts = {
@@ -72,23 +71,7 @@ const TransactionBank = () => {
     handleChange: (e) => {
       setIsFilterBy(e.target.value);
     },
-    data: transactions
-      ? transactions
-          ?.filter((transaction, index, self) => {
-            return index === self.findIndex((t) => t.bua_account_id === transaction.bua_account_id);
-          })
-          .map((e) => {
-            let tabVal = [];
-            tabVal.push({ value: e.bua_account_id });
-            if (e.bua_libelle?.length > 0) {
-              tabVal.push({ value: e.bua_libelle });
-            }
-            return tabVal;
-          })
-          .reduce((acc, tableau) => {
-            return acc.concat(tableau);
-          }, [])
-      : [],
+    data: userAccount ? userAccount.map((e) => ({ label: e.bua_libelle, value: e.bua_id })) : [],
     value: isFilterBy
   };
 
@@ -409,7 +392,7 @@ const TransactionBank = () => {
       setTransactions(res.data);
     });
     dispatch(onGetCollaborateur());
-  }, [perdiodeCalendar, isFilterBy]);
+  }, [perdiodeCalendar]);
 
   useEffect(() => {
     if (transaction) {
@@ -434,6 +417,12 @@ const TransactionBank = () => {
       previewAchat(achatActif.ach_id);
     }
   }, [achatActif]);
+
+  useEffect(() => {
+    getBankUserAccount().then((bankAccount) => {
+      setUserAccount(bankAccount);
+    });
+  }, []);
 
   document.title = "Transactions bancaires | Countano";
   return (
@@ -528,10 +517,11 @@ const TransactionBank = () => {
               <Card id="contactList">
                 <CardBody className="pt-0">
                   <div>
+                    {console.log(isFilterBy)}
                     {transactions != null ? (
                       <TableContainer
                         columns={columns}
-                        data={transactions || []}
+                        data={transactions.filter((a) => (isFilterBy != "null" ? a.tba_bua_fk == isFilterBy : true)) || []}
                         perdiodeCalendar={perdiodeCalendar}
                         setPeriodeCalendar={setterDate}
                         actionItem={(row) => {
@@ -583,7 +573,7 @@ const TransactionBank = () => {
                     <div className="table-responsive table-card">
                       <div className="p-3">
                         <Form className="tablelist-form">
-                          {oneIsSelected.length < 1 && (
+                          {achatBank.length < 1 && (
                             <Col
                               lg={8}
                               className="mt-3 mb-3">
@@ -644,67 +634,71 @@ const TransactionBank = () => {
                                   <ListGroup
                                     className="list mb-0"
                                     flush>
-                                    {achats?.map((ach) => {
-                                      let achatBankSelected = achatBank && achatBank.find((a) => a.aba_tba_fk == transaction.tba_id && a.aba_ach_fk == ach.ach_id);
-                                      let collabo = collaborateurs && collaborateurs.find((c) => c.ent_id == ach.ach_ent_fk);
+                                    {achats
+                                      ?.filter((a) => (achatFilter.searchTerm ? a.ach_lib.toLowerCase().includes(achatFilter.searchTerm.toLowerCase()) || a.ach_rp.toLowerCase().includes(achatFilter.searchTerm.toLowerCase()) : true))
+                                      ?.map((ach) => {
+                                        let achatBankSelected = achatBank && achatBank.find((a) => a.aba_tba_fk == transaction.tba_id && a.aba_ach_fk == ach.ach_id);
+                                        let collabo = collaborateurs && collaborateurs.find((c) => c.ent_id == ach.ach_ent_fk);
 
-                                      if (!achatBankSelected && ach.ach_rp == 0) {
-                                        return;
-                                      }
+                                        if (!achatBankSelected && ach.ach_rp == 0) {
+                                          return;
+                                        }
 
-                                      return (
-                                        <ListGroupItem
-                                          data-id="1"
-                                          key={ach.ach_id}
-                                          onClick={() => {
-                                            if (!achatBankSelected) {
-                                              if (transaction.tba_rp > 0) {
-                                                associateAchatTransaction(transaction, ach);
+                                        return (
+                                          <ListGroupItem
+                                            data-id="1"
+                                            key={ach.ach_id}
+                                            onClick={() => {
+                                              if (!achatBankSelected) {
+                                                if (transaction.tba_rp > 0) {
+                                                  associateAchatTransaction(transaction, ach);
+                                                }
+                                              } else {
+                                                dissociationAchatTransation(transaction, ach, achatBankSelected);
                                               }
-                                            } else {
-                                              dissociationAchatTransation(transaction, ach, achatBankSelected);
-                                            }
-                                          }}
-                                          className={` ${achatBankSelected ? "bg-light text-grey tit" : ""}`}>
-                                          <div
-                                            className="d-flex"
-                                            style={!achatBankSelected && transaction.tba_rp == 0 ? { opacity: 0.5 } : {}}>
-                                            <div className="flex-grow-1 ">
-                                              <div className="d-flex align-items-center">
-                                                <h5 className="fs-13 mb-1">{collabo?.ent_name}</h5>
-                                                <div>
-                                                  {achatBankSelected ? (
-                                                    <i
-                                                      className="cursor-pointer text-primary las la-file-pdf fs-3"
-                                                      onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        //setDoc(ach.ado_file_name);
-                                                        // setOldPriceAmount(ach.aba_match_amount);
-                                                        // setPriceMatchAmount(ach.aba_match_amount);
-                                                        // setAchatActif(ach);
-                                                        // setAchatBankActif(achatBankSelected);
-                                                        setModal(true);
-                                                      }}></i>
-                                                  ) : null}
+                                            }}
+                                            className={` ${achatBankSelected ? "bg-light text-grey tit" : ""}`}>
+                                            <div
+                                              className="d-flex"
+                                              style={!achatBankSelected && transaction.tba_rp == 0 ? { opacity: 0.5 } : {}}>
+                                              <div className="flex-grow-1 ">
+                                                <div className="d-flex align-items-center">
+                                                  <h5 className="fs-13 mb-1">
+                                                    {collabo?.ent_name} {ach.ach_lib}
+                                                  </h5>
+                                                  <div>
+                                                    {achatBankSelected ? (
+                                                      <i
+                                                        className="cursor-pointer text-primary las la-file-pdf fs-3"
+                                                        onClick={(e) => {
+                                                          e.stopPropagation();
+                                                          //setDoc(ach.ado_file_name);
+                                                          // setOldPriceAmount(ach.aba_match_amount);
+                                                          // setPriceMatchAmount(ach.aba_match_amount);
+                                                          // setAchatActif(ach);
+                                                          // setAchatBankActif(achatBankSelected);
+                                                          setModal(true);
+                                                        }}></i>
+                                                    ) : null}
+                                                  </div>
                                                 </div>
+                                                <p
+                                                  className="born timestamp text-muted mb-0"
+                                                  data-timestamp="12345">
+                                                  {moment(ach.ach_date_create).format("L")}
+                                                </p>
                                               </div>
-                                              <p
-                                                className="born timestamp text-muted mb-0"
-                                                data-timestamp="12345">
-                                                {moment(ach.ach_date_create).format("L")}
-                                              </p>
-                                            </div>
 
-                                            <div className="flex-shrink-0 d-flex flex-md-column align-items-end">
-                                              <div className="">
-                                                Reste à pointer : {ach.ach_type == "Charge" ? "- " : "+ "} {customFormatNumber(parseFloat(ach.ach_rp))} {devise}
+                                              <div className="flex-shrink-0 d-flex flex-md-column align-items-end">
+                                                <div className="">
+                                                  Reste à pointer : {ach.ach_type == "Charge" ? "- " : "+ "} {customFormatNumber(parseFloat(ach.ach_rp))} {devise}
+                                                </div>
+                                                <div> {achatBankSelected && "Lié : " + customFormatNumber(parseFloat(achatBankSelected.aba_match_amount)) + " " + devise}</div>
                                               </div>
-                                              <div> {achatBankSelected && "Lié : " + customFormatNumber(parseFloat(achatBankSelected.aba_match_amount)) + " " + devise}</div>
                                             </div>
-                                          </div>
-                                        </ListGroupItem>
-                                      );
-                                    })}
+                                          </ListGroupItem>
+                                        );
+                                      })}
                                   </ListGroup>
                                 </SimpleBar>
                               </div>

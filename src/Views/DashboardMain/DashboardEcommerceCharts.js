@@ -146,6 +146,14 @@ const RevenueCharts = ({ dataColors, series }) => {
             }
             return y;
           }
+        },
+        {
+          formatter: function (y) {
+            if (typeof y !== "undefined") {
+              return y + " " + devise;
+            }
+            return y + " " + devise;
+          }
         }
       ]
     }

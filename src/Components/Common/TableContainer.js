@@ -52,7 +52,7 @@ export function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFil
                       <option
                         key={i}
                         value={e.value}>
-                        {e.value}
+                        {e.label}
                       </option>
                     ))}
                   </Input>

@@ -8,7 +8,7 @@ import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
 import axios from "axios";
 import SimpleBar from "simplebar-react";
-import { getCollaborateurs } from "../../helpers/backend_helper";
+import { getAccountsBankUser, getCollaborateurs } from "../../helpers/backend_helper";
 import { api } from "../../config";
 import moment from "moment";
 import { useSelector } from "react-redux";
@@ -124,7 +124,7 @@ function FormAchat({ data }) {
   };
 
   const submitCat = async (categories) => {
-    let data = categories.map((cat) => ({ ...cat, aca_ach_fk: data.ach_id }));
+    let data = categories.map((cat) => ({ ...cat, aca_ach_fk: validation.values.ach_id }));
 
     if (data.length > 0) {
       await axios.post("/v1/achat/categorie", { data });
@@ -387,7 +387,7 @@ function FormAchat({ data }) {
                     name="ach_date_expired"
                     id="ach_date_expired-field"
                     className="form-control"
-                    placeholder="Entrer une catégorie"
+                    placeholder="Entrer une date d'échéance"
                     type="date"
                     onChange={validation.handleChange}
                     onBlur={validation.handleBlur}
@@ -549,25 +549,29 @@ function FormAchat({ data }) {
                               if (!achatBankSelected && tra.tba_rp <= 0) {
                                 return;
                               }
+
                               return (
                                 <ListGroupItem
                                   key={i}
-                                  className={` ${achatBankSelected ? "bg-light text-grey tit" : ""}`}
+                                  className={`${achatBankSelected ? "bg-light text-grey tit" : ""}`}
                                   onClick={() => {
                                     if (!achatBankSelected) {
-                                      associateAchatTransaction(tra, validation.values);
+                                      if (validation.values.ach_rp > 0) {
+                                        associateAchatTransaction(tra, validation.values);
+                                      }
                                     } else {
                                       dissociationAchatTransation(tra, validation.values, achatBankSelected);
                                     }
                                   }}
                                   data-id="1">
-                                  <div className={`d-flex`}>
+                                  <div
+                                    className={`d-flex`}
+                                    style={!achatBankSelected && validation.values.ach_rp == 0 ? { opacity: 0.5 } : {}}>
                                     <div className="flex-grow-1">
                                       <h5 className="fs-13 mb-1 text-dark">
                                         {achatBankSelected ? <i className="las la-link"></i> : null}
                                         {tra.bua_ach_lib?.length > 0 ? tra?.bua_ach_lib : tra?.bua_account_id}
                                       </h5>
-
                                       <h5 className="fs-13 mb-1 text-dark">{tra?.tba_desc?.length > 0 ? tra?.tba_desc : ""}</h5>
                                       <p
                                         className="born timestamp text-muted mb-0"
