@@ -3,6 +3,7 @@ import ReactApexChart from "react-apexcharts";
 import getChartColorsArray from "../../Components/Common/ChartsDynamicColor";
 import { Card, CardBody } from "reactstrap";
 import { useSelector } from "react-redux";
+import { options } from "@fullcalendar/core/preact.js";
 
 const InvoiceChart = ({ dataColors, series }) => {
   const { devise } = useSelector((state) => ({
@@ -23,10 +24,16 @@ const InvoiceChart = ({ dataColors, series }) => {
 
   var options = {
     chart: {
+      zoom: {
+        enabled: false,
+      },
       defaultLocale: "fr",
       locales: [
         {
-          name: "fr"
+          name: "fr",
+          options: {
+            shortMonths: ["Janv.", "Févr.", "Mars", "Avr.", "Mai", "Juin", "Juill.", "Août", "Sept.", "Oct.", "Nov.", "Déc."]
+          }
         }
       ],
       height: 370,
@@ -58,6 +65,11 @@ const InvoiceChart = ({ dataColors, series }) => {
       },
       axisBorder: {
         show: false
+      },
+      labels: {
+        datetimeFormatter: {
+          month: "MMM yy"
+        }
       }
     },
     yaxis: {
@@ -98,7 +110,7 @@ const InvoiceChart = ({ dataColors, series }) => {
       y: [
         {
           formatter: function (y) {
-            return abregerSomme(y);
+            return y + " " + devise;
           }
         }
       ]

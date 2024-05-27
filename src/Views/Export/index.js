@@ -69,17 +69,9 @@ const Export = () => {
 
         data.push({ x: date, y: totalOfMonth });
       }
-      
+
       setDataChart(data);
     });
-
-    // for (let index = 0; index < selectedInvoice.length; index++) {
-    //   const invoice = selectedInvoice[index];
-
-    //   let month = moment(invoice.header.fen_date_create).month();
-    //   data[month] += parseFloat(invoice.header.fen_total_ttc); // Ne pas utiliser toFixed(2) ici
-    // }
-    // const formattedData = data.map((value) => parseFloat(parseFloat(value).toFixed(2)));
   };
 
   useEffect(() => {

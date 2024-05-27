@@ -10,18 +10,11 @@ const RevenueCharts = ({ dataColors, series }) => {
     devise: state?.Company?.devise
   }));
 
-  function abregerSomme(somme) {
-    if (somme < 500) {
-      return somme.toString() + devise;
-    } else if (somme < 10000) {
-      return (somme / 1000).toFixed(1) + "K " + devise;
-    } else {
-      return (somme / 1000).toFixed(0) + "K " + devise;
-    }
-  }
-
   var options = {
     chart: {
+      zoom: {
+        enabled: false,
+      },
       height: 350,
       type: "line",
       toolbar: {
@@ -122,11 +115,12 @@ const RevenueCharts = ({ dataColors, series }) => {
     colors: linechartcustomerColors,
     tooltip: {
       shared: true,
+      x: { show: false },
       y: [
         {
           formatter: function (y) {
             if (typeof y !== "undefined") {
-              return y.toFixed(0) + " Devis";
+              return y.toFixed(0);
             }
             return y;
           }
@@ -142,7 +136,7 @@ const RevenueCharts = ({ dataColors, series }) => {
         {
           formatter: function (y) {
             if (typeof y !== "undefined") {
-              return y.toFixed(0) + " Factures";
+              return y.toFixed(0);
             }
             return y;
           }
