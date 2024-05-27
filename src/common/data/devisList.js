@@ -3,7 +3,9 @@ const allstatusDevis = [
   { label: "Annulé", value: "1" },
   { label: "Refusé", value: "2" },
   { label: "En attente", value: "3" },
-  { label: "Validé", value: "4" },
+  { label: "Validé", value: "4" }
 ];
 
-export { allstatusDevis };
+let devisEtatColor = ["dark", "danger", "warning", "success"];
+
+export { allstatusDevis, devisEtatColor };

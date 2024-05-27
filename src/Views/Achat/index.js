@@ -241,9 +241,9 @@ const Achats = () => {
         accessor: "ach_categorie",
         filterable: false,
         Cell: (cell) => {
-          let arrayColor = ["primary", "secondary", "success", "danger", "warning text-dark", "info text-dark", "light text-dark", "dark"];
-          let arrayOfCat = cell.row.original?.categories.map((cat) => `<span class="badge rounded-pill bg-${arrayColor[Math.floor(Math.random() * arrayColor.length)]}">${cat.aca_name}</span>`);
-          return cell.row.original?.categories.map((cat) => <span class={"mx-1 badge rounded-pill bg-" + arrayColor[Math.floor(Math.random() * arrayColor.length)]}>{cat.aca_name}</span>);
+          let arrayColor = ["primary", "secondary", "success", "danger", "warning text-dark", "info text-dark", "light text-dark"];
+
+          return cell.row.original?.categories.map((cat) => <span class={"mx-1 badge rounded-pill badge-soft-" + arrayColor[Math.floor(Math.random() * arrayColor.length)]}>{cat.aca_name}</span>);
         }
       },
       {

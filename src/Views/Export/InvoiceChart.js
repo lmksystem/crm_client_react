@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 
 const InvoiceChart = ({ dataColors, series }) => {
   const { devise } = useSelector((state) => ({
-    devise: state?.Company?.devise,
+    devise: state?.Company?.devise
   }));
 
   const linechartcustomerColors = getChartColorsArray(dataColors);
@@ -15,69 +15,50 @@ const InvoiceChart = ({ dataColors, series }) => {
     if (somme < 500) {
       return somme.toString() + devise;
     } else if (somme < 10000) {
-      return (somme / 1000).toFixed(1) + "K " + devise
+      return (somme / 1000).toFixed(1) + "K " + devise;
     } else {
       return (somme / 1000).toFixed(0) + "K " + devise;
     }
   }
 
-
   var options = {
     chart: {
-      defaultLocale: 'fr',
-      locales: [{
-        name: 'fr',
-        options: {
-          months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-          shortMonths: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-          days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-          shortDays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+      defaultLocale: "fr",
+      locales: [
+        {
+          name: "fr"
         }
-      }],
+      ],
       height: 370,
       type: "line",
       toolbar: {
-        show: false,
-      },
-
+        show: false
+      }
     },
     stroke: {
       curve: "straight",
       dashArray: [0, 0, 8],
-      width: [2, 0, 2.2],
+      width: [2, 0, 2.2]
     },
     fill: {
-      opacity: [0.8, 0.9, 1],
+      opacity: [0.8, 0.9, 1]
     },
     markers: {
       size: [0, 0, 0],
       strokeWidth: 2,
       hover: {
-        size: 4,
-      },
+        size: 4
+      }
     },
     xaxis: {
-      categories: [
-        "Janvier",
-        "Février",
-        "Mars",
-        "Avril",
-        "Mai",
-        "Juin",
-        "Juillet",
-        "Août",
-        "Septembre",
-        "Octobre",
-        "Novembre",
-        "Décembre",
-      ],
+      // categories: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
+      type: "datetime",
       axisTicks: {
-        show: false,
+        show: false
       },
       axisBorder: {
-        show: false,
-      },
-
+        show: false
+      }
     },
     yaxis: {
       labels: {
@@ -90,26 +71,26 @@ const InvoiceChart = ({ dataColors, series }) => {
       show: true,
       xaxis: {
         lines: {
-          show: true,
-        },
+          show: true
+        }
       },
       yaxis: {
         lines: {
-          show: false,
-        },
+          show: false
+        }
       },
       padding: {
         top: 0,
         right: 10,
         bottom: 15,
-        left: 10,
-      },
+        left: 10
+      }
     },
     plotOptions: {
       bar: {
         columnWidth: "40%",
-        barHeight: "70%",
-      },
+        barHeight: "70%"
+      }
     },
     colors: linechartcustomerColors,
     tooltip: {
@@ -118,17 +99,15 @@ const InvoiceChart = ({ dataColors, series }) => {
         {
           formatter: function (y) {
             return abregerSomme(y);
-          },
-        },
-      ],
-    },
+          }
+        }
+      ]
+    }
   };
 
   return (
     <React.Fragment>
       <Card>
-
-
         <CardBody className="p-0 pb-2">
           <div className="w-100">
             <div dir="ltr">
@@ -140,7 +119,6 @@ const InvoiceChart = ({ dataColors, series }) => {
                 height="370"
                 className="apex-charts"
               />
-
             </div>
           </div>
         </CardBody>
@@ -148,6 +126,5 @@ const InvoiceChart = ({ dataColors, series }) => {
     </React.Fragment>
   );
 };
-
 
 export default InvoiceChart;

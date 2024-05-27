@@ -21,11 +21,17 @@ const Revenue = ({ perdiodeCalendar }) => {
     getInvoicesPaid({
       dateDebut: perdiodeCalendar.start ? moment(perdiodeCalendar.start).format("YYYY-MM-DD") : null,
       dateFin: perdiodeCalendar.end ? moment(perdiodeCalendar.end).format("YYYY-MM-DD") : null
-    }).then((tableauTva) => {
+    }).then((invoices) => {
+      let arrayByMonth = new Array(12).fill(0);
+      invoices.data.map((element) => {
+        let month = moment(element.tra_date).month();
+        arrayByMonth[month] = parseFloat(arrayByMonth[month]) + parseFloat(element.fen_total_tva);
+      });
+
       const tableauTransaction = transactionByMonth?.map((objet) => objet["somme_tra_value"]);
       const tableauDevis = devisByMonth?.map((objet) => objet["count_devis"]);
       const tableauInvoice = invoiceByMonth?.map((objet) => objet["count_invoice"]);
-      setTotalTva(tableauTva.data);
+      setTotalTva(arrayByMonth);
 
       const newArrayForGraph = [
         {
@@ -46,7 +52,7 @@ const Revenue = ({ perdiodeCalendar }) => {
         {
           name: "TVA dûe",
           type: "bar",
-          data: tableauTva.data
+          data: arrayByMonth
         }
       ];
       setchartData(newArrayForGraph);

@@ -22,17 +22,6 @@ const Index = () => {
     <React.Fragment>
       <Routes>
         <Route>
-          {publicRoutes.map((route, idx) => (
-            <Route
-              path={route.path}
-              element={<NonAuthLayout>{route.component}</NonAuthLayout>}
-              key={idx}
-              exact={true}
-            />
-          ))}
-        </Route>
-
-        <Route>
           {user &&
             user.use_rank == 1 &&
             adminRoute.map((route, idx) => (
@@ -81,6 +70,17 @@ const Index = () => {
                 );
               }
             })}
+        </Route>
+        
+        <Route>
+          {publicRoutes.map((route, idx) => (
+            <Route
+              path={route.path}
+              element={<NonAuthLayout>{route.component}</NonAuthLayout>}
+              key={idx}
+              exact={true}
+            />
+          ))}
         </Route>
       </Routes>
     </React.Fragment>

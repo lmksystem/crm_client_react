@@ -23,8 +23,8 @@ const WidgetCountUp = ({ data, type, xl = 3, md = 6 }) => {
   const { devise } = useSelector((state) => ({
     devise: state?.Company?.devise,
   }));
-
-  return (
+  console.log(data);
+  return (  
     <React.Fragment>
       <Col xl={xl} md={md}>
         <Card className="card-animate" >

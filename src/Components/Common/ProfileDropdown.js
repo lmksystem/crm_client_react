@@ -33,8 +33,8 @@ const ProfileDropdown = () => {
   }
 
   useEffect(() => {
-    if (sessionStorage.getItem("authUser")) {
-      const obj = JSON.parse(sessionStorage.getItem("authUser"));
+    if (localStorage.getItem("authUser")) {
+      const obj = JSON.parse(localStorage.getItem("authUser"));
     }
   }, [userName]);
 

@@ -17,7 +17,7 @@ export const loginUser = (user, history) => async (dispatch) => {
     });;
 
     if (data.user) {
-      sessionStorage.setItem("authUser", JSON.stringify(data.user));
+      localStorage.setItem("authUser", JSON.stringify(data.user));
       dispatch(loginSuccess(data.user));
 
     } else {
@@ -31,7 +31,7 @@ export const loginUser = (user, history) => async (dispatch) => {
 
 export const logoutUser = () => async (dispatch) => {
   try {
-    sessionStorage.removeItem('authUser')
+    localStorage.removeItem('authUser')
     dispatch(logoutUserSuccess(true));
 
   } catch (error) {

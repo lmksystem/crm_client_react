@@ -4,7 +4,7 @@ import * as url from "./url_helper";
 
 const api = new APIClient();
 
-let item_value = JSON.parse(sessionStorage.getItem("authUser"));
+let item_value = JSON.parse(localStorage.getItem("authUser"));
 
 /*************************/
 /*        Gestion        */

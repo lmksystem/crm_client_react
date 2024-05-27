@@ -21,6 +21,7 @@ import { DevisListGlobalSearch } from "../../Components/Common/GlobalSearchFilte
 import { customFormatNumber, rounded } from "../../utils/function";
 import { api } from "../../config";
 import WidgetCountUp from "../../Components/Common/WidgetCountUp";
+import { devisEtatColor } from "../../common/data/devisList";
 moment.locale("fr");
 
 const DevisList = () => {
@@ -210,7 +211,7 @@ const DevisList = () => {
         Header: "État",
         accessor: "header.det_name",
         Cell: (cell) => {
-          return <span className="badge text-uppercase badge-soft-success"> {etatDevis?.find((d) => d.det_id == cell.row.original.header.den_etat)?.det_name} </span>;
+          return <span className={"badge text-uppercase badge-soft-" + devisEtatColor[parseInt(cell.row.original.header.den_etat) - 1]}> {etatDevis?.find((d) => d.det_id == cell.row.original.header.den_etat)?.det_name} </span>;
         }
       }
     ],
@@ -261,7 +262,10 @@ const DevisList = () => {
           <Row>
             {devisWidgets?.map((widget, i) => {
               let data = { ...widget };
-              data.name = widget.name + "s";
+              if (data.id != 3) {
+                data.name = widget.name + "s";
+              }
+
               return (
                 <WidgetCountUp
                   key={i}

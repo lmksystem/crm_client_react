@@ -20,6 +20,8 @@ import { InvoiceListGlobalSearch } from "../../Components/Common/GlobalSearchFil
 import { customFormatNumber, rounded } from "../../utils/function";
 import { api } from "../../config";
 import WidgetCountUp from "../../Components/Common/WidgetCountUp";
+import { invoiceEtatColor } from "../../common/data/invoiceList";
+import { getEtatInvoice as onGetEtatInvoice } from "../../helpers/backend_helper";
 
 moment.locale("fr");
 
@@ -178,9 +180,10 @@ const InvoiceList = () => {
       },
       {
         Header: "État",
+        filterable: false,
         accessor: "header.fet_name",
         Cell: (cell) => {
-          return <span className="badge text-uppercase badge-soft-success"> {cell.row.original.header.fet_name} </span>;
+          return <span className={"badge text-uppercase badge-soft-" + invoiceEtatColor[cell.row.original.header.fet_id - 1]}> {cell.row.original.header.fet_name} </span>;
         }
       }
     ],

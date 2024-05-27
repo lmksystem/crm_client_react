@@ -1,11 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { CardBody, Row, Col, Card, Table, CardHeader, Container, Input, Button, FormFeedback } from "reactstrap";
+import React, { useEffect, useState } from "react";
+import { CardBody, Row, Col, Card, Table, CardHeader, Container, Input, FormFeedback } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
-import { Link, useParams } from "react-router-dom";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { createPdf } from "../../slices/thunks";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
-import { APIClient } from "../../helpers/api_helper";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { addNewTransaction as onAddNewTransaction, sendInvocieByEmail as onSendInvocieByEmail, deleteTransaction as onDeleteTransaction, updateInvoice as onUpdateInvoice, getCompany as onGetCompany, getEtatInvoice as onGetEtatInvoice } from "../../slices/thunks";
@@ -18,6 +16,7 @@ import SimpleBar from "simplebar-react";
 import axios from "axios";
 import { getImage } from "../../utils/getImages";
 import FeatherIcon from "feather-icons-react/build/FeatherIcon";
+import { invoiceEtatColor } from "../../common/data/invoiceList";
 
 // const axios = new APIClient();
 
@@ -109,7 +108,7 @@ const InvoiceDetails = () => {
       tra_date: Yup.string().required("Champs obligatoire")
     }),
     onSubmit: (values) => {
-      if (values.tra_value > 0) {
+      if (invoice.header.fen_solde_du > 0) {
         dispatch(onAddNewTransaction(values));
         setAddActifView(false);
         setInvoice({
@@ -158,7 +157,10 @@ const InvoiceDetails = () => {
         transactions.reduce((previousValue, currentValue) => parseFloat(previousValue) - parseFloat(currentValue.tra_value), parseFloat(invoice.header.fen_total_ttc)),
         2
       );
-      dispatch(onUpdateInvoice({ fen_id: invoice.header.fen_id, fen_solde_du: dataInvoiceUpdate, fen_etat: dataInvoiceUpdate <= 0 ? "1" : "2" }));
+
+      if (dataInvoiceUpdate == 0) {
+        dispatch(onUpdateInvoice({ fen_id: invoice.header.fen_id, fen_solde_du: dataInvoiceUpdate, fen_etat: "1" }));
+      }
     }
   }, [transactions]);
 
@@ -384,15 +386,22 @@ const InvoiceDetails = () => {
                           <select
                             defaultValue={invoice.header.fen_etat}
                             onChange={(e) => {
+                              toggleTransaction(e);
+                              setSelectedEtat(etat?.find((d) => d.fet_id == e.target.value)?.fet_name);
+                              setActiveChange(() => false);
                               dispatch(
                                 onUpdateInvoice({
                                   fen_id: invoice.header.fen_id,
                                   fen_etat: e.target.value
                                 })
                               );
-                              toggleTransaction(e);
-                              setSelectedEtat(etat?.find((d) => d.fet_id == e.target.value)?.fet_name);
-                              setActiveChange(() => false);
+                              setInvoice({
+                                ...invoice,
+                                header: {
+                                  ...invoice.header,
+                                  fen_solde_du: invoice.header.fen_total_ttc
+                                }
+                              });
                             }}
                             className="form-select">
                             {etat.map((e) => {
@@ -401,7 +410,7 @@ const InvoiceDetails = () => {
                           </select>
                         ) : (
                           <span
-                            className="badge badge-soft-success fs-11"
+                            className={"badge fs-11 badge-soft-" + invoiceEtatColor[invoice.header.fet_id - 1]}
                             id="payment-status">
                             {selectedEtat}
                           </span>

@@ -165,6 +165,10 @@ const TransactionBank = () => {
         accessor: "bua_iban",
         filterable: false,
         Cell: (cell) => {
+          let color = userAccount.find((bua) => {
+            bua.bua_id == cell.row.original.bua_libelle;
+          });
+          console.log(color);
           return (
             <div className="d-flex align-items-center">
               {cell.row.original?.bua_libelle ? cell.row.original?.bua_libelle : cell.row.original?.bua_iban}
@@ -176,7 +180,7 @@ const TransactionBank = () => {
                 <div
                   className="align-self-center"
                   style={{
-                    backgroundColor: `rgba(3,14,255,1)`,
+                    backgroundColor: `white`,
                     height: 20,
                     width: 20,
                     borderRadius: 50

@@ -64,11 +64,11 @@ const Profile = () => {
             use_email:values.email,
         }
         dispatch(onCreateOrUpdateUser(newUpdateValue)).then(()=>{
-            let oldUser = JSON.parse(sessionStorage.getItem("authUser")) ;
+            let oldUser = JSON.parse(localStorage.getItem("authUser")) ;
             oldUser.use_firstname = values.firstname;
             oldUser.use_lastname = values.lastname;
             oldUser.use_email = values.email;
-            sessionStorage.setItem("authUser", JSON.stringify(oldUser));
+            localStorage.setItem("authUser", JSON.stringify(oldUser));
             getLoggedinUser();
             toast.success("Profil mis à jour !", { autoClose: 3000 });
         })

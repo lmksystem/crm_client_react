@@ -22,8 +22,8 @@ const Login = (props) => {
   const { user } = useSelector((state) => ({
     user: state.Login.user
   }));
-  const token = JSON.parse(sessionStorage.getItem("authUser"));
-
+  const token = JSON.parse(localStorage.getItem("authUser"));
+  
   const [userLogin, setUserLogin] = useState({});
   const [passwordShow, setPasswordShow] = useState(false);
 
@@ -58,15 +58,16 @@ const Login = (props) => {
     }
   }, [dispatch, errorFlag]);
 
-  useEffect(() => {
-    if (token) {
-      navigate("/dashboard");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if () {
+  //     navigate("/dashboard");
+  //   }
+  // }, []);
 
   useEffect(() => {
-  
-    if (user) {
+    console.log(user, token);
+
+    if (user && token) {
       if (user.use_rank == 1) {
         navigate("/admin");
       } else {

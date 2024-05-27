@@ -5,28 +5,10 @@ export * from "./layouts/thunk";
 export * from "./auth/login/thunk";
 export * from "./auth/forgetpwd/thunk";
 
-// Dashboard Analytics
-export * from "./dashboardAnalytics/thunk";
-
-// Dashboard CRM
-export * from "./dashboardCRM/thunk";
-
-// Dashboard Ecommerce
-export * from "./dashboardEcommerce/thunk";
-
-// Dashboard Cryto
-export * from "./dashboardCrypto/thunk";
-
-// Dashboard Cryto
-export * from "./dashboardProject/thunk";
-
-// Dashboard NFT
-export * from "./dashboardNFT/thunk";
-
 // MES THUNK
 
 // Gestion
-export * from "./gestion/thunk"; 
+export * from "./gestion/thunk";
 
 //Invoice
 export * from "./invoice/thunk";
@@ -72,4 +54,3 @@ export * from "./report/thunk";
 
 // Email
 export * from "./email/thunk";
-

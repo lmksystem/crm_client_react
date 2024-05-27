@@ -126,8 +126,8 @@ const publicRoutes = [
   { path: "/forgot-password", component: <ForgetPasswordPage /> },
   { path: "/reset-password/:token", component: <ResertPassword /> },
   { path: "/inscription", component: <CreateAccount /> },
-  { path: "/finalisation-compte", component: <FinalisationAccount /> }
-  // { path: "*", component: <Basic404 /> }
+  { path: "/finalisation-compte", component: <FinalisationAccount /> },
+  { path: "*", component: <Basic404 /> }
 ];
 
 export { userRoute, adminRoute, publicRoutes };
