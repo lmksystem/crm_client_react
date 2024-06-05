@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { CardBody, Row, Col, Card, Table, CardHeader, Container, Input, FormFeedback } from "reactstrap";
+import { CardBody, Row, Col, Card, Table, CardHeader, Container, Input, FormFeedback, Form } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -392,7 +392,8 @@ const InvoiceDetails = () => {
                               dispatch(
                                 onUpdateInvoice({
                                   fen_id: invoice.header.fen_id,
-                                  fen_etat: e.target.value
+                                  fen_etat: e.target.value,
+                                  fen_solde_du: invoice.header.fen_total_ttc
                                 })
                               );
                               setInvoice({
@@ -622,7 +623,7 @@ const InvoiceDetails = () => {
                         )}
 
                         {addActifView ? (
-                          <form
+                          <Form
                             className="d-print-none "
                             onSubmit={(e) => {
                               e.preventDefault();
@@ -694,7 +695,7 @@ const InvoiceDetails = () => {
                                 </div>
                               </Col>
                             </Row>
-                          </form>
+                          </Form>
                         ) : (
                           ""
                         )}

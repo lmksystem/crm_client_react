@@ -89,7 +89,7 @@ const Reports = () => {
     if (date) {
       let date_start = moment(date).startOf('year');
       let date_end = moment(date).endOf('year');
-
+      console.log(date_start.format("YYYY-MM-DD"),  date_end.format("YYYY-MM-DD"));
       dispatch(onGetReportData({ date_start: date_start.format("YYYY-MM-DD"), date_end: date_end.format("YYYY-MM-DD") }));
     }
   }, [date.format('YYYY')])
