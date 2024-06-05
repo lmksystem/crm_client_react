@@ -101,7 +101,7 @@ const InvoiceList = () => {
       },
       {
         Header: "Client",
-        accessor: "header.fco_cus_name",
+        accessor: "contact.fco_cus_name",
         Cell: (invoice) => {
           return (
             <>

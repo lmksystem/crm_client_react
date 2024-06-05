@@ -45,7 +45,7 @@ export function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFil
                     className="form-select mb-0"
                     value={selectFilter.value}
                     onChange={selectFilter.handleChange}
-                  // onBlur={validation.handleBlur}
+                    // onBlur={validation.handleBlur}
                   >
                     <option value={"null"}>Filtrer par {selectFilter.by}</option>
                     {selectFilter?.data.map((e, i) => (
@@ -189,6 +189,18 @@ const TableContainer = ({
     state: { pageIndex, pageSize }
   } = useTable(
     {
+      disableSortRemove: true,
+      sortTypes: {
+        alphanumeric: (row1, row2, columnName) => {
+          const rowOneColumn = row1.values[columnName];
+          const rowTwoColumn = row2.values[columnName];
+
+          if (rowOneColumn && rowTwoColumn && isNaN(rowOneColumn)) {
+            return rowOneColumn.toUpperCase() > rowTwoColumn.toUpperCase() ? 1 : -1;
+          }
+          return Number(rowOneColumn) > Number(rowTwoColumn) ? 1 : -1;
+        }
+      },
       autoResetPage: false,
       columns,
       data,
@@ -196,12 +208,7 @@ const TableContainer = ({
       initialState: {
         pageIndex: 0,
         pageSize: customPageSize,
-        selectedRowIds: 0,
-        sortBy: [
-          {
-            desc: true
-          }
-        ]
+        selectedRowIds: 0
       }
     },
     useGlobalFilter,
@@ -272,7 +279,6 @@ const TableContainer = ({
         className={divClass}
         style={{ minHeight: 230 }}>
         <Table
-
           hover
           {...getTableProps()}
           className={tableClass}>
@@ -318,7 +324,6 @@ const TableContainer = ({
                       }
                     }}>
                     {row.cells.map((cell) => {
-
                       return (
                         <td
                           key={cell.id}
