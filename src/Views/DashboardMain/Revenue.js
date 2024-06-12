@@ -5,6 +5,7 @@ import CountUp from "react-countup";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import { getInvoicesPaid } from "../../helpers/backend_helper";
+import { rounded } from "../../utils/function";
 moment.locale("fr");
 
 const Revenue = ({ perdiodeCalendar }) => {
@@ -25,9 +26,9 @@ const Revenue = ({ perdiodeCalendar }) => {
       let arrayByMonth = new Array(12).fill(0);
       invoices.data.map((element) => {
         let month = moment(element.tra_date).month();
-        arrayByMonth[month] = parseFloat(arrayByMonth[month]) + parseFloat(element.fen_total_tva);
+        arrayByMonth[month] = rounded(parseFloat(arrayByMonth[month]) + parseFloat(element.fen_total_tva), 2);
       });
-
+     
       const tableauTransaction = transactionByMonth?.map((objet) => objet["somme_tra_value"]);
       const tableauDevis = devisByMonth?.map((objet) => objet["count_devis"]);
       const tableauInvoice = invoiceByMonth?.map((objet) => objet["count_invoice"]);
@@ -78,8 +79,8 @@ const Revenue = ({ perdiodeCalendar }) => {
                     end={
                       devisByMonth?.length > 0
                         ? devisByMonth.reduce((accumulateur, objet) => {
-                            return accumulateur + objet["count_devis"];
-                          }, 0)
+                          return accumulateur + objet["count_devis"];
+                        }, 0)
                         : 0
                     }
                     duration={1}
@@ -102,8 +103,8 @@ const Revenue = ({ perdiodeCalendar }) => {
                     end={
                       transactionByMonth?.length > 0
                         ? transactionByMonth.reduce((accumulateur, objet) => {
-                            return accumulateur + objet["somme_tra_value"];
-                          }, 0)
+                          return accumulateur + objet["somme_tra_value"];
+                        }, 0)
                         : 0
                     }
                     duration={1}
@@ -124,8 +125,8 @@ const Revenue = ({ perdiodeCalendar }) => {
                     end={
                       invoiceByMonth?.length > 0
                         ? invoiceByMonth.reduce((accumulateur, objet) => {
-                            return accumulateur + objet["count_invoice"];
-                          }, 0)
+                          return accumulateur + objet["count_invoice"];
+                        }, 0)
                         : 0
                     }
                     duration={1}
@@ -146,8 +147,8 @@ const Revenue = ({ perdiodeCalendar }) => {
                     end={
                       totalTva?.length > 0
                         ? totalTva.reduce((accumulateur, current) => {
-                            return accumulateur + current;
-                          }, 0)
+                          return accumulateur + current;
+                        }, 0)
                         : 0
                     }
                     duration={1}

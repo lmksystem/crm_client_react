@@ -97,6 +97,9 @@ export const getEtatInvoice = () => api.get("/v1/facture/etat");
 // get invoice paid
 export const getInvoicesPaid = (data) => api.get("/v1/invoices/paid/" + data.dateDebut + "/" + data.dateFin);
 
+// get invoice for export graph
+export const getInvoiceForExport = (data) => api.get("/v1/invoices/between/" + data.dateDebut + "/" + data.dateFin);
+
 /*************************/
 /*      transaction      */
 /*************************/

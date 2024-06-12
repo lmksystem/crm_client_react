@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import CountUp from "react-countup";
-import { Card, CardBody, Col } from "reactstrap";
+import { Card, CardBody, Col, UncontrolledTooltip } from "reactstrap";
 
 import { useSelector } from "react-redux";
 import moment from "moment";
@@ -53,7 +53,8 @@ const Widgets = () => {
       suffix: devise,
       separator: " ",
       decimal: ",",
-      icon: "dollar-sign"
+      icon: "dollar-sign",
+      desc: "Total des transactions payait pendant la période sélectionnée"
     },
     {
       id: 2,
@@ -68,7 +69,8 @@ const Widgets = () => {
       prefix: "",
       suffix: "",
       separator: " ",
-      icon: "clipboard"
+      icon: "clipboard",
+      desc: "Nombre total des devis réalisait lors de la période sélectionnée"
     },
     {
       id: 3,
@@ -82,7 +84,8 @@ const Widgets = () => {
       decimals: 0,
       prefix: "",
       suffix: "",
-      icon: "file-text"
+      icon: "file-text",
+      desc: "Nombre total des Factures réaliser lors de la période sélectionnée"
     },
     {
       id: 4,
@@ -94,7 +97,8 @@ const Widgets = () => {
       percentage: entityCountPeriod?.pourcentage_gain_perte || 0,
       counter: entityCountPeriod?.nb_entity_annee_courante || 0,
       bgcolor: "primary",
-      decimals: 0
+      decimals: 0,
+      desc: "Nombre total des fournisseurs enregistraient lors de la période sélectionnée"
     }
   ];
 
@@ -144,6 +148,14 @@ const Widgets = () => {
                         decimal={item.decimal}
                         duration={1}
                       />
+                      <div style={{ position: "absolute", top: -3, right: 2 }} className="d-flex align-items-center justify-content-center">
+                        <a id={"ScheduleUpdateTooltip" + key}><i class="bx bx-info-circle fs-5 text-primary"></i></a>
+                        <UncontrolledTooltip
+                          placement="top"
+                          target={"ScheduleUpdateTooltip" + key}
+                          trigger="hover"
+                        >{item.desc}</UncontrolledTooltip>
+                      </div>
                     </span>
                   </h4>
                 </div>
