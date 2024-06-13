@@ -1,5 +1,5 @@
 import React, { useEffect, useId, useState } from "react";
-import { Col, Container, Row } from "reactstrap";
+import { Button, Col, Container, Row, UncontrolledTooltip } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { useDispatch, useSelector } from "react-redux";
 import Section from "../DashboardMain/Section";
@@ -9,7 +9,8 @@ import { getInvoices as onGetInvoices } from "../../slices/thunks";
 import { api } from "../../config";
 import axios from "axios";
 import InvoiceChart from "./InvoiceChart";
-import { getInvoicesPaid } from "../../helpers/backend_helper";
+import { getInvoiceForExport, getInvoicesPaid } from "../../helpers/backend_helper";
+import { Tooltip } from "chart.js";
 
 moment.updateLocale("en");
 
@@ -20,6 +21,7 @@ const Export = () => {
 
   const [selectedInvoice, setSelectedInvoice] = useState([]);
   const [dataChart, setDataChart] = useState([]);
+  const [tooltipOpen, setTooltipOpen] = useState(false);
 
   const [periodeCalendar, setPeriodeCalendar] = useState({
     start: new Date(moment().startOf("year")),
@@ -29,6 +31,8 @@ const Export = () => {
   const { invoices } = useSelector((state) => ({
     invoices: state.Invoice.invoices
   }));
+
+  const toggle = () => setTooltipOpen(!tooltipOpen);
 
   const download = async () => {
     // console.log(periodeCalendar.end, moment(new Date(periodeCalendar.end)).format("DD MMM YYYY"));
@@ -51,26 +55,14 @@ const Export = () => {
   };
 
   const getDateByMonth = () => {
-    let start = moment(periodeCalendar.start);
-    let end = moment(periodeCalendar.end);
-    let duration = moment.duration(start.diff(end));
-    let nbMonths = parseInt(Math.abs(duration.asMonths()));
 
-    getInvoicesPaid({
+
+    getInvoiceForExport({
       dateDebut: periodeCalendar.start ? moment(periodeCalendar.start).format("YYYY-MM-DD") : null,
       dateFin: periodeCalendar.end ? moment(periodeCalendar.end).format("YYYY-MM-DD") : null
-    }).then((invoices) => {
-      let data = [];
+    }).then((response) => {
 
-      for (let index = 0; index < nbMonths; index++) {
-        let date = moment(periodeCalendar.start).add(index, "month").format("YYYY-MM-DD");
-        let filteredInvoice = invoices.data.filter((invoice) => moment(invoice.tra_date).isSame(date, "month"));
-        let totalOfMonth = filteredInvoice.reduce((acc, current) => acc + parseFloat(current.fen_total_ttc), 0);
-
-        data.push({ x: date, y: totalOfMonth });
-      }
-
-      setDataChart(data);
+      setDataChart(response.data);
     });
   };
 
@@ -101,8 +93,8 @@ const Export = () => {
                 className="mb-2">
                 <div className="h-100">
                   <div className="mt-3 mt-lg-0">
-                    <Row>
-                      <Col lg={6}>
+                    <Row className="d-flex justify-content-between">
+                      <Col lg={4}>
                         <div className="input-group">
                           <Flatpickr
                             className="form-control border-0 fs-13 dash-filter-picker shadow"
@@ -135,10 +127,19 @@ const Export = () => {
                             <i className="ri-calendar-2-line"></i>
                           </div>
                         </div>
+
                       </Col>
                       <Col
-                        lg={6}
-                        className="d-flex justify-content-end">
+                        lg={8}
+                        className="d-flex justify-content-between">
+                        <div className="d-flex align-items-center justify-content-center">
+                          <a id="ScheduleUpdateTooltip"><i class="bx bx-info-circle fs-5 text-primary"></i></a>
+                          <UncontrolledTooltip
+                            placement="top"
+                            target="ScheduleUpdateTooltip"
+                            trigger="hover"
+                          >Tableaux correspondant à toutes les factures créer entre les dates sélectionnées.</UncontrolledTooltip>
+                        </div>
                         <button
                           onClick={(e) => {
                             e.preventDefault();
@@ -171,7 +172,7 @@ const Export = () => {
           </Row>
         </Container>
       </div>
-    </React.Fragment>
+    </React.Fragment >
   );
 };
 

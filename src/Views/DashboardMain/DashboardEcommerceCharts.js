@@ -128,7 +128,7 @@ const RevenueCharts = ({ dataColors, series }) => {
         {
           formatter: function (y) {
             if (typeof y !== "undefined") {
-              return y + " " + devise;
+              return y.toFixed(2) + " " + devise;
             }
             return y + " " + devise;
           }
@@ -144,9 +144,9 @@ const RevenueCharts = ({ dataColors, series }) => {
         {
           formatter: function (y) {
             if (typeof y !== "undefined") {
-              return y + " " + devise;
+              return y.toFixed(2) + " " + devise;
             }
-            return y + " " + devise;
+            return y.toFixed(2) + " " + devise;
           }
         }
       ]
@@ -166,41 +166,5 @@ const RevenueCharts = ({ dataColors, series }) => {
   );
 };
 
-const StoreVisitsCharts = ({ dataColors }) => {
-  const chartDonutBasicColors = getChartColorsArray(dataColors);
 
-  const series = [44, 55, 41, 17, 15];
-  var options = {
-    labels: ["Direct", "Social", "Email", "Other", "Referrals"],
-    chart: {
-      height: 333,
-      type: "donut"
-    },
-    legend: {
-      position: "bottom"
-    },
-    stroke: {
-      show: false
-    },
-    dataLabels: {
-      dropShadow: {
-        enabled: false
-      }
-    },
-    colors: chartDonutBasicColors
-  };
-  return (
-    <React.Fragment>
-      <ReactApexChart
-        dir="ltr"
-        options={options}
-        series={series}
-        type="donut"
-        height="333"
-        className="apex-charts"
-      />
-    </React.Fragment>
-  );
-};
-
-export { RevenueCharts, StoreVisitsCharts };
+export { RevenueCharts };
