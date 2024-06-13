@@ -338,7 +338,7 @@ const InvoiceListGlobalSearch = ({ origneData, data, setData, value }) => {
     let newData = [...origneData];
 
     if (isText) {
-      newData = newData.filter((e) => e.contact.fco_cus_email.toLowerCase().includes(isText) || e.contact.fco_cus_name.toLowerCase().includes(isText) || e.header.fen_sujet.toLowerCase().includes(isText) || e.header.fen_total_ttc.toString().includes(isText) || e.header.fen_num_fac.toLowerCase().includes(isText.toLowerCase()));
+      newData = newData.filter((e) => e.contact.fco_cus_email.toLowerCase().includes(isText.toLowerCase()) || e.contact.fco_cus_name.toLowerCase().includes(isText.toLowerCase()) || e.header.fen_sujet.toLowerCase().includes(isText.toLowerCase()) || e.header.fen_total_ttc.toString().includes(isText.toLowerCase()) || e.header.fen_num_fac.toLowerCase().includes(isText.toLowerCase()));
     }
 
     if (isDate) {
