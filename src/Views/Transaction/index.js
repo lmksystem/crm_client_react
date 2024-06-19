@@ -76,27 +76,28 @@ const TransactionBank = () => {
   };
 
   const previewAchat = (ach_id) => {
-    axios
-      .get(`${api.API_URL}/v1/pdf/download/achat/${ach_id}`, {
-        mode: "no-cors",
-        responseType: "blob"
-      })
-      .then((response) => {
-        console.log(response);
-        try {
-          if (data.ado_file_name.split(".").pop() == "pdf") {
-            let blob = new Blob([response], { type: "application/pdf" });
-            var file = window.URL.createObjectURL(blob);
-            document.querySelector("#iframe-doc").src = file;
-          } else {
-            let blob = new Blob([response], { type: "image/jpg" });
-            var file = window.URL.createObjectURL(blob);
-            document.querySelector("#image-doc").src = file;
+    axios.get(`${api.API_URL}/v1/achat/${ach_id}`).then((achatWithDoc) => {
+      axios
+        .get(`${api.API_URL}/v1/pdf/download/achat/${ach_id}`, {
+          mode: "no-cors",
+          responseType: "blob"
+        })
+        .then((response) => {
+          try {
+            if (achatWithDoc.data.ado_file_name.split(".").pop() == "pdf") {
+              let blob = new Blob([response], { type: "application/pdf" });
+              var file = window.URL.createObjectURL(blob);
+              document.querySelector("#iframe-doc").src = file;
+            } else {
+              let blob = new Blob([response], { type: "image/jpg" });
+              var file = window.URL.createObjectURL(blob);
+              document.querySelector("#image-doc").src = file;
+            }
+          } catch (err) {
+            console.log(err);
           }
-        } catch (err) {
-          console.log(err);
-        }
-      });
+        });
+    });
   };
 
   const toggle = useCallback(() => {
@@ -114,36 +115,7 @@ const TransactionBank = () => {
   const handleTransactionClick = useCallback((arg) => {
     const transData = arg;
     setTransaction(transData);
-    dispatch(onGetAchatLinkTransaction(transData?.tba_id));
   }, []);
-
-  // const matchAmount = useFormik({
-  //   // enableReinitialize : use this flag when initial values needs to be changed
-  //   enableReinitialize: true,
-
-  //   initialValues: {
-  //     amount: priceMatchAmount
-  //   },
-  //   validationSchema: Yup.object({
-  //     amount: Yup.number().required("Veuillez choisir un montant à associé")
-  //   }),
-  //   onSubmit: (values) => {
-  //     let achat = { ...achatActif };
-  //     let transactionBank = { ...transaction };
-  //     let achatBankSelected = { ...achatBankActif };
-
-  //     dissociationAchatTransation(transactionBank, achat, achatBankSelected);
-
-  //     achat.ach_rp = parseFloat(values.amount);
-  //     console.log(achat.ach_rp);
-  //     associateAchatTransaction(transactionBank, achat);
-
-  //     setAchatActif(null);
-  //     setAchatBankActif(null);
-  //     setModal(false);
-  //     // setDoc(null);
-  //   }
-  // });
 
   // Column
   const columns = useMemo(
@@ -407,7 +379,6 @@ const TransactionBank = () => {
 
       getAchatBank(transaction.tba_id)
         .then((res) => {
-          console.log(res);
           setAchatBank(res);
         })
         .catch((err) => {
@@ -417,6 +388,7 @@ const TransactionBank = () => {
   }, [transaction]);
 
   useEffect(() => {
+    console.log(achatActif);
     if (achatActif) {
       previewAchat(achatActif.ach_id);
     }
@@ -680,7 +652,7 @@ const TransactionBank = () => {
                                                           //setDoc(ach.ado_file_name);
                                                           // setOldPriceAmount(ach.aba_match_amount);
                                                           // setPriceMatchAmount(ach.aba_match_amount);
-                                                          // setAchatActif(ach);
+                                                          setAchatActif(ach);
                                                           // setAchatBankActif(achatBankSelected);
                                                           setModal(true);
                                                         }}></i>

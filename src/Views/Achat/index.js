@@ -242,8 +242,14 @@ const Achats = () => {
         filterable: false,
         Cell: (cell) => {
           let arrayColor = ["primary", "secondary", "success", "danger", "warning text-dark", "info text-dark", "light text-dark"];
-
-          return cell.row.original?.categories.map((cat) => <span class={"mx-1 badge rounded-pill badge-soft-" + arrayColor[Math.floor(Math.random() * arrayColor.length)]}>{cat.aca_name}</span>);
+          console.log(cell.row.original);
+          return cell.row.original?.categories.map((cat, i) => (
+            <span
+              key={i}
+              className={"mx-1 badge rounded-pill badge-soft-" + arrayColor[Math.floor(Math.random() * arrayColor.length)]}>
+              {cat.aca_name}
+            </span>
+          ));
         }
       },
       {
