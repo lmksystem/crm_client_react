@@ -126,7 +126,9 @@ function FormAchat({ data }) {
     let data = categories.map((cat) => ({ ...cat, aca_ach_fk: validation.values.ach_id }));
 
     if (data.length > 0) {
-      await axios.post("/v1/achat/categorie", { data });
+      await axios.post("/v1/achat/categorie", { data: data });
+    } else {
+      await axios.delete(`/v1/achat/categorie/${validation.values.ach_id}`);
     }
   };
 

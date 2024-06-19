@@ -242,7 +242,6 @@ const Achats = () => {
         filterable: false,
         Cell: (cell) => {
           let arrayColor = ["primary", "secondary", "success", "danger", "warning text-dark", "info text-dark", "light text-dark"];
-          console.log(cell.row.original);
           return cell.row.original?.categories.map((cat, i) => (
             <span
               key={i}
