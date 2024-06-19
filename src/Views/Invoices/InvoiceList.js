@@ -253,6 +253,7 @@ const InvoiceList = () => {
                         isInvoiceListFilter={true}
                         SearchPlaceholder=""
                         pathToDetail={`/factures/detail/`}
+                        initialSortField={'fen_date_create'}
                       />
                     ) : (
                       <Loader error={error} />

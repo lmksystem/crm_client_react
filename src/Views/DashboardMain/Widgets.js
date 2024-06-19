@@ -54,7 +54,7 @@ const Widgets = () => {
       separator: " ",
       decimal: ",",
       icon: "dollar-sign",
-      desc: "Total des transactions payait pendant la période sélectionnée"
+      desc: "Total des transactions payées dans la période sélectionnée"
     },
     {
       id: 2,
@@ -70,7 +70,7 @@ const Widgets = () => {
       suffix: "",
       separator: " ",
       icon: "clipboard",
-      desc: "Nombre total des devis réalisait lors de la période sélectionnée"
+      desc: "Nombre de devis réalisés dans la période sélectionnée"
     },
     {
       id: 3,
@@ -85,7 +85,7 @@ const Widgets = () => {
       prefix: "",
       suffix: "",
       icon: "file-text",
-      desc: "Nombre total des Factures réaliser lors de la période sélectionnée"
+      desc: "Nombre de factures réalisées dans la période sélectionnée"
     },
     {
       id: 4,
@@ -98,7 +98,7 @@ const Widgets = () => {
       counter: entityCountPeriod?.nb_entity_annee_courante || 0,
       bgcolor: "primary",
       decimals: 0,
-      desc: "Nombre total des fournisseurs enregistraient lors de la période sélectionnée"
+      desc: "Nombre de fournisseurs enregistrés dans la période sélectionnée"
     }
   ];
 

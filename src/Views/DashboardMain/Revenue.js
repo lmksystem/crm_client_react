@@ -28,7 +28,7 @@ const Revenue = ({ perdiodeCalendar }) => {
         let month = moment(element.tra_date).month();
         arrayByMonth[month] = rounded(parseFloat(arrayByMonth[month]) + parseFloat(element.fen_total_tva), 2);
       });
-     
+
       const tableauTransaction = transactionByMonth?.map((objet) => objet["somme_tra_value"]);
       const tableauDevis = devisByMonth?.map((objet) => objet["count_devis"]);
       const tableauInvoice = invoiceByMonth?.map((objet) => objet["count_invoice"]);
@@ -75,12 +75,37 @@ const Revenue = ({ perdiodeCalendar }) => {
               <div className="p-3 border border-dashed border-start-0">
                 <h5 className="mb-1">
                   <CountUp
+                    suffix={devise}
+                    // prefix=""
+                    start={0}
+                    decimals={2}
+                    end={
+                      transactionByMonth?.length > 0
+                        ? transactionByMonth.reduce((accumulateur, objet) => {
+                            return accumulateur + objet["somme_tra_value"];
+                          }, 0)
+                        : 0
+                    }
+                    duration={1}
+                    separator={" "}
+                    decimal=","
+                  />
+                </h5>
+                <p className="text-muted mb-0">Ventes</p>
+              </div>
+            </Col>
+            <Col
+              xs={3}
+              sm={3}>
+              <div className="p-3 border border-dashed border-start-0">
+                <h5 className="mb-1">
+                  <CountUp
                     start={0}
                     end={
                       devisByMonth?.length > 0
                         ? devisByMonth.reduce((accumulateur, objet) => {
-                          return accumulateur + objet["count_devis"];
-                        }, 0)
+                            return accumulateur + objet["count_devis"];
+                          }, 0)
                         : 0
                     }
                     duration={1}
@@ -96,37 +121,12 @@ const Revenue = ({ perdiodeCalendar }) => {
               <div className="p-3 border border-dashed border-start-0">
                 <h5 className="mb-1">
                   <CountUp
-                    suffix={devise}
-                    // prefix=""
-                    start={0}
-                    decimals={2}
-                    end={
-                      transactionByMonth?.length > 0
-                        ? transactionByMonth.reduce((accumulateur, objet) => {
-                          return accumulateur + objet["somme_tra_value"];
-                        }, 0)
-                        : 0
-                    }
-                    duration={1}
-                    separator={" "}
-                    decimal=","
-                  />
-                </h5>
-                <p className="text-muted mb-0">Total des ventes</p>
-              </div>
-            </Col>
-            <Col
-              xs={3}
-              sm={3}>
-              <div className="p-3 border border-dashed border-start-0">
-                <h5 className="mb-1">
-                  <CountUp
                     start={0}
                     end={
                       invoiceByMonth?.length > 0
                         ? invoiceByMonth.reduce((accumulateur, objet) => {
-                          return accumulateur + objet["count_invoice"];
-                        }, 0)
+                            return accumulateur + objet["count_invoice"];
+                          }, 0)
                         : 0
                     }
                     duration={1}
@@ -147,8 +147,8 @@ const Revenue = ({ perdiodeCalendar }) => {
                     end={
                       totalTva?.length > 0
                         ? totalTva.reduce((accumulateur, current) => {
-                          return accumulateur + current;
-                        }, 0)
+                            return accumulateur + current;
+                          }, 0)
                         : 0
                     }
                     duration={1}

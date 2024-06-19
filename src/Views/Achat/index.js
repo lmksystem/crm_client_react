@@ -171,7 +171,7 @@ const Achats = () => {
         filterable: false,
         Cell: (cell) => {
           let status = "";
-          if (cell.row.original.ach_total_amount <= 0 || cell.row.original.ach_total_amount == null || cell.row.original.ach_categorie?.length == 0 || cell.row.original?.ach_date_create == "" || cell.row.original.ach_date_create == null) {
+          if (cell.row.original.ach_ent_fk == 0 || cell.row.original.ach_total_amount <= 0 || cell.row.original.ach_total_amount == null || cell.row.original.categories?.length == 0 || cell.row.original?.ach_date_create == "" || cell.row.original.ach_date_create == null) {
             status = "A traiter";
           } else if (parseFloat(cell.row.original.ach_rp) != 0) {
             status = "A associer";
@@ -238,7 +238,7 @@ const Achats = () => {
       },
       {
         Header: "Catégorie",
-        accessor: "ach_categorie",
+        accessor: "",
         filterable: false,
         Cell: (cell) => {
           let arrayColor = ["primary", "secondary", "success", "danger", "warning text-dark", "info text-dark", "light text-dark"];
@@ -400,6 +400,7 @@ const Achats = () => {
                   <div>
                     {isAchatSuccess ? (
                       <TableContainer
+                        initialSortField={"ach_date_create"}
                         columns={columns}
                         data={achatDisplay || []}
                         isGlobalFilter={true}

@@ -23,7 +23,7 @@ const WidgetCountUp = ({ data, type, xl = 3, md = 6 }) => {
   const { devise } = useSelector((state) => ({
     devise: state?.Company?.devise,
   }));
-  console.log(data);
+  
   return (  
     <React.Fragment>
       <Col xl={xl} md={md}>
@@ -60,9 +60,8 @@ const WidgetCountUp = ({ data, type, xl = 3, md = 6 }) => {
                 </h4>
                 <span className="badge bg-warning me-1">
                   {data.nb}
-                </span>{" "}
+                </span>
                 <span className="text-muted">
-                  {" "}
                   {data.text}
                 </span>
               </div>

@@ -115,6 +115,7 @@ const EntrepriseAdmin = () => {
               <Card>
                 <CardBody>
                   <TableContainer
+                    initialSortField={"com_date_create"}
                     columns={columns}
                     data={companyListe || []}
                     isGlobalFilter={true}

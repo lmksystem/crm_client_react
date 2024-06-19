@@ -6,40 +6,14 @@ import * as moment from "moment";
 // Import Images
 import dummyImg from "../../assets/images/users/user-dummy-img.jpg";
 
-import {
-  Col,
-  Container,
-  Row,
-  Card,
-  CardHeader,
-  CardBody,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  Label,
-  Input,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  Form,
-  ModalFooter,
-  Table,
-  FormFeedback
-} from "reactstrap";
+import { Col, Container, Row, Card, CardHeader, CardBody, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Label, Input, Modal, ModalHeader, ModalBody, Form, ModalFooter, Table, FormFeedback } from "reactstrap";
 import Select from "react-select";
 
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import DeleteModal from "../../Components/Common/DeleteModal";
 
 //Import actions
-import {
-  getContacts as onGetContacts,
-  addNewContact as onAddNewContact,
-  updateContact as onUpdateContact,
-  deleteContact as onDeleteContact,
-  getCollaborateurs as onGetCollaborateurs,
-} from "../../slices/thunks";
+import { getContacts as onGetContacts, addNewContact as onAddNewContact, updateContact as onUpdateContact, deleteContact as onDeleteContact, getCollaborateurs as onGetCollaborateurs } from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
 import TableContainer from "../../Components/Common/TableContainer";
@@ -49,8 +23,8 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 
 import Loader from "../../Components/Common/Loader";
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Export Modal
 import ExportCSVModal from "../../Components/Common/ExportCSVModal";
@@ -65,7 +39,7 @@ const Contacts = () => {
     collaborateurs: state.Gestion.collaborateurs,
     isContactSuccess: state.Gestion.isContactSuccess,
     isCollaborateurSuccess: state.Gestion.isCollaborateurSuccess,
-    error: state.Gestion.error,
+    error: state.Gestion.error
   }));
 
   useEffect(() => {
@@ -83,7 +57,6 @@ const Contacts = () => {
       setIsEdit(false);
     }
   }, [contacts]);
-
 
   const [isEdit, setIsEdit] = useState(false);
   const [contact, setContact] = useState([]);
@@ -103,7 +76,7 @@ const Contacts = () => {
     if (modal) {
       setModal(false);
       setContact(null);
-      setCollaborateur(null)
+      setCollaborateur(null);
     } else {
       setModal(true);
     }
@@ -137,12 +110,12 @@ const Contacts = () => {
     initialValues: {
       // contactId: (contact && contact.contactId) || '',
       // img: (contact && contact.img) || '',
-      lastname: (contact && contact.lastname) || '',
-      firstname: (contact && contact.firstname) || '',
-      email: (contact && contact.email) || '',
-      phone: (contact && contact.phone) || '',
-      job: (contact && contact.job) || '',
-      info: (contact && contact.info) || '',
+      lastname: (contact && contact.lastname) || "",
+      firstname: (contact && contact.firstname) || "",
+      email: (contact && contact.email) || "",
+      phone: (contact && contact.phone) || "",
+      job: (contact && contact.job) || "",
+      info: (contact && contact.info) || ""
       // phone: (contact && contact.phone) || '',
       // lead_score: (contact && contact.lead_score) || '',
       // tags: (contact && contact.tags) || [],
@@ -154,11 +127,10 @@ const Contacts = () => {
       email: Yup.string().required("Veuillez entrer un email"),
       phone: Yup.string().required("Veuillez entrer un téléphone"),
       job: Yup.string(),
-      info: Yup.string(),
+      info: Yup.string()
     }),
     onSubmit: (values) => {
       if (isEdit) {
-
         const updateContact = {
           epe_id: contact ? contact.id : 0,
           epe_lastname: values.lastname,
@@ -169,13 +141,12 @@ const Contacts = () => {
           epe_info: values.info,
           epe_com_fk: userProfile.use_com_fk,
           epe_ent_fk: collaborateur?.value || null,
-          ent_name: collaborateur?.label || null,
+          ent_name: collaborateur?.label || null
         };
 
         // update Contact
         dispatch(onUpdateContact(updateContact));
         validation.resetForm();
-
       } else {
         const newContact = {
           epe_lastname: values["lastname"],
@@ -186,7 +157,7 @@ const Contacts = () => {
           epe_info: values["info"],
           epe_com_fk: userProfile.use_com_fk,
           epe_ent_fk: collaborateur?.value || null,
-          ent_name: collaborateur?.label || null,
+          ent_name: collaborateur?.label || null
         };
 
         // save new Contact
@@ -194,26 +165,29 @@ const Contacts = () => {
         validation.resetForm();
       }
       toggle();
-    },
+    }
   });
 
   // Update Data
-  const handleContactClick = useCallback((arg) => {
-    const contact = arg;
+  const handleContactClick = useCallback(
+    (arg) => {
+      const contact = arg;
 
-    setContact({
-      id: contact.epe_id,
-      lastname: contact.epe_lastname,
-      firstname: contact.epe_firstname,
-      email: contact.epe_email,
-      phone: contact.epe_phone,
-      job: contact.epe_job,
-      info: contact.epe_info,
-    });
+      setContact({
+        id: contact.epe_id,
+        lastname: contact.epe_lastname,
+        firstname: contact.epe_firstname,
+        email: contact.epe_email,
+        phone: contact.epe_phone,
+        job: contact.epe_job,
+        info: contact.epe_info
+      });
 
-    setIsEdit(true);
-    toggle();
-  }, [toggle]);
+      setIsEdit(true);
+      toggle();
+    },
+    [toggle]
+  );
 
   // Checked All
   const checkedAll = useCallback(() => {
@@ -240,7 +214,9 @@ const Contacts = () => {
     const checkall = document.getElementById("checkBoxAll");
     selectedCheckBoxDelete.forEach((element) => {
       dispatch(onDeleteContact(element.value));
-      setTimeout(() => { toast.clearWaitingQueue(); }, 3000);
+      setTimeout(() => {
+        toast.clearWaitingQueue();
+      }, 3000);
     });
     setIsMultiDeleteButton(false);
     checkall.checked = false;
@@ -256,18 +232,37 @@ const Contacts = () => {
   const columns = useMemo(
     () => [
       {
-        Header: <input type="checkbox" id="checkBoxAll" className="form-check-input" onClick={() => checkedAll()} />,
+        Header: (
+          <input
+            type="checkbox"
+            id="checkBoxAll"
+            className="form-check-input"
+            onClick={() => checkedAll()}
+          />
+        ),
         Cell: (cellProps) => {
-          return <input type="checkbox" className="contactCheckBox form-check-input" value={cellProps.row.original.epe_id} onChange={() => deleteCheckbox()} />;
+          return (
+            <input
+              type="checkbox"
+              className="contactCheckBox form-check-input"
+              value={cellProps.row.original.epe_id}
+              onChange={() => deleteCheckbox()}
+            />
+          );
         },
-        id: '#',
+        id: "#"
       },
       {
-        Header: '',
-        accessor: 'epe_id',
+        Header: "",
+        accessor: "epe_id",
         hiddenColumns: true,
         Cell: (cell) => {
-          return <input type="hidden" value={cell.value} />;
+          return (
+            <input
+              type="hidden"
+              value={cell.value}
+            />
+          );
         }
       },
       {
@@ -276,28 +271,28 @@ const Contacts = () => {
         filterable: false,
         Cell: (cellProps) => {
           console.log(cellProps.row.original);
-          return cellProps.row.original.ent_name ? cellProps.row.original.ent_name : <i style={{color: '#9b9b9b'}}>non renseigné</i>
+          return cellProps.row.original.ent_name ? cellProps.row.original.ent_name : <i style={{ color: "#9b9b9b" }}>non renseigné</i>;
         }
       },
       {
         Header: "Nom",
         accessor: "epe_lastname",
-        filterable: false,
+        filterable: false
       },
       {
         Header: "Prénom",
         accessor: "epe_firstname",
-        filterable: false,
+        filterable: false
       },
       {
         Header: "Email",
         accessor: "epe_email",
-        filterable: false,
+        filterable: false
       },
       {
         Header: "Téléphone",
         accessor: "epe_phone",
-        filterable: false,
+        filterable: false
         // Cell: (cell) => (
         //   <>
         //     {handleValidDate(cell.value)}
@@ -316,8 +311,12 @@ const Contacts = () => {
         Cell: (cellProps) => {
           return (
             <ul className="list-inline hstack gap-2 mb-0">
-              <li className="list-inline-item edit" title="Call">
-                <Link to={`tel:${info.epe_phone}`} className="text-primary d-inline-block">
+              <li
+                className="list-inline-item edit"
+                title="Call">
+                <Link
+                  to={`tel:${info.epe_phone}`}
+                  className="text-primary d-inline-block">
                   <i className="ri-phone-line fs-16"></i>
                 </Link>
               </li>
@@ -326,16 +325,19 @@ const Contacts = () => {
                   <DropdownToggle
                     href="#"
                     className="btn btn-soft-secondary btn-sm dropdown"
-                    tag="button"
-                  >
+                    tag="button">
                     <i className="ri-more-fill align-middle"></i>
                   </DropdownToggle>
                   <DropdownMenu className="dropdown-menu-end">
-                    <DropdownItem className="dropdown-item" href="#"
-                      onClick={() => { const contactData = cellProps.row.original; setInfo(contactData); setShow(true); }}
-                    >
-                      <i className="ri-eye-fill align-bottom me-2 text-primary"></i>{" "}
-                      Voir
+                    <DropdownItem
+                      className="dropdown-item"
+                      href="#"
+                      onClick={() => {
+                        const contactData = cellProps.row.original;
+                        setInfo(contactData);
+                        setShow(true);
+                      }}>
+                      <i className="ri-eye-fill align-bottom me-2 text-primary"></i> Voir
                     </DropdownItem>
                     <DropdownItem
                       className="dropdown-item edit-item-btn"
@@ -345,37 +347,36 @@ const Contacts = () => {
 
                         setCollaborateur(collaborateurList.filter((c) => c.value == contactData.epe_ent_fk)[0]);
                         handleContactClick(contactData);
-                      }}
-                    >
-                      <i className="ri-pencil-fill align-bottom me-2 text-primary"></i>{" "}
-                      Modifier
+                      }}>
+                      <i className="ri-pencil-fill align-bottom me-2 text-primary"></i> Modifier
                     </DropdownItem>
                     <DropdownItem
                       className="dropdown-item remove-item-btn"
                       href="#"
-                      onClick={() => { const contactData = cellProps.row.original; onClickDelete(contactData); }}
-                    >
-                      <i className="ri-delete-bin-fill align-bottom me-2 text-danger "></i>{" "}
-                      Supprimer
+                      onClick={() => {
+                        const contactData = cellProps.row.original;
+                        onClickDelete(contactData);
+                      }}>
+                      <i className="ri-delete-bin-fill align-bottom me-2 text-danger "></i> Supprimer
                     </DropdownItem>
                   </DropdownMenu>
                 </UncontrolledDropdown>
               </li>
             </ul>
           );
-        },
-      },
+        }
+      }
     ],
     [handleContactClick, checkedAll, collaborateurList]
   );
 
   useEffect(() => {
     if (collaborateurs) {
-      let firstChoice = { label: <i style={{color: '#9b9b9b'}}>non renseigné</i>, value: null };
+      let firstChoice = { label: <i style={{ color: "#9b9b9b" }}>non renseigné</i>, value: null };
       let collaboList = collaborateurs.map((c) => ({ label: c.ent_name, value: c.ent_id }));
-      setCollaborateurList([firstChoice, ...collaboList])
+      setCollaborateurList([firstChoice, ...collaboList]);
     }
-  }, [collaborateurs])
+  }, [collaborateurs]);
 
   function handlestag(collaborateur) {
     setCollaborateur(collaborateur);
@@ -384,13 +385,12 @@ const Contacts = () => {
   useEffect(() => {
     if (show) {
       setTimeout(() => {
-        document.getElementById('start-anime').classList.add("show-cus")
+        document.getElementById("start-anime").classList.add("show-cus");
       }, 350);
     } else {
-      document.getElementById('start-anime').classList.remove("show-cus")
+      document.getElementById("start-anime").classList.remove("show-cus");
     }
-  }, [show])
-
+  }, [show]);
 
   // SideBar Contact Deatail
   const [info, setInfo] = useState([]);
@@ -423,7 +423,10 @@ const Contacts = () => {
           onCloseClick={() => setDeleteModalMulti(false)}
         />
         <Container fluid>
-          <BreadCrumb title="Contacts" pageTitle="Gestion" />
+          <BreadCrumb
+            title="Contacts"
+            pageTitle="Gestion"
+          />
           {/* <Row> */}
           <Col lg={12}>
             <Card>
@@ -434,18 +437,25 @@ const Contacts = () => {
                       className="btn btn-secondary add-btn"
                       onClick={() => {
                         setModal(true);
-                      }}
-                    >
+                      }}>
                       <i className="ri-add-fill me-1 align-bottom"></i> Ajouter un contact
                     </button>
                   </div>
                   <div className="flex-shrink-0">
                     <div className="hstack text-nowrap gap-2">
-                      {isMultiDeleteButton && <button className="btn btn-danger"
-                        onClick={() => setDeleteModalMulti(true)}
-                      ><i className="ri-delete-bin-2-line"></i></button>}
+                      {isMultiDeleteButton && (
+                        <button
+                          className="btn btn-danger"
+                          onClick={() => setDeleteModalMulti(true)}>
+                          <i className="ri-delete-bin-2-line"></i>
+                        </button>
+                      )}
 
-                      <button className="btn btn-soft-success" onClick={() => setIsExportCSV(true)}>Export</button>
+                      <button
+                        className="btn btn-soft-success"
+                        onClick={() => setIsExportCSV(true)}>
+                        Export
+                      </button>
 
                       {/* <UncontrolledDropdown>
                           <DropdownToggle
@@ -456,23 +466,24 @@ const Contacts = () => {
                             <i className="ri-more-2-fill"></i>
                           </DropdownToggle>
                         </UncontrolledDropdown> */}
-
                     </div>
                   </div>
                 </div>
               </CardHeader>
             </Card>
           </Col>
-          <Row >
-
-            <Col className="view-animate" xxl={show ? 9 : 12} >
+          <Row>
+            <Col
+              className="view-animate"
+              xxl={show ? 9 : 12}>
               <Card id="contactList">
                 <CardBody className="pt-0">
                   <div>
                     {isContactSuccess ? (
                       <TableContainer
+                        initialSortField={"ent_name"}
                         columns={columns}
-                        data={(contacts || [])}
+                        data={contacts || []}
                         isGlobalFilter={true}
                         isAddUserList={false}
                         customPageSize={8}
@@ -482,34 +493,49 @@ const Contacts = () => {
                         theadClass="table-light"
                         handleContactClick={handleContactClicks}
                         isContactsFilter={true}
-                        SearchPlaceholder='Recherche...'
+                        SearchPlaceholder="Recherche..."
                       />
-                    ) : (<Loader error={error} />)
-                    }
+                    ) : (
+                      <Loader error={error} />
+                    )}
                   </div>
 
-                  <Modal id="showModal" isOpen={modal} toggle={toggle} centered>
-                    <ModalHeader className="bg-soft-info p-3" toggle={toggle}>
+                  <Modal
+                    id="showModal"
+                    isOpen={modal}
+                    toggle={toggle}
+                    centered>
+                    <ModalHeader
+                      className="bg-soft-info p-3"
+                      toggle={toggle}>
                       {!!isEdit ? "Modifier un contact" : "Ajouter un contact"}
                     </ModalHeader>
 
-                    <Form className="tablelist-form" onSubmit={(e) => {
-                      e.preventDefault();
-                      validation.handleSubmit();
-                      return false;
-                    }}>
+                    <Form
+                      className="tablelist-form"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        validation.handleSubmit();
+                        return false;
+                      }}>
                       <ModalBody>
-                        <Input type="hidden" id="id-field" />
+                        <Input
+                          type="hidden"
+                          id="id-field"
+                        />
                         <Row className="g-3">
                           <Col lg={12}>
                             <div className="text-center">
                               <div className="position-relative d-inline-block">
-                                <div className="position-absolute  bottom-0 end-0">
-
-                                </div>
+                                <div className="position-absolute  bottom-0 end-0"></div>
                                 <div className="avatar-lg p-1">
                                   <div className="avatar-title bg-light rounded-circle">
-                                    <img src={api.API_URL + "v1/images/" + (info.image_src ? ("company/" + info.image_src) : "user-dummy-img.jpg")} alt="dummyImg" id="customer-img" className="avatar-md rounded-circle object-cover" />
+                                    <img
+                                      src={api.API_URL + "v1/images/" + (info.image_src ? "company/" + info.image_src : "user-dummy-img.jpg")}
+                                      alt="dummyImg"
+                                      id="customer-img"
+                                      className="avatar-md rounded-circle object-cover"
+                                    />
                                   </div>
                                 </div>
                               </div>
@@ -519,8 +545,7 @@ const Contacts = () => {
                             <div>
                               <Label
                                 htmlFor="lastname-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 Nom
                               </Label>
                               <Input
@@ -530,27 +555,21 @@ const Contacts = () => {
                                 placeholder="Entrer un nom"
                                 type="text"
                                 validate={{
-                                  required: { value: true },
+                                  required: { value: true }
                                 }}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.lastname || ""}
-                                invalid={
-                                  validation.touched.lastname && validation.errors.lastname ? true : false
-                                }
+                                invalid={validation.touched.lastname && validation.errors.lastname ? true : false}
                               />
-                              {validation.touched.lastname && validation.errors.lastname ? (
-                                <FormFeedback type="invalid">{validation.errors.lastname}</FormFeedback>
-                              ) : null}
-
+                              {validation.touched.lastname && validation.errors.lastname ? <FormFeedback type="invalid">{validation.errors.lastname}</FormFeedback> : null}
                             </div>
                           </Col>
                           <Col lg={6}>
                             <div>
                               <Label
                                 htmlFor="firstname-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 Prénom
                               </Label>
                               <Input
@@ -560,19 +579,14 @@ const Contacts = () => {
                                 placeholder="Entrer un prénom"
                                 type="text"
                                 validate={{
-                                  required: { value: true },
+                                  required: { value: true }
                                 }}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.firstname || ""}
-                                invalid={
-                                  validation.touched.firstname && validation.errors.firstname ? true : false
-                                }
+                                invalid={validation.touched.firstname && validation.errors.firstname ? true : false}
                               />
-                              {validation.touched.firstname && validation.errors.firstname ? (
-                                <FormFeedback type="invalid">{validation.errors.firstname}</FormFeedback>
-                              ) : null}
-
+                              {validation.touched.firstname && validation.errors.firstname ? <FormFeedback type="invalid">{validation.errors.firstname}</FormFeedback> : null}
                             </div>
                           </Col>
 
@@ -580,8 +594,7 @@ const Contacts = () => {
                             <div>
                               <Label
                                 htmlFor="email_id-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 Email
                               </Label>
 
@@ -592,27 +605,21 @@ const Contacts = () => {
                                 placeholder="Entrer un email"
                                 type="email"
                                 validate={{
-                                  required: { value: true },
+                                  required: { value: true }
                                 }}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.email || ""}
-                                invalid={
-                                  validation.touched.email && validation.errors.email ? true : false
-                                }
+                                invalid={validation.touched.email && validation.errors.email ? true : false}
                               />
-                              {validation.touched.email && validation.errors.email ? (
-                                <FormFeedback type="invalid">{validation.errors.email}</FormFeedback>
-                              ) : null}
-
+                              {validation.touched.email && validation.errors.email ? <FormFeedback type="invalid">{validation.errors.email}</FormFeedback> : null}
                             </div>
                           </Col>
                           <Col lg={12}>
                             <div>
                               <Label
                                 htmlFor="phone-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 Téléphone
                               </Label>
 
@@ -623,54 +630,41 @@ const Contacts = () => {
                                 placeholder="Entrer un téléphone"
                                 type="text"
                                 validate={{
-                                  required: { value: true },
+                                  required: { value: true }
                                 }}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.phone || ""}
-                                invalid={
-                                  validation.touched.phone && validation.errors.phone ? true : false
-                                }
+                                invalid={validation.touched.phone && validation.errors.phone ? true : false}
                               />
-                              {validation.touched.phone && validation.errors.phone ? (
-                                <FormFeedback type="invalid">{validation.errors.phone}</FormFeedback>
-                              ) : null}
+                              {validation.touched.phone && validation.errors.phone ? <FormFeedback type="invalid">{validation.errors.phone}</FormFeedback> : null}
                             </div>
                           </Col>
                           <Col lg={6}>
                             <div>
                               <Label
                                 htmlFor="taginput-choices"
-                                className="form-label font-size-13"
-                              >
+                                className="form-label font-size-13">
                                 Entreprise
                               </Label>
                               <Select
-                                defaultValue={{ label: 'Sélectionner...', value: null }}
+                                defaultValue={{ label: "Sélectionner...", value: null }}
                                 value={collaborateur}
                                 onChange={(e) => {
                                   handlestag(e);
                                 }}
                                 className="select-style mb-0"
                                 options={collaborateurList}
-                                id="taginput-choices"
-                              >
-                              </Select>
+                                id="taginput-choices"></Select>
 
-                              {validation.touched.tags &&
-                                validation.errors.tags ? (
-                                <FormFeedback type="invalid">
-                                  {validation.errors.tags}
-                                </FormFeedback>
-                              ) : null}
+                              {validation.touched.tags && validation.errors.tags ? <FormFeedback type="invalid">{validation.errors.tags}</FormFeedback> : null}
                             </div>
                           </Col>
                           <Col lg={6}>
                             <div>
                               <Label
                                 htmlFor="job-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 Poste
                               </Label>
 
@@ -681,26 +675,21 @@ const Contacts = () => {
                                 placeholder="Entrer un poste"
                                 type="text"
                                 validate={{
-                                  required: { value: false },
+                                  required: { value: false }
                                 }}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.job || ""}
-                                invalid={
-                                  validation.touched.job && validation.errors.job ? true : false
-                                }
+                                invalid={validation.touched.job && validation.errors.job ? true : false}
                               />
-                              {validation.touched.job && validation.errors.job ? (
-                                <FormFeedback type="invalid">{validation.errors.job}</FormFeedback>
-                              ) : null}
+                              {validation.touched.job && validation.errors.job ? <FormFeedback type="invalid">{validation.errors.job}</FormFeedback> : null}
                             </div>
                           </Col>
                           <Col lg={12}>
                             <div>
                               <Label
                                 htmlFor="info-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 Information complémentaire
                               </Label>
 
@@ -711,33 +700,45 @@ const Contacts = () => {
                                 placeholder="Information"
                                 type="text"
                                 validate={{
-                                  required: { value: false },
+                                  required: { value: false }
                                 }}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.info || ""}
-                                invalid={
-                                  validation.touched.info && validation.errors.info ? "true" : "false"
-                                }
+                                invalid={validation.touched.info && validation.errors.info ? "true" : "false"}
                                 rows={5}
                               />
-                              {validation.touched.info && validation.errors.info ? (
-                                <FormFeedback type="invalid">{validation.errors.info}</FormFeedback>
-                              ) : null}
+                              {validation.touched.info && validation.errors.info ? <FormFeedback type="invalid">{validation.errors.info}</FormFeedback> : null}
                             </div>
                           </Col>
-
                         </Row>
                       </ModalBody>
                       <ModalFooter>
                         <div className="hstack gap-2 justify-content-end">
-                          <button type="button" className="btn btn-light" onClick={() => { setModal(false); }} > Fermer </button>
-                          <button type="submit" className="btn btn-success" id="add-btn" > {!!isEdit ? "Modifier" : "Ajouter"} </button>
+                          <button
+                            type="button"
+                            className="btn btn-light"
+                            onClick={() => {
+                              setModal(false);
+                            }}>
+                            {" "}
+                            Fermer{" "}
+                          </button>
+                          <button
+                            type="submit"
+                            className="btn btn-success"
+                            id="add-btn">
+                            {" "}
+                            {!!isEdit ? "Modifier" : "Ajouter"}{" "}
+                          </button>
                         </div>
                       </ModalFooter>
                     </Form>
                   </Modal>
-                  <ToastContainer closeButton={false} limit={1} />
+                  <ToastContainer
+                    closeButton={false}
+                    limit={1}
+                  />
                 </CardBody>
               </Card>
             </Col>
@@ -745,10 +746,15 @@ const Contacts = () => {
             <div id="start-anime">
               <Card id="contact-view-detail">
                 <CardBody className="text-center">
-                  <div style={{ position: "absolute", right: 10, top: 5 }}><i onClick={() => setShow(false)} className="ri-close-fill" style={{ cursor: "pointer", fontSize: "20px" }}></i></div>
+                  <div style={{ position: "absolute", right: 10, top: 5 }}>
+                    <i
+                      onClick={() => setShow(false)}
+                      className="ri-close-fill"
+                      style={{ cursor: "pointer", fontSize: "20px" }}></i>
+                  </div>
                   <div className="position-relative d-inline-block">
                     <img
-                      src={api.API_URL + "v1/images/" + (info.image_src ? ("company/" + info.image_src) : "user-dummy-img.jpg")}
+                      src={api.API_URL + "v1/images/" + (info.image_src ? "company/" + info.image_src : "user-dummy-img.jpg")}
                       alt=""
                       className="avatar-lg rounded-circle img-thumbnail"
                     />
@@ -757,62 +763,49 @@ const Contacts = () => {
                     </span>
                   </div>
                   <h5 className="mt-4 mb-1">{info.epe_lastname + " " + info.epe_firstname}</h5>
-                  <p className="text-muted"><span className="badge badge-soft-primary me-1">{info.epe_job}</span></p>
+                  <p className="text-muted">
+                    <span className="badge badge-soft-primary me-1">{info.epe_job}</span>
+                  </p>
 
                   <ul className="list-inline mb-0">
                     <li className="list-inline-item avatar-xs">
                       <Link
                         to={`tel:${info.epe_phone}`}
-                        className="avatar-title bg-soft-success text-success fs-15 rounded"
-                      >
+                        className="avatar-title bg-soft-success text-success fs-15 rounded">
                         <i className="ri-phone-line"></i>
                       </Link>
                     </li>
                     <li className="list-inline-item avatar-xs">
                       <Link
                         to={`mailto:${info.epe_email}`}
-                        className="avatar-title bg-soft-danger text-danger fs-15 rounded"
-                      >
+                        className="avatar-title bg-soft-danger text-danger fs-15 rounded">
                         <i className="ri-mail-line"></i>
                       </Link>
                     </li>
                   </ul>
                 </CardBody>
                 <CardBody>
-                  <h6 className="text-muted text-uppercase fw-semibold mb-3">
-                    Information complémentaire
-                  </h6>
-                  <p className="text-muted mb-4">
-                    {(info.epe_info) || "Non renseigné"}
-                  </p>
+                  <h6 className="text-muted text-uppercase fw-semibold mb-3">Information complémentaire</h6>
+                  <p className="text-muted mb-4">{info.epe_info || "Non renseigné"}</p>
                   <div className="table-responsive table-card">
                     <Table className="table table-borderless mb-0">
                       <tbody>
                         <tr>
-                          <td className="fw-medium">
-                            Entreprise
-                          </td>
+                          <td className="fw-medium">Entreprise</td>
                           <td>{info.ent_name}</td>
                         </tr>
                         <tr>
-                          <td className="fw-medium">
-                            Poste
-                          </td>
+                          <td className="fw-medium">Poste</td>
                           <td>{info.epe_job}</td>
                         </tr>
                         <tr>
-                          <td className="fw-medium">
-                            Email
-                          </td>
+                          <td className="fw-medium">Email</td>
                           <td>{info.epe_email}</td>
                         </tr>
                         <tr>
-                          <td className="fw-medium">
-                            Téléphone
-                          </td>
+                          <td className="fw-medium">Téléphone</td>
                           <td>{info.epe_phone}</td>
                         </tr>
-
                       </tbody>
                     </Table>
                   </div>

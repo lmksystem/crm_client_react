@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Col, Container, Row, Card, CardHeader, CardBody, Modal, ModalHeader, ModalBody, ListGroup, ListGroupItem, Input } from "reactstrap";
 
 import BreadCrumb from "../../Components/Common/BreadCrumb";
-import paysData from "../../Components/constants/paysISO.json";
+import paysData from "../../Components/constants/paysPhone.json";
 //Import actions
 import { getListBank as onGetListBank, insertBankAccount as onInsertBankAccount, getBankUserAccount, removeBankAccountApi } from "../../slices/thunks";
 //redux
@@ -15,7 +15,7 @@ import ItemBank from "./ItemBank";
 import axios from "axios";
 
 const BankAccount = () => {
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
   const { isBankAccountSuccess, error, listBank, listAccountsBank } = useSelector((state) => ({
     isBankAccountSuccess: state.BankAccount.isBankAccountSuccess,
     error: state.BankAccount.error,
@@ -151,11 +151,11 @@ const BankAccount = () => {
                           value={""}>
                           Choisir un pays
                         </option>
-                        {paysData?.pays?.map((e, i) => (
+                        {paysData?.map((e, i) => (
                           <option
                             key={i}
-                            value={e.iso}>
-                            {e.nom}
+                            value={e.code}>
+                            {e.name}
                           </option>
                         ))}
                       </Input>

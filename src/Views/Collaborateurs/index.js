@@ -596,6 +596,7 @@ const Collaborateurs = () => {
                   <div>
                     {isCollaborateurSuccess ? (
                       <TableContainer
+                        initialSortField={"ent_date_create"}
                         columns={columns}
                         data={collaborateurs || []}
                         isGlobalFilter={true}

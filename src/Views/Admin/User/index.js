@@ -173,6 +173,7 @@ const UserAdmin = () => {
                     Ajouter un utilisateur
                   </button>
                   <TableContainer
+                    initialSortField={"use_created"}
                     columns={columns}
                     data={users || []}
                     isGlobalFilter={true}

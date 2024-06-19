@@ -8,7 +8,7 @@ import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
 import axios from "axios";
 import SimpleBar from "simplebar-react";
-import { getAccountsBankUser, getCollaborateurs } from "../../helpers/backend_helper";
+import { getAccountsBankUser, getCategorieAchat, getCollaborateurs } from "../../helpers/backend_helper";
 import { api } from "../../config";
 import moment from "moment";
 import { useSelector } from "react-redux";
@@ -19,9 +19,8 @@ import { useNavigate } from "react-router-dom";
 function FormAchat({ data }) {
   const navigate = useNavigate();
 
-  const { categoriesList, devise } = useSelector((state) => ({
-    devise: state.Company.devise,
-    categoriesList: state.Achat.categories.map((e) => ({ label: e.aca_name, value: e.aca_name }))
+  const { devise } = useSelector((state) => ({
+    devise: state.Company.devise
   }));
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -29,6 +28,7 @@ function FormAchat({ data }) {
   const [selectedCat, setSelectedCat] = useState([]);
   const [collaborateurs, setCollaborateurs] = useState(null);
   const [transactions, setTransactions] = useState(null);
+  const [categoriesList, setCategoriesList] = useState([]);
 
   const [transactionFilter, setTransactionFilter] = useState("");
 
@@ -42,7 +42,6 @@ function FormAchat({ data }) {
       ach_ent_fk: (data && data.ach_ent_fk) || "",
       ach_date_create: (data && moment(data.ach_date_create).format("YYYY-MM-DD")) || "",
       ach_date_expired: (data && moment(data.ach_date_expired).format("YYYY-MM-DD")) || "",
-      ach_categorie: (data && data.ach_categorie) || "",
       ach_lib: (data && data.ach_lib) || "",
       ach_num: (data && data.ach_num) || "",
       ach_met: (data && data.ach_met) || "",
@@ -225,6 +224,9 @@ function FormAchat({ data }) {
     });
     getTransaction().then((transactions) => {
       setTransactions(transactions);
+    });
+    getCategorieAchat().then((res) => {
+      setCategoriesList(res.data.map((e) => ({ label: e.aca_name, value: e.aca_name })));
     });
   }, []);
 

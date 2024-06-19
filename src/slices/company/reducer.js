@@ -2,7 +2,7 @@ import { createSlice, current } from "@reduxjs/toolkit";
 import { addLicense, createOrUpdateCompany, deleteLicense, getCompany, getLicense, updateCompany } from "./thunk";
 import { toast } from "react-toastify";
 
-import paysData from "../../Components/constants/paysISO.json";
+import paysData from "../../Components/constants/paysPhone.json";
 
 export const initialState = {
   company: {},
@@ -27,7 +27,7 @@ const companySlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(getCompany.fulfilled, (state, action) => {
       state.company = action.payload.data;
-      state.devise = paysData.pays.find((p) => p.nom == action.payload.data[0].com_pays)?.symbole;
+      state.devise = paysData.find((p) => p.name == action.payload.data[0].com_pays)?.symbole;
       state.isCompanyCreated = false;
       state.isCompanySuccess = true;
     });

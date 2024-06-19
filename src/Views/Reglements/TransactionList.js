@@ -341,6 +341,7 @@ const TransactionList = () => {
                         theadClass="table-light"
                         isContactsFilter={true}
                         SearchPlaceholder="Search for contact..."
+                        initialSortField={"tra_date"}
                       />
                     ) : (
                       <Loader error={error} />

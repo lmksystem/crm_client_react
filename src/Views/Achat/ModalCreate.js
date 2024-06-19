@@ -87,7 +87,6 @@ const ModalCreate = ({ modal, toggle, setModal, setIsEdit, isEdit, setAchat }) =
                 ach_ent_fk: "",
                 ach_date_create: res.ocrInfo.date.value || "",
                 ach_date_expired: res.ocrInfo.dueDate.value || "",
-                ach_categorie: "",
                 ach_total_amount: res.ocrInfo.totalAmount.value || 0,
                 ach_rp: res.ocrInfo.totalAmount.value || 0,
                 ach_total_tva: res.ocrInfo.totalTax.value || 0,
@@ -118,13 +117,12 @@ const ModalCreate = ({ modal, toggle, setModal, setIsEdit, isEdit, setAchat }) =
                   ach_ent_fk: element.header.fen_ent_fk,
                   ach_date_create: element.header.fen_date_create.slice(0, 10),
                   ach_date_expired: element.header.fen_date_expired,
-                  ach_categorie: element.header.fen_sujet,
                   ach_total_amount: parseFloat(element.header.fen_total_ttc),
                   ach_rp: parseFloat(element.header.fen_total_ttc),
                   ach_total_tva: parseFloat(element.header.fen_total_tva),
                   ado_file_name: element.newFileCopy,
                   ach_type: "Revenu",
-                  ach_lib: "",
+                  ach_lib: element.header.fen_sujet,
                   ach_num: "",
                   ach_met: ""
                 };

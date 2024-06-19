@@ -136,40 +136,7 @@ export function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFil
   );
 }
 
-const TableContainer = ({
-  columns,
-  data,
-  isGlobalSearch,
-  isGlobalFilter,
-  isProductsFilter,
-  isCustomerFilter,
-  isOrderFilter,
-  isContactsFilter,
-  isCompaniesFilter,
-  isLeadsFilter,
-  isCryptoOrdersFilter,
-  isInvoiceListFilter,
-  isTicketsListFilter,
-  isNFTRankingFilter,
-  isTaskListFilter,
-  isAddOptions,
-  isAddUserList,
-  handleOrderClicks,
-  handleUserClick,
-  handleCustomerClick,
-  isAddCustList,
-  customPageSize,
-  tableClass,
-  theadClass,
-  trClass,
-  thClass,
-  divClass,
-  pathToDetail,
-  actionItem,
-  setPeriodeCalendar,
-  perdiodeCalendar,
-  selectFilter
-}) => {
+const TableContainer = ({ columns, data, isGlobalSearch, isGlobalFilter, isProductsFilter, isCustomerFilter, isOrderFilter, isContactsFilter, isCompaniesFilter, isLeadsFilter, isCryptoOrdersFilter, isInvoiceListFilter, isTicketsListFilter, isNFTRankingFilter, isTaskListFilter, customPageSize, tableClass, theadClass, trClass, thClass, divClass, pathToDetail, actionItem, setPeriodeCalendar, perdiodeCalendar, selectFilter, initialSortField }) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -206,6 +173,12 @@ const TableContainer = ({
       data,
       defaultColumn: { Filter: DefaultColumnFilter },
       initialState: {
+        sortBy: [
+          {
+            id: initialSortField,
+            desc: true
+          }
+        ],
         pageIndex: 0,
         pageSize: customPageSize,
         selectedRowIds: 0

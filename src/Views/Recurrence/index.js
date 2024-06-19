@@ -393,6 +393,7 @@ const Recurrence = () => {
                             isCompaniesFilter={false}
                             isProductsFilter={true}
                             SearchPlaceholder="Recherche..."
+                            initialSortField={"rec_date_create"}
                           />
                         ) : (
                           <Loader error={error} />

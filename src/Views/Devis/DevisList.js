@@ -310,6 +310,7 @@ const DevisList = () => {
                     />
                     {isDevisSuccess ? (
                       <TableContainer
+                        initialSortField={"den_date_create"}
                         columns={columns}
                         data={customFiltered || devisList || []}
                         isGlobalFilter={false}

@@ -519,6 +519,7 @@ const Salary = () => {
                                 theadClass="table-light"
                                 isContactsFilter={true}
                                 SearchPlaceholder="Recherche..."
+                                
                               />
                             ) : (
                               <Loader error={error} />

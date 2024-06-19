@@ -544,6 +544,7 @@ const TransactionBank = () => {
                         isContactsFilter={true}
                         SearchPlaceholder="Recherche..."
                         selectFilter={filterAccounts}
+                        initialSortField={"tba_val_date"}
                       />
                     ) : (
                       <Loader error={error} />
