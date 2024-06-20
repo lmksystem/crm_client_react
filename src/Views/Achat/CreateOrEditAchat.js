@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getOnceAchat } from "../../helpers/backend_helper";
 import FormAchat from "./FormAchat";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
@@ -9,11 +9,14 @@ import { ToastContainer } from "react-toastify";
 function CreateOrEditAchat() {
   const { state } = useLocation();
 
-  const [listOfAchat, setListOfAchat] = useState([]);
+  const navigate = useNavigate();
+
+  const [listOfAchat, setListOfAchat] = useState(null);
+  const [numberValidate, setNumberValidate] = useState(0);
 
   const loadAchat = async () => {
     if (state) {
-      let copy = [...listOfAchat];
+      let copy = [];
       for (let index = 0; index < state.length; index++) {
         const ach_id = state[index];
 
@@ -26,9 +29,19 @@ function CreateOrEditAchat() {
     }
   };
 
+  const handleOneValidate = () => {
+    setNumberValidate(() => numberValidate + 1);
+  };
+
   useEffect(() => {
     loadAchat();
   }, []);
+
+  useEffect(() => {
+    if (listOfAchat && numberValidate == listOfAchat.length) {
+      navigate("/achat");
+    }
+  }, [numberValidate]);
 
   return (
     <React.Fragment>
@@ -43,12 +56,15 @@ function CreateOrEditAchat() {
             limit={1}
           />
 
-          {listOfAchat.length > 0 &&
-            listOfAchat.map((data) => {
+          {listOfAchat &&
+            listOfAchat?.map((data) => {
               return (
                 <Card key={data.ach_id}>
                   <CardBody className="">
-                    <FormAchat data={data} />
+                    <FormAchat
+                      handleOneValidate={handleOneValidate}
+                      data={data}
+                    />
                   </CardBody>
                 </Card>
               );

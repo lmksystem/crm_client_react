@@ -82,7 +82,7 @@ const DashboardMain = () => {
             <Col>
               <div className="h-100">
                 <Section
-                  perdiodeCalendar={{ start: perdiodeCalendar.start.format("DD MMM YYYY"), end: perdiodeCalendar.end.format("DD MMM YYYY") }}
+                  perdiodeCalendar={{ start: moment(perdiodeCalendar.start).format("DD MMM YYYY"), end: moment(perdiodeCalendar.end).format("DD MMM YYYY") }}
                   setPeriodeCalendar={setPeriodeCalendar}
                 />
                 <Row>

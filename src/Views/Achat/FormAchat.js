@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Alert, Button, Card, CardBody, Col, Container, Form, FormFeedback, Input, Label, ListGroup, ListGroupItem, Row } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Select from "react-select";
@@ -16,7 +16,7 @@ import { getAchat } from "../../slices/thunks";
 import ConfirmModal from "../../Components/Common/ConfirmModal";
 import { useNavigate } from "react-router-dom";
 
-function FormAchat({ data }) {
+function FormAchat({ data, handleOneValidate }) {
   const navigate = useNavigate();
 
   const { devise } = useSelector((state) => ({
@@ -57,7 +57,8 @@ function FormAchat({ data }) {
     onSubmit: (values) => {
       axios.post("/v1/achatV2", values).then((res) => {
         submitCat(selectedCat).then(() => {
-          navigate("/achat");
+          handleOneValidate();
+          toast.success("Achat valider");
         });
       });
     }

@@ -6,7 +6,7 @@ import SimpleBar from "simplebar-react";
 import * as Yup from "yup";
 
 import DropFileComponents from "./DropFileComponent";
-import { getInvoices as onGetInvoices, getCategorieAchat as onGetCategorieAchat, createUpdateAchat as onCreateUpdateAchat } from "../../slices/thunks";
+import { getCategorieAchat as onGetCategorieAchat, createUpdateAchat as onCreateUpdateAchat } from "../../slices/thunks";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import makeAnimated from "react-select/animated";
@@ -14,6 +14,8 @@ import axios from "axios";
 import FileService from "../../utils/FileService";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../Components/Common/Loader";
+import { getInvoices } from "../../helpers/backend_helper";
+import moment from "moment";
 
 const ModalCreate = ({ modal, toggle, setModal, setIsEdit, isEdit, setAchat }) => {
   const dispatch = useDispatch();
@@ -21,9 +23,8 @@ const ModalCreate = ({ modal, toggle, setModal, setIsEdit, isEdit, setAchat }) =
   const [factures, setFactures] = useState([]);
   const [loader, setLoader] = useState(false);
 
-  const { invoices, devise } = useSelector((state) => ({
-    devise: state.Company.devise,
-    invoices: state.Invoice.invoices
+  const { devise } = useSelector((state) => ({
+    devise: state.Company.devise
   }));
 
   function isInvoiceSelected(invoice_id) {
@@ -38,7 +39,7 @@ const ModalCreate = ({ modal, toggle, setModal, setIsEdit, isEdit, setAchat }) =
   const handleFacture = (invoice) => {
     let newArray = [...createAchats.values.facturesExist];
     let findIsInvoiceSelect = newArray.find((e) => e.header.fen_id == invoice.header.fen_id);
-    console.log(findIsInvoiceSelect);
+
     if (findIsInvoiceSelect) {
       let index = newArray.findIndex((e) => e.header.fen_id == invoice.header.fen_id);
       newArray.splice(index, 1);
@@ -107,34 +108,38 @@ const ModalCreate = ({ modal, toggle, setModal, setIsEdit, isEdit, setAchat }) =
             }
           }
         } else if (values?.facturesExist?.length > 0) {
-          FileService.copyFiles(values?.facturesExist).then((res) => {
-            let arrayUpdateAchat = [];
+          let res = await FileService.copyFiles(values?.facturesExist);
 
-            if (res.status == 200) {
-              for (let index = 0; index < res.data.length; index++) {
-                const element = res.data[index];
-                let newAchat = {
-                  ach_ent_fk: element.header.fen_ent_fk,
-                  ach_date_create: element.header.fen_date_create.slice(0, 10),
-                  ach_date_expired: element.header.fen_date_expired,
-                  ach_total_amount: parseFloat(element.header.fen_total_ttc),
-                  ach_rp: parseFloat(element.header.fen_total_ttc),
-                  ach_total_tva: parseFloat(element.header.fen_total_tva),
-                  ado_file_name: element.newFileCopy,
-                  ach_type: "Revenu",
-                  ach_lib: element.header.fen_sujet,
-                  ach_num: "",
-                  ach_met: ""
-                };
-                arrayUpdateAchat.push(newAchat);
-                navigateData.push(result.data.ach_id);
-              }
-              let objectDispatching = {
-                invoices: arrayUpdateAchat
+          if (res.data) {
+            for (let index = 0; index < res.data.length; index++) {
+              const element = res.data[index];
+
+              let newAchat = {
+                ach_ent_fk: element.header.fen_ent_fk,
+                ach_date_create: element.header.fen_date_create.slice(0, 10),
+                ach_date_expired: element.header.fen_date_expired,
+                ach_total_amount: parseFloat(element.header.fen_total_ttc),
+                ach_rp: parseFloat(element.header.fen_total_ttc),
+                ach_total_tva: parseFloat(element.header.fen_total_tva),
+                ach_type: "Revenu",
+                ach_lib: element.header.fen_sujet,
+                ach_num: "",
+                ach_met: ""
               };
-              dispatch(onCreateUpdateAchat(objectDispatching));
+
+              // save new Achat
+              let result = await createUpdateAchat(newAchat);
+
+              let docData = {
+                ado_ach_fk: result.data.ach_id,
+                ado_file_name: element.newFileCopy
+              };
+
+              createAchatsDoc(docData);
+
+              navigateData.push(result.data.ach_id);
             }
-          });
+          }
         }
 
         if (navigateData.length > 0) {
@@ -143,7 +148,10 @@ const ModalCreate = ({ modal, toggle, setModal, setIsEdit, isEdit, setAchat }) =
 
         createAchats.resetForm();
         setLoader(() => false);
-      } catch (error) { }
+      } catch (error) {
+        setLoader(() => false);
+        console.log(error);
+      }
     }
   });
 
@@ -160,8 +168,8 @@ const ModalCreate = ({ modal, toggle, setModal, setIsEdit, isEdit, setAchat }) =
 
   useEffect(() => {
     if (createAchats.values.type == "Revenu") {
-      dispatch(onGetInvoices()).then(() => {
-        let totalInvoices = invoices.filter((fac) => fac.doc != null);
+      getInvoices().then((res) => {
+        let totalInvoices = res.data.filter((fac) => fac.doc != null);
         setFactures(totalInvoices);
       });
     }
@@ -304,19 +312,12 @@ const ModalCreate = ({ modal, toggle, setModal, setIsEdit, isEdit, setAchat }) =
                 type="submit"
                 className="btn btn-success"
                 id="add-btn">
-                {loader ?
-                  <Spinner size={"sm"}></Spinner>
-                  :
-                  "Ajouter"
-                }
-
-
+                {loader ? <Spinner size={"sm"}></Spinner> : "Ajouter"}
               </button>
             </div>
           </ModalFooter>
         </Form>
       </Modal>
-
     </>
   );
 };
