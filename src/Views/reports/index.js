@@ -161,7 +161,7 @@ const Reports = () => {
                   placement="top"
                   target={"ScheduleUpdateTooltip-2"}
                   trigger="hover">
-                  Le calcul des charges est constitué des factures d'achats et des salaires.
+                  Le calcul des charges est constitué des factures d'achats de type charges et des salaires.
                 </UncontrolledTooltip>
               </div>
               <WidgetCountUp
