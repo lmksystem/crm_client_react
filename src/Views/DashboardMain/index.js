@@ -7,6 +7,7 @@ import { getDevisPeriodCount as onGetDevisPeriodCount, getTransactionPricePeriod
 import { useDispatch } from "react-redux";
 import Section from "./Section";
 import moment from "moment";
+import { getLoggedinUser } from "../../helpers/api_helper";
 
 moment.locale("fr");
 
@@ -19,6 +20,10 @@ const DashboardMain = () => {
     start: moment().startOf("year"),
     end: moment()
   });
+
+  const user = getLoggedinUser();
+  let trialPeriodEnd = moment().diff(user.com_date_create, 'days');
+  console.log(trialPeriodEnd);
 
   useEffect(() => {
     let dateDebut = perdiodeCalendar.start ? moment(perdiodeCalendar.start).format("YYYY-MM-DD") : null;
@@ -79,6 +84,12 @@ const DashboardMain = () => {
             pageTitle="Countano"
           />
           <Row>
+            {trialPeriodEnd >= 13 && user.com_mod_fk == 1 && (
+              <div className="alert alert-danger" style={{ marginTop: "-25px", marginBottom: "15px", borderRadius: 5 }}>
+                <span>Votre période d'essai arrive à son terme si vous souhaitez connaitre les offerts disponibles pour continuer à utiliser Countano suivent ce lien. <a href="https://countano.com/tarifs/">Voir les offerts</a></span>
+              </div>
+            )}
+
             <Col>
               <div className="h-100">
                 <Section
