@@ -158,11 +158,11 @@ const ModalCreate = ({ modal, toggle, setModal, setIsEdit, isEdit, setAchat }) =
   const typesAchat = [
     {
       value: "Charge",
-      label: "Charge"
+      label: "Dépense"
     },
     {
       value: "Revenu",
-      label: "Revenu"
+      label: "Remboursement"
     }
   ];
 

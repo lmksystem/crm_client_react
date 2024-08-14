@@ -141,7 +141,7 @@ const Reports = () => {
                   placement="top"
                   target={"ScheduleUpdateTooltip-1"}
                   trigger="hover">
-                  Le calcul des revenus est constitué des factures de ventes et des factures d'achats de type revenus.
+                  Le calcul des revenus est constitué des factures de ventes et des factures d'achats de type remboursement.
                 </UncontrolledTooltip>
               </div>
               <WidgetCountUp
@@ -161,7 +161,7 @@ const Reports = () => {
                   placement="top"
                   target={"ScheduleUpdateTooltip-2"}
                   trigger="hover">
-                  Le calcul des charges est constitué des factures d'achats de type charges et des salaires.
+                  Le calcul des charges est constitué des factures d'achats de type dépense et des salaires.
                 </UncontrolledTooltip>
               </div>
               <WidgetCountUp
