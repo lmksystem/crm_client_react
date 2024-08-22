@@ -12,7 +12,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getLoggedinUser } from "../../helpers/api_helper";
 
 import Loader from "../../Components/Common/Loader";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import "moment/locale/fr"; // without this line it didn't work
@@ -195,10 +195,23 @@ const InvoiceList = () => {
     const user = getLoggedinUser();
     let data = await getCompanyAndModule(user.com_id);
     let invoiceInMonth = invoices.filter((i) => moment().isSame(i.header.fen_date_create, "month"));
-    if (data.mod_nb_fac == 0 || invoiceInMonth.length <= data.mod_nb_fac) {
-      console.log("ok", data,data.mod_nb_fac == 0 , invoiceInMonth.length , data.mod_nb_fac);
-      // navigate("/factures/creation");
+    if (data.mod_nb_fac == 0) {
+      navigate("/factures/creation");
+      return;
     }
+
+    if (data.mod_id == 2 && invoices.length < 50) {
+      navigate("/factures/creation");
+      return;
+    }
+
+    if (invoiceInMonth.length < data.mod_nb_fac) {
+      navigate("/factures/creation");
+      return;
+    }
+
+    toast.warning('Nombre de facture maximum atteint')
+
   };
 
   return (
