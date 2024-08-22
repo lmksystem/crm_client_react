@@ -4,7 +4,7 @@ import BreadCrumb from "../../Components/Common/BreadCrumb";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { getCompany as onGetCompany, updateCompany as onUpdateCompany, updateLogoAction as onUpdateLogoAction, addLicense as onAddLicense, getLicense as onGetLicense, deleteLicense as onDeleteLicense } from "../../slices/thunks";
+import { getCompany as onGetCompany, updateCompany as onUpdateCompany, updateLogoAction as onUpdateLogoAction, addLicense as onAddLicense, getLicense as onGetLicense, deleteLicense as onDeleteLicense, getCompanyAndModule } from "../../slices/thunks";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import { api } from "../../config";
@@ -88,12 +88,6 @@ const CompanyProfil = () => {
       }
     }
   });
-
-  const getCompanyAndModule = () => {
-    axios.get("/v1/admin/company/" + companyredux[0].com_id).then((res) => {
-      setModule({ mod_id: res.mod_id, mod_name: res.mod_name, mod_nb_fac: res.mod_nb_fac, mod_nb_user: res.mod_nb_user });
-    });
-  };
 
   const deleteUser = () => {
     dispatch(onDeleteLicense(selectedId));
@@ -201,7 +195,9 @@ const CompanyProfil = () => {
 
   useEffect(() => {
     dispatch(onGetLicense());
-    getCompanyAndModule();
+    getCompanyAndModule(companyredux[0].com_id).then(() => {
+      setModule({ mod_id: res.mod_id, mod_name: res.mod_name, mod_nb_fac: res.mod_nb_fac, mod_nb_user: res.mod_nb_user });
+    });
   }, []);
 
   return (

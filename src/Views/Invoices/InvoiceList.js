@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { CardBody, Row, Col, Card, Container, CardHeader } from "reactstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import * as moment from "moment";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import TableContainer from "../../Components/Common/TableContainer";
 
 //Import actions
-import { getInvoices as onGetInvoices, getWidgetInvoices as onGetInvoiceWidgets, getTransaction as onGetTransaction } from "../../slices/thunks";
-
+import { getInvoices as onGetInvoices, getWidgetInvoices as onGetInvoiceWidgets, getTransaction as onGetTransaction, getCompanyAndModule } from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
+import { getLoggedinUser } from "../../helpers/api_helper";
 
 import Loader from "../../Components/Common/Loader";
 import { ToastContainer } from "react-toastify";
@@ -29,6 +29,7 @@ const InvoiceList = () => {
   document.title = "Liste facture  | Countano";
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { invoiceWidgets, invoices, transactions, isInvoiceSuccess, error, devise } = useSelector((state) => ({
     invoices: state.Invoice.invoices,
@@ -190,6 +191,16 @@ const InvoiceList = () => {
     [checkedAll, invoices]
   );
 
+  const checkCompanyNbFac = async () => {
+    const user = getLoggedinUser();
+    let data = await getCompanyAndModule(user.com_id);
+    let invoiceInMonth = invoices.filter((i) => moment().isSame(i.header.fen_date_create, "month"));
+    if (data.mod_nb_fac == 0 || invoiceInMonth.length <= data.mod_nb_fac) {
+      console.log("ok", data,data.mod_nb_fac == 0 , invoiceInMonth.length , data.mod_nb_fac);
+      // navigate("/factures/creation");
+    }
+  };
+
   return (
     <React.Fragment>
       <div className="page-content">
@@ -223,11 +234,13 @@ const InvoiceList = () => {
                     {/* <h5 className="card-title mb-0 flex-grow-1">Factures</h5> */}
                     <div className="flex-shrink-0">
                       <div className="d-flex gap-2 flex-wrap">
-                        <Link
-                          to={"/factures/creation"}
+                        <button
+                          onClick={() => {
+                            checkCompanyNbFac();
+                          }}
                           className="btn btn-secondary me-1">
                           <i className="ri-add-line align-bottom me-1"></i> Créer une facture
-                        </Link>
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -253,7 +266,7 @@ const InvoiceList = () => {
                         isInvoiceListFilter={true}
                         SearchPlaceholder=""
                         pathToDetail={`/factures/detail/`}
-                        initialSortField={'fen_date_create'}
+                        initialSortField={"fen_date_create"}
                       />
                     ) : (
                       <Loader error={error} />

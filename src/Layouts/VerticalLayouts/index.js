@@ -139,7 +139,7 @@ const VerticalLayout = (props) => {
             isLock = user?.mod_route.includes(item.link);
             let dateCreateAccount = moment(user.com_date_create);
 
-            if (user.com_mod_fk == 1 && dateCreateAccount.diff(moment(), "days") <= -14 && item.link != "/" && item.link != "/dashboard") {
+            if (user.com_mod_fk == 2 && dateCreateAccount.diff(moment(), "days") <= -14 && item.link != "/" && item.link != "/dashboard") {
               isLock = false;
             }
           }
@@ -180,7 +180,7 @@ const VerticalLayout = (props) => {
                         if (user.use_rank == 3 || user.use_rank == 0) {
                           isLock = user?.mod_route.includes(subItem.link);
                           let dateCreateAccount = moment(user.com_date_create);
-                          if (user.com_mod_fk == 1 && dateCreateAccount.diff(moment(), "days") <= -14 && subItem.link != "/" && subItem.link != "/dashboard") {
+                          if (user.com_mod_fk == 2 && dateCreateAccount.diff(moment(), "days") <= -14 && subItem.link != "/" && subItem.link != "/dashboard") {
                             isLock = false;
                           }
                        

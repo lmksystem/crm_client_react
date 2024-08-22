@@ -47,7 +47,7 @@ const Index = () => {
               let isSelected = user?.mod_route.includes(route.path);
               let dateCreateAccount = moment(user.com_date_create);
 
-              if (user.com_mod_fk == 1 && dateCreateAccount.diff(moment(), "days") <= -14) {
+              if (user.com_mod_fk == 2 && dateCreateAccount.diff(moment(), "days") <= -14) {
                 isSelected = false;
               }
 
