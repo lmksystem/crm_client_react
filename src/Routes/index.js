@@ -44,7 +44,7 @@ const Index = () => {
           {user &&
             (user.use_rank == 0 || user.use_rank == 3) &&
             userRoute.map((route, idx) => {
-              let isSelected = user?.mod_route.includes(route.path);
+              let isSelected = user?.mod_route ? user?.mod_route.includes(route.path) : false;
               let dateCreateAccount = moment(user.com_date_create);
 
               if (user.com_mod_fk == 2 && dateCreateAccount.diff(moment(), "days") <= -14) {
@@ -71,7 +71,7 @@ const Index = () => {
               }
             })}
         </Route>
-        
+
         <Route>
           {publicRoutes.map((route, idx) => (
             <Route

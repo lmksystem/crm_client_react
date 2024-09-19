@@ -195,7 +195,7 @@ const CompanyProfil = () => {
 
   useEffect(() => {
     dispatch(onGetLicense());
-    getCompanyAndModule(companyredux[0].com_id).then(() => {
+    getCompanyAndModule(companyredux[0].com_id).then((res) => {
       setModule({ mod_id: res.mod_id, mod_name: res.mod_name, mod_nb_fac: res.mod_nb_fac, mod_nb_user: res.mod_nb_user });
     });
   }, []);

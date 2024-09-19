@@ -23,7 +23,7 @@ const Login = (props) => {
     user: state.Login.user
   }));
   const token = JSON.parse(localStorage.getItem("authUser"));
-  
+
   const [userLogin, setUserLogin] = useState({});
   const [passwordShow, setPasswordShow] = useState(false);
 
@@ -65,8 +65,6 @@ const Login = (props) => {
   // }, []);
 
   useEffect(() => {
-    console.log(user, token);
-
     if (user && token) {
       if (user.use_rank == 1) {
         navigate("/admin");
