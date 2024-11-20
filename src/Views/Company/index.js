@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getCompany as onGetCompany, updateCompany as onUpdateCompany, updateLogoAction as onUpdateLogoAction, addLicense as onAddLicense, getLicense as onGetLicense, deleteLicense as onDeleteLicense, getCompanyAndModule } from "../../slices/thunks";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
-import { api } from "../../config";
+
 import { getImage } from "../../utils/getImages";
 import SimpleBar from "simplebar-react";
 import DeleteModal from "../../Components/Common/DeleteModal";

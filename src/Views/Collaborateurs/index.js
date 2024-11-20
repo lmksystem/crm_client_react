@@ -1,9 +1,6 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 
-// Import Images
-import multiUser from "../../assets/images/users/multi-user.jpg";
-
 import { Col, Container, Row, Card, CardHeader, CardBody, ModalBody, Label, Input, Modal, ModalHeader, Form, ModalFooter, Table, FormFeedback } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import DeleteModal from "../../Components/Common/DeleteModal";
@@ -26,7 +23,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 // Export Modal
 import ExportCSVModal from "../../Components/Common/ExportCSVModal";
-import { api } from "../../config";
+
 
 const Collaborateurs = () => {
   const dispatch = useDispatch();
@@ -395,7 +392,7 @@ const Collaborateurs = () => {
                 {
                   company.row.original.ent_img_url ? (
                     <img
-                      src={api.API_URL + "/images/" + company.row.original.ent_img_url}
+                      src={process.env.API_URL + "/images/" + company.row.original.ent_img_url}
                       alt=""
                       className="avatar-xxs rounded-circle"
                     />
@@ -1118,11 +1115,7 @@ const Collaborateurs = () => {
                         style={{ cursor: "pointer", fontSize: "20px" }}></i>
                     </div>
                     <div className="position-relative d-inline-block">
-                      {/* <img
-                        src={api.API_URL + "/v1/images/user-dummy-img.jpg"}
-                        alt=""
-                        className="avatar-lg rounded-circle img-thumbnail"
-                      /> */}
+                    
                       <span className="contact-active position-absolute rounded-circle bg-success">
                         <span className="visually-hidden"></span>
                       </span>

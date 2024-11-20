@@ -19,7 +19,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "moment/locale/fr"; // without this line it didn't work
 import { DevisListGlobalSearch } from "../../Components/Common/GlobalSearchFilter";
 import { customFormatNumber, rounded } from "../../utils/function";
-import { api } from "../../config";
+
 import WidgetCountUp from "../../Components/Common/WidgetCountUp";
 import { devisEtatColor } from "../../common/data/devisList";
 moment.locale("fr");
@@ -158,7 +158,7 @@ const DevisList = () => {
               <div className="d-flex align-items-center">
                 {devis.row.original.img ? (
                   <img
-                    src={api.API_URL + "/images/users/" + devis.row.original.img}
+                    src={process.env.API_URL + "/images/users/" + devis.row.original.img}
                     alt=""
                     className="avatar-xs rounded-circle me-2"
                   />

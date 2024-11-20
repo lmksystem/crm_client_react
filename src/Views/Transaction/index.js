@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import moment from "moment";
-import { api } from "../../config";
+
 // import process from "process";
 import { Col, Container, Row, Card, CardBody, Label, Input, Form, ListGroup, ListGroupItem, Modal, ModalHeader, ModalBody } from "reactstrap";
 
@@ -76,9 +76,9 @@ const TransactionBank = () => {
   };
 
   const previewAchat = (ach_id) => {
-    axios.get(`${api.API_URL}/v1/achat/${ach_id}`).then((achatWithDoc) => {
+    axios.get(`${process.env.API_URL}/v1/achat/${ach_id}`).then((achatWithDoc) => {
       axios
-        .get(`${api.API_URL}/v1/pdf/download/achat/${ach_id}`, {
+        .get(`${process.env.API_URL}/v1/pdf/download/achat/${ach_id}`, {
           mode: "no-cors",
           responseType: "blob"
         })

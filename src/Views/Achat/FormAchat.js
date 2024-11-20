@@ -9,7 +9,7 @@ import CreatableSelect from "react-select/creatable";
 import axios from "axios";
 import SimpleBar from "simplebar-react";
 import { getAccountsBankUser, getCategorieAchat, getCollaborateurs } from "../../helpers/backend_helper";
-import { api } from "../../config";
+
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { getAchat } from "../../slices/thunks";
@@ -66,7 +66,7 @@ function FormAchat({ data, handleOneValidate }) {
 
   const previewAchat = (ach_id) => {
     axios
-      .get(`${api.API_URL}/v1/pdf/download/achat/${ach_id}`, {
+      .get(`${process.env.API_URL}/v1/pdf/download/achat/${ach_id}`, {
         mode: "no-cors",
         responseType: "blob"
       })
@@ -614,7 +614,7 @@ function FormAchat({ data, handleOneValidate }) {
                   <div className="container-img-achat">
                     <img
                       className={"image-achat-doc-" + data.ach_id}
-                      src={`${api.API_URL}/public/pdf/${data?.ach_com_fk}/achat/${data.ado_date_create.split("-")[0]}/${data.ado_date_create.split("-")[1]}/${data?.ado_file_name}`}
+                      src={`${process.env.API_URL}/public/pdf/${data?.ach_com_fk}/achat/${data.ado_date_create.split("-")[0]}/${data.ado_date_create.split("-")[1]}/${data?.ado_file_name}`}
                     />
                   </div>
                 )

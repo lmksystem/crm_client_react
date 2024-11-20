@@ -1,10 +1,6 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { isEmpty } from "lodash";
-import * as moment from "moment";
-
-// Import Images
-import dummyImg from "../../assets/images/users/user-dummy-img.jpg";
 
 import { Col, Container, Row, Card, CardHeader, CardBody, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Label, Input, Modal, ModalHeader, ModalBody, Form, ModalFooter, Table, FormFeedback } from "reactstrap";
 import Select from "react-select";
@@ -28,7 +24,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 // Export Modal
 import ExportCSVModal from "../../Components/Common/ExportCSVModal";
-import { api } from "../../config";
+
 import { useProfile } from "../../Components/Hooks/UserHooks";
 
 const Contacts = () => {
@@ -531,7 +527,7 @@ const Contacts = () => {
                                 <div className="avatar-lg p-1">
                                   <div className="avatar-title bg-light rounded-circle">
                                     <img
-                                      src={api.API_URL + "v1/images/" + (info.image_src ? "company/" + info.image_src : "user-dummy-img.jpg")}
+                                      src={process.env.API_URL + "v1/images/" + (info.image_src ? "company/" + info.image_src : "user-dummy-img.jpg")}
                                       alt="dummyImg"
                                       id="customer-img"
                                       className="avatar-md rounded-circle object-cover"
@@ -754,7 +750,7 @@ const Contacts = () => {
                   </div>
                   <div className="position-relative d-inline-block">
                     <img
-                      src={api.API_URL + "v1/images/" + (info.image_src ? "company/" + info.image_src : "user-dummy-img.jpg")}
+                      src={process.env.API_URL + "v1/images/" + (info.image_src ? "company/" + info.image_src : "user-dummy-img.jpg")}
                       alt=""
                       className="avatar-lg rounded-circle img-thumbnail"
                     />

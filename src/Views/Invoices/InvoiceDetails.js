@@ -7,7 +7,7 @@ import moment from "moment";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { addNewTransaction as onAddNewTransaction, sendInvocieByEmail as onSendInvocieByEmail, deleteTransaction as onDeleteTransaction, updateInvoice as onUpdateInvoice, getCompany as onGetCompany, getEtatInvoice as onGetEtatInvoice } from "../../slices/thunks";
-import { api } from "../../config";
+
 import { customFormatNumber, rounded } from "../../utils/function";
 import ConfirmModal from "../../Components/Common/ConfirmModal";
 import DeleteModal from "../../Components/Common/DeleteModal";
@@ -70,7 +70,7 @@ const InvoiceDetails = () => {
 
   const downloadPdf = () => {
     axios
-      .get(`${api.API_URL}/v1/pdf/download/facture/${invoice.header.fen_id}`, {
+      .get(`${process.env.API_URL}/v1/pdf/download/facture/${invoice.header.fen_id}`, {
         mode: "no-cors",
         responseType: "blob"
       })

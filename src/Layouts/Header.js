@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Badge, Dropdown, DropdownMenu, DropdownToggle, Form } from "reactstrap";
 
 //import images
-import logoSm from "../assets/images/logo-sm.png";
+
 import logoDark from "../assets/images/logo_countano.png";
 import logoLight from "../assets/images/logo_countano.png";
 

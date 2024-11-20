@@ -4,7 +4,7 @@ import { isEmpty } from "lodash";
 import * as moment from "moment";
 
 // Import Images
-import dummyImg from "../../assets/images/users/user-dummy-img.jpg";
+import dummyImg from "../../assets/images/user-dummy-img.jpg";
 
 import { Col, Container, Row, Card, CardBody, Label, Input, Form, Button, InputGroup, InputGroupText } from "reactstrap";
 

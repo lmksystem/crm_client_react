@@ -3,7 +3,6 @@ import { FormFeedback } from "reactstrap";
 import Dropzone, { useDropzone } from "react-dropzone";
 // import FileService from "../services/FileService";
 import { ToastContainer, toast } from "react-toastify";
-// import { api } from "../config";
 
 function DropFileComponents({
   values = [],

@@ -1,51 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import {
-    Offcanvas,
-    OffcanvasHeader,
-    OffcanvasBody,
-    Collapse
-} from "reactstrap";
 
 //redux
 import {
-    changeLayout,
-    changeSidebarTheme,
-    changeLayoutMode,
-    changeLayoutWidth,
-    changeLayoutPosition,
-    changeTopbarTheme,
-    changeLeftsidebarSizeType,
-    changeLeftsidebarViewType,
-    changeSidebarImageType,
-    changePreLoader,
-    changeSidebarVisibility
-} from "../../slices/thunks";
+    changeSidebarTheme} from "../../slices/thunks";
 import { useSelector, useDispatch } from "react-redux";
 
 //import Constant
-import {
-    layoutTypes,
-    leftSidebarTypes,
-    layoutModeTypes,
-    layoutWidthTypes,
-    layoutPositionTypes,
-    topbarThemeTypes,
-    leftsidbarSizeTypes,
-    leftSidebarViewTypes,
-    leftSidebarImageTypes,
-    preloaderTypes,
-    sidebarVisibilitytypes
-} from "../constants/layout";
 
 //SimpleBar
-import SimpleBar from "simplebar-react";
-import classnames from "classnames";
 
 //import Images
-import img01 from "../../assets/images/sidebar/img-1.jpg";
-import img02 from "../../assets/images/sidebar/img-2.jpg";
-import img03 from "../../assets/images/sidebar/img-3.jpg";
-import img04 from "../../assets/images/sidebar/img-4.jpg";
 
 const RightSidebar = () => {
     const dispatch = useDispatch();

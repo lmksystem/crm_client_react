@@ -6,7 +6,7 @@ import Section from "../DashboardMain/Section";
 import moment from "moment";
 import Flatpickr from "react-flatpickr";
 import { getInvoices as onGetInvoices } from "../../slices/thunks";
-import { api } from "../../config";
+
 import axios from "axios";
 import InvoiceChart from "./InvoiceChart";
 import { getInvoiceForExport, getInvoicesPaid } from "../../helpers/backend_helper";
@@ -37,7 +37,7 @@ const Export = () => {
   const download = async () => {
     // console.log(periodeCalendar.end, moment(new Date(periodeCalendar.end)).format("DD MMM YYYY"));
     axios
-      .get(`${api.API_URL}/v1/export?date_start=${moment(periodeCalendar.start).format("YYYY-MM-DD")}&date_end=${moment(periodeCalendar.end).format("YYYY-MM-DD")}`, {
+      .get(`${process.env.API_URL}/v1/export?date_start=${moment(periodeCalendar.start).format("YYYY-MM-DD")}&date_end=${moment(periodeCalendar.end).format("YYYY-MM-DD")}`, {
         mode: "no-cors",
         responseType: "blob"
       })

@@ -22,7 +22,7 @@ import SimpleBar from "simplebar-react";
 import { parseInt } from "lodash";
 import { allstatus } from "../../common/data/invoiceList";
 import { rounded } from "../../utils/function";
-import { api } from "../../config";
+
 import moment from "moment";
 import { APIClient } from "../../helpers/api_helper";
 import ConfirmModal from "../../Components/Common/ConfirmModal";
@@ -1163,7 +1163,7 @@ const InvoiceCreate = () => {
                       <div className="flex-shrink-0">
                         {c.ent_img_url ? (
                           <img
-                            src={api.API_URL + "/images/" + c.ent_img_url}
+                            src={process.env.API_URL + "/images/" + c.ent_img_url}
                             alt=""
                             className="avatar-xxs rounded-circle"
                           />

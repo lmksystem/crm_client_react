@@ -1,8 +1,8 @@
 import axios from "axios";
-import { api } from "../config";
+
 
 // default
-axios.defaults.baseURL = api.API_URL;
+axios.defaults.baseURL = process.env.API_URL;
 // content type
 axios.defaults.headers.post["Content-Type"] = "application/json";
 

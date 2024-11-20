@@ -18,7 +18,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "moment/locale/fr"; // without this line it didn't work
 import { InvoiceListGlobalSearch } from "../../Components/Common/GlobalSearchFilter";
 import { customFormatNumber, rounded } from "../../utils/function";
-import { api } from "../../config";
+
 import WidgetCountUp from "../../Components/Common/WidgetCountUp";
 import { invoiceEtatColor } from "../../common/data/invoiceList";
 import { getEtatInvoice as onGetEtatInvoice } from "../../helpers/backend_helper";
@@ -109,7 +109,7 @@ const InvoiceList = () => {
               <div className="d-flex align-items-center">
                 {invoice.row.original.img ? (
                   <img
-                    src={api.API_URL + "/images/users/" + invoice.row.original.img}
+                    src={process.env.API_URL + "/images/users/" + invoice.row.original.img}
                     alt=""
                     className="avatar-xs rounded-circle me-2"
                   />

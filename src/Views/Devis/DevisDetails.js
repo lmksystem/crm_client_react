@@ -4,7 +4,7 @@ import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
-import { api } from "../../config";
+
 import { customFormatNumber, rounded } from "../../utils/function";
 import DeleteModal from "../../Components/Common/DeleteModal";
 import { deleteDevis as onDeleteDevis, SendDevisByEmail as onSendDevisByEmail, getCompany as onGetCompany, updateDevis as onUpdateDevis } from "../../slices/thunks";
@@ -56,7 +56,7 @@ const DevisDetails = () => {
 
   const downloadPdf = () => {
     axios
-      .get(`${api.API_URL}/v1/pdf/download/devis/${devis.header.den_id}`, {
+      .get(`${process.env.API_URL}/v1/pdf/download/devis/${devis.header.den_id}`, {
         mode: "no-cors",
         responseType: "blob"
       })
