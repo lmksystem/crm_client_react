@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 //Include Both Helper File with needed methods
-import { getCompany as getCompanyApi, createOrUpdateCompany as createOrUpdateCompanyApi, updateCompany as updateCompanyApi, addLicense as addLicenseApi, getLicense as getLicenseApi, deleteLicense as deleteLicenseApi } from "../../helpers/backend_helper";
+import { getCompanyList as getCompanyListApi, getCompany as getCompanyApi, createOrUpdateCompany as createOrUpdateCompanyApi, updateCompany as updateCompanyApi, addLicense as addLicenseApi, getLicense as getLicenseApi, deleteLicense as deleteLicenseApi } from "../../helpers/backend_helper";
 import { updateCompanyData, updateLogo } from "./reducer";
 
 export const getCompany = createAsyncThunk("company/getCompany", async () => {
@@ -66,4 +66,16 @@ export const updateLogoAction = (data) => async (dispatch) => {
 
 export const updateCompanyAction = (data) => async (dispatch) => {
   dispatch(updateCompanyData(data));
+};
+
+export const getCompanyListAction = async () => {
+  return new Promise((resolve, reject) => {
+    getCompanyListApi()
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch((e) => {
+        reject(e);
+      });
+  });
 };

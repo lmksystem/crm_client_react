@@ -137,6 +137,8 @@ export const updateJustifyTransactionBank = (data) => api.create(url.TRANSACTION
 //get Company
 export const getCompany = () => api.get(url.COMPANY);
 
+export const getCompanyList = () => api.get("/v1/company");
+
 // add or update company
 export const createOrUpdateCompany = (data) => api.post(url.COMPANY_2, data);
 
@@ -299,6 +301,8 @@ export const getUser = () => api.get(url.ADMIN_USER);
 export const deleteUser = (id) => api.delete(url.ADMIN_USER + "/" + id);
 
 export const createOrUpdateUser = (data) => api.create(url.ADMIN_USER, data);
+
+export const updateUser = (data) => api.update("/v1/user/" + data.use_id, data);
 
 export const createOrUpdateUserAdmin = (data) => api.create(url.ADMIN_USER_CREATE, data);
 

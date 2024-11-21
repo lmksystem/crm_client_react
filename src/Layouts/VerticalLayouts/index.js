@@ -133,20 +133,6 @@ const VerticalLayout = (props) => {
     <React.Fragment>
       {/* menu Items */}
       {(navData || []).map((item, key) => {
-        let isLock = false;
-        if (user.use_rank == 3 || user.use_rank == 0) {
-          if (!item.subItem) {
-            isLock = user?.mod_route ? user?.mod_route.includes(item.link) : false;
-            let dateCreateAccount = moment(user.com_date_create);
-
-            if (user.com_mod_fk == 2 && dateCreateAccount.diff(moment(), "days") <= -14 && item.link != "/" && item.link != "/dashboard") {
-              isLock = false;
-            }
-          }
-        } else {
-          isLock = true;
-        }
-
         return (
           <React.Fragment key={key}>
             {/* Main Header */}
@@ -176,29 +162,16 @@ const VerticalLayout = (props) => {
                     {/* subItms  */}
                     {item.subItems &&
                       (item.subItems || []).map((subItem, key) => {
-                        let isLock = false;
-                        if (user.use_rank == 3 || user.use_rank == 0) {
-                          isLock = user?.mod_route ? user?.mod_route.includes(subItem.link) : false;
-                          let dateCreateAccount = moment(user.com_date_create);
-                          if (user.com_mod_fk == 2 && dateCreateAccount.diff(moment(), "days") <= -14 && subItem.link != "/" && subItem.link != "/dashboard") {
-                            isLock = false;
-                          }
-                        }
-
                         return (
                           <React.Fragment key={key}>
                             {!subItem.isChildItem ? (
                               <li className="nav-item">
                                 <Link
                                   disabled
-                                  to={subItem.link && isLock ? subItem.link : "/#"}
+                                  to={subItem.link}
                                   className="nav-link">
                                   {props.t(subItem.label)}
-                                  {!isLock && (
-                                    <span style={{ position: "absolute", right: 0 }}>
-                                      <i className="ri-lock-fill"></i>
-                                    </span>
-                                  )}
+
                                   {subItem.badgeName ? (
                                     <span
                                       className={"badge badge-pill bg-" + subItem.badgeColor}
@@ -288,13 +261,8 @@ const VerticalLayout = (props) => {
               <li className="nav-item">
                 <Link
                   className="nav-link menu-link"
-                  to={item.link && isLock ? item.link : "/#"}>
+                  to={item.link}>
                   <i className={item.icon}></i> <span style={{ fontWeight: "bolder" }}>{props.t(item.label)}</span>
-                  {!isLock && (
-                    <span style={{ position: "absolute", right: 0 }}>
-                      <i className="ri-lock-fill"></i>
-                    </span>
-                  )}
                 </Link>
               </li>
             )}

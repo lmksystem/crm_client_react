@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Badge, Dropdown, DropdownMenu, DropdownToggle, Form } from "reactstrap";
 
@@ -14,10 +14,12 @@ import FullScreenDropdown from "../Components/Common/FullScreenDropdown";
 import ProfileDropdown from "../Components/Common/ProfileDropdown";
 import LightDark from "../Components/Common/LightDark";
 
-import { changeSidebarVisibility } from "../slices/thunks";
+import { changeSidebarVisibility, getCompanyListAction } from "../slices/thunks";
 import { useSelector, useDispatch } from "react-redux";
 import { useProfile } from "../Components/Hooks/UserHooks";
 import { getLoggedinUser } from "../helpers/api_helper";
+import { useExpanded } from "react-table";
+import CompanyDropdown from "../Components/Common/CompanyDropdown";
 
 const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
   const dispatch = useDispatch();
@@ -28,6 +30,8 @@ const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
   }));
 
   const [search, setSearch] = useState(false);
+  const [companyList, setCompanyList] = useState([]);
+
   const toogleSearch = () => {
     setSearch(!search);
   };
@@ -62,6 +66,14 @@ const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
       document.body.classList.contains("twocolumn-panel") ? document.body.classList.remove("twocolumn-panel") : document.body.classList.add("twocolumn-panel");
     }
   };
+
+  useEffect(() => {
+    getCompanyListAction().then((res) => {
+      console.log(res);
+
+      setCompanyList(res);
+    });
+  }, []);
 
   return (
     <React.Fragment>
@@ -144,15 +156,8 @@ const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
                 </DropdownMenu>
               </Dropdown>
 
-              {(userProfile.use_rank == 0 || userProfile.use_rank == 3) && (
-                <a>
-                  <div
-                    style={{ backgroundColor: "#FF9F00", color: "white", paddingInline: 15, paddingBlock: 8, borderRadius: 20, fontWeight: 800, letterSpacing: 2 }}
-                    className="offert">
-                    {userProfile.mod_name}
-                  </div>
-                </a>
-              )}
+              {/* CompanyDropdown */}
+              <CompanyDropdown companyList={companyList} />
 
               {/* FullScreenDropdown */}
               <FullScreenDropdown />

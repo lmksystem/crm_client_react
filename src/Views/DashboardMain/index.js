@@ -22,7 +22,7 @@ const DashboardMain = () => {
   });
 
   const user = getLoggedinUser();
-  let trialPeriodEnd = moment().diff(user.com_date_create, 'days');
+  let trialPeriodEnd = moment().diff(user.com_date_create, "days");
   console.log(trialPeriodEnd);
 
   useEffect(() => {
@@ -84,12 +84,6 @@ const DashboardMain = () => {
             pageTitle="Countano"
           />
           <Row>
-            {trialPeriodEnd >= 13 && user.com_mod_fk == 2 && (
-              <div className="alert alert-danger" style={{ marginTop: "-25px", marginBottom: "15px", borderRadius: 5 }}>
-                <span>Votre période d'essai arrive à son terme si vous souhaitez connaitre les offerts disponibles pour continuer à utiliser Countano suivent ce lien. <a href="https://countano.com/tarifs/">Voir les offerts</a></span>
-              </div>
-            )}
-
             <Col>
               <div className="h-100">
                 <Section

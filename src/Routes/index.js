@@ -8,10 +8,8 @@ import VerticalLayout from "../Layouts/index";
 //routes
 import { adminRoute, authProtectedRoutes, publicRoutes, userRoute } from "./allRoutes";
 import { AuthProtected } from "./AuthProtected";
-import { useProfile } from "../Components/Hooks/UserHooks";
 import { AdminProtected } from "./AdminProtected";
 import { useSelector } from "react-redux";
-import moment from "moment";
 
 const Index = () => {
   const { user } = useSelector((state) => ({
@@ -44,31 +42,18 @@ const Index = () => {
           {user &&
             (user.use_rank == 0 || user.use_rank == 3) &&
             userRoute.map((route, idx) => {
-              let isSelected = user?.mod_route ? user?.mod_route.includes(route.path) : false;
-              let dateCreateAccount = moment(user.com_date_create);
-
-              if (user.com_mod_fk == 2 && dateCreateAccount.diff(moment(), "days") <= -14) {
-                isSelected = false;
-              }
-
-              if (route.path == "/" || route.path == "/dashboard") {
-                isSelected = true;
-              }
-
-              if (isSelected || true) {
-                return (
-                  <Route
-                    path={route.path}
-                    element={
-                      <AuthProtected rank={route.rank}>
-                        <VerticalLayout>{route.component}</VerticalLayout>
-                      </AuthProtected>
-                    }
-                    key={idx}
-                    exact={true}
-                  />
-                );
-              }
+              return (
+                <Route
+                  path={route.path}
+                  element={
+                    <AuthProtected rank={route.rank}>
+                      <VerticalLayout>{route.component}</VerticalLayout>
+                    </AuthProtected>
+                  }
+                  key={idx}
+                  exact={true}
+                />
+              );
             })}
         </Route>
 

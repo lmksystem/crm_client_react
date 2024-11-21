@@ -14,13 +14,13 @@ axios.defaults.withCredentials = false;
 // if(token)
 // axios.defaults.headers.common["Authorization"] = "Bearer " + token;
 // intercepting to capture errors
-axios.interceptors.request.use(async(config)=>{
+axios.interceptors.request.use(async (config) => {
   const token = JSON.parse(localStorage.getItem("authUser")) ? JSON.parse(localStorage.getItem("authUser")).token : null;
-  if(token){
+  if (token) {
     config.headers.Authorization = "Bearer " + token;
   }
-  return config
-})
+  return config;
+});
 axios.interceptors.response.use(
   function (response) {
     return response.data ? response.data : response;
@@ -66,13 +66,13 @@ class APIClient {
 
     // console.log("params",params);
     if (params) {
-      Object.keys(params).map(key => {
-        paramKeys.push(key + '=' + params[key]);
+      Object.keys(params).map((key) => {
+        paramKeys.push(key + "=" + params[key]);
         return paramKeys;
       });
 
-      const queryString = paramKeys && paramKeys.length ? paramKeys.join('&') : "";
-   
+      const queryString = paramKeys && paramKeys.length ? paramKeys.join("&") : "";
+
       response = axios.get(`${url}?${queryString}`, params);
     } else {
       response = axios.get(`${url}`, params);
@@ -105,10 +105,11 @@ class APIClient {
   /**
    * For file
    */
-  fileSend = (url, data,params) => {
-    return axios.post(url, data,params);
+  fileSend = (url, data, params) => {
+    return axios.post(url, data, params);
   };
 }
+
 const getLoggedinUser = () => {
   const user = localStorage.getItem("authUser");
   if (!user) {
@@ -118,4 +119,9 @@ const getLoggedinUser = () => {
   }
 };
 
-export { APIClient, setAuthorization, getLoggedinUser };
+const updateLoggedUser = (data) => {
+  localStorage.setItem("authUser", JSON.stringify(data));
+  return data;
+};
+
+export { APIClient, setAuthorization, getLoggedinUser, updateLoggedUser };
