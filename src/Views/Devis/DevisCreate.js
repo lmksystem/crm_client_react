@@ -22,8 +22,8 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import Select from "react-select";
 
-import logoDark from "../../assets/images/logo_countano.png";
-import logoLight from "../../assets/images/logo_countano.png";
+import logoDark from "../../assets/images/logo_lmk.png";
+import logoLight from "../../assets/images/logo_lmk.png";
 
 //formik
 import { ErrorMessage, useFormik } from "formik";
@@ -1148,7 +1148,7 @@ const InvoiceCreate = () => {
                     <div key={i} style={{ display: "flex", alignItems: "center", width: "100%", borderBottom: "0.5px solid #dddddd", margin: 3 }}>
                       <div className="flex-shrink-0">
                         {c.ent_img_url ? <img
-                          src={process.env.API_URL + "/images/" + c.ent_img_url}
+                          src={process.env.REACT_APP_API_URL + "/images/" + c.ent_img_url}
                           alt=""
                           className="avatar-xxs rounded-circle"
                         /> :

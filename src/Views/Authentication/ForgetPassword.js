@@ -16,7 +16,7 @@ import { useFormik } from "formik";
 import { userForgetPassword } from "../../slices/thunks";
 
 // import images
-import logoLight from "../../assets/images/logo_countano.png";
+import logoLight from "../../assets/images/logo_lmk.png";
 
 // import profile from "../../assets/images/bg.png";
 // import logoLight from "../../assets/images/logo-light.png";

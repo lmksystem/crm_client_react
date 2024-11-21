@@ -14,7 +14,7 @@ import { useFormik } from "formik";
 // actions
 import { loginUser, resetLoginFlag } from "../../slices/thunks";
 
-import logoLight from "../../assets/images/logo_countano.png";
+import logoLight from "../../assets/images/logo_lmk.png";
 
 const Login = (props) => {
   const dispatch = useDispatch();
@@ -90,7 +90,7 @@ const Login = (props) => {
                       <img
                         src={logoLight}
                         alt=""
-                        height="20"
+                        height="70"
                       />
                     </Link>
                   </div>

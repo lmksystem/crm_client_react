@@ -70,7 +70,7 @@ const InvoiceDetails = () => {
 
   const downloadPdf = () => {
     axios
-      .get(`${process.env.API_URL}/v1/pdf/download/facture/${invoice.header.fen_id}`, {
+      .get(`${process.env.REACT_APP_API_URL}/v1/pdf/download/facture/${invoice.header.fen_id}`, {
         mode: "no-cors",
         responseType: "blob"
       })

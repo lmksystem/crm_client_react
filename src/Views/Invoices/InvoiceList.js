@@ -6,7 +6,7 @@ import BreadCrumb from "../../Components/Common/BreadCrumb";
 import TableContainer from "../../Components/Common/TableContainer";
 
 //Import actions
-import { getInvoices as onGetInvoices, getWidgetInvoices as onGetInvoiceWidgets, getTransaction as onGetTransaction, getCompanyAndModule } from "../../slices/thunks";
+import { getInvoices as onGetInvoices, getWidgetInvoices as onGetInvoiceWidgets, getTransaction as onGetTransaction } from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
 import { getLoggedinUser } from "../../helpers/api_helper";
@@ -109,7 +109,7 @@ const InvoiceList = () => {
               <div className="d-flex align-items-center">
                 {invoice.row.original.img ? (
                   <img
-                    src={process.env.API_URL + "/images/users/" + invoice.row.original.img}
+                    src={process.env.REACT_APP_API_URL + "/images/users/" + invoice.row.original.img}
                     alt=""
                     className="avatar-xs rounded-circle me-2"
                   />
@@ -191,29 +191,6 @@ const InvoiceList = () => {
     [checkedAll, invoices]
   );
 
-  const checkCompanyNbFac = async () => {
-    const user = getLoggedinUser();
-    let data = await getCompanyAndModule(user.com_id);
-    let invoiceInMonth = invoices.filter((i) => moment().isSame(i.header.fen_date_create, "month"));
-    if (data.mod_nb_fac == 0) {
-      navigate("/factures/creation");
-      return;
-    }
-
-    if (data.mod_id == 2 && invoices.length < 50) {
-      navigate("/factures/creation");
-      return;
-    }
-
-    if (invoiceInMonth.length < data.mod_nb_fac) {
-      navigate("/factures/creation");
-      return;
-    }
-
-    toast.warning('Nombre de facture maximum atteint')
-
-  };
-
   return (
     <React.Fragment>
       <div className="page-content">
@@ -249,7 +226,7 @@ const InvoiceList = () => {
                       <div className="d-flex gap-2 flex-wrap">
                         <button
                           onClick={() => {
-                            checkCompanyNbFac();
+                            navigate("/factures/creation");
                           }}
                           className="btn btn-secondary me-1">
                           <i className="ri-add-line align-bottom me-1"></i> Créer une facture

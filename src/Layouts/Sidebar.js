@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import SimpleBar from "simplebar-react";
 //import logo
 import logoSm from "../assets/images/icone_countano.png";
-import logoDark from "../assets/images/logo_countano.png";
-import logoLight from "../assets/images/logo_countano.png";
+import logoDark from "../assets/images/logo_lmk.png";
+import logoLight from "../assets/images/logo_lmk.png";
 
 //Import Components
 import VerticalLayout from "./VerticalLayouts";

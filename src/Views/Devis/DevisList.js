@@ -158,7 +158,7 @@ const DevisList = () => {
               <div className="d-flex align-items-center">
                 {devis.row.original.img ? (
                   <img
-                    src={process.env.API_URL + "/images/users/" + devis.row.original.img}
+                    src={process.env.REACT_APP_API_URL + "/images/users/" + devis.row.original.img}
                     alt=""
                     className="avatar-xs rounded-circle me-2"
                   />

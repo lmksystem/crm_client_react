@@ -4,8 +4,8 @@ import { Badge, Dropdown, DropdownMenu, DropdownToggle, Form } from "reactstrap"
 
 //import images
 
-import logoDark from "../assets/images/logo_countano.png";
-import logoLight from "../assets/images/logo_countano.png";
+import logoDark from "../assets/images/logo_lmk.png";
+import logoLight from "../assets/images/logo_lmk.png";
 
 //import Components
 import SearchOption from "../Components/Common/SearchOption";
@@ -79,7 +79,7 @@ const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
                     <img
                       src={logoDark}
                       alt=""
-                      height="17"
+                      height="25"
                     />
                   </span>
                 </Link>
@@ -91,7 +91,7 @@ const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
                     <img
                       src={logoLight}
                       alt=""
-                      height="17"
+                      height="25"
                     />
                   </span>
                 </Link>

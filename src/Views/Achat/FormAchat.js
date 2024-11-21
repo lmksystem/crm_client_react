@@ -66,7 +66,7 @@ function FormAchat({ data, handleOneValidate }) {
 
   const previewAchat = (ach_id) => {
     axios
-      .get(`${process.env.API_URL}/v1/pdf/download/achat/${ach_id}`, {
+      .get(`${process.env.REACT_APP_API_URL}/v1/pdf/download/achat/${ach_id}`, {
         mode: "no-cors",
         responseType: "blob"
       })
@@ -614,7 +614,7 @@ function FormAchat({ data, handleOneValidate }) {
                   <div className="container-img-achat">
                     <img
                       className={"image-achat-doc-" + data.ach_id}
-                      src={`${process.env.API_URL}/public/pdf/${data?.ach_com_fk}/achat/${data.ado_date_create.split("-")[0]}/${data.ado_date_create.split("-")[1]}/${data?.ado_file_name}`}
+                      src={`${process.env.REACT_APP_API_URL}/public/pdf/${data?.ach_com_fk}/achat/${data.ado_date_create.split("-")[0]}/${data.ado_date_create.split("-")[1]}/${data?.ado_file_name}`}
                     />
                   </div>
                 )

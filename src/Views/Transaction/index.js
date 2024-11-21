@@ -76,9 +76,9 @@ const TransactionBank = () => {
   };
 
   const previewAchat = (ach_id) => {
-    axios.get(`${process.env.API_URL}/v1/achat/${ach_id}`).then((achatWithDoc) => {
+    axios.get(`${process.env.REACT_APP_API_URL}/v1/achat/${ach_id}`).then((achatWithDoc) => {
       axios
-        .get(`${process.env.API_URL}/v1/pdf/download/achat/${ach_id}`, {
+        .get(`${process.env.REACT_APP_API_URL}/v1/pdf/download/achat/${ach_id}`, {
           mode: "no-cors",
           responseType: "blob"
         })

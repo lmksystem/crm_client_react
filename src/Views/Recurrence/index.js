@@ -826,7 +826,7 @@ const Recurrence = () => {
                       <div className="flex-shrink-0">
                         {c.ent_img_url ? (
                           <img
-                            src={process.env.API_URL + "/images/" + c.ent_img_url}
+                            src={process.env.REACT_APP_API_URL + "/images/" + c.ent_img_url}
                             alt=""
                             className="avatar-xxs rounded-circle"
                           />

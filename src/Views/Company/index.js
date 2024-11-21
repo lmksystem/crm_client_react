@@ -4,7 +4,7 @@ import BreadCrumb from "../../Components/Common/BreadCrumb";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { getCompany as onGetCompany, updateCompany as onUpdateCompany, updateLogoAction as onUpdateLogoAction, addLicense as onAddLicense, getLicense as onGetLicense, deleteLicense as onDeleteLicense, getCompanyAndModule } from "../../slices/thunks";
+import { getCompany as onGetCompany, updateCompany as onUpdateCompany, updateLogoAction as onUpdateLogoAction, addLicense as onAddLicense, getLicense as onGetLicense, deleteLicense as onDeleteLicense } from "../../slices/thunks";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 
@@ -21,7 +21,7 @@ const CompanyProfil = () => {
   }));
   // console.log(license);
   const [company, setCompany] = useState({});
-  const [module, setModule] = useState(null);
+
   const [image, setImage] = useState("");
   const [numEntreprise, setNumEntreprise] = useState("Identifiant d'entreprise");
   const [addActifView, setAddActifView] = useState(false);
@@ -80,12 +80,8 @@ const CompanyProfil = () => {
     }),
 
     onSubmit: (values) => {
-      if (license.length < module.mod_nb_user) {
-        dispatch(onAddLicense(values));
-        setAddActifView(false);
-      } else {
-        toast.warning(`Nombre de licence atteint (Max: ${module.mod_nb_user})`, { autoClose: 3000 });
-      }
+      dispatch(onAddLicense(values));
+      setAddActifView(false);
     }
   });
 
@@ -195,9 +191,6 @@ const CompanyProfil = () => {
 
   useEffect(() => {
     dispatch(onGetLicense());
-    getCompanyAndModule(companyredux[0].com_id).then((res) => {
-      setModule({ mod_id: res.mod_id, mod_name: res.mod_name, mod_nb_fac: res.mod_nb_fac, mod_nb_user: res.mod_nb_user });
-    });
   }, []);
 
   return (

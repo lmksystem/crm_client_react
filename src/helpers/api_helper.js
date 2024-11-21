@@ -1,8 +1,9 @@
 import axios from "axios";
 
+console.log(process.env.REACT_APP_API_URL);
 
 // default
-axios.defaults.baseURL = process.env.API_URL;
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 // content type
 axios.defaults.headers.post["Content-Type"] = "application/json";
 

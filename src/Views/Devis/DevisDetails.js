@@ -56,7 +56,7 @@ const DevisDetails = () => {
 
   const downloadPdf = () => {
     axios
-      .get(`${process.env.API_URL}/v1/pdf/download/devis/${devis.header.den_id}`, {
+      .get(`${process.env.REACT_APP_API_URL}/v1/pdf/download/devis/${devis.header.den_id}`, {
         mode: "no-cors",
         responseType: "blob"
       })

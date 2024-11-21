@@ -131,5 +131,3 @@ const publicRoutes = [
 ];
 
 export { userRoute, adminRoute, publicRoutes };
-
-// page contact http://localhost:3000/apps-crm-contacts#

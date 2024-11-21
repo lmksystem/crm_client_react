@@ -10,7 +10,7 @@ import { logoutUser, createOrUpdateUser as onCreateOrUpdateUser } from "../../..
 import { useNavigate } from "react-router-dom";
 import ParticlesAuth from "../ParticlesAuth";
 import { Link } from "feather-icons-react/build/IconComponents";
-import logoLight from "../../../assets/images/logo_countano.png";
+import logoLight from "../../../assets/images/logo_lmk.png";
 import paysData from "../../../Components/constants/paysPhone.json";
 
 moment.locale('fr')
@@ -60,7 +60,7 @@ const CreateAccount = () => {
                 <div className="text-center mt-sm-5 mb-4 text-white-50">
                   <div>
                     <Link to="/" className="d-inline-block auth-logo">
-                      <img src={logoLight} alt="" height="20" />
+                      <img src={logoLight} alt="" height="70" />
                     </Link>
                   </div>
                   <p className="mt-3 fs-15 fw-medium"></p>

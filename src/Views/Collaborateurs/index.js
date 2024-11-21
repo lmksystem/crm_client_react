@@ -392,7 +392,7 @@ const Collaborateurs = () => {
                 {
                   company.row.original.ent_img_url ? (
                     <img
-                      src={process.env.API_URL + "/images/" + company.row.original.ent_img_url}
+                      src={process.env.REACT_APP_API_URL + "/images/" + company.row.original.ent_img_url}
                       alt=""
                       className="avatar-xxs rounded-circle"
                     />

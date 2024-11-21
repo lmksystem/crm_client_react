@@ -11,7 +11,7 @@ import withRouter from "../../Components/Common/withRouter";
 import * as Yup from "yup";
 import { useFormik, validateYupSchema } from "formik";
 
-import logoLight from "../../assets/images/logo_countano.png";
+import logoLight from "../../assets/images/logo_lmk.png";
 import axios from 'axios';
 import PasswordStep from './step/PasswordStep';
 import CompanyStep from './step/CompanyStep';

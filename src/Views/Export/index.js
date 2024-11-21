@@ -37,7 +37,7 @@ const Export = () => {
   const download = async () => {
     // console.log(periodeCalendar.end, moment(new Date(periodeCalendar.end)).format("DD MMM YYYY"));
     axios
-      .get(`${process.env.API_URL}/v1/export?date_start=${moment(periodeCalendar.start).format("YYYY-MM-DD")}&date_end=${moment(periodeCalendar.end).format("YYYY-MM-DD")}`, {
+      .get(`${process.env.REACT_APP_API_URL}/v1/export?date_start=${moment(periodeCalendar.start).format("YYYY-MM-DD")}&date_end=${moment(periodeCalendar.end).format("YYYY-MM-DD")}`, {
         mode: "no-cors",
         responseType: "blob"
       })

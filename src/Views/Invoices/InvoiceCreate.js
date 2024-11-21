@@ -8,8 +8,8 @@ import Flatpickr from "react-flatpickr";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import Select from "react-select";
 
-import logoDark from "../../assets/images/logo_countano.png";
-import logoLight from "../../assets/images/logo_countano.png";
+import logoDark from "../../assets/images/logo_lmk.png";
+import logoLight from "../../assets/images/logo_lmk.png";
 
 //formik
 import { useFormik } from "formik";
@@ -1163,7 +1163,7 @@ const InvoiceCreate = () => {
                       <div className="flex-shrink-0">
                         {c.ent_img_url ? (
                           <img
-                            src={process.env.API_URL + "/images/" + c.ent_img_url}
+                            src={process.env.REACT_APP_API_URL + "/images/" + c.ent_img_url}
                             alt=""
                             className="avatar-xxs rounded-circle"
                           />
