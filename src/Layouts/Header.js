@@ -69,8 +69,6 @@ const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
 
   useEffect(() => {
     getCompanyListAction().then((res) => {
-      console.log(res);
-
       setCompanyList(res);
     });
   }, []);

@@ -6,7 +6,6 @@ import SimpleBar from "simplebar-react";
 import * as Yup from "yup";
 
 import DropFileComponents from "./DropFileComponent";
-import { getCategorieAchat as onGetCategorieAchat, createUpdateAchat as onCreateUpdateAchat } from "../../slices/thunks";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import makeAnimated from "react-select/animated";
@@ -14,8 +13,9 @@ import axios from "axios";
 import FileService from "../../utils/FileService";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../Components/Common/Loader";
-import { getInvoices } from "../../helpers/backend_helper";
+
 import moment from "moment";
+import { getInvoices } from "../../services/invoice";
 
 const ModalCreate = ({ modal, toggle, setModal, setIsEdit, isEdit, setAchat }) => {
   const dispatch = useDispatch();
@@ -169,7 +169,7 @@ const ModalCreate = ({ modal, toggle, setModal, setIsEdit, isEdit, setAchat }) =
   useEffect(() => {
     if (createAchats.values.type == "Revenu") {
       getInvoices().then((res) => {
-        let totalInvoices = res.data.filter((fac) => fac.doc != null);
+        let totalInvoices = res.filter((fac) => fac.doc != null);
         setFactures(totalInvoices);
       });
     }

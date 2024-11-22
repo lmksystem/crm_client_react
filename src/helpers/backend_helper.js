@@ -68,10 +68,10 @@ export const handleConstantes = (constantes) => api.create(url.CONSTANTES, const
 /*************************/
 
 //get Invoices
-export const getInvoices = () => api.get(url.INVOICES);
+// export const getInvoices = () => api.get(url.INVOICES);
 
 //get widgets data
-export const getWidgetInvoices = () => api.get(url.INVOICES + "/widgets");
+// export const getWidgetInvoices = () => api.get(url.INVOICES + "/widgets");
 
 // add Invoice
 export const addNewInvoice = (data) => api.create(url.INVOICES, data);
@@ -232,23 +232,23 @@ export const deleteSalary = (sal_id) => api.delete(url.SALARY + "/delete/" + sal
 /*        Achat       */
 /*************************/
 
-export const getAchat = () => api.get(url.ACHAT);
+// export const getAchat = () => api.get(url.ACHAT);
 
-// export const getAchatPositiveRp = () => api.get(url.ACHAT);
+// // export const getAchatPositiveRp = () => api.get(url.ACHAT);
 
-export const getOnceAchat = (ach_id) => api.get(url.ACHAT + "/" + ach_id);
+// export const getOnceAchat = (ach_id) => api.get(url.ACHAT + "/" + ach_id);
 
-export const createUpdateAchat = (data) => api.create(url.ACHAT, data);
+// export const createUpdateAchat = (data) => api.create(url.ACHAT, data);
 
-export const deleteAchat = (ach_id) => api.delete(url.ACHAT + "/delete/" + ach_id);
-// get achat bank and link by transaction
-export const getAchatLinkTransaction = (tba_id) => api.get(url.ACHAT + "/transaction/" + tba_id);
-// update transaction bank link to achat
-export const linkTransToAchat = (data) => api.create(url.TRANSACTION_BANK + "/achat", data);
-// update match amount bank link to achat
-export const updateMatchAmount = (data) => api.create(url.TRANSACTION_BANK + "/amountMatch", data);
-// get categories achat
-export const getCategorieAchat = () => api.get(url.ACHAT + "/categorie");
+// export const deleteAchat = (ach_id) => api.delete(url.ACHAT + "/delete/" + ach_id);
+// // get achat bank and link by transaction
+// export const getAchatLinkTransaction = (tba_id) => api.get(url.ACHAT + "/transaction/" + tba_id);
+// // update transaction bank link to achat
+// export const linkTransToAchat = (data) => api.create(url.TRANSACTION_BANK + "/achat", data);
+// // update match amount bank link to achat
+// export const updateMatchAmount = (data) => api.create(url.TRANSACTION_BANK + "/amountMatch", data);
+// // get categories achat
+// export const getCategorieAchat = () => api.get(url.ACHAT + "/categorie");
 
 /*************************/
 /*       Recurrence       */

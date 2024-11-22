@@ -3,11 +3,12 @@ import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { Card, CardHeader, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { getInvoices as onGetInvoices, getEmail as onGetEmail, getDevis as onGetDevis } from "../../slices/thunks";
+import { getEmail as onGetEmail, getDevis as onGetDevis } from "../../slices/thunks";
 import moment from "moment";
 import SimpleBar from "simplebar-react";
 import { Link, useNavigate } from "react-router-dom";
 import { invoiceEtatColor } from "../../common/data/invoiceList";
+import { getInvoices } from "../../services/invoice";
 moment.locale("fr");
 
 document.title = "Détails Clients - Fournisseur | Countano";
@@ -48,9 +49,8 @@ const CollaboDetails = ({}) => {
   //5 dernieres factures
   useEffect(() => {
     if (collaboDetails.infoBase) {
-      dispatch(onGetInvoices()).then(() => {
-        let copyInvoices = [...invoices];
-        let arrayFiltered = copyInvoices.filter((e) => e.header.fen_ent_fk == collaboDetails.infoBase.ent_id);
+      getInvoices().then((data) => {
+        let arrayFiltered = data.filter((e) => e.header.fen_ent_fk == collaboDetails.infoBase.ent_id);
         if (arrayFiltered.length > 0) {
           arrayFiltered.sort((a, b) => b.fen_date_create - a.fen_date_create);
           let lastFive = arrayFiltered.slice(0, 5);

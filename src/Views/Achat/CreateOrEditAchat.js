@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { getOnceAchat } from "../../helpers/backend_helper";
 import FormAchat from "./FormAchat";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { Card, CardBody, Container } from "reactstrap";
 import { ToastContainer } from "react-toastify";
+import { getOnceAchat } from "../../services/achat";
 
 function CreateOrEditAchat() {
   const { state } = useLocation();
@@ -22,7 +22,7 @@ function CreateOrEditAchat() {
 
         let res = await getOnceAchat(ach_id);
 
-        copy.push(res.data);
+        copy.push(res);
       }
 
       setListOfAchat(copy);

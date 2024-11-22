@@ -13,7 +13,6 @@ import { updateLoggedUser } from "../../helpers/api_helper";
 
 const CompanyDropdown = ({ companyList }) => {
   const { userProfile } = useProfile();
-  const navigate = useNavigate();
   const [selectedCompany, setSelectedCompany] = useState("");
 
   //Dropdown Toggle
@@ -25,19 +24,14 @@ const CompanyDropdown = ({ companyList }) => {
 
   const handleChangeCompany = (data) => {
     updateUser(data).then((res) => {
-      console.log(res.data);
-
       updateLoggedUser(res.data);
-      navigate("/");
+      window.location.reload();
     });
   };
 
   useEffect(() => {
-
     let company = companyList.find((data) => data.com_id == userProfile.use_com_fk);
     if (company) {
-      console.log(company);
-
       setSelectedCompany(() => company);
     }
   }, [companyList]);

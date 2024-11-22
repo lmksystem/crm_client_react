@@ -7,7 +7,7 @@ import BreadCrumb from "../../Components/Common/BreadCrumb";
 import DeleteModal from "../../Components/Common/DeleteModal";
 
 //Import actions
-import { getEmployees as onGetEmployees, getAchat as onGetAchat, getCollaborateurs as onGetCollaborateurs, deleteAchat as onDeleteAchat } from "../../slices/thunks";
+import { getEmployees as onGetEmployees, getCollaborateurs as onGetCollaborateurs } from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
 import TableContainer from "../../Components/Common/TableContainer";
@@ -24,18 +24,17 @@ import FileService from "../../utils/FileService";
 import { customFormatNumber } from "../../utils/function";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import { deleteAchat, getAchat } from "../../services/achat";
 
 const Achats = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isAchatSuccess, achats, error, transactions, collaborateurs } = useSelector((state) => ({
-    isAchatSuccess: state.Achat.isAchatSuccess,
-    achats: state.Achat.achats,
-    error: state.Achat.error,
+  const { transactions, collaborateurs } = useSelector((state) => ({
     collaborateurs: state.Gestion.collaborateurs,
     transactions: state.TransactionBank.transactionsBank
   }));
 
+  const [achats, setAchats] = useState(null);
   const [achat, setAchat] = useState({});
 
   const [achatDisplay, setAchatDisplay] = useState([]);
@@ -69,7 +68,7 @@ const Achats = () => {
   // Delete Data
   const handleDeleteContact = () => {
     if (achat) {
-      dispatch(onDeleteAchat(achat?.ach_id));
+      deleteAchat(achat?.ach_id);
       setDeleteModal(false);
     }
   };
@@ -103,7 +102,7 @@ const Achats = () => {
   const deleteMultiple = () => {
     const checkall = document.getElementById("checkBoxAll");
     selectedCheckBoxDelete.forEach((element) => {
-      dispatch(onDeleteAchat(element.value));
+      deleteAchat(element.value);
       setTimeout(() => {
         toast.clearWaitingQueue();
       }, 3000);
@@ -330,7 +329,9 @@ const Achats = () => {
 
   useEffect(() => {
     dispatch(onGetEmployees());
-    dispatch(onGetAchat());
+    getAchat().then((response) => {
+      setAchats(response);
+    });
     dispatch(onGetCollaborateurs());
   }, [dispatch]);
 
@@ -403,7 +404,7 @@ const Achats = () => {
                 </CardHeader>
                 <CardBody className="pt-0">
                   <div>
-                    {isAchatSuccess ? (
+                    {achats ? (
                       <TableContainer
                         initialSortField={"ach_date_create"}
                         columns={columns}
@@ -417,15 +418,13 @@ const Achats = () => {
                         theadClass="table-light"
                         actionItem={(row) => {
                           const achatData = row.original;
-                          // handleContactClick(achatData);
                           navigate("/achat/edition", { state: [achatData.ach_id] });
                         }}
-                        // handleContactClick={handleContactClicks}
                         isContactsFilter={true}
                         SearchPlaceholder="Recherche..."
                       />
                     ) : (
-                      <Loader error={error} />
+                      <Loader error={!achats} />
                     )}
                   </div>
                   <ModalCreate

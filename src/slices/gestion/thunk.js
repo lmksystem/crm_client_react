@@ -21,9 +21,9 @@ import {
   getEntityPeriodCount as getEntityPeriodCountApi,
   handleAlert as handleAlertApi,
   getAlert as getAlertApi,
-  deleteAlert as deleteAlertApi,
-  getInvoices as getInvoicesApi
+  deleteAlert as deleteAlertApi
 } from "../../helpers/backend_helper";
+import { getInvoices } from "../../services/invoice";
 
 // Gestion
 
@@ -84,7 +84,7 @@ export const getDetailsCollabo = createAsyncThunk("gestion/getDetailsCollabo", a
   try {
     let response = {};
     response.infoBase = item;
-    const InvoicesCollabo = await getInvoicesApi({
+    const InvoicesCollabo = await getInvoices({
       dateDebut: null,
       dateFin: null
     });
