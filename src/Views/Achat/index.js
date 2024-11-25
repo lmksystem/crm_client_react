@@ -24,6 +24,7 @@ import FileService from "../../utils/FileService";
 import { customFormatNumber } from "../../utils/function";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import { FactureAchatListGlobalSearch } from "../../Components/Common/GlobalSearchFilter";
 
 const Achats = () => {
   const dispatch = useDispatch();
@@ -39,6 +40,8 @@ const Achats = () => {
   const [achat, setAchat] = useState({});
 
   const [achatDisplay, setAchatDisplay] = useState([]);
+  const [customFiltered, setCustomFiltered] = useState();
+
   useEffect(() => {
     setAchatDisplay(achats);
   }, [achats]);
@@ -377,7 +380,7 @@ const Achats = () => {
               className="view-animate"
               xxl={show ? 9 : 12}>
               <Card id="contactList">
-                <CardHeader>
+                <CardHeader className="border-0">
                   <div className="d-flex align-items-center flex-wrap gap-2">
                     <div className="flex-grow-1">
                       <button
@@ -403,12 +406,16 @@ const Achats = () => {
                 </CardHeader>
                 <CardBody className="pt-0">
                   <div>
+                    <FactureAchatListGlobalSearch
+                      origneData={achatDisplay}
+                      setData={setCustomFiltered}
+                    />
                     {isAchatSuccess ? (
                       <TableContainer
                         initialSortField={"ach_date_create"}
                         columns={columns}
-                        data={achatDisplay || []}
-                        isGlobalFilter={true}
+                        data={customFiltered || achatDisplay || []}
+                        isGlobalFilter={false}
                         isAddUserList={false}
                         customPageSize={8}
                         className="custom-header-css"

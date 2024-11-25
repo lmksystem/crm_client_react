@@ -154,22 +154,24 @@ const DevisList = () => {
         accessor: "contact.dco_cus_name",
         Cell: (devis) => {
           return (
-            <>
-              <div className="d-flex align-items-center">
-                {devis.row.original.img ? (
-                  <img
-                    src={process.env.REACT_APP_API_URL + "/images/users/" + devis.row.original.img}
-                    alt=""
-                    className="avatar-xs rounded-circle me-2"
-                  />
-                ) : (
-                  <div className="flex-shrink-0 avatar-xs me-2">
-                    <div className="avatar-title bg-soft-success text-success rounded-circle fs-13">{(devis.row.original?.contact?.dco_cus_name && devis.row.original?.contact?.dco_cus_name.charAt(0)) || ""}</div>
-                  </div>
-                )}
-                {devis.row.original.contact?.dco_cus_name}
-              </div>
-            </>
+            devis.row.original?.den_ent_fk != null && (
+              <>
+                <div className="d-flex align-items-center">
+                  {devis.row.original.img ? (
+                    <img
+                      src={process.env.REACT_APP_API_URL + "/images/users/" + devis.row.original.img}
+                      alt=""
+                      className="avatar-xs rounded-circle me-2"
+                    />
+                  ) : (
+                    <div className="flex-shrink-0 avatar-xs me-2">
+                      <div className="avatar-title bg-soft-success text-success rounded-circle fs-13">{(devis.row.original?.contact?.dco_cus_name && devis.row.original?.contact?.dco_cus_name.charAt(0)) || ""}</div>
+                    </div>
+                  )}
+                  {devis.row.original.contact?.dco_cus_name}
+                </div>
+              </>
+            )
           );
         }
       },

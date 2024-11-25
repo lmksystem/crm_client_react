@@ -148,7 +148,7 @@ const Recurrence = () => {
       recurrence_data: Yup.object({
         rec_ent_fk: Yup.number().required("Veuillez entrer un client"),
         rec_nb: Yup.number().required("Champs obligatoire"),
-        rec_quand: Yup.number().min(1).required("Champs obligatoire"),
+        rec_quand: Yup.number().min(1, "Veuillez sélectionnez une répétition").required("Champs obligatoire"),
         rec_repetition: Yup.string().required("Champs obligatoire")
       }),
       products: Yup.array().min(1, "Ajouter au moins un produit")
@@ -513,6 +513,7 @@ const Recurrence = () => {
           id="showModal"
           isOpen={openCreate}
           toggle={toggleModalCreate}
+          size="lg"
           centered>
           <ModalHeader
             className="bg-soft-info p-3"
@@ -596,6 +597,12 @@ const Recurrence = () => {
                         validation.setValues({ ...validation.values, recurrence_data: { ...validation.values.recurrence_data, ...validation.values.recurrence_data.rec_delai_echeance, rec_delai_echeance: e.value } });
                       }}
                       name="choices-single-default"
+                      styles={{
+                        container: (styles) => ({
+                          ...styles,
+                          zIndex: 25
+                        })
+                      }}
                       id="idStatus"
                     />
                     {validation.errors?.recurrence_data?.rec_delai_echeance && validation.touched?.recurrence_data?.rec_delai_echeance ? <FormFeedback type="invalid">{validation.errors?.recurrence_data?.rec_delai_echeance}</FormFeedback> : null}
@@ -634,7 +641,6 @@ const Recurrence = () => {
                       <option value={3}>Mois</option>
                       <option value={4}>Trimestres</option>
                     </Input>
-                    {validation.errors?.recurrence_data?.rec_quand && validation.touched?.recurrence_data?.rec_quand ? <FormFeedback type="invalid">{validation.errors?.recurrence_data?.rec_quand}</FormFeedback> : null}
                   </div>
                   {validation.values.recurrence_data.rec_nb !== 0 ? (
                     <div className="mb-2 ms-2 d-flex align-items-center">
@@ -655,6 +661,13 @@ const Recurrence = () => {
                     ""
                   )}
                 </Col>
+                {validation.errors?.recurrence_data?.rec_quand && validation.touched?.recurrence_data?.rec_quand ? (
+                  <FormFeedback
+                    className="d-block"
+                    type="invalid">
+                    {validation.errors?.recurrence_data?.rec_quand}
+                  </FormFeedback>
+                ) : null}
                 <Col xl={12}>
                   <Input
                     onChange={(e) => validation.setValues({ ...validation.values, recurrence_data: { ...validation.values.recurrence_data, rec_nb: e.target.checked ? 0 : 1 } })}
