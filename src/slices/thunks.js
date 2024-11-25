@@ -10,9 +10,6 @@ export * from "./auth/forgetpwd/thunk";
 // Gestion
 export * from "./gestion/thunk";
 
-//Invoice
-export * from "./invoice/thunk";
-
 // Company
 export * from "./company/thunk";
 

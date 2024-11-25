@@ -4,60 +4,86 @@ import { RevenueCharts } from "./DashboardEcommerceCharts";
 import CountUp from "react-countup";
 import { useSelector } from "react-redux";
 import moment from "moment";
-import { getInvoicesPaid } from "../../helpers/backend_helper";
 import { rounded } from "../../utils/function";
+import { getInvoiceByMonth, getInvoicesPaid } from "../../services/invoice";
+import { getTransactionByMonth } from "../../services/transaction";
+import { getDevisByMonth } from "../../services/devis";
 moment.locale("fr");
 
 const Revenue = ({ perdiodeCalendar }) => {
   const [chartData, setchartData] = useState([]);
   const [totalTva, setTotalTva] = useState(0);
+  const [invoiceByMonth, setInvoiceByMonth] = useState(null);
+  const [transactionByMonth, setTransactionByMonth] = useState(null);
+  const [devisByMonth, setDevisByMonth] = useState(null);
 
-  const { transactionByMonth, devisByMonth, invoiceByMonth, devise } = useSelector((state) => ({
-    transactionByMonth: state.Transaction.transactionByMonth,
-    devisByMonth: state.Devis.devisByMonth,
-    invoiceByMonth: state.Invoice.invoiceByMonth,
+  const { devise } = useSelector((state) => ({
     devise: state.Company.devise
   }));
+
   useEffect(() => {
-    getInvoicesPaid({
-      dateDebut: perdiodeCalendar.start ? moment(perdiodeCalendar.start).format("YYYY-MM-DD") : null,
-      dateFin: perdiodeCalendar.end ? moment(perdiodeCalendar.end).format("YYYY-MM-DD") : null
-    }).then((invoices) => {
-      let arrayByMonth = new Array(12).fill(0);
-      invoices.data.map((element) => {
-        let month = moment(element.tra_date).month();
-        arrayByMonth[month] = rounded(parseFloat(arrayByMonth[month]) + parseFloat(element.fen_total_tva), 2);
-      });
+    let year = perdiodeCalendar?.start != null ? moment(perdiodeCalendar.start).year() : moment().year();
 
-      const tableauTransaction = transactionByMonth?.map((objet) => objet["somme_tra_value"]);
-      const tableauDevis = devisByMonth?.map((objet) => objet["count_devis"]);
-      const tableauInvoice = invoiceByMonth?.map((objet) => objet["count_invoice"]);
-      setTotalTva(arrayByMonth);
-
-      const newArrayForGraph = [
-        {
-          name: "Devis",
-          type: "area",
-          data: tableauDevis
-        },
-        {
-          name: "Ventes",
-          type: "bar",
-          data: tableauTransaction
-        },
-        {
-          name: "Factures",
-          type: "line",
-          data: tableauInvoice
-        },
-        {
-          name: "TVA dûe",
-          type: "bar",
-          data: arrayByMonth
-        }
-      ];
-      setchartData(newArrayForGraph);
+    getInvoiceByMonth({
+      year: year
+    }).then((response) => {
+      setInvoiceByMonth(response);
     });
+
+    getTransactionByMonth({
+      year: year
+    }).then((response) => {
+      setTransactionByMonth(response);
+    });
+
+    getDevisByMonth({
+      year: year
+    }).then((response) => {
+      setDevisByMonth(response);
+    });
+  }, [perdiodeCalendar]);
+
+  useEffect(() => {
+    if (transactionByMonth && devisByMonth && invoiceByMonth) {
+      getInvoicesPaid({
+        dateDebut: perdiodeCalendar.start ? moment(perdiodeCalendar.start).format("YYYY-MM-DD") : null,
+        dateFin: perdiodeCalendar.end ? moment(perdiodeCalendar.end).format("YYYY-MM-DD") : null
+      }).then((invoices) => {
+        let arrayByMonth = new Array(12).fill(0);
+
+        invoices.map((element) => {
+          let month = moment(element.tra_date).month();
+          arrayByMonth[month] = rounded(parseFloat(arrayByMonth[month]) + parseFloat(element.fen_total_tva), 2);
+        });
+        const tableauTransaction = transactionByMonth?.map((objet) => objet["somme_tra_value"]);
+        const tableauDevis = devisByMonth?.map((objet) => objet["count_devis"]);
+        const tableauInvoice = invoiceByMonth?.map((objet) => objet["count_invoice"]);
+        setTotalTva(arrayByMonth);
+        const newArrayForGraph = [
+          {
+            name: "Devis",
+            type: "area",
+            data: tableauDevis
+          },
+          {
+            name: "Ventes",
+            type: "bar",
+            data: tableauTransaction
+          },
+          {
+            name: "Factures",
+            type: "line",
+            data: tableauInvoice
+          },
+          {
+            name: "TVA dûe",
+            type: "bar",
+            data: arrayByMonth
+          }
+        ];
+        setchartData(newArrayForGraph);
+      });
+    }
   }, [perdiodeCalendar, transactionByMonth, devisByMonth, invoiceByMonth]);
 
   return (

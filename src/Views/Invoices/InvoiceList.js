@@ -21,7 +21,6 @@ import { customFormatNumber, rounded } from "../../utils/function";
 
 import WidgetCountUp from "../../Components/Common/WidgetCountUp";
 import { invoiceEtatColor } from "../../common/data/invoiceList";
-import { getEtatInvoice as onGetEtatInvoice } from "../../helpers/backend_helper";
 import { getInvoices, getWidgetInvoices } from "../../services/invoice";
 moment.locale("fr");
 
@@ -31,10 +30,7 @@ const InvoiceList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { transactions, isInvoiceSuccess, error, devise } = useSelector((state) => ({
-    isInvoiceSuccess: state.Invoice.isInvoiceSuccess,
-    invoiceWidgets: state.Invoice.widgets,
-    error: state.Invoice.error,
+  const { transactions, error, devise } = useSelector((state) => ({
     transactions: state.Transaction.transactions,
     devise: state.Company.devise
   }));
@@ -214,7 +210,7 @@ const InvoiceList = () => {
                       data={customFiltered}
                       setData={setCustomFiltered}
                     />
-                    {isInvoiceSuccess ? (
+                    {invoices.length ? (
                       <TableContainer
                         columns={columns}
                         data={customFiltered || invoices || []}

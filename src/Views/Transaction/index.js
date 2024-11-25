@@ -27,10 +27,9 @@ import { getAccountsBankUser, getTransactionBank } from "../../helpers/backend_h
 
 const TransactionBank = () => {
   const dispatch = useDispatch();
-  const userProfile = getLoggedinUser();
-  const { isTransactionBankSuccess, error, devise, collaborateurs } = useSelector((state) => ({
+
+  const { error, devise, collaborateurs } = useSelector((state) => ({
     collaborateurs: state.Gestion.collaborateurs,
-    isTransactionBankSuccess: state.TransactionBank.isTransactionBankSuccess,
     transactions: state.TransactionBank.transactionsBank,
     error: state.Employee.error,
     achats: state.Achat.achats,

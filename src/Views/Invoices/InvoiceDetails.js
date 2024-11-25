@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { addNewTransaction as onAddNewTransaction, sendInvocieByEmail as onSendInvocieByEmail, deleteTransaction as onDeleteTransaction, updateInvoice as onUpdateInvoice, getCompany as onGetCompany, getEtatInvoice as onGetEtatInvoice } from "../../slices/thunks";
+import { getCompany as onGetCompany } from "../../slices/thunks";
 
 import { customFormatNumber, rounded } from "../../utils/function";
 import ConfirmModal from "../../Components/Common/ConfirmModal";
@@ -17,25 +17,24 @@ import axios from "axios";
 import { getImage } from "../../utils/getImages";
 import FeatherIcon from "feather-icons-react/build/FeatherIcon";
 import { invoiceEtatColor } from "../../common/data/invoiceList";
+import { getEtatInvoice, getInvoiceById, updateInvoice } from "../../services/invoice";
+import { addNewTransaction, deleteTransaction, getTransactionList, sendInvocieByEmail } from "../../services/transaction";
 
 // const axios = new APIClient();
 
 const InvoiceDetails = ({ route }) => {
   document.title = "Détail facture | Countano";
 
-  let { state } = useLocation();
-  console.log(state);
-
   let { id } = useParams();
 
-  const { transactions, company, etat, devise } = useSelector((state) => ({
+  const { company, devise } = useSelector((state) => ({
     company: state?.Company?.company,
-    etat: state.Invoice.invoiceEtat,
-    transactions: state.Transaction.transactions.filter((t) => t.tra_fen_fk == id),
     devise: state.Company.devise
   }));
 
-  const [invoice, setInvoice] = useState(state);
+  const [invoice, setInvoice] = useState(null);
+  const [etat, setEtat] = useState(null);
+  // const [transactions, setTransactions] = useState(null);
 
   const [addActifView, setAddActifView] = useState(false);
 
@@ -43,7 +42,7 @@ const InvoiceDetails = ({ route }) => {
 
   const [showModalDelete, setShowModalDelete] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
-  const [nbTransaction, setNbTransaction] = useState(transactions.length);
+  // const [nbTransaction, setNbTransaction] = useState(transactions.length);
   const [image, setImage] = useState("");
 
   const [activeChange, setActiveChange] = useState(false);
@@ -53,13 +52,6 @@ const InvoiceDetails = ({ route }) => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (invoice) {
-      setSelectedEtat(etat?.find((d) => d.fet_id == invoice?.header.fen_etat)?.fet_name);
-      setValueSubject(invoice?.header.fen_sujet);
-    }
-  }, [invoice]);
-
   //Print the Invoice
   const printInvoice = () => {
     window.print();
@@ -67,7 +59,7 @@ const InvoiceDetails = ({ route }) => {
 
   const downloadPdf = () => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}/v1/pdf/download/facture/${invoice.header.fen_id}`, {
+      .get(`${process.env.REACT_APP_API_URL}/v1/pdf/download/facture/${invoice?.header.fen_id}`, {
         mode: "no-cors",
         responseType: "blob"
       })
@@ -75,7 +67,7 @@ const InvoiceDetails = ({ route }) => {
         try {
           let elm = document.createElement("a"); // CREATE A LINK ELEMENT IN DOM
           elm.href = URL.createObjectURL(response); // SET LINK ELEMENTS CONTENTS
-          elm.setAttribute("download", invoice.header.fen_num_fac + ".pdf"); // SET ELEMENT CREATED 'ATTRIBUTE' TO DOWNLOAD, FILENAME PARAM AUTOMATICALLY
+          elm.setAttribute("download", invoice?.header.fen_num_fac + ".pdf"); // SET ELEMENT CREATED 'ATTRIBUTE' TO DOWNLOAD, FILENAME PARAM AUTOMATICALLY
           elm.click(); // TRIGGER ELEMENT TO DOWNLOAD
           elm.remove();
         } catch (err) {
@@ -87,10 +79,10 @@ const InvoiceDetails = ({ route }) => {
   const validation = useFormik({
     enableReinitialize: true,
     initialValues: {
-      tra_com_fk: invoice.header.fen_com_fk,
-      tra_fen_fk: invoice.header.fen_id,
-      tra_ent_fk: invoice.header.fen_ent_fk,
-      tra_value: invoice.header.fen_solde_du,
+      tra_com_fk: (invoice && invoice.header.fen_com_fk) || "",
+      tra_fen_fk: (invoice && invoice.header.fen_id) || 0,
+      tra_ent_fk: (invoice && invoice.header.fen_ent_fk) || 0,
+      tra_value: (invoice && invoice.header.fen_solde_du) || 0,
       tra_date: moment().format("YYYY-MM-DD"),
       tra_desc: ""
     },
@@ -100,14 +92,27 @@ const InvoiceDetails = ({ route }) => {
     }),
     onSubmit: (values) => {
       if (invoice.header.fen_solde_du > 0) {
-        dispatch(onAddNewTransaction(values));
-        setAddActifView(false);
-        setInvoice({
-          ...invoice,
-          header: {
-            ...invoice.header,
-            fen_solde_du: parseFloat(invoice.header.fen_solde_du) - parseFloat(values.tra_value)
-          }
+        addNewTransaction(values).then((res) => {
+          setAddActifView(false);
+          values.tra_id = res.tra_id;
+
+          let newTransactionData = [...invoice.transactions, values];
+
+          let soldeDuUpdated = rounded(
+            newTransactionData.reduce((previousValue, currentValue) => parseFloat(previousValue) - parseFloat(currentValue.tra_value), parseFloat(invoice.header.fen_total_ttc)),
+            2
+          );
+
+          updateInvoice({ fen_id: invoice.header.fen_id, fen_solde_du: soldeDuUpdated, fen_etat: soldeDuUpdated <= 0 ? "1" : invoice.header.fen_etat /* Permet de passer la facture en payé */ });
+
+          setInvoice({
+            ...invoice,
+            header: {
+              ...invoice.header,
+              fen_solde_du: soldeDuUpdated
+            },
+            transactions: newTransactionData
+          });
         });
       }
       validation.resetForm();
@@ -115,45 +120,56 @@ const InvoiceDetails = ({ route }) => {
   });
 
   const sendInvoiceByEmail = () => {
-    dispatch(onSendInvocieByEmail(id));
+    sendInvocieByEmail(id);
     setShowConfirmModal(false);
   };
 
-  const deletetransaction = () => {
-    dispatch(onDeleteTransaction(selectedId));
+  /**
+   * Supprimer une transation
+   */
+  const deletetransactionFunc = () => {
+    deleteTransaction(selectedId).then((deletedId) => {
+      let newTransactionData = invoice.transactions.filter((tra) => tra.tra_id != deletedId);
+
+      let soldeDuUpdated = rounded(
+        newTransactionData.reduce((previousValue, currentValue) => parseFloat(previousValue) - parseFloat(currentValue.tra_value), parseFloat(invoice.header.fen_total_ttc)),
+        2
+      );
+
+      updateInvoice({ fen_id: invoice.header.fen_id, fen_solde_du: soldeDuUpdated, fen_etat: soldeDuUpdated > 0 ? (moment().isAfter(moment(invoice.header.fen_date_expired)) ? "2" : "5") : invoice.header.fen_etat /* Permet de passer la facture en payé */ });
+
+      setInvoice({
+        ...invoice,
+        header: {
+          ...invoice.header,
+          fen_solde_du: soldeDuUpdated
+        },
+        transactions: newTransactionData
+      });
+    });
     setShowModalDelete(false);
   };
 
+  /**
+   * Supprime toutes les transactions ou ajout en fonction de si on la passe en payé ou impayé
+   * @param {*} e
+   */
   const toggleTransaction = (e) => {
     if (e.target.value == 1) {
       // si la facture est payé on ajoute la transaction
       validation.handleSubmit();
     } else {
       // si non on supprime LES transactions
-      transactions.map((tra) => {
-        dispatch(onDeleteTransaction(tra.tra_id));
-      });
+      for (let index = 0; index < invoice.transactions.length; index++) {
+        const element = invoice.transactions[index];
+        deleteTransaction(element.tra_id);
+      }
     }
   };
 
   useEffect(() => {
     dispatch(onGetCompany());
-    dispatch(onGetEtatInvoice());
   }, []);
-
-  useEffect(() => {
-    if (nbTransaction != transactions.length) {
-      setNbTransaction(transactions.length);
-      let dataInvoiceUpdate = rounded(
-        transactions.reduce((previousValue, currentValue) => parseFloat(previousValue) - parseFloat(currentValue.tra_value), parseFloat(invoice.header.fen_total_ttc)),
-        2
-      );
-
-      if (dataInvoiceUpdate == 0) {
-        dispatch(onUpdateInvoice({ fen_id: invoice.header.fen_id, fen_solde_du: dataInvoiceUpdate, fen_etat: "1" }));
-      }
-    }
-  }, [transactions]);
 
   useEffect(() => {
     if (company[0] && company[0].com_logo) {
@@ -164,9 +180,26 @@ const InvoiceDetails = ({ route }) => {
     }
   }, [company]);
 
+  useEffect(() => {
+    if (invoice && etat) {
+    }
+  }, [invoice, etat]);
+
+  useEffect(() => {
+    getInvoiceById(id).then((response) => {
+      setInvoice(response);
+      setValueSubject(response?.header.fen_sujet);
+      getEtatInvoice().then((etatData) => {
+        setSelectedEtat(etatData?.find((d) => d.fet_id == response?.header.fen_etat)?.fet_name);
+        setEtat(etatData);
+      });
+    });
+  }, []);
+
   if (!invoice) {
     return null;
   }
+  console.log(invoice.transactions);
 
   return (
     <div className="page-content">
@@ -186,7 +219,7 @@ const InvoiceDetails = ({ route }) => {
         <DeleteModal
           show={showModalDelete}
           onCloseClick={() => setShowModalDelete(false)}
-          onDeleteClick={() => deletetransaction()}
+          onDeleteClick={() => deletetransactionFunc()}
         />
         <Row className="justify-content-center">
           <Col xxl={9}>
@@ -273,12 +306,10 @@ const InvoiceDetails = ({ route }) => {
                             <button
                               onClick={(e) => {
                                 if (e.target?.previousSibling?.value?.trim()?.length > 0) {
-                                  dispatch(
-                                    onUpdateInvoice({
-                                      fen_id: invoice.header.fen_id,
-                                      fen_sujet: e.target.previousSibling.value
-                                    })
-                                  );
+                                  updateInvoice({
+                                    fen_id: invoice.header.fen_id,
+                                    fen_sujet: e.target.previousSibling.value
+                                  });
                                   setValueSubject(e.target.previousSibling.value);
                                   setSubjectChange(() => false);
                                 } else {
@@ -380,19 +411,19 @@ const InvoiceDetails = ({ route }) => {
                               toggleTransaction(e);
                               setSelectedEtat(etat?.find((d) => d.fet_id == e.target.value)?.fet_name);
                               setActiveChange(() => false);
-                              dispatch(
-                                onUpdateInvoice({
-                                  fen_id: invoice.header.fen_id,
-                                  fen_etat: e.target.value,
-                                  fen_solde_du: invoice.header.fen_total_ttc
-                                })
-                              );
+                              updateInvoice({
+                                fen_id: invoice.header.fen_id,
+                                fen_etat: e.target.value,
+                                fen_solde_du: invoice.header.fen_total_ttc
+                              });
                               setInvoice({
                                 ...invoice,
                                 header: {
                                   ...invoice.header,
+                                  fen_etat: e.target.value,
                                   fen_solde_du: invoice.header.fen_total_ttc
-                                }
+                                },
+                                transactions: []
                               });
                             }}
                             className="form-select">
@@ -402,7 +433,7 @@ const InvoiceDetails = ({ route }) => {
                           </select>
                         ) : (
                           <span
-                            className={"badge fs-11 badge-soft-" + invoiceEtatColor[invoice.header.fet_id - 1]}
+                            className={"badge fs-11 badge-soft-" + invoiceEtatColor[invoice.header.fen_etat - 1]}
                             id="payment-status">
                             {selectedEtat}
                           </span>
@@ -551,8 +582,8 @@ const InvoiceDetails = ({ route }) => {
                             </tr>
                           </thead>
                           <tbody className="border-bottom border-bottom-dashed fs-15">
-                            {transactions.length > 0 &&
-                              transactions.map((element, index) => {
+                            {invoice.transactions.length > 0 &&
+                              invoice.transactions.map((element, index) => {
                                 return (
                                   <tr key={index + 1}>
                                     <td>#{index + 1}</td>
@@ -570,7 +601,7 @@ const InvoiceDetails = ({ route }) => {
                                           setShowModalDelete(() => true);
                                           setSelectedId(element.tra_id);
                                         }}
-                                        className="btn btn-danger btn-icon "
+                                        className="btn btn-danger btn-icon"
                                         style={{
                                           width: "25px",
                                           height: "25px"
@@ -590,7 +621,7 @@ const InvoiceDetails = ({ route }) => {
                           </tbody>
                         </Table>
 
-                        {transactions.length > 0 && (
+                        {invoice.transactions.length > 0 && (
                           <Table
                             className="pagebreak table-borderless table-nowrap align-middle mb-4 ms-auto"
                             style={{ width: "250px" }}>
@@ -607,7 +638,7 @@ const InvoiceDetails = ({ route }) => {
                           </Table>
                         )}
 
-                        {!transactions.length && !addActifView && (
+                        {!invoice.transactions.length && !addActifView && (
                           <Col className="mt-4 mb-4 text-center">
                             <i>Aucune Transaction</i>
                           </Col>
