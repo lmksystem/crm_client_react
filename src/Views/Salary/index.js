@@ -6,13 +6,12 @@ import BreadCrumb from "../../Components/Common/BreadCrumb";
 import DeleteModal from "../../Components/Common/DeleteModal";
 
 //Import actions
-import { getEmployees as onGetEmployees, getSalary as onGetSalary, deleteSalary as onDeleteSalary } from "../../slices/thunks";
 //redux
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import TableContainer from "../../Components/Common/TableContainer";
 
 import Loader from "../../Components/Common/Loader";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Cleave from "cleave.js/react";
 import moment from "moment";
@@ -21,7 +20,6 @@ import Formulaire from "./Formulaire";
 import { SalaryService } from "../../services";
 
 const Salary = () => {
-  const dispatch = useDispatch();
   const { devise } = useSelector((state) => ({
     devise: state.Company.devise
   }));
