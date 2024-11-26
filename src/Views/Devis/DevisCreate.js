@@ -7,46 +7,41 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import Select from "react-select";
 
-import logoDark from "../../assets/images/logo_lmk.png";
-import logoLight from "../../assets/images/logo_lmk.png";
-
 //formik
-import { ErrorMessage, useFormik } from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 
 //redux
 import { useDispatch, useSelector } from "react-redux";
-import { addNewDevis as onAddNewDevis, getCollaborateurs as onGetCollaborateurs, getCompany as onGetCompany, getTva as onGetTva, getProducts as onGetProducts, getConstantes as onGetConstantes } from "../../slices/thunks";
+import { addNewDevis as onAddNewDevis, getCompany as onGetCompany } from "../../slices/thunks";
 import SimpleBar from "simplebar-react";
 import { parseInt } from "lodash";
-import { allstatus } from "../../common/data/invoiceList";
 import { rounded } from "../../utils/function";
 
 import moment from "moment";
 import { allstatusDevis } from "../../common/data/devisList";
 import { getImage } from "../../utils/getImages";
 import ConfirmModal from "../../Components/Common/ConfirmModal";
-import { DevisService } from "../../services";
+import { DevisService, GestionService, ProductService } from "../../services";
 
 const InvoiceCreate = () => {
-  const { collaborateurs, company, tva, products, prefix_devis, devise } = useSelector((state) => ({
-    collaborateurs: state.Gestion.collaborateurs,
+  const { company, prefix_devis, devise } = useSelector((state) => ({
     company: state.Company.company[0],
-    tva: state.Gestion.tva,
-    products: state.Product.products,
     devise: state.Company.devise,
     prefix_devis: state.Gestion.constantes?.find((cst) => cst.con_title === "Prefixe devis")
   }));
 
   let { id } = useParams();
-  let { state } = useLocation();
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  console.log(id);
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
+  const [collaborateurs, setCollaborateurs] = useState(null);
   const [collaborateur, setCollaborateur] = useState(null);
+  const [tva, setTva] = useState(null);
+  const [products, setProducts] = useState(null);
 
   const [modal, setModal] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -58,7 +53,7 @@ const InvoiceCreate = () => {
 
   const [image, setImage] = useState("");
 
-  const tvaList = tva?.map((e) => ({ id: e.tva_id, label: e.tva_value + "%", value: e.tva_value }));
+  const tvaList = tva?.map((e) => ({ id: e.tva_id, label: e.tva_libelle, value: e.tva_value }));
 
   const initialValueLigne = {
     dli_name: "",
@@ -92,28 +87,18 @@ const InvoiceCreate = () => {
   }, [modalProduct]);
 
   useEffect(() => {
-    dispatch(onGetCollaborateurs());
     dispatch(onGetCompany());
-    dispatch(onGetTva());
-    dispatch(onGetProducts());
-    dispatch(onGetConstantes());
-  }, [dispatch]);
 
-  document.title = "Création devis | Countano";
-
-  const submitFormData = (sendEmail) => {
-    try {
-      dispatch(onAddNewDevis({ devis: validation.values, send: sendEmail }));
-      // .then(() => {
-      console.log("je vais navvigate");
-      validation.resetForm();
-      navigate("/devis/liste");
-
-      // });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    GestionService.getCollaborateurs().then((response) => {
+      setCollaborateurs(response);
+    });
+    GestionService.getTva().then((response) => {
+      setTva(response);
+    });
+    ProductService.getProducts().then((response) => {
+      setProducts(response);
+    });
+  }, []);
 
   const validation = useFormik({
     enableReinitialize: true,
@@ -177,48 +162,19 @@ const InvoiceCreate = () => {
     }),
     onSubmit: (values) => {
       setShowConfirmModal(true);
-      // dispatch(onAddNewDevis(values)).then(() => {
-      //   navigate("/devis/liste");
-      //   validation.resetForm();
-
-      // });
     }
   });
-  console.log(validation.values.header.den_date_valid);
-  /**
-   * Fonction de recherche d'un client lors de la sélection
-   * @returns
-   */
-  const handleListClient = () => {
-    let data = [...collaborateurs];
 
-    if (searchValue != "") {
-      data = data.filter((e) => e.ent_name?.toLowerCase()?.includes(searchValue?.toLowerCase()) || e.ent_email?.toLowerCase()?.includes(searchValue?.toLowerCase()) || e.ent_phone?.toLowerCase()?.includes(searchValue?.toLowerCase()));
-    }
-
-    return data;
-  };
-
-  useEffect(() => {
-    if (collaborateur) {
-      validation.setValues({
-        ...validation.values,
-        header: {
-          ...validation.values.header,
-          den_ent_fk: (collaborateur && collaborateur.ent_id) || ""
-        },
-        contact: {
-          ...validation.values.contact,
-          dco_cus_email: (collaborateur && collaborateur.ent_email) || "",
-          dco_cus_phone: (collaborateur && collaborateur.ent_phone) || "",
-          dco_cus_address: (collaborateur && collaborateur.ent_adresse) || "",
-          dco_cus_city: (collaborateur && collaborateur.ent_ville) || "",
-          dco_cus_cp: (collaborateur && collaborateur.ent_cp) || "",
-          dco_cus_name: (collaborateur && collaborateur.ent_name) || ""
-        }
+  const submitFormData = (sendEmail) => {
+    try {
+      DevisService.addNewDevis({ devis: validation.values, send: sendEmail }).then(() => {
+        validation.resetForm();
+        navigate("/devis/liste");
       });
+    } catch (error) {
+      console.log(error);
     }
-  }, [collaborateur]);
+  };
 
   const recalculateLigneData = (ligne) => {
     let { dli_unit_ht, dli_qty, dli_tva, dli_pourcent_remise } = ligne;
@@ -315,6 +271,27 @@ const InvoiceCreate = () => {
   };
 
   useEffect(() => {
+    if (collaborateur) {
+      validation.setValues({
+        ...validation.values,
+        header: {
+          ...validation.values.header,
+          den_ent_fk: (collaborateur && collaborateur.ent_id) || ""
+        },
+        contact: {
+          ...validation.values.contact,
+          dco_cus_email: (collaborateur && collaborateur.ent_email) || "",
+          dco_cus_phone: (collaborateur && collaborateur.ent_phone) || "",
+          dco_cus_address: (collaborateur && collaborateur.ent_adresse) || "",
+          dco_cus_city: (collaborateur && collaborateur.ent_ville) || "",
+          dco_cus_cp: (collaborateur && collaborateur.ent_cp) || "",
+          dco_cus_name: (collaborateur && collaborateur.ent_name) || ""
+        }
+      });
+    }
+  }, [collaborateur]);
+
+  useEffect(() => {
     if (company && company.com_logo) {
       let path = (company.com_id + "/" + company.com_logo).replaceAll("/", " ");
       getImage(path).then((response) => {
@@ -330,6 +307,8 @@ const InvoiceCreate = () => {
       });
     }
   }, []);
+
+  document.title = "Création devis | Countano";
 
   return (
     <div className="page-content">
@@ -1137,44 +1116,47 @@ const InvoiceCreate = () => {
                 autoHide={false}
                 style={{ maxHeight: "220px" }}
                 className="px-3">
-                {handleListClient()?.map((c, i) => {
-                  return (
-                    <div
-                      key={i}
-                      style={{ display: "flex", alignItems: "center", width: "100%", borderBottom: "0.5px solid #dddddd", margin: 3 }}>
-                      <div className="flex-shrink-0">
-                        {c.ent_img_url ? (
-                          <img
-                            src={process.env.REACT_APP_API_URL + "/images/" + c.ent_img_url}
-                            alt=""
-                            className="avatar-xxs rounded-circle"
-                          />
-                        ) : (
-                          <div className="flex-shrink-0 avatar-xs me-2">
-                            <div className="avatar-title bg-soft-success text-success rounded-circle fs-13">{c.ent_name.charAt(0)}</div>
+                {collaborateurs &&
+                  collaborateurs
+                    .filter((e) => e.ent_name?.toLowerCase()?.includes(searchValue?.toLowerCase()) || e.ent_email?.toLowerCase()?.includes(searchValue?.toLowerCase()) || e.ent_phone?.toLowerCase()?.includes(searchValue?.toLowerCase()))
+                    ?.map((c, i) => {
+                      return (
+                        <div
+                          key={i}
+                          style={{ display: "flex", alignItems: "center", width: "100%", borderBottom: "0.5px solid #dddddd", margin: 3 }}>
+                          <div className="flex-shrink-0">
+                            {c.ent_img_url ? (
+                              <img
+                                src={process.env.REACT_APP_API_URL + "/images/" + c.ent_img_url}
+                                alt=""
+                                className="avatar-xxs rounded-circle"
+                              />
+                            ) : (
+                              <div className="flex-shrink-0 avatar-xs me-2">
+                                <div className="avatar-title bg-soft-success text-success rounded-circle fs-13">{c.ent_name.charAt(0)}</div>
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
-                      <div
-                        style={{ cursor: "pointer", padding: 8, display: "flex", flexDirection: "column", width: "100%" }}
-                        onClick={() => {
-                          setModal(() => false);
-                          setCollaborateur(c);
-                        }}
-                        key={i}>
-                        <span>{c.ent_name}</span>
-                        <div style={{ display: "flex", justifyContent: "space-between" }}>
-                          <span>
-                            <i>{c.ent_email}</i>
-                          </span>{" "}
-                          <span>
-                            <i>{c.ent_phone}</i>
-                          </span>
+                          <div
+                            style={{ cursor: "pointer", padding: 8, display: "flex", flexDirection: "column", width: "100%" }}
+                            onClick={() => {
+                              setModal(() => false);
+                              setCollaborateur(c);
+                            }}
+                            key={i}>
+                            <span>{c.ent_name}</span>
+                            <div style={{ display: "flex", justifyContent: "space-between" }}>
+                              <span>
+                                <i>{c.ent_email}</i>
+                              </span>{" "}
+                              <span>
+                                <i>{c.ent_phone}</i>
+                              </span>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  );
-                })}
+                      );
+                    })}
               </SimpleBar>
             </Row>
           </ModalBody>
@@ -1243,47 +1225,48 @@ const InvoiceCreate = () => {
                     </Col>
                   </Row>
                 </div>
-                {products
-                  .filter((product) => product.pro_name.includes(searchValueProduct))
-                  .map((p, key) => {
-                    return (
-                      <div
-                        style={{ cursor: "pointer", zIndex: 5000, padding: 8, borderBottom: "0.5px solid #dddddd" }}
-                        onClick={() => {
-                          let newData = {
-                            ...initialValueLigne,
-                            dli_tva: p.pro_tva,
-                            dli_name: p.pro_name,
-                            dli_detail: p.pro_detail,
-                            dli_unit_ht: p.pro_prix
-                          };
+                {products &&
+                  products
+                    .filter((product) => product.pro_name.includes(searchValueProduct))
+                    .map((p, key) => {
+                      return (
+                        <div
+                          style={{ cursor: "pointer", zIndex: 5000, padding: 8, borderBottom: "0.5px solid #dddddd" }}
+                          onClick={() => {
+                            let newData = {
+                              ...initialValueLigne,
+                              dli_tva: p.pro_tva,
+                              dli_name: p.pro_name,
+                              dli_detail: p.pro_detail,
+                              dli_unit_ht: p.pro_prix
+                            };
 
-                          validation.setValues({
-                            ...validation.values,
-                            ligne: validation.values.ligne.map((l, lingeIndex) => {
-                              return selectedLigne == lingeIndex ? newData : l;
-                            })
-                          });
-                          toggleModalProduct();
-                        }}
-                        key={key}>
-                        <Row>
-                          <Col lg={6}>{p.pro_name}</Col>
-                          <Col
-                            className="text-end"
-                            lg={2}>
-                            {p.pro_tva}%
-                          </Col>
-                          <Col
-                            className="text-end"
-                            lg={4}>
-                            {p.pro_prix}
-                            {devise}
-                          </Col>
-                        </Row>
-                      </div>
-                    );
-                  })}
+                            validation.setValues({
+                              ...validation.values,
+                              ligne: validation.values.ligne.map((l, lingeIndex) => {
+                                return selectedLigne == lingeIndex ? newData : l;
+                              })
+                            });
+                            toggleModalProduct();
+                          }}
+                          key={key}>
+                          <Row>
+                            <Col lg={6}>{p.pro_name}</Col>
+                            <Col
+                              className="text-end"
+                              lg={2}>
+                              {p.pro_tva}%
+                            </Col>
+                            <Col
+                              className="text-end"
+                              lg={4}>
+                              {p.pro_prix}
+                              {devise}
+                            </Col>
+                          </Row>
+                        </div>
+                      );
+                    })}
               </SimpleBar>
             </Row>
           </ModalBody>

@@ -23,27 +23,74 @@ import "react-toastify/dist/ReactToastify.css";
 
 // Export Modal
 import ExportCSVModal from "../../Components/Common/ExportCSVModal";
+import { GestionService } from "../../services";
 
+const africanCountries = [
+  "Algeria",
+  "Angola",
+  "Benin",
+  "Botswana",
+  "Burkina Faso",
+  "Burundi",
+  "Cameroon",
+  "Cape Verde",
+  "Central African Republic",
+  "Chad",
+  "Comoros",
+  "Congo (Brazzaville)",
+  "Congo (Kinshasa)",
+  "Djibouti",
+  "Egypt",
+  "Equatorial Guinea",
+  "Eritrea",
+  "Ethiopia",
+  "Gabon",
+  "Gambia",
+  "Ghana",
+  "Guinea",
+  "Guinea-Bissau",
+  "Ivory Coast",
+  "Kenya",
+  "Lesotho",
+  "Liberia",
+  "Libya",
+  "Madagascar",
+  "Malawi",
+  "Mali",
+  "Mauritania",
+  "Mauritius",
+  "Mayotte",
+  "Morocco",
+  "Mozambique",
+  "Namibia",
+  "Niger",
+  "Nigeria",
+  "Rwanda",
+  "Reunion",
+  "Sao Tome and Principe",
+  "Senegal",
+  "Seychelles",
+  "Sierra Leone",
+  "Somalia",
+  "South Africa",
+  "South Sudan",
+  "Sudan",
+  "Swaziland",
+  "Tanzania",
+  "Togo",
+  "Tunisia",
+  "Uganda",
+  "Western Sahara",
+  "Zambia",
+  "Zimbabwe"
+];
 
 const Collaborateurs = () => {
   const dispatch = useDispatch();
 
-  const { collaborateurs, isCollaborateurSuccess, error } = useSelector((state) => ({
-    collaborateurs: state.Gestion.collaborateurs,
-    isCollaborateurSuccess: state.Gestion.isCollaborateurSuccess,
-    error: state.Gestion.error
-  }));
+  const [numEntreprise, setNumEntreprise] = useState("Identifiant d'entreprise");
 
-  useEffect(() => {
-    dispatch(onGetCollaborateur());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (!isEmpty(collaborateur)) {
-      setIsEdit(false);
-    }
-  }, [collaborateurs]);
-
+  const [collaborateurs, setCollaborateurs] = useState(null);
   const [isEdit, setIsEdit] = useState(false);
   const [collaborateur, setCollaborateur] = useState(null);
 
@@ -52,8 +99,25 @@ const Collaborateurs = () => {
   const [deleteModalMulti, setDeleteModalMulti] = useState(false);
 
   const [modal, setModal] = useState(false);
-
   const [show, setShow] = useState(false);
+  const [toggleRefresh, setToggleRefresh] = useState(false);
+
+  // SideBar Company Deatail
+  const [info, setInfo] = useState([]);
+
+  // Export Modal
+  const [isExportCSV, setIsExportCSV] = useState(false);
+
+  // Delete Multiple
+  const [selectedCheckBoxDelete, setSelectedCheckBoxDelete] = useState([]);
+  const [isMultiDeleteButton, setIsMultiDeleteButton] = useState(false);
+
+  /**
+   * Permet de raffraichir la liste
+   */
+  const handletoogleRefesh = () => {
+    setToggleRefresh(() => !toggleRefresh);
+  };
 
   const toggle = useCallback(() => {
     if (modal) {
@@ -67,7 +131,8 @@ const Collaborateurs = () => {
   // Delete Data
   const handleDeleteCompany = () => {
     if (collaborateur) {
-      dispatch(onDeleteCollaborateur(collaborateur.ent_id));
+      GestionService.deleteCollaborateurs(collaborateur.ent_id);
+      handletoogleRefesh();
       setDeleteModal(false);
     }
   };
@@ -135,26 +200,6 @@ const Collaborateurs = () => {
       ent_siren: Yup.string(),
       ent_methode_payment: Yup.string(),
       ent_tva_intracom: Yup.string().matches(/^[A-Za-z]{2}[0-9]{9}$/, "Le champ doit contenir 2 lettres suivies de 9 chiffres.")
-      // type: Yup.object().shape({
-      //   client: Yup.object().shape({
-      //     eti_removed: Yup.boolean().oneOf(
-      //       [true],
-      //       "Sélectionnez au moins une option"
-      //     ),
-      //   }),
-      //   prospect: Yup.object().shape({
-      //     eti_removed: Yup.boolean().oneOf(
-      //       [true],
-      //       "Sélectionnez au moins une option"
-      //     ),
-      //   }),
-      //   fournisseur: Yup.object().shape({
-      //     eti_removed: Yup.boolean().oneOf(
-      //       [true],
-      //       "Sélectionnez au moins une option"
-      //     ),
-      //   }),
-      // }),
     }),
 
     onSubmit: (values) => {
@@ -190,14 +235,13 @@ const Collaborateurs = () => {
 
       if (isEdit) {
         data.ent_id = collaborateur.ent_id || 0;
-
         // update Company
-        dispatch(onUpdateCollaborateur(data));
+        GestionService.updateCollaborateur(data);
       } else {
         // save new Company
-        dispatch(onAddNewCollaborateur(data));
+        GestionService.addNewCollaborateur(data);
       }
-
+      handletoogleRefesh();
       validation.resetForm();
       toggle();
     }
@@ -238,79 +282,6 @@ const Collaborateurs = () => {
     [toggle]
   );
 
-  const africanCountries = [
-    "Algeria",
-    "Angola",
-    "Benin",
-    "Botswana",
-    "Burkina Faso",
-    "Burundi",
-    "Cameroon",
-    "Cape Verde",
-    "Central African Republic",
-    "Chad",
-    "Comoros",
-    "Congo (Brazzaville)",
-    "Congo (Kinshasa)",
-    "Djibouti",
-    "Egypt",
-    "Equatorial Guinea",
-    "Eritrea",
-    "Ethiopia",
-    "Gabon",
-    "Gambia",
-    "Ghana",
-    "Guinea",
-    "Guinea-Bissau",
-    "Ivory Coast",
-    "Kenya",
-    "Lesotho",
-    "Liberia",
-    "Libya",
-    "Madagascar",
-    "Malawi",
-    "Mali",
-    "Mauritania",
-    "Mauritius",
-    "Mayotte",
-    "Morocco",
-    "Mozambique",
-    "Namibia",
-    "Niger",
-    "Nigeria",
-    "Rwanda",
-    "Reunion",
-    "Sao Tome and Principe",
-    "Senegal",
-    "Seychelles",
-    "Sierra Leone",
-    "Somalia",
-    "South Africa",
-    "South Sudan",
-    "Sudan",
-    "Swaziland",
-    "Tanzania",
-    "Togo",
-    "Tunisia",
-    "Uganda",
-    "Western Sahara",
-    "Zambia",
-    "Zimbabwe"
-  ];
-  const [numEntreprise, setNumEntreprise] = useState("Identifiant d'entreprise");
-
-  useEffect(() => {
-    if (validation.values.ent_pays == "France") {
-      setNumEntreprise("Siren");
-    } else if (validation.values.ent_pays == "Belgium") {
-      setNumEntreprise("Numéro d’entreprise");
-    } else if (africanCountries.includes(validation.values.ent_pays)) {
-      setNumEntreprise("NINEA");
-    } else {
-      setNumEntreprise("Identifiant d'entreprise");
-    }
-  }, [validation.values.ent_pays]);
-
   // Checked All
   const checkedAll = useCallback(() => {
     const checkall = document.getElementById("checkBoxAll");
@@ -327,10 +298,6 @@ const Collaborateurs = () => {
     }
     deleteCheckbox();
   }, []);
-
-  // Delete Multiple
-  const [selectedCheckBoxDelete, setSelectedCheckBoxDelete] = useState([]);
-  const [isMultiDeleteButton, setIsMultiDeleteButton] = useState(false);
 
   const deleteMultiple = () => {
     const checkall = document.getElementById("checkBoxAll");
@@ -498,9 +465,23 @@ const Collaborateurs = () => {
       }
     });
   };
+
   const isAtLeastOneCheckboxChecked = (type) => {
     return type.client.eti_removed === 0 || type.prospect.eti_removed === 0 || type.fournisseur.eti_removed === 0;
   };
+
+  useEffect(() => {
+    if (validation.values.ent_pays == "France") {
+      setNumEntreprise("Siren");
+    } else if (validation.values.ent_pays == "Belgium") {
+      setNumEntreprise("Numéro d’entreprise");
+    } else if (africanCountries.includes(validation.values.ent_pays)) {
+      setNumEntreprise("NINEA");
+    } else {
+      setNumEntreprise("Identifiant d'entreprise");
+    }
+  }, [validation.values.ent_pays]);
+
   useEffect(() => {
     if (show) {
       setTimeout(() => {
@@ -511,11 +492,17 @@ const Collaborateurs = () => {
     }
   }, [show]);
 
-  // SideBar Company Deatail
-  const [info, setInfo] = useState([]);
+  useEffect(() => {
+    GestionService.getCollaborateurs().then((response) => {
+      setCollaborateurs(response);
+    });
+  }, [toggleRefresh]);
 
-  // Export Modal
-  const [isExportCSV, setIsExportCSV] = useState(false);
+  useEffect(() => {
+    if (!isEmpty(collaborateur)) {
+      setIsEdit(false);
+    }
+  }, [collaborateurs]);
 
   document.title = "Clients - Fournisseur | Countano";
   return (
@@ -591,7 +578,7 @@ const Collaborateurs = () => {
               <Card id="companyList">
                 <CardBody className="pt-0">
                   <div>
-                    {isCollaborateurSuccess ? (
+                    {collaborateurs ? (
                       <TableContainer
                         initialSortField={"ent_date_create"}
                         columns={columns}
@@ -608,7 +595,7 @@ const Collaborateurs = () => {
                         SearchPlaceholder="Search for company..."
                       />
                     ) : (
-                      <Loader error={error} />
+                      <Loader error={collaborateurs} />
                     )}
                   </div>
                   <Modal
@@ -1115,7 +1102,6 @@ const Collaborateurs = () => {
                         style={{ cursor: "pointer", fontSize: "20px" }}></i>
                     </div>
                     <div className="position-relative d-inline-block">
-                    
                       <span className="contact-active position-absolute rounded-circle bg-success">
                         <span className="visually-hidden"></span>
                       </span>

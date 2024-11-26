@@ -1,36 +1,13 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 
-import {
-  Col,
-  Container,
-  Row,
-  Card,
-  CardHeader,
-  CardBody,
-  Label,
-  Input,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  Form,
-  ModalFooter,
-  FormFeedback
-} from "reactstrap";
+import { Col, Container, Row, Card, CardHeader, CardBody, Label, Input, Modal, ModalHeader, ModalBody, Form, ModalFooter, FormFeedback } from "reactstrap";
 
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import DeleteModal from "../../Components/Common/DeleteModal";
 
-//Import actions
-import {
-  getProducts as onGetProducts,
-  addProduct as onAddProduct,
-  getTva as onGetTva,
-  deleteProduct as onDeleteProduct,
-  updateProduct as onUpdateProduct
-} from "../../slices/thunks";
 //redux
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import TableContainer from "../../Components/Common/TableContainer";
 
 // Formik
@@ -38,45 +15,43 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 
 import Loader from "../../Components/Common/Loader";
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Export Modal
 import ExportCSVModal from "../../Components/Common/ExportCSVModal";
+import { GestionService, ProductService } from "../../services";
 
 const Products = () => {
-  const dispatch = useDispatch();
-  const { products, isProductSuccess, error, tva, devise } = useSelector((state) => ({
-    products: state.Product.products,
-    isProductSuccess: state.Product.isProductSuccess,
-    error: state.Product.error,
-    tva: state.Gestion.tva,
+  const { devise } = useSelector((state) => ({
     devise: state.Company.devise
   }));
 
-  const [product, setProduct] = useState([]);
+  const [products, setProducts] = useState(null);
+  const [product, setProduct] = useState(null);
 
-  useEffect(() => {
-    dispatch(onGetProducts());
-    dispatch(onGetTva());
-  }, [dispatch]);
-
-  // useEffect(() => {
-  //   if (!isEmpty(product)) {
-  //     console.log(product);
-  //     setIsEdit(false);
-  //   }
-  // }, [product]);
-
+  const [tva, setTva] = useState(null);
 
   const [isEdit, setIsEdit] = useState(false);
-
 
   //delete Conatct
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteModalMulti, setDeleteModalMulti] = useState(false);
 
+  const [toggleRefresh, setToggleRefresh] = useState(false);
+
   const [modal, setModal] = useState(false);
+
+  // Export Modal
+  const [isExportCSV, setIsExportCSV] = useState(false);
+
+  // Delete Multiple
+  const [selectedCheckBoxDelete, setSelectedCheckBoxDelete] = useState([]);
+  const [isMultiDeleteButton, setIsMultiDeleteButton] = useState(false);
+
+  const handletoogleRefesh = () => {
+    setToggleRefresh(!toggleRefresh);
+  };
 
   const toggle = useCallback(() => {
     if (modal) {
@@ -91,7 +66,8 @@ const Products = () => {
   // Delete Data
   const handleDeleteProduct = () => {
     if (product) {
-      dispatch(onDeleteProduct(product.pro_id));
+      ProductService.deleteProduct(product.pro_id);
+      handletoogleRefesh();
       setDeleteModal(false);
     }
   };
@@ -107,50 +83,52 @@ const Products = () => {
     enableReinitialize: true,
 
     initialValues: {
-
+      pro_id: (product && product.pro_id) || 0,
       pro_name: (product && product.pro_name) || "",
       pro_detail: (product && product.pro_detail) || "",
       pro_prix: (product && product.pro_prix) || 0,
-      pro_tva: (product && product.pro_tva) || 0,
+      pro_tva: (product && product.pro_tva) || 0
     },
     validationSchema: Yup.object({
       pro_name: Yup.string().required("Veuillez entrer un nom"),
       pro_detail: Yup.string().required("Veuillez entrer une description"),
       pro_prix: Yup.number().required("Veuillez entrer une valeur"),
-      pro_tva: Yup.number().required("Veuillez entrer une valeur"),
+      pro_tva: Yup.number().required("Veuillez entrer une valeur")
     }),
     onSubmit: (values) => {
-      values.pro_tva = parseFloat(values.pro_tva)
+      values.pro_tva = parseFloat(values.pro_tva);
+
       if (isEdit) {
         // update tva
-        values.pro_id = (product && product.pro_id) || 0;
-        dispatch(onUpdateProduct(values));
-        validation.resetForm();
-
+        ProductService.updateProduct(values);
       } else {
         // save new tva
-        dispatch(onAddProduct(values));
-        validation.resetForm();
+        ProductService.addProduct(values);
       }
+      validation.resetForm();
+      handletoogleRefesh();
       toggle();
-    },
+    }
   });
 
   // Update Data
-  const handleProductClick = useCallback((arg) => {
-    const product = arg;
+  const handleProductClick = useCallback(
+    (arg) => {
+      const product = arg;
 
-    setProduct({
-      pro_id: product.pro_id,
-      pro_name: product.pro_name,
-      pro_detail: product.pro_detail,
-      pro_tva: product.pro_tva,
-      pro_prix: product.pro_prix,
-    });
+      setProduct({
+        pro_id: product.pro_id,
+        pro_name: product.pro_name,
+        pro_detail: product.pro_detail,
+        pro_tva: product.pro_tva,
+        pro_prix: product.pro_prix
+      });
 
-    setIsEdit(true);
-    toggle();
-  }, [toggle]);
+      setIsEdit(true);
+      toggle();
+    },
+    [toggle]
+  );
 
   // Checked All
   const checkedAll = useCallback(() => {
@@ -169,20 +147,19 @@ const Products = () => {
     deleteCheckbox();
   }, []);
 
-  // Delete Multiple
-  const [selectedCheckBoxDelete, setSelectedCheckBoxDelete] = useState([]);
-  const [isMultiDeleteButton, setIsMultiDeleteButton] = useState(false);
-
   const deleteMultiple = () => {
     const checkall = document.getElementById("checkBoxAll");
 
     selectedCheckBoxDelete.forEach((element) => {
       // console.log(element.value);
-      dispatch(onDeleteTva(element.value));
-      setTimeout(() => { toast.clearWaitingQueue(); }, 3000);
+      ProductService.deleteProduct(element.pro_id);
+      setTimeout(() => {
+        toast.clearWaitingQueue();
+      }, 3000);
     });
     setIsMultiDeleteButton(false);
     checkall.checked = false;
+    handletoogleRefesh();
   };
 
   const deleteCheckbox = () => {
@@ -195,28 +172,47 @@ const Products = () => {
   const columns = useMemo(
     () => [
       {
-        Header: <input type="checkbox" id="checkBoxAll" className="form-check-input" onClick={() => checkedAll()} />,
+        Header: (
+          <input
+            type="checkbox"
+            id="checkBoxAll"
+            className="form-check-input"
+            onClick={() => checkedAll()}
+          />
+        ),
         Cell: (cellProps) => {
-          return <input type="checkbox" className="tvaCheckBox form-check-input" value={cellProps.row.original.pro_id} onChange={() => deleteCheckbox()} />;
+          return (
+            <input
+              type="checkbox"
+              className="tvaCheckBox form-check-input"
+              value={cellProps.row.original.pro_id}
+              onChange={() => deleteCheckbox()}
+            />
+          );
         },
-        id: '#',
+        id: "#"
       },
       {
         id: "hidden-id",
-        accessor: 'pro_id',
+        accessor: "pro_id",
         hiddenColumns: true,
         Cell: (cell) => {
-          return <input type="hidden" value={cell.value} />;
+          return (
+            <input
+              type="hidden"
+              value={cell.value}
+            />
+          );
         }
       },
       {
         Header: "Nom",
-        accessor: "pro_name",
+        accessor: "pro_name"
       },
       {
         Header: "Détail",
         accessor: "pro_detail",
-        filterable: false,
+        filterable: false
       },
       {
         Header: "Prix",
@@ -240,29 +236,49 @@ const Products = () => {
           let product = cellProps.row.original;
           return (
             <ul className="list-inline hstack gap-2 mb-0">
-              <li className="list-inline-item edit" title="Call">
-                <Link to="#" onClick={() => { handleProductClick(product) }} className="text-primary d-inline-block edit-item-btn">
+              <li
+                className="list-inline-item edit"
+                title="Call">
+                <Link
+                  to="#"
+                  onClick={() => {
+                    handleProductClick(product);
+                  }}
+                  className="text-primary d-inline-block edit-item-btn">
                   <i className="ri-pencil-fill fs-16"></i>
                 </Link>
               </li>
-              <li className="list-inline-item edit" title="Call">
-                <Link to="#" onClick={() => { onClickDelete(product) }} className="text-danger d-inline-block remove-item-btn">
+              <li
+                className="list-inline-item edit"
+                title="Call">
+                <Link
+                  to="#"
+                  onClick={() => {
+                    onClickDelete(product);
+                  }}
+                  className="text-danger d-inline-block remove-item-btn">
                   <i className="ri-delete-bin-5-fill fs-16"></i>
                 </Link>
               </li>
-
             </ul>
           );
-        },
-      },
+        }
+      }
     ],
     [handleProductClick, checkedAll]
   );
 
-  // Export Modal
-  const [isExportCSV, setIsExportCSV] = useState(false);
+  useEffect(() => {
+    ProductService.getProducts().then((response) => {
+      setProducts(response);
+    });
 
-  document.title = "Produits | Countano";
+    GestionService.getTva().then((response) => {
+      setTva(response);
+    });
+  }, [toggleRefresh]);
+
+  document.title = "Produits | CRM LMK";
   return (
     <React.Fragment>
       <div className="page-content">
@@ -287,7 +303,10 @@ const Products = () => {
           onCloseClick={() => setDeleteModalMulti(false)}
         />
         <Container fluid>
-          <BreadCrumb title="Produits" pageTitle="Gestion" />
+          <BreadCrumb
+            title="Produits"
+            pageTitle="Gestion"
+          />
           <Row>
             <Col lg={12}>
               <Card>
@@ -298,34 +317,33 @@ const Products = () => {
                         className="btn btn-secondary add-btn"
                         onClick={() => {
                           setModal(true);
-                        }}
-                      >
+                        }}>
                         <i className="ri-add-fill me-1 align-bottom"></i>
                         Ajouter un produit
                       </button>
                     </div>
                     <div className="flex-shrink-0">
                       <div className="hstack text-nowrap gap-2">
-                        {isMultiDeleteButton && <button className="btn btn-danger"
-                          onClick={() => setDeleteModalMulti(true)}
-                        ><i className="ri-delete-bin-2-line"></i></button>}
+                        {isMultiDeleteButton && (
+                          <button
+                            className="btn btn-danger"
+                            onClick={() => setDeleteModalMulti(true)}>
+                            <i className="ri-delete-bin-2-line"></i>
+                          </button>
+                        )}
 
                         {/* <button className="btn btn-soft-success" onClick={() => setIsExportCSV(true)}>Export</button> */}
-
                       </div>
                     </div>
                   </div>
                 </CardHeader>
 
-
                 <CardBody className="pt-0">
                   <div>
-
-                    {isProductSuccess ? (
-
+                    {products ? (
                       <TableContainer
                         columns={columns}
-                        data={(products || [])}
+                        data={products || []}
                         isGlobalFilter={true}
                         isAddUserList={false}
                         customPageSize={7}
@@ -335,31 +353,41 @@ const Products = () => {
                         theadClass="table-light"
                         isCompaniesFilter={false}
                         isProductsFilter={true}
-                        SearchPlaceholder='Recherche...'
+                        SearchPlaceholder="Recherche..."
                       />
-
-                    ) : (<Loader error={error} />)
-                    }
+                    ) : (
+                      <Loader error={products} />
+                    )}
                   </div>
-                  <Modal id="showModal" isOpen={modal} toggle={toggle} centered size="lg">
-                    <ModalHeader className="bg-soft-info p-3" toggle={toggle}>
+                  <Modal
+                    id="showModal"
+                    isOpen={modal}
+                    toggle={toggle}
+                    centered
+                    size="lg">
+                    <ModalHeader
+                      className="bg-soft-info p-3"
+                      toggle={toggle}>
                       {!!isEdit ? "Modifier produit" : "Ajouter produit"}
                     </ModalHeader>
-                    <Form className="tablelist-form" onSubmit={(e) => {
-                      e.preventDefault();
-                      validation.handleSubmit();
-                      return false;
-                    }}>
+                    <Form
+                      className="tablelist-form"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        validation.handleSubmit();
+                        return false;
+                      }}>
                       <ModalBody>
-                        <input type="hidden" id="id-field" />
+                        <input
+                          type="hidden"
+                          id="id-field"
+                        />
                         <Row className="g-3">
                           <Col lg={12}>
-
                             <div>
                               <Label
                                 htmlFor="pro_name-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 Nom
                               </Label>
                               <Input
@@ -369,28 +397,21 @@ const Products = () => {
                                 placeholder="Entrer un nom"
                                 type="text"
                                 validate={{
-                                  required: { value: true },
+                                  required: { value: true }
                                 }}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.pro_name || ""}
-                                invalid={
-                                  validation.touched.pro_name && validation.errors.pro_name ? true : false
-                                }
+                                invalid={validation.touched.pro_name && validation.errors.pro_name ? true : false}
                               />
-                              {validation.touched.pro_name && validation.errors.pro_name ? (
-                                <FormFeedback type="invalid">{validation.errors.pro_name}</FormFeedback>
-                              ) : null}
+                              {validation.touched.pro_name && validation.errors.pro_name ? <FormFeedback type="invalid">{validation.errors.pro_name}</FormFeedback> : null}
                             </div>
-
                           </Col>
                           <Col lg={12}>
-
                             <div>
                               <Label
                                 htmlFor="pro_detail-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 Détail
                               </Label>
                               <Input
@@ -400,28 +421,21 @@ const Products = () => {
                                 placeholder="Entrer un détail"
                                 type="text"
                                 validate={{
-                                  required: { value: true },
+                                  required: { value: true }
                                 }}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.pro_detail || ""}
-                                invalid={
-                                  validation.touched.pro_detail && validation.errors.pro_detail ? true : false
-                                }
+                                invalid={validation.touched.pro_detail && validation.errors.pro_detail ? true : false}
                               />
-                              {validation.touched.pro_detail && validation.errors.pro_detail ? (
-                                <FormFeedback type="invalid">{validation.errors.pro_detail}</FormFeedback>
-                              ) : null}
+                              {validation.touched.pro_detail && validation.errors.pro_detail ? <FormFeedback type="invalid">{validation.errors.pro_detail}</FormFeedback> : null}
                             </div>
-
                           </Col>
                           <Col lg={6}>
-
                             <div>
                               <Label
                                 htmlFor="pro_tva-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 Tva
                               </Label>
                               <Input
@@ -431,31 +445,30 @@ const Products = () => {
                                 placeholder="Entrer une tva"
                                 type="select"
                                 validate={{
-                                  required: { value: true },
+                                  required: { value: true }
                                 }}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.pro_tva || 0}
-                                invalid={
-                                  validation.touched.pro_tva && validation.errors.pro_tva ? true : false
-                                }
-                              >
+                                invalid={validation.touched.pro_tva && validation.errors.pro_tva ? true : false}>
                                 <option value={0}>Sélectionnez une Tva</option>
-                                {tva?.map((e, i) => <option {...e.value == product?.pro_tva ? "selected" : ""} key={i} value={e.tva_value}>{e.tva_libelle}</option>)}
+                                {tva?.map((e, i) => (
+                                  <option
+                                    {...(e.value == product?.pro_tva ? "selected" : "")}
+                                    key={i}
+                                    value={e.tva_value}>
+                                    {e.tva_libelle}
+                                  </option>
+                                ))}
                               </Input>
-                              {validation.touched.pro_tva && validation.errors.pro_tva ? (
-                                <FormFeedback type="invalid">{validation.errors.pro_tva}</FormFeedback>
-                              ) : null}
+                              {validation.touched.pro_tva && validation.errors.pro_tva ? <FormFeedback type="invalid">{validation.errors.pro_tva}</FormFeedback> : null}
                             </div>
-
                           </Col>
                           <Col lg={6}>
-
                             <div>
                               <Label
                                 htmlFor="pro_detail-field"
-                                className="form-label"
-                              >
+                                className="form-label">
                                 Prix (HT)
                               </Label>
                               <Input
@@ -465,34 +478,45 @@ const Products = () => {
                                 placeholder="Entrer un prix"
                                 type="number"
                                 validate={{
-                                  required: { value: true },
+                                  required: { value: true }
                                 }}
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.pro_prix || ""}
-                                invalid={
-                                  validation.touched.pro_prix && validation.errors.pro_prix ? true : false
-                                }
+                                invalid={validation.touched.pro_prix && validation.errors.pro_prix ? true : false}
                               />
-                              {validation.touched.pro_prix && validation.errors.pro_prix ? (
-                                <FormFeedback type="invalid">{validation.errors.pro_prix}</FormFeedback>
-                              ) : null}
+                              {validation.touched.pro_prix && validation.errors.pro_prix ? <FormFeedback type="invalid">{validation.errors.pro_prix}</FormFeedback> : null}
                             </div>
-
                           </Col>
                         </Row>
                       </ModalBody>
                       <ModalFooter>
                         <div className="hstack gap-2 justify-content-end">
-                          <button type="button" className="btn btn-light" onClick={() => { setModal(false); }} > Fermer </button>
-                          <button type="submit" className="btn btn-success" id="add-btn" >  {!!isEdit ? "Modifier" : "Ajouter un produit"} </button>
+                          <button
+                            type="button"
+                            className="btn btn-light"
+                            onClick={() => {
+                              setModal(false);
+                            }}>
+                            {" "}
+                            Fermer{" "}
+                          </button>
+                          <button
+                            type="submit"
+                            className="btn btn-success"
+                            id="add-btn">
+                            {" "}
+                            {!!isEdit ? "Modifier" : "Ajouter un produit"}{" "}
+                          </button>
                         </div>
                       </ModalFooter>
                     </Form>
                   </Modal>
-                  <ToastContainer closeButton={false} limit={1} />
+                  <ToastContainer
+                    closeButton={false}
+                    limit={1}
+                  />
                 </CardBody>
-
               </Card>
             </Col>
           </Row>
