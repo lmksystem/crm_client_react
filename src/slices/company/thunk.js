@@ -60,10 +60,6 @@ export const deleteLicense = createAsyncThunk("company/deleteLicense", (id) => {
   }
 });
 
-export const updateLogoAction = (data) => async (dispatch) => {
-  dispatch(updateLogo(data));
-};
-
 export const updateCompanyAction = (data) => async (dispatch) => {
   dispatch(updateCompanyData(data));
 };
