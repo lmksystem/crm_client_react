@@ -5,8 +5,8 @@ import * as moment from "moment";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import TableContainer from "../../Components/Common/TableContainer";
 //Import actions
-import { getCollaborateurs as onGetCollaborateurs, getInvoices as onGetInvoices, getTransactionList as onGetTransactionList, addNewTransaction as onAddNewTransaction, deleteTransaction as onDeleteTransaction } from "../../slices/thunks";
-
+import { getCollaborateurs as onGetCollaborateurs, getTransactionList as onGetTransactionList, addNewTransaction as onAddNewTransaction, deleteTransaction as onDeleteTransaction } from "../../slices/thunks";
+import { getInvoices } from "../../services/invoice";
 //redux
 import { useSelector, useDispatch } from "react-redux";
 
@@ -29,7 +29,7 @@ const TransactionList = () => {
 
   const dispatch = useDispatch();
 
-  const { invoices, transactionsList, transactions, isTransactionsListSuccess, error, collaborateurs, devise } = useSelector((state) => ({
+  const { transactionsList, transactions, isTransactionsListSuccess, error, collaborateurs, devise } = useSelector((state) => ({
     invoices: state.Invoice.invoices,
     transactionsList: state.Transaction.transactionsList,
     transactions: state.Transaction.transactions,
@@ -39,6 +39,7 @@ const TransactionList = () => {
     devise: state.Company.devise
   }));
 
+  const [invoices, setInvoices] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [modal, setModal] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
@@ -52,7 +53,9 @@ const TransactionList = () => {
   };
 
   useEffect(() => {
-    dispatch(onGetInvoices());
+    getInvoices().then((res) => {
+      setInvoices(res);
+    });
     dispatch(onGetTransactionList());
     dispatch(onGetCollaborateurs());
   }, [dispatch, transactions]);

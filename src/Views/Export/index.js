@@ -5,11 +5,11 @@ import { useDispatch, useSelector } from "react-redux";
 import Section from "../DashboardMain/Section";
 import moment from "moment";
 import Flatpickr from "react-flatpickr";
-import { getInvoices as onGetInvoices } from "../../slices/thunks";
+import { getInvoices } from "../../services/invoice";
 
 import axios from "axios";
 import InvoiceChart from "./InvoiceChart";
-import { getInvoiceForExport, getInvoicesPaid } from "../../helpers/backend_helper";
+import { getInvoiceForExport } from "../../helpers/backend_helper";
 import { Tooltip } from "chart.js";
 
 moment.updateLocale("en");
@@ -20,6 +20,7 @@ const Export = () => {
   const dispatch = useDispatch();
 
   const [selectedInvoice, setSelectedInvoice] = useState([]);
+  const [invoices, setInvoices] = useState([]);
   const [dataChart, setDataChart] = useState([]);
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
@@ -28,9 +29,9 @@ const Export = () => {
     end: new Date(moment().endOf("year"))
   });
 
-  const { invoices } = useSelector((state) => ({
-    invoices: state.Invoice.invoices
-  }));
+  // const { invoices } = useSelector((state) => ({
+  //   invoices: state.Invoice.invoices
+  // }));
 
   const toggle = () => setTooltipOpen(!tooltipOpen);
 
@@ -55,19 +56,18 @@ const Export = () => {
   };
 
   const getDateByMonth = () => {
-
-
     getInvoiceForExport({
       dateDebut: periodeCalendar.start ? moment(periodeCalendar.start).format("YYYY-MM-DD") : null,
       dateFin: periodeCalendar.end ? moment(periodeCalendar.end).format("YYYY-MM-DD") : null
     }).then((response) => {
-
       setDataChart(response.data);
     });
   };
 
   useEffect(() => {
-    dispatch(onGetInvoices());
+    getInvoices().then((res) => {
+      setInvoices(res);
+    });
   }, [dispatch]);
 
   useEffect(() => {
@@ -127,18 +127,20 @@ const Export = () => {
                             <i className="ri-calendar-2-line"></i>
                           </div>
                         </div>
-
                       </Col>
                       <Col
                         lg={8}
                         className="d-flex justify-content-between">
                         <div className="d-flex align-items-center justify-content-center">
-                          <a id="ScheduleUpdateTooltip"><i class="bx bx-info-circle fs-5 text-primary"></i></a>
+                          <a id="ScheduleUpdateTooltip">
+                            <i class="bx bx-info-circle fs-5 text-primary"></i>
+                          </a>
                           <UncontrolledTooltip
                             placement="top"
                             target="ScheduleUpdateTooltip"
-                            trigger="hover"
-                          >Tableaux correspondant à toutes les factures créer entre les dates sélectionnées.</UncontrolledTooltip>
+                            trigger="hover">
+                            Tableaux correspondant à toutes les factures créer entre les dates sélectionnées.
+                          </UncontrolledTooltip>
                         </div>
                         <button
                           onClick={(e) => {
@@ -172,7 +174,7 @@ const Export = () => {
           </Row>
         </Container>
       </div>
-    </React.Fragment >
+    </React.Fragment>
   );
 };
 

@@ -6,7 +6,7 @@ import BreadCrumb from "../../Components/Common/BreadCrumb";
 import TableContainer from "../../Components/Common/TableContainer";
 
 //Import actions
-import { getInvoices as onGetInvoices, getWidgetInvoices as onGetInvoiceWidgets, getTransaction as onGetTransaction } from "../../slices/thunks";
+import { getTransaction as onGetTransaction } from "../../slices/thunks";
 //redux
 import { useSelector, useDispatch } from "react-redux";
 import { getLoggedinUser } from "../../helpers/api_helper";
@@ -22,7 +22,7 @@ import { customFormatNumber, rounded } from "../../utils/function";
 import WidgetCountUp from "../../Components/Common/WidgetCountUp";
 import { invoiceEtatColor } from "../../common/data/invoiceList";
 import { getEtatInvoice as onGetEtatInvoice } from "../../helpers/backend_helper";
-
+import { getInvoices, getWidgetInvoices } from "../../services/invoice";
 moment.locale("fr");
 
 const InvoiceList = () => {
@@ -31,8 +31,7 @@ const InvoiceList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { invoiceWidgets, invoices, transactions, isInvoiceSuccess, error, devise } = useSelector((state) => ({
-    invoices: state.Invoice.invoices,
+  const { transactions, isInvoiceSuccess, error, devise } = useSelector((state) => ({
     isInvoiceSuccess: state.Invoice.isInvoiceSuccess,
     invoiceWidgets: state.Invoice.widgets,
     error: state.Invoice.error,
@@ -40,52 +39,23 @@ const InvoiceList = () => {
     devise: state.Company.devise
   }));
 
+  const [invoices, setInvoices] = useState([]);
+  const [invoiceWidgets, setInvoiceWidgets] = useState(null);
   const [customFiltered, setCustomFiltered] = useState(null);
 
   useEffect(() => {
-    dispatch(onGetInvoiceWidgets());
-    dispatch(onGetInvoices());
+    getWidgetInvoices().then((response) => {
+      setInvoiceWidgets(response);
+    });
+    getInvoices().then((response) => {
+      setInvoices(response);
+    });
     dispatch(onGetTransaction());
   }, [dispatch]);
-
-  // Checked All
-  const checkedAll = useCallback(() => {
-    const checkall = document.getElementById("checkBoxAll");
-    const ele = document.querySelectorAll(".invoiceCheckBox");
-
-    if (checkall.checked) {
-      ele.forEach((ele) => {
-        ele.checked = true;
-      });
-    } else {
-      ele.forEach((ele) => {
-        ele.checked = false;
-      });
-    }
-    deleteCheckbox();
-  }, []);
-
-  // Delete Multiple
-  const [selectedCheckBoxDelete, setSelectedCheckBoxDelete] = useState([]);
-  const [isMultiDeleteButton, setIsMultiDeleteButton] = useState(false);
-
-  const deleteCheckbox = () => {
-    const ele = document.querySelectorAll(".invoiceCheckBox:checked");
-    ele.length > 0 ? setIsMultiDeleteButton(true) : setIsMultiDeleteButton(false);
-    setSelectedCheckBoxDelete(ele);
-  };
 
   // Invoice Column
   const columns = useMemo(
     () => [
-      // {
-      //   Header: "ID",
-      //   accessor: "header.fen_id",
-      //   filterable: false,
-      //   Cell: (cell) => {
-      //     return <Link to={`/factures/detail/${cell.value}`} className="fw-medium link-primary">{cell.row.original.header.fen_id}</Link>;
-      //   },
-      // },
       {
         Header: "Numéro facture",
         accessor: "header.fen_num_fac",
@@ -188,8 +158,9 @@ const InvoiceList = () => {
         }
       }
     ],
-    [checkedAll, invoices]
+    [invoices]
   );
+  console.log(invoices);
 
   return (
     <React.Fragment>
@@ -255,8 +226,11 @@ const InvoiceList = () => {
                         theadClass="text-muted text-uppercase"
                         isInvoiceListFilter={true}
                         SearchPlaceholder=""
-                        pathToDetail={`/factures/detail/`}
-                        initialSortField={"fen_date_create"}
+                        // pathToDetail={`/factures/detail/`}
+                        // initialSortField={"fen_date_create"}
+                        actionItem={(row) => {
+                          navigate("/factures/detail/" + row.original.header.fen_id, { state: row.original });
+                        }}
                       />
                     ) : (
                       <Loader error={error} />

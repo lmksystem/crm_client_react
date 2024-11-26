@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { CardBody, Row, Col, Card, Table, CardHeader, Container, Input, FormFeedback, Form } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { useFormik } from "formik";
@@ -20,20 +20,23 @@ import { invoiceEtatColor } from "../../common/data/invoiceList";
 
 // const axios = new APIClient();
 
-const InvoiceDetails = () => {
+const InvoiceDetails = ({ route }) => {
   document.title = "Détail facture | Countano";
+
+  let { state } = useLocation();
+  console.log(state);
 
   let { id } = useParams();
 
-  const { invoices, transactions, company, etat, devise } = useSelector((state) => ({
+  const { transactions, company, etat, devise } = useSelector((state) => ({
     company: state?.Company?.company,
     etat: state.Invoice.invoiceEtat,
-    invoices: state.Invoice.invoices,
     transactions: state.Transaction.transactions.filter((t) => t.tra_fen_fk == id),
     devise: state.Company.devise
   }));
 
-  const [invoice, setInvoice] = useState(invoices.find((f) => f.header.fen_id == id));
+  const [invoice, setInvoice] = useState(state);
+
   const [addActifView, setAddActifView] = useState(false);
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -49,12 +52,6 @@ const InvoiceDetails = () => {
   const [subjectChange, setSubjectChange] = useState(false);
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (invoices?.length > 0) {
-      setInvoice(invoices.find((f) => f.header.fen_id == id));
-    }
-  }, [invoices]);
 
   useEffect(() => {
     if (invoice) {
@@ -76,12 +73,6 @@ const InvoiceDetails = () => {
       })
       .then((response) => {
         try {
-          //TEST POUR LES ACHAT
-          // let blob = new Blob([response], { type: "application/pdf" });
-          // var file = window.URL.createObjectURL(blob);
-          // console.log(file);
-          // document.querySelector("iframe").src = file;
-
           let elm = document.createElement("a"); // CREATE A LINK ELEMENT IN DOM
           elm.href = URL.createObjectURL(response); // SET LINK ELEMENTS CONTENTS
           elm.setAttribute("download", invoice.header.fen_num_fac + ".pdf"); // SET ELEMENT CREATED 'ATTRIBUTE' TO DOWNLOAD, FILENAME PARAM AUTOMATICALLY

@@ -35,9 +35,6 @@ import TransactionBankReducer from "./transactionBank/reducer";
 //Salary
 import SalaryReducer from "./salary/reducer";
 
-//Achat
-import AchatReducer from "./achat/reducer";
-
 //Recurrence
 import RecurrenceReducer from "./recurrence/reducer";
 
@@ -71,7 +68,6 @@ const appReducer = combineReducers({
   TransactionBank: TransactionBankReducer,
   Employee: EmployeeReducer,
   Salary: SalaryReducer,
-  Achat: AchatReducer,
   Recurrence: RecurrenceReducer,
   Export: ExportReducer,
   BankAccount: BankAccountReducer,

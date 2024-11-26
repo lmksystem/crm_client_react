@@ -8,13 +8,14 @@ import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
 import axios from "axios";
 import SimpleBar from "simplebar-react";
-import { getAccountsBankUser, getCategorieAchat, getCollaborateurs } from "../../helpers/backend_helper";
+import { getAccountsBankUser, getCollaborateurs } from "../../helpers/backend_helper";
 
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { getAchat } from "../../slices/thunks";
 import ConfirmModal from "../../Components/Common/ConfirmModal";
 import { useNavigate } from "react-router-dom";
+import { getCategorieAchat } from "../../services/achat";
 
 function FormAchat({ data, handleOneValidate }) {
   const navigate = useNavigate();
@@ -229,7 +230,7 @@ function FormAchat({ data, handleOneValidate }) {
       setTransactions(transactions);
     });
     getCategorieAchat().then((res) => {
-      setCategoriesList(res.data.map((e) => ({ label: e.aca_name, value: e.aca_name })));
+      setCategoriesList(res.map((e) => ({ label: e.aca_name, value: e.aca_name })));
     });
   }, []);
 
