@@ -4,7 +4,7 @@ import BreadCrumb from "../../Components/Common/BreadCrumb";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { getCompany as onGetCompany, updateCompany as onUpdateCompany, updateLogoAction as onUpdateLogoAction, addLicense as onAddLicense, getLicense as onGetLicense, deleteLicense as onDeleteLicense } from "../../slices/thunks";
+import { getCompany as onGetCompany, updateCompany as onUpdateCompany, addLicense as onAddLicense, getLicense as onGetLicense, deleteLicense as onDeleteLicense } from "../../slices/thunks";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 
@@ -102,7 +102,7 @@ const CompanyProfil = () => {
     };
 
     axios.post(url, formData, config).then((response) => {
-      dispatch(onUpdateLogoAction(response.data.com_logo));
+      // dispatch(onUpdateLogoAction(response.data.com_logo));
     });
   };
   const africanCountries = [

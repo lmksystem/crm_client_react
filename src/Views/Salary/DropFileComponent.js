@@ -6,9 +6,14 @@ import { SalaryService } from "../../services";
 function DropFileComponents({ values = "", setValues = () => {}, touched, errors, label = "" }) {
   const [pdf, setPdf] = useState(null);
 
-  async function handleAcceptedFiles(files) {
+  function handleAcceptedFiles(files) {
     setValues(files[0]);
     setPdf(window.URL.createObjectURL(files[0]));
+  }
+
+  function handleDeleteFile() {
+    setValues(null);
+    setPdf(null);
   }
 
   useEffect(() => {
@@ -69,7 +74,7 @@ function DropFileComponents({ values = "", setValues = () => {}, touched, errors
                   }}>
                   <button
                     className="btn btn-danger"
-                    onClick={() => setPdf(null)}>
+                    onClick={handleDeleteFile}>
                     <i className="ri-delete-bin-2-line"></i>
                     Supprimer le pdf
                   </button>

@@ -1,83 +1,71 @@
-import React from "react";
-import { Form } from "react-router-dom";
-import { Col, Input, Label, Row } from "reactstrap";
+import React, { useEffect, useState } from "react";
+import { Button, Col, FormFeedback, Input, Label, Row } from "reactstrap";
 import DropFileComponents from "./DropFileComponent";
+import { Form, useFormik } from "formik";
+import * as Yup from "yup";
+import { EmployeeService, SalaryService } from "../../services";
+import moment from "moment";
 
-function Formulaire() {
+function Formulaire({ salId, onUpdate = () => {}, onClose = () => {} }) {
+  const [employees, setEmployees] = useState([]);
+  const [salary, setSalary] = useState();
+
+  // validation
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
-
     initialValues: {
-      salaray_use_id: (salary && salary.salaray_use_id) || "",
-      salary_net: (salary && salary.salary_net) || "",
-      salary_brut: (salary && salary.salary_brut) || "",
-      salary_charge: (salary && salary.salary_charge) || "",
-      salaray_date: (salary && salary.salaray_date) || "",
-      sal_pdf: (salary && salary.sal_pdf) || ""
+      sal_id: (salary && salary.sal_id) || 0,
+      sal_use_fk: (salary && salary.sal_use_fk) || "",
+      sal_net: (salary && salary.sal_net) || "",
+      sal_brut: (salary && salary.sal_brut) || "",
+      sal_bcharge: (salary && salary.sal_bcharge) || "",
+      sal_date: (salary && salary.sal_date) || "",
+      sal_pdf: (salary && salary.sal_pdf) || null
     },
     validationSchema: Yup.object({
-      salaray_use_id: Yup.number().required("Veuillez sélectionner un employé"),
-      salaray_date: Yup.date().required("Veuillez entrer une date de versement"),
-      salary_net: Yup.number().required("Veuillez entrer un salaire net"),
-      salary_brut: Yup.number().required("Veuillez entrer un salaire brut"),
-      salary_charge: Yup.number().required("Veuillez entrer un salaire brut chargé")
+      sal_use_fk: Yup.number().required("Veuillez sélectionner un employé"),
+      sal_date: Yup.date().required("Veuillez entrer une date de versement"),
+      sal_net: Yup.number().required("Veuillez entrer un salaire net"),
+      sal_brut: Yup.number().required("Veuillez entrer un salaire brut"),
+      sal_bcharge: Yup.number().required("Veuillez entrer un salaire brut chargé")
     }),
     onSubmit: async (values) => {
-      let sal_pdf = salary.sal_pdf;
-      if (values.sal_pdf != salary.sal_pdf) {
-        sal_pdf = await SalaryService.upload(values.sal_pdf);
+      let sal_pdf = values.sal_pdf;
+      if (salary.sal_pdf != sal_pdf && sal_pdf) {
+        sal_pdf = await SalaryService.upload(sal_pdf);
       }
-      if (isEdit) {
-        const updateSalary = {
-          sal_id: salary.id ? salary.id : 0,
-          sal_use_fk: values.salaray_use_id,
-          sal_net: values.salary_net,
-          sal_brut: values.salary_brut,
-          sal_bcharge: values.salary_charge,
-          sal_date: values.salaray_date,
-          sal_pdf: sal_pdf
-        };
-
-        // update Salaire
-        dispatch(onCreateUpdateSalary(updateSalary));
+      await SalaryService.createUpdateSalary({ ...values, sal_pdf }).then((res) => {
+        onUpdate();
         validation.resetForm();
-      } else {
-        const newSalary = {
-          sal_use_fk: values.salaray_use_id,
-          sal_net: values.salary_net,
-          sal_brut: values.salary_brut,
-          sal_bcharge: values.salary_charge,
-          sal_date: values.salaray_date,
-          sal_pdf: sal_pdf
-        };
-        // save new Salary
-        dispatch(onCreateUpdateSalary(newSalary));
-        validation.resetForm();
-      }
-      toggle();
+        onClose();
+      });
     }
   });
 
+  useEffect(() => {
+    EmployeeService.getEmployees().then((res) => {
+      setEmployees(res);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (salId) {
+      SalaryService.getOneSalary(salId).then((res) => {
+        setSalary(res);
+      });
+    }
+  }, [salId]);
+
   return (
-    <Form
-      className="tablelist-form"
-      onSubmit={(e) => {
-        e.preventDefault();
-        validation.handleSubmit();
-        return false;
-      }}>
-      <Input
-        type="hidden"
-        id="id-field"
-      />
-      <Row>
+    <>
+      <Row className="m-2">
         <Col lg={6}>
           <Row className="g-3">
             <Col lg={6}>
               <div>
                 <Label
-                  htmlFor="salaray_use_id-field"
+                  htmlFor="sal_use_fk-field"
                   className="form-label">
                   Employé
                 </Label>
@@ -88,12 +76,12 @@ function Formulaire() {
                   validate={{
                     required: { value: true }
                   }}
-                  invalid={validation.touched.salaray_use_id && validation.errors.salaray_use_id ? true : false}
-                  value={validation.values.salaray_use_id}
+                  invalid={validation.touched.sal_use_fk && validation.errors.sal_use_fk ? true : false}
+                  value={validation.values.sal_use_fk}
                   onChange={validation.handleChange}
                   onBlur={validation.handleBlur}
-                  name="salaray_use_id"
-                  id="salaray_use_id-field">
+                  name="sal_use_fk"
+                  id="sal_use_fk-field">
                   <option
                     disabled={true}
                     value={""}>
@@ -107,20 +95,20 @@ function Formulaire() {
                     </option>
                   ))}
                 </Input>
-                {validation.touched.salaray_use_id && validation.errors.salaray_use_id ? <FormFeedback type="invalid">{validation.errors.salaray_use_id}</FormFeedback> : null}
+                {validation.touched.sal_use_fk && validation.errors.sal_use_fk ? <FormFeedback type="invalid">{validation.errors.sal_use_fk}</FormFeedback> : null}
               </div>
             </Col>
             <Col lg={6}>
               <div>
                 <Label
-                  htmlFor="salaray_date-field"
+                  htmlFor="sal_date-field"
                   className="form-label">
                   Date versement
                 </Label>
 
                 <Input
-                  name="salaray_date"
-                  id="salaray_date-field"
+                  name="sal_date"
+                  id="sal_date-field"
                   className="form-control"
                   type="date"
                   validate={{
@@ -128,22 +116,22 @@ function Formulaire() {
                   }}
                   onChange={validation.handleChange}
                   onBlur={validation.handleBlur}
-                  value={validation.values.salaray_date || ""}
-                  invalid={validation.touched.salaray_date && validation.errors.salaray_date ? true : false}
+                  value={moment(validation.values.sal_date).format("YYYY-MM-DD") || ""}
+                  invalid={validation.touched.sal_date && validation.errors.sal_date ? true : false}
                 />
-                {validation.touched.salaray_date && validation.errors.salaray_date ? <FormFeedback type="invalid">{validation.errors.salaray_date}</FormFeedback> : null}
+                {validation.touched.sal_date && validation.errors.sal_date ? <FormFeedback type="invalid">{validation.errors.sal_date}</FormFeedback> : null}
               </div>
             </Col>
             <Col lg={4}>
               <div>
                 <Label
-                  htmlFor="salary_net-field"
+                  htmlFor="sal_net-field"
                   className="form-label">
                   Salaire net
                 </Label>
                 <Input
-                  name="salary_net"
-                  id="salary_net-field"
+                  name="sal_net"
+                  id="sal_net-field"
                   className="form-control"
                   placeholder="Net"
                   type="number"
@@ -152,10 +140,10 @@ function Formulaire() {
                   }}
                   onChange={validation.handleChange}
                   onBlur={validation.handleBlur}
-                  value={validation.values.salary_net || ""}
-                  invalid={validation.touched.salary_net && validation.errors.salary_net ? true : false}
+                  value={validation.values.sal_net || ""}
+                  invalid={validation.touched.sal_net && validation.errors.sal_net ? true : false}
                 />
-                {validation.touched.salary_net && validation.errors.salary_net ? <FormFeedback type="invalid">{validation.errors.salary_net}</FormFeedback> : null}
+                {validation.touched.sal_net && validation.errors.sal_net ? <FormFeedback type="invalid">{validation.errors.sal_net}</FormFeedback> : null}
               </div>
             </Col>
             <Col lg={4}>
@@ -166,8 +154,8 @@ function Formulaire() {
                   Salaire brut
                 </Label>
                 <Input
-                  name="salary_brut"
-                  id="salary_brut-field"
+                  name="sal_brut"
+                  id="sal_brut-field"
                   className="form-control"
                   placeholder="Brut"
                   type="number"
@@ -176,22 +164,22 @@ function Formulaire() {
                   }}
                   onChange={validation.handleChange}
                   onBlur={validation.handleBlur}
-                  value={validation.values.salary_brut || ""}
-                  invalid={validation.touched.salary_brut && validation.errors.salary_brut ? true : false}
+                  value={validation.values.sal_brut || ""}
+                  invalid={validation.touched.sal_brut && validation.errors.sal_brut ? true : false}
                 />
-                {validation.touched.salary_brut && validation.errors.salary_brut ? <FormFeedback type="invalid">{validation.errors.salary_brut}</FormFeedback> : null}
+                {validation.touched.sal_brut && validation.errors.sal_brut ? <FormFeedback type="invalid">{validation.errors.sal_brut}</FormFeedback> : null}
               </div>
             </Col>
             <Col lg={4}>
               <div>
                 <Label
-                  htmlFor="salary_charge-field"
+                  htmlFor="sal_bcharge-field"
                   className="form-label">
                   Salaire brut chargé
                 </Label>
                 <Input
-                  name="salary_charge"
-                  id="salary_charge-field"
+                  name="sal_bcharge"
+                  id="sal_bcharge-field"
                   className="form-control"
                   placeholder="Brut chargé"
                   type="number"
@@ -200,10 +188,10 @@ function Formulaire() {
                   }}
                   onChange={validation.handleChange}
                   onBlur={validation.handleBlur}
-                  value={validation.values.salary_charge || ""}
-                  invalid={validation.touched.salary_charge && validation.errors.salary_charge ? true : false}
+                  value={validation.values.sal_bcharge || ""}
+                  invalid={validation.touched.sal_bcharge && validation.errors.sal_bcharge ? true : false}
                 />
-                {validation.touched.salary_charge && validation.errors.salary_charge ? <FormFeedback type="invalid">{validation.errors.salary_charge}</FormFeedback> : null}
+                {validation.touched.sal_bcharge && validation.errors.sal_bcharge ? <FormFeedback type="invalid">{validation.errors.sal_bcharge}</FormFeedback> : null}
               </div>
             </Col>
           </Row>
@@ -212,12 +200,24 @@ function Formulaire() {
           <Label className="from-label"> Ajouter bulletin(s) de salaire</Label>
           <DropFileComponents
             setValues={(val) => validation.setFieldValue("sal_pdf", val)}
-            values={salary.id}
-            showData={true}
+            values={salId}
           />
         </Col>
       </Row>
-    </Form>
+      <div className="d-flex m-0 p-2 border-top border-light align-items-center justify-content-end gap-2">
+        <Button
+          className=""
+          color="light"
+          onClick={onClose}>
+          Fermer
+        </Button>
+        <Button
+          color="success"
+          onClick={validation.handleSubmit}>
+          Enregister
+        </Button>
+      </div>
+    </>
   );
 }
 
