@@ -20,7 +20,6 @@ import {
   deleteAlert,
   getDetailsCollabo,
 } from "./thunk";
-import { getInvoicePeriodCount } from "../thunks";
 
 export const initialState = {
   contacts: [],
@@ -258,10 +257,6 @@ const gestionSlice = createSlice({
 
     builder.addCase(getEntityPeriodCount.fulfilled, (state, action) => {
       state.entityCountPeriod = action.payload.data;
-    });
-
-    builder.addCase(getInvoicePeriodCount.rejected, (state, action) => {
-      state.error = action.payload || null;
     });
 
     builder.addCase(handleAlert.fulfilled, (state, action) => {

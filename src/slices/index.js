@@ -20,9 +20,6 @@ import CompanyReducer from "./company/reducer";
 // Product
 import ProductReducer from "./product/reducer";
 
-//Invoice
-import InvoiceReducer from "./invoice/reducer";
-
 //Devis
 import DevisReducer from "./devis/reducer";
 
@@ -60,7 +57,6 @@ const appReducer = combineReducers({
   Login: LoginReducer,
   ForgetPassword: ForgetPasswordReducer,
   Product: ProductReducer,
-  Invoice: InvoiceReducer,
   Gestion: GestionReducer,
   Company: CompanyReducer,
   Devis: DevisReducer,

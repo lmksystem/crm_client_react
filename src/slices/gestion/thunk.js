@@ -129,19 +129,6 @@ export const deleteCollaborateurs = createAsyncThunk("gestion/deleteCollaborateu
   }
 });
 
-export const onAddNewClientCompta = createAsyncThunk("gestion/onAddNewClientCompta", async (collabo) => {
-  try {
-    const response = onAddNewClientCompta(collabo);
-    toast.success("Ajout du type client/fournisseur ", { autoClose: 3000 });
-    return collabo;
-  } catch (error) {
-    toast.error("Erreur ajout du type client/fournisseur", {
-      autoClose: 3000
-    });
-    return error;
-  }
-});
-
 // parametre
 
 export const getTva = createAsyncThunk("gestion/getTva", async () => {

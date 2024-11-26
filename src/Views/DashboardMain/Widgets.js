@@ -1,21 +1,28 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import CountUp from "react-countup";
 import { Card, CardBody, Col, UncontrolledTooltip } from "reactstrap";
 
 import { useSelector } from "react-redux";
 import moment from "moment";
 import FeatherIcon from "feather-icons-react/build/FeatherIcon";
+import { getInvoicePeriodCount } from "../../services/invoice";
+import { getTransactionByMonth, getTransactionPricePeriode } from "../../services/transaction";
+import { getDevisPeriodCount } from "../../services/devis";
+import { getEntityPeriodCount } from "../../services/gestion";
 moment.locale("fr");
 
-const Widgets = () => {
-  const { transactionsPeriodPrice, devisCountPeriod, invoiceCountPeriod, entityCountPeriod, devise, invoices } = useSelector((state) => ({
+const Widgets = ({ perdiodeCalendar }) => {
+  const { devise } = useSelector((state) => ({
     transactionsPeriodPrice: state.Transaction.transactionsPeriodPrice,
     devisCountPeriod: state.Devis.devisCountPeriod,
-    invoiceCountPeriod: state.Invoice.invoiceCountPeriod,
     entityCountPeriod: state.Gestion.entityCountPeriod,
-    devise: state.Company.devise,
-    invoices: state.Invoice.invoices
+    devise: state.Company.devise
   }));
+
+  const [invoiceCountPeriod, setInvoiceCountPeriod] = useState([]);
+  const [devisCountPeriod, setDevisCountPeriod] = useState([]);
+  const [transactionsPeriodPrice, setTransactionsPeriodPrice] = useState([]);
+  const [entityCountPeriod, setEntityCountPeriod] = useState([]);
 
   function constructWidgetDetails(label, value) {
     if (label === "badge" && value) {
@@ -103,11 +110,37 @@ const Widgets = () => {
   ];
 
   useEffect(() => {
-    // if (invoices.length > 0) {
-    //   let invoicePaid = invoices.filter((i) => i.header.fen_etat == 1 && i.header);
-    //   console.log(invoicePaid);
-    // }
-  }, [invoices]);
+    let dateDebut = perdiodeCalendar.start ? moment(perdiodeCalendar.start).format("YYYY-MM-DD") : null;
+    let dateFin = perdiodeCalendar.end ? moment(perdiodeCalendar.end).format("YYYY-MM-DD") : null;
+
+    getInvoicePeriodCount({
+      dateDebut: dateDebut,
+      dateFin: dateFin
+    }).then((response) => {
+      setInvoiceCountPeriod(response);
+    });
+
+    getTransactionPricePeriode({
+      dateDebut: dateDebut,
+      dateFin: dateFin
+    }).then((response) => {
+      setTransactionsPeriodPrice(response);
+    });
+
+    getDevisPeriodCount({
+      dateDebut: dateDebut,
+      dateFin: dateFin
+    }).then((response) => {
+      setDevisCountPeriod(response);
+    });
+
+    getEntityPeriodCount({
+      dateDebut: dateDebut,
+      dateFin: dateFin
+    }).then((response) => {
+      setEntityCountPeriod(response);
+    });
+  }, [perdiodeCalendar]);
 
   return (
     <React.Fragment>
@@ -148,13 +181,18 @@ const Widgets = () => {
                         decimal={item.decimal}
                         duration={1}
                       />
-                      <div style={{ position: "absolute", top: -3, right: 2 }} className="d-flex align-items-center justify-content-center">
-                        <a id={"ScheduleUpdateTooltip" + key}><i class="bx bx-info-circle fs-5 text-primary"></i></a>
+                      <div
+                        style={{ position: "absolute", top: -3, right: 2 }}
+                        className="d-flex align-items-center justify-content-center">
+                        <a id={"ScheduleUpdateTooltip" + key}>
+                          <i class="bx bx-info-circle fs-5 text-primary"></i>
+                        </a>
                         <UncontrolledTooltip
                           placement="top"
                           target={"ScheduleUpdateTooltip" + key}
-                          trigger="hover"
-                        >{item.desc}</UncontrolledTooltip>
+                          trigger="hover">
+                          {item.desc}
+                        </UncontrolledTooltip>
                       </div>
                     </span>
                   </h4>

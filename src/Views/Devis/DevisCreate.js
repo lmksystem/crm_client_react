@@ -26,6 +26,7 @@ import moment from "moment";
 import { allstatusDevis } from "../../common/data/devisList";
 import { getImage } from "../../utils/getImages";
 import ConfirmModal from "../../Components/Common/ConfirmModal";
+import { DevisService } from "../../services";
 
 const DevisCreate = () => {
   const { collaborateurs, company, tva, products, prefix_devis, devise } = useSelector((state) => ({
@@ -37,10 +38,10 @@ const DevisCreate = () => {
     prefix_devis: state.Gestion.constantes?.find((cst) => cst.con_title === "Prefixe devis")
   }));
 
+  let { id } = useParams();
   let { state } = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const [collaborateur, setCollaborateur] = useState(null);
@@ -116,7 +117,7 @@ const DevisCreate = () => {
     enableReinitialize: true,
 
     initialValues: {
-      addClient: state.header.den_com_fk && state.header.den_ent_fk == null ? false : true,
+      addClient: true,
       contact: {
         // Champs avec "cus" correspond au client
         dco_cus_email: "",
@@ -188,9 +189,14 @@ const DevisCreate = () => {
     }),
     onSubmit: (values) => {
       setShowConfirmModal(true);
+      // dispatch(onAddNewDevis(values)).then(() => {
+      //   navigate("/devis/liste");
+      //   validation.resetForm();
+
+      // });
     }
   });
-
+  console.log(validation.values.header.den_date_valid);
   /**
    * Fonction de recherche d'un client lors de la sélection
    * @returns
@@ -320,18 +326,6 @@ const DevisCreate = () => {
     validation.setValues({ ...validation.values, header: header, ligne: lignesData });
   };
 
-  // useEffect(() => {
-  //   if (validation.values.ligne.length < 1) {
-  //     validation.setValues({
-  //       ...validation.values,
-  //       ligne: [
-  //         initialValueLigne
-  //       ]
-  //     })
-  //   }
-
-  // }, [validation.values.ligne])
-
   useEffect(() => {
     if (company && company.com_logo) {
       let path = (company.com_id + "/" + company.com_logo).replaceAll("/", " ");
@@ -342,8 +336,10 @@ const DevisCreate = () => {
   }, []);
 
   useEffect(() => {
-    if (validation && state && Object.keys(state).length > 0) {
-      validation.setValues((values) => ({ ...values, ...state }));
+    if (validation && id) {
+      DevisService.getDevisForEdit(id).then((response) => {
+        validation.setValues(response);
+      });
     }
   }, []);
 
@@ -406,7 +402,7 @@ const DevisCreate = () => {
                     <Col
                       lg={6}
                       sm={6}
-                      className="">
+                      className="mb-3">
                       <Row className="d-flex justify-content-around">
                         <Col lg={8}>
                           <div>
@@ -594,15 +590,6 @@ const DevisCreate = () => {
                                   id="button-addon2">
                                   +
                                 </button>
-                                {/* {showCollabDiv &&
-                                <datalist id="list-company" style={{ display: "block", position: 'absolute', backgroundColor: 'white', width: "100%", border: "0.5px solid #dddddd", zIndex: 5000, height: "auto", maxHeight: "400px", overflowY: "scroll" }} >
-                                  {collaborateurs.filter(e => e.ent_name.includes(validation.values.contact.dco_cus_name)).map((c, i) => {
-                                    return (
-                                      <option style={{ cursor: "pointer", padding: 8, borderBottom: "0.5px solid #dddddd" }} onClick={() => { setShowCollabDiv(() => false); setCollaborateur(c) }} key={i}>{c.ent_name}</option>
-                                    )
-                                  })}
-                                </datalist>
-                              } */}
                               </div>
                               {validation.errors?.contact?.dco_cus_name && validation.touched?.contact?.dco_cus_name ? <FormFeedback type="invalid">{validation.errors?.contact?.dco_cus_name}</FormFeedback> : null}
                             </div>
@@ -1126,14 +1113,6 @@ const DevisCreate = () => {
                       className="btn btn-success">
                       <i className="ri-printer-line align-bottom me-1"></i> Enregister
                     </button>
-                    {/* <Link to="#" className="btn btn-secondary">
-                      <i className="ri-download-2-line align-bottom me-1"></i>{" "}
-                      Télécharger
-                    </Link>
-                    <Link to="#" className="btn btn-danger">
-                      <i className="ri-send-plane-fill align-bottom me-1"></i>{" "}
-                      Envoyer
-                    </Link> */}
                   </div>
                 </CardBody>
               </Form>

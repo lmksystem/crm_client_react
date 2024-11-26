@@ -21,6 +21,8 @@ import TransactionCharts from "./TransactionCharts";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Select from "react-select";
+import { getTransaction, getTransactionList } from "../../services/transaction";
+import { getCollaborateurs } from "../../services/gestion";
 
 moment.locale("fr");
 
@@ -29,15 +31,15 @@ const TransactionList = () => {
 
   const dispatch = useDispatch();
 
-  const { transactionsList, transactions, isTransactionsListSuccess, error, collaborateurs, devise } = useSelector((state) => ({
-    invoices: state.Invoice.invoices,
-    transactionsList: state.Transaction.transactionsList,
+  const { error, devise } = useSelector((state) => ({
     transactions: state.Transaction.transactions,
-    isTransactionsListSuccess: state.Transaction.isTransactionsListSuccess,
     error: state.Transaction.error,
     collaborateurs: state.Gestion.collaborateurs,
     devise: state.Company.devise
   }));
+
+  const [collaborateurs, setCollaborateurs] = useState(null);
+  const [transactionsList, setTransactionsList] = useState([]);
 
   const [invoices, setInvoices] = useState([]);
   const [chartData, setChartData] = useState([]);
@@ -56,9 +58,13 @@ const TransactionList = () => {
     getInvoices().then((res) => {
       setInvoices(res);
     });
-    dispatch(onGetTransactionList());
-    dispatch(onGetCollaborateurs());
-  }, [dispatch, transactions]);
+    getTransactionList().then((response) => {
+      setTransactionsList(response);
+    });
+    getCollaborateurs().then((response) => {
+      setCollaborateurs(response);
+    });
+  }, []);
 
   // validation
   const validation = useFormik({
@@ -257,16 +263,18 @@ const TransactionList = () => {
   }, [checkedAll]);
 
   useEffect(() => {
-    // let sortingByDateTransaction = [...transactions].sort((a, b) => new Date(b.tra_date) - new Date(a.tra_date))
-    let transactionByMount = Array(12).fill(0);
-    transactionsList
-      .filter((t) => moment(t.tra_date).format("YYYY") == moment().year())
-      .forEach((tra) => {
-        let month = moment(tra.tra_date).format("M");
-        transactionByMount[month - 1] += tra.tra_value;
-      });
+    if (transactionsList.length) {
+      // let sortingByDateTransaction = [...transactions].sort((a, b) => new Date(b.tra_date) - new Date(a.tra_date))
+      let transactionByMount = Array(12).fill(0);
+      transactionsList
+        .filter((t) => moment(t.tra_date).format("YYYY") == moment().year())
+        .forEach((tra) => {
+          let month = moment(tra.tra_date).format("M");
+          transactionByMount[month - 1] += tra.tra_value;
+        });
 
-    setChartData(transactionByMount);
+      setChartData(transactionByMount);
+    }
   }, [transactionsList]);
 
   return (
@@ -331,7 +339,7 @@ const TransactionList = () => {
 
                 <CardBody className="pt-0">
                   <div>
-                    {isTransactionsListSuccess ? (
+                    {transactionsList.length > 0 ? (
                       <TableContainer
                         columns={columns}
                         data={transactionsList || []}
@@ -412,7 +420,7 @@ const TransactionList = () => {
                         tra_ent_fk: res.value
                       });
                     }}
-                    options={collaborateurs.map((i) => ({
+                    options={collaborateurs?.map((i) => ({
                       label: i.ent_name,
                       value: i.ent_id
                     }))}

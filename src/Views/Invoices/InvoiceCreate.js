@@ -1,23 +1,14 @@
 import React, { useEffect, useState, useCallback } from "react";
-
 import { CardBody, Row, Col, Card, Container, Form, Input, Label, Table, FormFeedback, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import Flatpickr from "react-flatpickr";
-
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import Select from "react-select";
-
-import logoDark from "../../assets/images/logo_lmk.png";
-import logoLight from "../../assets/images/logo_lmk.png";
-
 //formik
 import { useFormik } from "formik";
 import * as Yup from "yup";
-
 //redux
 import { useDispatch, useSelector } from "react-redux";
-import { addNewInvoice as onAddNewInvoice, getCollaborateurs as onGetCollaborateurs, getCompany as onGetCompany, getTva as onGetTva, getProducts as onGetProducts, getConstantes as onGetConstantes } from "../../slices/thunks";
+import { getCollaborateurs as onGetCollaborateurs, getCompany as onGetCompany, getTva as onGetTva, getProducts as onGetProducts, getConstantes as onGetConstantes } from "../../slices/thunks";
 import SimpleBar from "simplebar-react";
 import { parseInt } from "lodash";
 import { allstatus } from "../../common/data/invoiceList";
@@ -28,6 +19,7 @@ import { APIClient } from "../../helpers/api_helper";
 import ConfirmModal from "../../Components/Common/ConfirmModal";
 import { sendInvocieByEmail as onSendInvocieByEmail } from "../../slices/thunks";
 import { getImage } from "../../utils/getImages";
+import { addNewInvoice } from "../../services/invoice";
 
 let axios = new APIClient();
 
@@ -339,7 +331,7 @@ const InvoiceCreate = () => {
 
   const submitFormData = (sendEmail) => {
     validation.values.header.fen_solde_du = validation.values.header.fen_total_ttc;
-    dispatch(onAddNewInvoice({ invoice: validation.values, send: sendEmail })).then(() => {
+    addNewInvoice({ invoice: validation.values, send: sendEmail }).then(() => {
       history("/factures/liste");
       validation.resetForm();
     });

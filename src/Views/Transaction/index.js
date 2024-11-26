@@ -24,19 +24,16 @@ import { getLoggedinUser } from "../../helpers/api_helper";
 import { customFormatNumber } from "../../utils/function";
 import axios from "axios";
 import { getAccountsBankUser, getTransactionBank } from "../../helpers/backend_helper";
+import { getCollaborateurs } from "../../services/gestion";
 
 const TransactionBank = () => {
   const dispatch = useDispatch();
-  const userProfile = getLoggedinUser();
-  const { isTransactionBankSuccess, error, devise, collaborateurs } = useSelector((state) => ({
-    collaborateurs: state.Gestion.collaborateurs,
-    isTransactionBankSuccess: state.TransactionBank.isTransactionBankSuccess,
-    transactions: state.TransactionBank.transactionsBank,
-    error: state.Employee.error,
-    achats: state.Achat.achats,
+
+  const { devise } = useSelector((state) => ({
     devise: state.Company.devise
   }));
-  const [achatEvol, setAchatEvol] = useState(false);
+
+  const [collaborateurs, setCollaborateurs] = useState(null);
   const dateActuelle = moment(); // Obtenir la date actuelle
   const dateNow = moment(dateActuelle, "DD MMM YYYY");
   const premiereDateAnnee = dateActuelle.startOf("year"); // Obtenir la première date de l'année
@@ -47,13 +44,10 @@ const TransactionBank = () => {
   });
 
   const [userAccount, setUserAccount] = useState([]);
-  const [achatBankActif, setAchatBankActif] = useState(null);
   const [achatBank, setAchatBank] = useState([]);
   const [transactions, setTransactions] = useState(null);
   const [transaction, setTransaction] = useState(null);
   const [doc, setDoc] = useState(null);
-  const [priceMatchAmount, setPriceMatchAmount] = useState(0);
-  const [oldPriceAmount, setOldPriceAmount] = useState(0);
   const [achatActif, setAchatActif] = useState(null);
   const [achats, setAchats] = useState(null);
 
@@ -104,7 +98,6 @@ const TransactionBank = () => {
     if (show) {
       setShow(false);
       setAchatActif(null);
-      setAchatBankActif(null);
       setDoc(null);
       setTransaction(null);
     } else {
@@ -257,7 +250,7 @@ const TransactionBank = () => {
         filterable: false
       }
     ],
-    [transactions, achatEvol]
+    [transactions]
   );
 
   const handleSearchChange = (e) => {
@@ -367,7 +360,10 @@ const TransactionBank = () => {
     }).then((res) => {
       setTransactions(res.data);
     });
-    dispatch(onGetCollaborateur());
+
+    getCollaborateurs().then((response) => {
+      setCollaborateurs(response);
+    });
   }, [perdiodeCalendar]);
 
   useEffect(() => {
@@ -388,7 +384,6 @@ const TransactionBank = () => {
   }, [transaction]);
 
   useEffect(() => {
-    console.log(achatActif);
     if (achatActif) {
       previewAchat(achatActif.ach_id);
     }
@@ -401,6 +396,7 @@ const TransactionBank = () => {
   }, []);
 
   document.title = "Transactions bancaires | Countano";
+
   return (
     <React.Fragment>
       <div className="page-content">
@@ -416,14 +412,12 @@ const TransactionBank = () => {
               toggle={() => {
                 setModal(false);
                 setDoc(null);
-                setPriceMatchAmount(0);
               }}
               centered>
               <ModalHeader
                 toggle={() => {
                   setModal(false);
                   setDoc(null);
-                  setPriceMatchAmount(0);
                 }}
                 className="bg-soft-info p-3">
                 Document achat
@@ -437,43 +431,9 @@ const TransactionBank = () => {
                       className="tablelist-form"
                       onSubmit={(e) => {
                         e.preventDefault();
-                        // matchAmount.handleSubmit();
                         return false;
                       }}>
-                      <Row className="mb-4">
-                        {/* <Col lg={8}>
-                           <div>
-                            <Label
-                              htmlFor="amount-field"
-                              className="form-label">
-                              Montant associé
-                            </Label>
-                            <Input
-                              name="amount"
-                              id="amount-field"
-                              className="form-control"
-                              placeholder="Entrer un montant associé"
-                              type="number"
-                              onChange={(e) => {
-                                setPriceMatchAmount(e.target.value);
-                              }}
-                              onBlur={matchAmount.handleBlur}
-                              value={matchAmount.values.amount || ""}
-                              invalid={matchAmount.touched.amount && matchAmount.errors.amount ? true : false}
-                            />
-                          </div> 
-                        </Col>
-                        <Col
-                          className="d-flex align-items-end"
-                          lg={4}>
-                          <button
-                            type="submit"
-                            className="btn btn-success"
-                            id="add-btn">
-                            Valider
-                          </button>
-                        </Col>*/}
-                      </Row>
+                      <Row className="mb-4"></Row>
                     </Form>
                   </Col>
                   <Col
@@ -493,7 +453,6 @@ const TransactionBank = () => {
               <Card id="contactList">
                 <CardBody className="pt-0">
                   <div>
-                    {console.log(isFilterBy)}
                     {transactions != null ? (
                       <TableContainer
                         columns={columns}
@@ -611,71 +570,68 @@ const TransactionBank = () => {
                                   <ListGroup
                                     className="list mb-0"
                                     flush>
-                                    {achats
-                                      ?.filter((a) => (achatFilter.searchTerm ? a.ach_lib.toLowerCase().includes(achatFilter.searchTerm.toLowerCase()) || a.ach_rp.toLowerCase().includes(achatFilter.searchTerm.toLowerCase()) : true))
-                                      ?.map((ach) => {
-                                        let achatBankSelected = achatBank && achatBank.find((a) => a.aba_tba_fk == transaction.tba_id && a.aba_ach_fk == ach.ach_id);
-                                        let collabo = collaborateurs && collaborateurs.find((c) => c.ent_id == ach.ach_ent_fk);
+                                    {achats &&
+                                      achats
+                                        ?.filter((a) => (achatFilter.searchTerm ? a.ach_lib.toLowerCase().includes(achatFilter.searchTerm.toLowerCase()) || a.ach_rp.toLowerCase().includes(achatFilter.searchTerm.toLowerCase()) : true))
+                                        ?.map((ach) => {
+                                          let achatBankSelected = achatBank && achatBank.find((a) => a.aba_tba_fk == transaction.tba_id && a.aba_ach_fk == ach.ach_id);
+                                          let collabo = collaborateurs && collaborateurs.find((c) => c.ent_id == ach.ach_ent_fk);
 
-                                        if (!achatBankSelected && ach.ach_rp == 0) {
-                                          return;
-                                        }
+                                          if (!achatBankSelected && ach.ach_rp == 0) {
+                                            return;
+                                          }
 
-                                        return (
-                                          <ListGroupItem
-                                            data-id="1"
-                                            key={ach.ach_id}
-                                            onClick={() => {
-                                              if (!achatBankSelected) {
-                                                if (transaction.tba_rp > 0) {
-                                                  associateAchatTransaction(transaction, ach);
+                                          return (
+                                            <ListGroupItem
+                                              data-id="1"
+                                              key={ach.ach_id}
+                                              onClick={() => {
+                                                if (!achatBankSelected) {
+                                                  if (transaction.tba_rp > 0) {
+                                                    associateAchatTransaction(transaction, ach);
+                                                  }
+                                                } else {
+                                                  dissociationAchatTransation(transaction, ach, achatBankSelected);
                                                 }
-                                              } else {
-                                                dissociationAchatTransation(transaction, ach, achatBankSelected);
-                                              }
-                                            }}
-                                            className={` ${achatBankSelected ? "bg-light text-grey tit" : ""}`}>
-                                            <div
-                                              className="d-flex"
-                                              style={!achatBankSelected && transaction.tba_rp == 0 ? { opacity: 0.5 } : {}}>
-                                              <div className="flex-grow-1 ">
-                                                <div className="d-flex align-items-center">
-                                                  <h5 className="fs-13 mb-1">
-                                                    {collabo?.ent_name} {ach.ach_lib}
-                                                  </h5>
-                                                  <div>
-                                                    {achatBankSelected ? (
-                                                      <i
-                                                        className="cursor-pointer text-primary las la-file-pdf fs-3"
-                                                        onClick={(e) => {
-                                                          e.stopPropagation();
-                                                          //setDoc(ach.ado_file_name);
-                                                          // setOldPriceAmount(ach.aba_match_amount);
-                                                          // setPriceMatchAmount(ach.aba_match_amount);
-                                                          setAchatActif(ach);
-                                                          // setAchatBankActif(achatBankSelected);
-                                                          setModal(true);
-                                                        }}></i>
-                                                    ) : null}
+                                              }}
+                                              className={` ${achatBankSelected ? "bg-light text-grey tit" : ""}`}>
+                                              <div
+                                                className="d-flex"
+                                                style={!achatBankSelected && transaction.tba_rp == 0 ? { opacity: 0.5 } : {}}>
+                                                <div className="flex-grow-1 ">
+                                                  <div className="d-flex align-items-center">
+                                                    <h5 className="fs-13 mb-1">
+                                                      {collabo?.ent_name} {ach.ach_lib}
+                                                    </h5>
+                                                    <div>
+                                                      {achatBankSelected ? (
+                                                        <i
+                                                          className="cursor-pointer text-primary las la-file-pdf fs-3"
+                                                          onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setAchatActif(ach);
+                                                            setModal(true);
+                                                          }}></i>
+                                                      ) : null}
+                                                    </div>
                                                   </div>
+                                                  <p
+                                                    className="born timestamp text-muted mb-0"
+                                                    data-timestamp="12345">
+                                                    {moment(ach.ach_date_create).format("L")}
+                                                  </p>
                                                 </div>
-                                                <p
-                                                  className="born timestamp text-muted mb-0"
-                                                  data-timestamp="12345">
-                                                  {moment(ach.ach_date_create).format("L")}
-                                                </p>
-                                              </div>
 
-                                              <div className="flex-shrink-0 d-flex flex-md-column align-items-end">
-                                                <div className="">
-                                                  Reste à pointer : {ach.ach_type == "Charge" ? "- " : "+ "} {customFormatNumber(parseFloat(ach.ach_rp))} {devise}
+                                                <div className="flex-shrink-0 d-flex flex-md-column align-items-end">
+                                                  <div className="">
+                                                    Reste à pointer : {ach.ach_type == "Charge" ? "- " : "+ "} {customFormatNumber(parseFloat(ach.ach_rp))} {devise}
+                                                  </div>
+                                                  <div> {achatBankSelected && "Lié : " + customFormatNumber(parseFloat(achatBankSelected.aba_match_amount)) + " " + devise}</div>
                                                 </div>
-                                                <div> {achatBankSelected && "Lié : " + customFormatNumber(parseFloat(achatBankSelected.aba_match_amount)) + " " + devise}</div>
                                               </div>
-                                            </div>
-                                          </ListGroupItem>
-                                        );
-                                      })}
+                                            </ListGroupItem>
+                                          );
+                                        })}
                                   </ListGroup>
                                 </SimpleBar>
                               </div>
