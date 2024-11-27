@@ -8,19 +8,16 @@ import DeleteModal from "../../Components/Common/DeleteModal";
 
 //Import actions
 import { getEmployees as onGetEmployees, getCollaborateurs as onGetCollaborateurs } from "../../slices/thunks";
+
 //redux
 import { useSelector, useDispatch } from "react-redux";
 import TableContainer from "../../Components/Common/TableContainer";
 
 // Formik
-import * as Yup from "yup";
-import { useFormik } from "formik";
-
 import Loader from "../../Components/Common/Loader";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ModalCreate from "./ModalCreate";
-import FileService from "../../utils/FileService";
 import { customFormatNumber } from "../../utils/function";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
