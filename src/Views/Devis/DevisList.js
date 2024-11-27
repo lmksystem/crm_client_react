@@ -22,6 +22,7 @@ import { customFormatNumber, rounded } from "../../utils/function";
 
 import WidgetCountUp from "../../Components/Common/WidgetCountUp";
 import { devisEtatColor } from "../../common/data/devisList";
+import { DevisService } from "../../services";
 moment.locale("fr");
 
 const DevisList = () => {
@@ -29,7 +30,7 @@ const DevisList = () => {
 
   const dispatch = useDispatch();
 
-  const { devisWidgets, devisRedux, isDevisSuccess, error, etatDevis, devise } = useSelector((state) => ({
+  const { devisRedux, devise } = useSelector((state) => ({
     devisRedux: state.Devis.devisList,
     isDevisSuccess: state.Devis.isDevisSuccess,
     error: state.Devis.error,
@@ -44,12 +45,14 @@ const DevisList = () => {
 
   const [customFiltered, setCustomFiltered] = useState(null);
 
-  const [devisList, setDevisList] = useState([]);
+  const [devisList, setDevisList] = useState(null);
+  const [devisWidgets, setDevisWidgets] = useState([]);
+  const [etatDevis, setEtatDevis] = useState([]);
   const [devis, setDevis] = useState([]);
 
   const handleDeleteDevis = (id) => {
     if (id) {
-      dispatch(onDeleteDevis(id));
+      DevisService.deleteDevis(id);
       setDeleteModal(false);
     }
   };
@@ -215,23 +218,19 @@ const DevisList = () => {
         }
       }
     ],
-    [checkedAll, dispatch, etatDevis, devis]
+    [checkedAll, dispatch, etatDevis, devisList]
   );
 
   useEffect(() => {
-    setDevis(devisRedux);
-  }, [devisRedux]);
-
-  useEffect(() => {
-    // if (devis) {
-    setDevisList(devis);
-    // }
-  }, [devis, etatDevis]);
-
-  useEffect(() => {
-    dispatch(onGetDevisWidgets());
-    dispatch(onGetDevis());
-    dispatch(onGetEtatDevis());
+    DevisService.getDevisWidgets().then((response) => {
+      setDevisWidgets(response);
+    });
+    DevisService.getDevis().then((response) => {
+      setDevisList(response);
+    });
+    DevisService.getEtatDevis().then((response) => {
+      setEtatDevis(response);
+    });
   }, [dispatch]);
 
   return (
@@ -304,11 +303,11 @@ const DevisList = () => {
                 <CardBody className="pt-0">
                   <div>
                     <DevisListGlobalSearch
-                      origneData={devis}
+                      origneData={devisList}
                       data={customFiltered}
                       setData={setCustomFiltered}
                     />
-                    {isDevisSuccess ? (
+                    {devisList ? (
                       <TableContainer
                         initialSortField={"den_date_create"}
                         columns={columns}
@@ -323,7 +322,7 @@ const DevisList = () => {
                         pathToDetail="/devis/detail/"
                       />
                     ) : (
-                      <Loader error={error} />
+                      <Loader error={devisList} />
                     )}
                   </div>
                   <ToastContainer

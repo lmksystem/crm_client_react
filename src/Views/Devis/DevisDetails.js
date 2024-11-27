@@ -15,15 +15,14 @@ import { getImage } from "../../utils/getImages";
 import Select from "react-select";
 import { ToastContainer, toast } from "react-toastify";
 import { devisEtatColor } from "../../common/data/devisList";
+import { DevisService } from "../../services";
 
 const DevisDetails = () => {
   document.title = "Détail devis | Countano";
 
   let { id } = useParams();
 
-  const { etatDevis, devisList, company, devise } = useSelector((state) => ({
-    devisList: state.Devis.devisList,
-    etatDevis: state.Devis.etatDevis,
+  const { company, devise } = useSelector((state) => ({
     company: state.Company.company[0],
     devise: state.Company.devise
   }));
@@ -43,6 +42,8 @@ const DevisDetails = () => {
   const [activeChange, setActiveChange] = useState(false);
 
   const [subjectChange, setSubjectChange] = useState(false);
+
+  const [etatDevis, setEtatDevis] = useState(false);
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showConfirmModal2, setShowConfirmModal2] = useState(false);
@@ -79,14 +80,14 @@ const DevisDetails = () => {
 
   const handleDeleteDevis = (id) => {
     if (id) {
-      dispatch(onDeleteDevis(id));
+      DevisService.deleteDevis(id);
       navigate("/devis/liste");
       setDeleteModal(false);
     }
   };
 
   const sendDevisByEmail = () => {
-    dispatch(onSendDevisByEmail(id));
+    DevisService.SendDevisByEmail(id);
     setShowConfirmModal(false);
   };
 
@@ -115,14 +116,18 @@ const DevisDetails = () => {
   }, [company]);
 
   useEffect(() => {
-    if (devisList) {
-      setDevis(devisList?.find((d) => d?.header?.den_id == id));
-    }
-  }, [devisList]);
+    DevisService.getDevisForEdit(id).then((devis) => {
+      setDevis(devis);
+
+      DevisService.getEtatDevis().then((response) => {
+        setSelectedEtat(response?.find((d) => d.det_id == devis?.header.den_etat)?.det_name);
+        setEtatDevis(response);
+      });
+    });
+  }, []);
 
   useEffect(() => {
     if (devis) {
-      setSelectedEtat(etatDevis?.find((d) => d.det_id == devis?.header.den_etat)?.det_name);
       setValueSubject(devis?.header.den_sujet);
     }
   }, [devis]);
@@ -241,7 +246,7 @@ const DevisDetails = () => {
                                 if (e.target?.previousSibling?.value?.trim()?.length > 0) {
                                   let devisHeaderCopy = { ...devis.header };
                                   devisHeaderCopy.den_sujet = e.target.previousSibling.value;
-                                  dispatch(onUpdateDevis(devisHeaderCopy));
+                                  DevisService.updateDevis(devisHeaderCopy);
                                   setValueSubject(e.target.previousSibling.value);
                                   setSubjectChange(() => false);
                                 } else {
@@ -340,7 +345,7 @@ const DevisDetails = () => {
                             onChange={(e) => {
                               let devisHeaderCopy = { ...devis.header };
                               devisHeaderCopy.den_etat = e.target.value;
-                              dispatch(onUpdateDevis(devisHeaderCopy));
+                              DevisService.updateDevis(devisHeaderCopy);
                               setSelectedEtat(etatDevis?.find((d) => d.det_id == e.target.value)?.det_name);
                               setActiveChange(() => false);
                             }}
