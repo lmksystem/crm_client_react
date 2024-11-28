@@ -1,67 +1,63 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 
-import { Col, Container, Row, Card, CardBody, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Label, Input, Modal, ModalHeader, ModalBody, Form, ModalFooter, FormFeedback, ListGroup, ListGroupItem } from "reactstrap";
+import { Col, Container, Row, Card, CardBody, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Modal, ModalHeader, ModalBody, ListGroup, ListGroupItem } from "reactstrap";
 
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import DeleteModal from "../../Components/Common/DeleteModal";
 
 //Import actions
-import { getEmployees as onGetEmployees, getSalary as onGetSalary, createUpdateSalary as onCreateUpdateSalary, deleteSalary as onDeleteSalary } from "../../slices/thunks";
 //redux
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import TableContainer from "../../Components/Common/TableContainer";
 
-// Formik
-import * as Yup from "yup";
-import { useFormik } from "formik";
-
 import Loader from "../../Components/Common/Loader";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Cleave from "cleave.js/react";
 import moment from "moment";
 import { customFormatNumber } from "../../utils/function";
+import Formulaire from "./Formulaire";
 import { SalaryService } from "../../services";
 
 const Salary = () => {
-  const dispatch = useDispatch();
-  const { isSalarySuccess, error, employees, salaries, devise } = useSelector((state) => ({
-    isSalarySuccess: state.Salary.isSalarySuccess,
-    employees: state.Employee.employees,
-    salaries: state.Salary.salaries,
-    error: state.Employee.error,
+  const { devise } = useSelector((state) => ({
     devise: state.Company.devise
   }));
   const yearActual = new Date().getFullYear().toString();
 
-  const [salary, setSalary] = useState({}); //Objet salaire que l'ion sélectionne pour action
+  const [salId, setSalId] = useState({}); //Objet salaire que l'ion sélectionne pour action
   const [dateFormat, setDateFormat] = useState(yearActual);
   const [isEdit, setIsEdit] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteModalMulti, setDeleteModalMulti] = useState(false);
   const [modal, setModal] = useState(false);
   const [dateMonthChoice, setDateMonthChoice] = useState(null);
+  // Créez un objet pour organiser les données par mois
+  const [moisDonnees, setMoisDonnee] = useState({});
+  const [refresh, setRefresh] = useState(false);
 
-  const toggle = useCallback(() => {
-    if (modal) {
-      setModal(false);
-      setSalary({});
-    } else {
-      setModal(true);
-    }
-  }, [modal]);
+  function toggle(info) {
+    setSalId(info.id ? info.id : undefined);
+    setModal((res) => !res);
+    setIsEdit(info.id ? true : false);
+  }
+
+  function toggleRefresh() {
+    setRefresh((res) => !res);
+  }
 
   // Delete Data
   const handleDeleteSalary = () => {
-    if (salary) {
-      SalaryService.deleteSalary(salary?.sal_id).then(() => {
+    if (salId) {
+      SalaryService.deleteSalary(salId).then(() => {
         setDeleteModal(false);
+        toggleRefresh();
       });
     }
   };
 
-  const onClickDelete = (salary) => {
-    setSalary(salary);
+  const onClickDelete = (info) => {
+    setSalId(info.id);
     setDeleteModal(true);
   };
 
@@ -69,6 +65,7 @@ const Salary = () => {
     setDateMonthChoice(null);
     setDateFormat(e.target.rawValue);
   }
+
   // Créez un objet de correspondance entre les noms des mois et leurs indices
   const moisIndices = {
     1: "Janvier",
@@ -85,8 +82,6 @@ const Salary = () => {
     12: "Décembre"
   };
 
-  // Créez un objet pour organiser les données par mois
-  const [moisDonnees, setMoisDonnee] = useState({});
   const MoisComponent = () => {
     // Affichez tous les mois de l'année, même ceux sans données
     return (
@@ -111,79 +106,6 @@ const Salary = () => {
     );
   };
 
-  // validation
-  const validation = useFormik({
-    // enableReinitialize : use this flag when initial values needs to be changed
-    enableReinitialize: true,
-
-    initialValues: {
-      sal_id: (salary && salary.salaray_use_id) || 0,
-      salaray_use_id: (salary && salary.salaray_use_id) || "",
-      salary_net: (salary && salary.salary_net) || "",
-      salary_brut: (salary && salary.salary_brut) || "",
-      salary_charge: (salary && salary.salary_charge) || "",
-      salaray_date: (salary && salary.salaray_date) || ""
-    },
-    validationSchema: Yup.object({
-      salaray_use_id: Yup.number().required("Veuillez sélectionner un employé"),
-      salaray_date: Yup.date().required("Veuillez entrer une date de versement"),
-      salary_net: Yup.number().required("Veuillez entrer un salaire net"),
-      salary_brut: Yup.number().required("Veuillez entrer un salaire brut"),
-      salary_charge: Yup.number().required("Veuillez entrer un salaire brut chargé")
-    }),
-    onSubmit: (values) => {
-      const newSalary = {
-        sal_use_fk: values.salaray_use_id,
-        sal_net: values.salary_net,
-        sal_brut: values.salary_brut,
-        sal_bcharge: values.salary_charge,
-        sal_date: values.salaray_date
-      };
-
-      // if (isEdit) {
-      //   newSalary.sal_id = values.sal_id;
-      // }
-
-      SalaryService.createUpdateSalary(values);
-      validation.resetForm();
-      toggle();
-    }
-  });
-
-  useEffect(() => {
-    if (dateFormat?.length > 3 && salaries) {
-      let moisData = {};
-      for (let index = 0; index < salaries.length; index++) {
-        const element = salaries[index];
-        const moisNom = moisIndices[element?.mois];
-        if (!moisData[moisNom]) {
-          moisData[moisNom] = [];
-        }
-        moisData[moisNom].push(element);
-      }
-      setMoisDonnee(moisData);
-    }
-  }, [salaries]);
-
-  // Update Data Salaire
-  const handleSalaryClick = useCallback(
-    (arg) => {
-      const salary = arg;
-      setSalary({
-        id: salary?.sal_id,
-        salaray_use_id: salary.sal_use_fk,
-        salary_net: salary.sal_net,
-        salary_brut: salary.sal_brut,
-        salary_charge: salary.sal_bcharge,
-        salaray_date: salary.sal_date
-      });
-
-      setIsEdit(true);
-      toggle();
-    },
-    [toggle]
-  );
-
   // Checked All
   const checkedAll = useCallback(() => {
     const checkall = document.getElementById("checkBoxAll");
@@ -205,16 +127,15 @@ const Salary = () => {
   const [selectedCheckBoxDelete, setSelectedCheckBoxDelete] = useState([]);
   const [isMultiDeleteButton, setIsMultiDeleteButton] = useState(false);
 
-  const deleteMultiple = () => {
+  const deleteMultiple = async () => {
     const checkall = document.getElementById("checkBoxAll");
-    selectedCheckBoxDelete.forEach((element) => {
-      dispatch(onDeleteSalary(element.value));
-      setTimeout(() => {
-        toast.clearWaitingQueue();
-      }, 3000);
-    });
+    for (let index = 0; index < selectedCheckBoxDelete.length; index++) {
+      const element = selectedCheckBoxDelete[index];
+      await SalaryService.deleteSalary(element.value);
+    }
     setIsMultiDeleteButton(false);
     checkall.checked = false;
+    toggleRefresh();
   };
 
   const deleteCheckbox = () => {
@@ -329,7 +250,7 @@ const Salary = () => {
       },
       {
         Header: "Action",
-        Cell: (cellProps) => {
+        Cell: ({ row }) => {
           return (
             <ul className="list-inline hstack gap-2 mb-0">
               <li className="list-inline-item">
@@ -345,8 +266,7 @@ const Salary = () => {
                       className="dropdown-item edit-item-btn"
                       href="#"
                       onClick={() => {
-                        const salaryData = cellProps.row.original;
-                        handleSalaryClick(salaryData);
+                        toggle({ id: row.original.sal_id });
                       }}>
                       <i className="ri-pencil-fill align-bottom me-2 text-primary"></i> Modifier
                     </DropdownItem>
@@ -354,8 +274,7 @@ const Salary = () => {
                       className="dropdown-item remove-item-btn"
                       href="#"
                       onClick={() => {
-                        const salaryData = cellProps.row.original;
-                        onClickDelete(salaryData);
+                        onClickDelete({ id: row.original.sal_id });
                       }}>
                       <i className="ri-delete-bin-fill align-bottom me-2 text-danger"></i> Supprimer
                     </DropdownItem>
@@ -367,32 +286,28 @@ const Salary = () => {
         }
       }
     ],
-    [handleSalaryClick, checkedAll, salaries, moisDonnees]
+    [checkedAll, moisDonnees]
   );
 
-  //Récupération des employés pour le select du formulaire
-  useEffect(() => {
-    dispatch(onGetEmployees());
-  }, [dispatch]);
+  async function ChargeMoisDate() {
+    const salaries = await SalaryService.getSalary(dateFormat);
+    let moisData = {};
+    for (let index = 0; index < salaries.length; index++) {
+      const element = salaries[index];
+      const moisNom = moisIndices[element?.mois];
+      if (!moisData[moisNom]) {
+        moisData[moisNom] = [];
+      }
+      moisData[moisNom].push(element);
+    }
+    setMoisDonnee(moisData);
+  }
 
   useEffect(() => {
-    async function ChargeMoisDate() {
-      if (dateFormat?.length > 3) {
-        dispatch(onGetSalary(dateFormat));
-        let moisData = {};
-        for (let index = 0; index < salaries.length; index++) {
-          const element = salaries[index];
-          const moisNom = moisIndices[element?.mois];
-          if (!moisData[moisNom]) {
-            moisData[moisNom] = [];
-          }
-          moisData[moisNom].push(element);
-        }
-        setMoisDonnee(moisData);
-      }
+    if (dateFormat?.length > 3) {
+      ChargeMoisDate();
     }
-    ChargeMoisDate();
-  }, [dispatch, dateFormat, salary]);
+  }, [dateFormat, refresh]);
 
   document.title = "Salaires | Countano";
   return (
@@ -469,7 +384,7 @@ const Salary = () => {
                         className="px-4">
                         {dateFormat?.length > 3 && dateMonthChoice && (
                           <div>
-                            {isSalarySuccess ? (
+                            {moisDonnees ? (
                               <TableContainer
                                 columns={columns}
                                 data={moisDonnees[dateMonthChoice] || []}
@@ -483,7 +398,7 @@ const Salary = () => {
                                 SearchPlaceholder="Recherche..."
                               />
                             ) : (
-                              <Loader error={error} />
+                              <Loader />
                             )}
                           </div>
                         )}
@@ -502,186 +417,24 @@ const Salary = () => {
                         )}
                       </Col>
                     </Row>
-
                     <Modal
                       id="showModal"
                       isOpen={modal}
                       toggle={toggle}
-                      centered>
+                      centered
+                      size="xl">
                       <ModalHeader
                         className="bg-soft-info p-3"
                         toggle={toggle}>
                         {!!isEdit ? "Modifier un salaire" : "Ajouter un salaire"}
                       </ModalHeader>
-
-                      <Form
-                        className="tablelist-form"
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          validation.handleSubmit();
-                          return false;
-                        }}>
-                        <ModalBody>
-                          <Input
-                            type="hidden"
-                            id="id-field"
-                          />
-                          <Row className="g-3">
-                            <Col lg={6}>
-                              <div>
-                                <Label
-                                  htmlFor="salaray_use_id-field"
-                                  className="form-label">
-                                  Employé
-                                </Label>
-
-                                <Input
-                                  type="select"
-                                  className="form-select mb-0"
-                                  validate={{
-                                    required: { value: true }
-                                  }}
-                                  invalid={validation.touched.salaray_use_id && validation.errors.salaray_use_id ? true : false}
-                                  value={validation.values.salaray_use_id}
-                                  onChange={validation.handleChange}
-                                  onBlur={validation.handleBlur}
-                                  name="salaray_use_id"
-                                  id="salaray_use_id-field">
-                                  <option
-                                    disabled={true}
-                                    value={""}>
-                                    Choisir un employé
-                                  </option>
-                                  {employees?.map((e, i) => (
-                                    <option
-                                      key={i}
-                                      value={e.use_id}>
-                                      {e.use_lastname} {e.use_firstname}
-                                    </option>
-                                  ))}
-                                </Input>
-                                {validation.touched.salaray_use_id && validation.errors.salaray_use_id ? <FormFeedback type="invalid">{validation.errors.salaray_use_id}</FormFeedback> : null}
-                              </div>
-                            </Col>
-                            <Col lg={6}>
-                              <div>
-                                <Label
-                                  htmlFor="salaray_date-field"
-                                  className="form-label">
-                                  Date versement
-                                </Label>
-
-                                <Input
-                                  name="salaray_date"
-                                  id="salaray_date-field"
-                                  className="form-control"
-                                  type="date"
-                                  validate={{
-                                    required: { value: true }
-                                  }}
-                                  onChange={validation.handleChange}
-                                  onBlur={validation.handleBlur}
-                                  value={validation.values.salaray_date || ""}
-                                  invalid={validation.touched.salaray_date && validation.errors.salaray_date ? true : false}
-                                />
-                                {validation.touched.salaray_date && validation.errors.salaray_date ? <FormFeedback type="invalid">{validation.errors.salaray_date}</FormFeedback> : null}
-                              </div>
-                            </Col>
-                            <Col lg={4}>
-                              <div>
-                                <Label
-                                  htmlFor="salary_net-field"
-                                  className="form-label">
-                                  Salaire net
-                                </Label>
-                                <Input
-                                  name="salary_net"
-                                  id="salary_net-field"
-                                  className="form-control"
-                                  placeholder="Net"
-                                  type="number"
-                                  validate={{
-                                    required: { value: true }
-                                  }}
-                                  onChange={validation.handleChange}
-                                  onBlur={validation.handleBlur}
-                                  value={validation.values.salary_net || ""}
-                                  invalid={validation.touched.salary_net && validation.errors.salary_net ? true : false}
-                                />
-                                {validation.touched.salary_net && validation.errors.salary_net ? <FormFeedback type="invalid">{validation.errors.salary_net}</FormFeedback> : null}
-                              </div>
-                            </Col>
-                            <Col lg={4}>
-                              <div>
-                                <Label
-                                  htmlFor="salary-brut-field"
-                                  className="form-label">
-                                  Salaire brut
-                                </Label>
-                                <Input
-                                  name="salary_brut"
-                                  id="salary_brut-field"
-                                  className="form-control"
-                                  placeholder="Brut"
-                                  type="number"
-                                  validate={{
-                                    required: { value: true }
-                                  }}
-                                  onChange={validation.handleChange}
-                                  onBlur={validation.handleBlur}
-                                  value={validation.values.salary_brut || ""}
-                                  invalid={validation.touched.salary_brut && validation.errors.salary_brut ? true : false}
-                                />
-                                {validation.touched.salary_brut && validation.errors.salary_brut ? <FormFeedback type="invalid">{validation.errors.salary_brut}</FormFeedback> : null}
-                              </div>
-                            </Col>
-                            <Col lg={4}>
-                              <div>
-                                <Label
-                                  htmlFor="salary_charge-field"
-                                  className="form-label">
-                                  Salaire brut chargé
-                                </Label>
-                                <Input
-                                  name="salary_charge"
-                                  id="salary_charge-field"
-                                  className="form-control"
-                                  placeholder="Brut chargé"
-                                  type="number"
-                                  validate={{
-                                    required: { value: true }
-                                  }}
-                                  onChange={validation.handleChange}
-                                  onBlur={validation.handleBlur}
-                                  value={validation.values.salary_charge || ""}
-                                  invalid={validation.touched.salary_charge && validation.errors.salary_charge ? true : false}
-                                />
-                                {validation.touched.salary_charge && validation.errors.salary_charge ? <FormFeedback type="invalid">{validation.errors.salary_charge}</FormFeedback> : null}
-                              </div>
-                            </Col>
-                          </Row>
-                        </ModalBody>
-                        <ModalFooter>
-                          <div className="hstack gap-2 justify-content-end">
-                            <button
-                              type="button"
-                              className="btn btn-light"
-                              onClick={() => {
-                                setModal(false);
-                              }}>
-                              {" "}
-                              Fermer{" "}
-                            </button>
-                            <button
-                              type="submit"
-                              className="btn btn-success"
-                              id="add-btn">
-                              {" "}
-                              {!!isEdit ? "Modifier" : "Ajouter"}{" "}
-                            </button>
-                          </div>
-                        </ModalFooter>
-                      </Form>
+                      <ModalBody className="p-0">
+                        <Formulaire
+                          salId={salId}
+                          onClose={toggle}
+                          onUpdate={toggleRefresh}
+                        />
+                      </ModalBody>
                     </Modal>
                     <ToastContainer
                       closeButton={false}

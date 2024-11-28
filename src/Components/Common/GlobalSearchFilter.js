@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Col, Row, Button, UncontrolledDropdown, DropdownToggle, DropdownItem, DropdownMenu, Input } from "reactstrap";
+import React, { useEffect, useRef, useState } from "react";
+import { Col, Row, Button, UncontrolledDropdown, DropdownToggle, DropdownItem, DropdownMenu, Input, Label } from "reactstrap";
 import { Link } from "react-router-dom";
 import Flatpickr from "react-flatpickr";
 import Select from "react-select";
@@ -545,6 +545,165 @@ const DevisListGlobalSearch = ({ origneData, data, setData, value }) => {
   );
 };
 
+const FactureAchatListGlobalSearch = ({ origneData, setData }) => {
+  const [isText, setisText] = useState(null);
+  const [isDate, setisDate] = useState(null);
+  const [isPeriodeDate, setisPeriodeDate] = useState(null);
+  const flatpickrRef = useRef();
+  const flatpickrPeriodeRef = useRef();
+
+  /**
+   * Fonction de trier des devis
+   */
+  const filteredData = () => {
+    let newData = [...origneData];
+
+    if (isText) {
+      newData = newData.filter((e) => e.ach_lib?.toLowerCase().includes(isText?.toLowerCase()) || e.ent_name?.toLowerCase().includes(isText?.toLowerCase()) || e.ach_total_amount?.toLowerCase().includes(isText?.toLowerCase()) || e.ach_rp?.toLowerCase().includes(isText?.toLowerCase()) || e.categories?.filter((cat) => cat?.aca_name?.toLowerCase().includes(isText?.toLowerCase()))?.length > 0);
+    }
+
+    if (isDate) {
+      newData = newData.filter((e) => moment(isDate).startOf("days").isSame(moment(e.ach_date_create).startOf("days")));
+    }
+
+    if (isPeriodeDate) {
+      newData = newData.filter((e) => moment(e.created_at).startOf("days").isBetween(moment(isPeriodeDate?.start).startOf("days"), moment(isPeriodeDate?.end).startOf("days"), undefined, "[]"));
+    }
+
+    setData(() => newData);
+  };
+
+  useEffect(() => {
+    if (origneData.length) {
+      if (isPeriodeDate || isText || isDate) {
+        filteredData();
+      } else {
+        setData(origneData);
+      }
+    }
+  }, [isText, isDate, isPeriodeDate]);
+
+  return (
+    <React.Fragment>
+      <Row className="justify-content-between">
+        <Col
+          sm={6}
+          xxl={5}>
+          <div className={"search-box me-2 mb-2 d-flex col-12"}>
+            <input
+              onChange={(e) => {
+                setisText(e.target.value != "" ? e.target.value : null);
+              }}
+              id="search-bar-0"
+              type="text"
+              className="form-control search /"
+              placeholder={`Recherche...`}
+              value={isText || ""}
+            />
+            <i className="bx bx-search-alt search-icon"></i>
+          </div>
+        </Col>
+
+        <Col
+          sm={6}
+          lg={5}
+          xxl={3}
+          className=" mb-2">
+          <Row className="mb-0 align-items-center justify-content-end">
+            <div className="col-sm-auto d-flex align-items-center flex-row ">
+              {flatpickrRef.current?.flatpickr?.selectedDates?.length > 0 && (
+                <Link
+                  className="las la-calendar-times la-lg"
+                  onClick={() => {
+                    setisPeriodeDate({
+                      start: null,
+                      end: null
+                    });
+                    flatpickrRef.current.flatpickr.clear();
+                  }}
+                  style={{ color: "red" }}></Link>
+              )}
+              <Flatpickr
+                ref={flatpickrRef}
+                onChange={(date, dateStr) => {
+                  setisDate(date[0]);
+                }}
+                className="form-control border-0 fs-13 dash-filter-picker shadow flex-row"
+                placeholder="Selectionnez une date d'achat"
+                options={{
+                  locale: French,
+                  altInput: true,
+                  enableTime: false,
+                  altFormat: "F j, Y",
+                  dateFormat: "Y-m-d"
+                }}
+              />
+              <div className="input-group-text bg-secondary border-secondary text-white">
+                <i className="ri-calendar-2-line"></i>
+              </div>
+            </div>
+          </Row>
+        </Col>
+        <Col
+          sm={6}
+          lg={5}
+          xxl={3}
+          className=" mb-2">
+          <Row className="mb-0 align-items-center">
+            <div className="col-sm-auto d-flex align-items-center flex-row">
+              {flatpickrPeriodeRef.current?.flatpickr?.selectedDates?.length > 0 && (
+                <Link
+                  className="las la-calendar-times la-lg"
+                  onClick={() => {
+                    setisPeriodeDate({
+                      start: null,
+                      end: null
+                    });
+                    flatpickrPeriodeRef.current.flatpickr.clear();
+                  }}
+                  style={{ color: "red" }}></Link>
+              )}
+              {/* <div className="input-group"> */}
+              <Flatpickr
+                ref={flatpickrPeriodeRef}
+                className="form-control border-0 fs-13 dash-filter-picker shadow flex-row"
+                placeholder={"Période de création"}
+                options={{
+                  locale: "fr",
+                  mode: "range",
+                  dateFormat: "d M, Y",
+                  defaultDate: [isPeriodeDate?.start, isPeriodeDate?.end]
+                }}
+                onChange={(periodDate) => {
+                  if (periodDate.length == 2) {
+                    setisPeriodeDate({
+                      start: moment(periodDate[0]).format("YYYY-MM-DD"),
+                      end: moment(periodDate[1]).format("YYYY-MM-DD")
+                    });
+                  } else if (periodDate.length == 1) {
+                    setisPeriodeDate({
+                      start: moment(periodDate[0]).format("YYYY-MM-DD"),
+                      end: moment(periodDate[0]).format("YYYY-MM-DD")
+                    });
+                  } else {
+                    setisPeriodeDate({
+                      start: null,
+                      end: null
+                    });
+                  }
+                }}
+              />
+              <div className="input-group-text bg-secondary border-secondary text-white">
+                <i className="ri-calendar-2-line"></i>
+              </div>
+            </div>
+          </Row>
+        </Col>
+      </Row>
+    </React.Fragment>
+  );
+};
+
 const TransactionListGlobalSearch = ({ origneData, data, setData, value }) => {
   const [isText, setisText] = useState(null);
   const [isDate, setisDate] = useState(null);
@@ -747,4 +906,4 @@ const TaskListGlobalFilter = () => {
   );
 };
 
-export { CustomersGlobalFilter, InvoiceListGlobalSearch, DevisListGlobalSearch, TransactionListGlobalSearch };
+export { CustomersGlobalFilter, InvoiceListGlobalSearch, DevisListGlobalSearch, TransactionListGlobalSearch, FactureAchatListGlobalSearch };

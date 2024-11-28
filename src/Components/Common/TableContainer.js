@@ -72,6 +72,7 @@ export function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFil
                         onClick={() => {
                           setPeriodeCalendar(
                             {
+                              placeholder: perdiodeCalendar?.placeholder,
                               start: null,
                               end: null
                             },
@@ -85,6 +86,7 @@ export function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFil
                     <Flatpickr
                       ref={flatpickrRef}
                       className="form-control border-0 fs-13 dash-filter-picker shadow flex-row"
+                      placeholder={perdiodeCalendar?.placeholder}
                       options={{
                         locale: "fr",
                         mode: "range",
@@ -95,6 +97,7 @@ export function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFil
                         if (periodDate.length == 2) {
                           setPeriodeCalendar(
                             {
+                              placeholder: perdiodeCalendar?.placeholder,
                               start: moment(periodDate[0]).format("YYYY-MM-DD"),
                               end: moment(periodDate[1]).format("YYYY-MM-DD")
                             },
@@ -103,6 +106,7 @@ export function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFil
                         } else if (periodDate.length == 1) {
                           setPeriodeCalendar(
                             {
+                              placeholder: perdiodeCalendar?.placeholder,
                               start: moment(periodDate[0]).format("YYYY-MM-DD"),
                               end: moment(periodDate[0]).format("YYYY-MM-DD")
                             },
@@ -111,6 +115,7 @@ export function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFil
                         } else {
                           setPeriodeCalendar(
                             {
+                              placeholder: perdiodeCalendar?.placeholder,
                               start: null,
                               end: null
                             },

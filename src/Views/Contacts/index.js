@@ -468,7 +468,7 @@ const Contacts = () => {
                                 <div className="avatar-lg p-1">
                                   <div className="avatar-title bg-light rounded-circle">
                                     <img
-                                      src={process.env.REACT_APP_API_URL + "v1/images/" + (epe_info.image_src ? "company/" + epe_info.image_src : "user-dummy-img.jpg")}
+                                      src={process.env.REACT_APP_API_URL + "/v1/images/" + (epe_info.image_src ? "company/" + epe_info.image_src : "user-dummy-img.jpg")}
                                       alt="dummyImg"
                                       id="customer-img"
                                       className="avatar-md rounded-circle object-cover"
@@ -691,7 +691,7 @@ const Contacts = () => {
                   </div>
                   <div className="position-relative d-inline-block">
                     <img
-                      src={process.env.REACT_APP_API_URL + "v1/images/" + (epe_info.image_src ? "company/" + epe_info.image_src : "user-dummy-img.jpg")}
+                      src={process.env.REACT_APP_API_URL + "/v1/images/" + (epe_info.image_src ? "company/" + epe_info.image_src : "user-dummy-img.jpg")}
                       alt=""
                       className="avatar-lg rounded-circle img-thumbnail"
                     />

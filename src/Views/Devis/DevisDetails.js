@@ -260,36 +260,38 @@ const DevisDetails = () => {
                           </div>
                         )}
                       </Col>
-                      <Col
-                        xs={12}
-                        md={6}
-                        lg={8}
-                        className="col-6 d-flex flex-column align-items-end">
-                        <h6 className="text-muted text-uppercase fw-semibold mb-3">Information Client</h6>
-                        <p
-                          className="fw-medium mb-2"
-                          id="billing-name">
-                          {devis.contact.dco_cus_name}
-                        </p>
-                        <p
-                          className="text-muted mb-1"
-                          id="billing-address-line-1">
-                          {devis.contact.dco_cus_address}
-                        </p>
-                        <p
-                          className="text-muted mb-1"
-                          id="billing-address-line-1">
-                          {devis.contact.dco_cus_cp}, {devis.contact.dco_cus_city}
-                        </p>
-                        <p className="text-muted mb-1">
-                          <span>Téléphone: </span>
-                          <span id="billing-phone-no">{devis.contact.dco_cus_phone}</span>
-                        </p>
-                        <p className="text-muted mb-0">
-                          <span>Email: </span>
-                          <span id="billing-tax-no">{devis.contact.dco_cus_email}</span>{" "}
-                        </p>
-                      </Col>
+                      {devis.header.den_ent_fk != null && (
+                        <Col
+                          xs={12}
+                          md={6}
+                          lg={8}
+                          className="col-6 d-flex flex-column align-items-end">
+                          <h6 className="text-muted text-uppercase fw-semibold mb-3">Information Client</h6>
+                          <p
+                            className="fw-medium mb-2"
+                            id="billing-name">
+                            {devis.contact.dco_cus_name}
+                          </p>
+                          <p
+                            className="text-muted mb-1"
+                            id="billing-address-line-1">
+                            {devis.contact.dco_cus_address}
+                          </p>
+                          <p
+                            className="text-muted mb-1"
+                            id="billing-address-line-1">
+                            {devis.contact.dco_cus_cp}, {devis.contact.dco_cus_city}
+                          </p>
+                          <p className="text-muted mb-1">
+                            <span>Téléphone: </span>
+                            <span id="billing-phone-no">{devis.contact.dco_cus_phone}</span>
+                          </p>
+                          <p className="text-muted mb-0">
+                            <span>Email: </span>
+                            <span id="billing-tax-no">{devis.contact.dco_cus_email}</span>{" "}
+                          </p>
+                        </Col>
+                      )}
                     </Row>
                   </CardBody>
                 </Col>
@@ -493,11 +495,14 @@ const DevisDetails = () => {
                         className="btn btn-success">
                         <i className="ri-ball-pen-line align-bottom me-1"></i> Editer
                       </Link>
-                      <Link
-                        onClick={() => setShowConfirmModal(true)}
-                        className="btn btn-success">
-                        <i className="ri-send-plane-fill align-bottom me-1"></i> Envoyer
-                      </Link>
+                      {devis.header.den_ent_fk != null && (
+                        <Link
+                          onClick={() => setShowConfirmModal(true)}
+                          className="btn btn-success">
+                          <i className="ri-send-plane-fill align-bottom me-1"></i> Envoyer
+                        </Link>
+                      )}
+
                       <Link
                         to="#"
                         onClick={printInvoice}
@@ -510,15 +515,16 @@ const DevisDetails = () => {
                         className="btn btn-secondary">
                         <i className="ri-download-2-line align-bottom me-1"></i> Télécharger
                       </Link>
-                      <Link
-                        onClick={() => {
-                          checkFactureAlreadyCreated();
-                        }}
-                        /*to={'/factures/creation'}*/ state={{ den_id: devis.header.den_id }}
-                        className="btn btn-secondary">
-                        <i className="ri-file-copy-2-fill align-bottom me-1"></i> Facturer
-                      </Link>
-
+                      {devis.header.den_ent_fk != null && (
+                        <Link
+                          onClick={() => {
+                            checkFactureAlreadyCreated();
+                          }}
+                          /*to={'/factures/creation'}*/ state={{ den_id: devis.header.den_id }}
+                          className="btn btn-secondary">
+                          <i className="ri-file-copy-2-fill align-bottom me-1"></i> Facturer
+                        </Link>
+                      )}
                       <Link
                         onClick={() => {
                           setDeleteModal(true);

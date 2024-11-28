@@ -24,7 +24,7 @@ import { getImage } from "../../utils/getImages";
 import ConfirmModal from "../../Components/Common/ConfirmModal";
 import { DevisService, GestionService, ProductService } from "../../services";
 
-const InvoiceCreate = () => {
+const DevisCreate = () => {
   const { company, prefix_devis, devise } = useSelector((state) => ({
     company: state.Company.company[0],
     devise: state.Company.devise,
@@ -104,6 +104,7 @@ const InvoiceCreate = () => {
     enableReinitialize: true,
 
     initialValues: {
+      addClient: true,
       contact: {
         // Champs avec "cus" correspond au client
         dco_cus_email: "",
@@ -136,6 +137,7 @@ const InvoiceCreate = () => {
       ligne: []
     },
     validationSchema: Yup.object({
+      addClient: Yup.boolean(),
       contact: Yup.object({
         dco_cus_name: Yup.string().required("Champs obligatoire"),
         dco_cus_email: Yup.string().required("Champs obligatoire"),
@@ -143,12 +145,24 @@ const InvoiceCreate = () => {
         dco_cus_address: Yup.string().required("Champs obligatoire"),
         dco_cus_city: Yup.string().required("Champs obligatoire"),
         dco_cus_cp: Yup.string().required("Champs obligatoire"),
+
         dco_name: Yup.string().required("Champs obligatoire"),
         dco_email: Yup.string().email("Email invalide").required("Champs obligatoire"),
         dco_phone: Yup.string().required("Champs obligatoire"),
         dco_address: Yup.string().required("Champs obligatoire"),
         dco_city: Yup.string().required("Champs obligatoire"),
         dco_cp: Yup.string().required("Champs obligatoire")
+      }).when("addClient", {
+        is: true,
+        then: (schema) => schema,
+        otherwise: Yup.object({
+          dco_name: Yup.string().required("Champs obligatoire"),
+          dco_email: Yup.string().email("Email invalide").required("Champs obligatoire"),
+          dco_phone: Yup.string().required("Champs obligatoire"),
+          dco_address: Yup.string().required("Champs obligatoire"),
+          dco_city: Yup.string().required("Champs obligatoire"),
+          dco_cp: Yup.string().required("Champs obligatoire")
+        })
       }),
       header: Yup.object({
         den_sujet: Yup.string().required("Champs obligatoire"),
@@ -336,7 +350,6 @@ const InvoiceCreate = () => {
             <Card>
               <Form
                 onSubmit={(e) => {
-                  console.log("submit ");
                   e.preventDefault();
                   validation.handleSubmit();
                   return false;
@@ -380,7 +393,7 @@ const InvoiceCreate = () => {
                               Sujet
                             </Label>
                           </div>
-                          <div className="mb-2">
+                          <div className="">
                             <Input
                               type="text"
                               className="form-control border-1"
@@ -401,7 +414,7 @@ const InvoiceCreate = () => {
                   </Row>
                 </CardBody>
 
-                <CardBody className="p-4">
+                <CardBody className="p-1">
                   <Row className="d-flex justify-content-around">
                     <Col
                       lg={4}
@@ -511,130 +524,136 @@ const InvoiceCreate = () => {
                     <Col
                       lg={4}
                       sm={6}>
-                      <Row>
-                        <Col>
-                          <div className="title-client">
-                            <Label
-                              for="dco_cus_name"
-                              className="text-muted text-uppercase fw-semibold">
-                              Client information
-                            </Label>
-                          </div>
-                          <div className="mb-2">
-                            <div
-                              className="input-group"
-                              style={{ position: "relative" }}>
+                      <Label
+                        className="text-muted text-uppercase fw-semibold"
+                        style={{ marginRight: 15 }}
+                        htmlFor="addClient">
+                        Ajouter un client ?
+                      </Label>
+                      <Input
+                        type="checkbox"
+                        id="addClient"
+                        value={validation.values.addClient}
+                        onChange={validation.handleChange}
+                        checked={validation.values.addClient}
+                      />
+                      {validation.values.addClient && (
+                        <Row>
+                          <Col>
+                            <div className="title-client">
+                              <Label
+                                for="dco_cus_name"
+                                className="text-muted text-uppercase fw-semibold">
+                                Client information
+                              </Label>
+                            </div>
+                            <div className="mb-2">
+                              <div
+                                className="input-group"
+                                style={{ position: "relative" }}>
+                                <Input
+                                  autoComplete="off"
+                                  type="text"
+                                  className="form-control border-1"
+                                  id="dco_cus_name"
+                                  name="contact.dco_cus_name"
+                                  value={validation.values.contact.dco_cus_name || ""}
+                                  onBlur={validation.handleBlur}
+                                  onChange={validation.handleChange}
+                                  placeholder="Nom complet*"
+                                  invalid={validation.errors?.contact?.dco_cus_name && validation.touched?.contact?.dco_cus_name ? true : false}
+                                  required
+                                />
+                                <button
+                                  onClick={toggle}
+                                  className="btn btn-secondary"
+                                  type="button"
+                                  id="button-addon2">
+                                  +
+                                </button>
+                              </div>
+                              {validation.errors?.contact?.dco_cus_name && validation.touched?.contact?.dco_cus_name ? <FormFeedback type="invalid">{validation.errors?.contact?.dco_cus_name}</FormFeedback> : null}
+                            </div>
+                            <div className="mb-2">
                               <Input
-                                autoComplete="off"
-                                type="text"
+                                type="textarea"
                                 className="form-control border-1"
-                                id="dco_cus_name"
-                                name="contact.dco_cus_name"
-                                value={validation.values.contact.dco_cus_name || ""}
+                                id="dco_cus_address"
+                                name="contact.dco_cus_address"
+                                value={validation.values.contact.dco_cus_address || ""}
                                 onBlur={validation.handleBlur}
                                 onChange={validation.handleChange}
-                                placeholder="Nom complet*"
-                                invalid={validation.errors?.contact?.dco_cus_name && validation.touched?.contact?.dco_cus_name ? true : false}
+                                rows="3"
+                                placeholder="Adresse*"
+                                invalid={validation.errors?.contact?.dco_cus_address && validation.touched?.contact?.dco_cus_address ? true : false}
                                 required
                               />
-                              <button
-                                onClick={toggle}
-                                className="btn btn-secondary"
-                                type="button"
-                                id="button-addon2">
-                                +
-                              </button>
-                              {/* {showCollabDiv &&
-                                <datalist id="list-company" style={{ display: "block", position: 'absolute', backgroundColor: 'white', width: "100%", border: "0.5px solid #dddddd", zIndex: 5000, height: "auto", maxHeight: "400px", overflowY: "scroll" }} >
-                                  {collaborateurs.filter(e => e.ent_name.includes(validation.values.contact.dco_cus_name)).map((c, i) => {
-                                    return (
-                                      <option style={{ cursor: "pointer", padding: 8, borderBottom: "0.5px solid #dddddd" }} onClick={() => { setShowCollabDiv(() => false); setCollaborateur(c) }} key={i}>{c.ent_name}</option>
-                                    )
-                                  })}
-                                </datalist>
-                              } */}
+                              {validation.errors?.contact?.dco_cus_address && validation.touched?.contact?.dco_cus_address ? <FormFeedback type="invalid">{validation.errors?.contact?.dco_cus_address}</FormFeedback> : null}
                             </div>
-                            {validation.errors?.contact?.dco_cus_name && validation.touched?.contact?.dco_cus_name ? <FormFeedback type="invalid">{validation.errors?.contact?.dco_cus_name}</FormFeedback> : null}
-                          </div>
-                          <div className="mb-2">
-                            <Input
-                              type="textarea"
-                              className="form-control border-1"
-                              id="dco_cus_address"
-                              name="contact.dco_cus_address"
-                              value={validation.values.contact.dco_cus_address || ""}
-                              onBlur={validation.handleBlur}
-                              onChange={validation.handleChange}
-                              rows="3"
-                              placeholder="Adresse*"
-                              invalid={validation.errors?.contact?.dco_cus_address && validation.touched?.contact?.dco_cus_address ? true : false}
-                              required
-                            />
-                            {validation.errors?.contact?.dco_cus_address && validation.touched?.contact?.dco_cus_address ? <FormFeedback type="invalid">{validation.errors?.contact?.dco_cus_address}</FormFeedback> : null}
-                          </div>
-                          <div className="mb-2">
-                            <Input
-                              type="text"
-                              className="form-control border-1"
-                              id="dco_cp"
-                              name="contact.dco_cus_cp"
-                              value={validation.values.contact.dco_cus_cp || ""}
-                              onBlur={validation.handleBlur}
-                              onChange={validation.handleChange}
-                              placeholder="Code postal*"
-                              invalid={validation.errors?.contact?.dco_cus_cp && validation.touched?.contact?.dco_cus_cp ? true : false}
-                              required
-                            />
-                            {validation.errors?.contact?.dco_cus_cp && validation.touched?.contact?.dco_cus_cp ? <FormFeedback type="invalid">{validation.errors?.contact?.dco_cus_cp}</FormFeedback> : null}
-                          </div>
-                          <div className="mb-2">
-                            <Input
-                              type="text"
-                              className="form-control border-1"
-                              id="dco_cus_city"
-                              name="contact.dco_cus_city"
-                              value={validation.values.contact.dco_cus_city || ""}
-                              onBlur={validation.handleBlur}
-                              onChange={validation.handleChange}
-                              placeholder="Ville*"
-                              required
-                              invalid={validation.errors?.contact?.dco_cus_city && validation.touched?.contact?.dco_cus_city ? true : false}
-                            />
-                            {validation.errors?.contact?.dco_cus_city && validation.touched?.contact?.dco_cus_city ? <FormFeedback type="invalid">{validation.errors?.contact?.dco_cus_city}</FormFeedback> : null}
-                          </div>
-                          <div className="mb-2">
-                            <Input
-                              type="text"
-                              className="form-control border-1"
-                              data-plugin="cleave-phone"
-                              id="dco_cus_phone"
-                              name="contact.dco_cus_phone"
-                              value={validation.values.contact.dco_cus_phone || ""}
-                              onBlur={validation.handleBlur}
-                              onChange={validation.handleChange}
-                              placeholder="Téléphone*"
-                              required
-                              invalid={validation.errors?.contact?.dco_cus_phone && validation.touched?.contact?.dco_cus_phone ? true : false}
-                            />
-                            {validation.errors?.contact?.dco_cus_phone && validation.touched?.contact?.dco_cus_phone ? <FormFeedback type="invalid">{validation.errors?.contact?.dco_cus_phone}</FormFeedback> : null}
-                          </div>
-                          <div className="mb-2">
-                            <Input
-                              type="text"
-                              className="form-control border-1"
-                              id="dco_cus_email"
-                              name="contact.dco_cus_email"
-                              value={validation.values.contact.dco_cus_email || ""}
-                              onBlur={validation.handleBlur}
-                              onChange={validation.handleChange}
-                              placeholder="Email*"
-                              required
-                              invalid={validation.errors?.contact?.dco_cus_email && validation.touched?.contact?.dco_cus_email ? true : false}
-                            />
-                            {validation.errors?.contact?.dco_cus_email && validation.touched?.contact?.dco_cus_email ? <FormFeedback type="invalid">{validation.errors?.contact?.dco_cus_email}</FormFeedback> : null}
-                          </div>
-                        </Col>
-                      </Row>
+                            <div className="mb-2">
+                              <Input
+                                type="text"
+                                className="form-control border-1"
+                                id="dco_cp"
+                                name="contact.dco_cus_cp"
+                                value={validation.values.contact.dco_cus_cp || ""}
+                                onBlur={validation.handleBlur}
+                                onChange={validation.handleChange}
+                                placeholder="Code postal*"
+                                invalid={validation.errors?.contact?.dco_cus_cp && validation.touched?.contact?.dco_cus_cp ? true : false}
+                                required
+                              />
+                              {validation.errors?.contact?.dco_cus_cp && validation.touched?.contact?.dco_cus_cp ? <FormFeedback type="invalid">{validation.errors?.contact?.dco_cus_cp}</FormFeedback> : null}
+                            </div>
+                            <div className="mb-2">
+                              <Input
+                                type="text"
+                                className="form-control border-1"
+                                id="dco_cus_city"
+                                name="contact.dco_cus_city"
+                                value={validation.values.contact.dco_cus_city || ""}
+                                onBlur={validation.handleBlur}
+                                onChange={validation.handleChange}
+                                placeholder="Ville*"
+                                required
+                                invalid={validation.errors?.contact?.dco_cus_city && validation.touched?.contact?.dco_cus_city ? true : false}
+                              />
+                              {validation.errors?.contact?.dco_cus_city && validation.touched?.contact?.dco_cus_city ? <FormFeedback type="invalid">{validation.errors?.contact?.dco_cus_city}</FormFeedback> : null}
+                            </div>
+                            <div className="mb-2">
+                              <Input
+                                type="text"
+                                className="form-control border-1"
+                                data-plugin="cleave-phone"
+                                id="dco_cus_phone"
+                                name="contact.dco_cus_phone"
+                                value={validation.values.contact.dco_cus_phone || ""}
+                                onBlur={validation.handleBlur}
+                                onChange={validation.handleChange}
+                                placeholder="Téléphone*"
+                                required
+                                invalid={validation.errors?.contact?.dco_cus_phone && validation.touched?.contact?.dco_cus_phone ? true : false}
+                              />
+                              {validation.errors?.contact?.dco_cus_phone && validation.touched?.contact?.dco_cus_phone ? <FormFeedback type="invalid">{validation.errors?.contact?.dco_cus_phone}</FormFeedback> : null}
+                            </div>
+                            <div className="mb-2">
+                              <Input
+                                type="text"
+                                className="form-control border-1"
+                                id="dco_cus_email"
+                                name="contact.dco_cus_email"
+                                value={validation.values.contact.dco_cus_email || ""}
+                                onBlur={validation.handleBlur}
+                                onChange={validation.handleChange}
+                                placeholder="Email*"
+                                required
+                                invalid={validation.errors?.contact?.dco_cus_email && validation.touched?.contact?.dco_cus_email ? true : false}
+                              />
+                              {validation.errors?.contact?.dco_cus_email && validation.touched?.contact?.dco_cus_email ? <FormFeedback type="invalid">{validation.errors?.contact?.dco_cus_email}</FormFeedback> : null}
+                            </div>
+                          </Col>
+                        </Row>
+                      )}
                     </Col>
                   </Row>
                 </CardBody>
@@ -671,7 +690,7 @@ const InvoiceCreate = () => {
                           placeholder="Select a date"
                           onBlur={validation.handleBlur}
                           onChange={validation.handleChange}
-                          value={validation.values.header.den_date_valid || ""}
+                          value={moment(validation.values.header.den_date_valid).format("YYYY-MM-DD")}
                           invalid={validation.errors?.header?.den_date_valid && validation.touched?.header?.den_date_valid ? true : false}
                           required
                         />
@@ -1075,14 +1094,6 @@ const InvoiceCreate = () => {
                       className="btn btn-success">
                       <i className="ri-printer-line align-bottom me-1"></i> Enregister
                     </button>
-                    {/* <Link to="#" className="btn btn-secondary">
-                      <i className="ri-download-2-line align-bottom me-1"></i>{" "}
-                      Télécharger
-                    </Link>
-                    <Link to="#" className="btn btn-danger">
-                      <i className="ri-send-plane-fill align-bottom me-1"></i>{" "}
-                      Envoyer
-                    </Link> */}
                   </div>
                 </CardBody>
               </Form>
@@ -1289,4 +1300,4 @@ const InvoiceCreate = () => {
   );
 };
 
-export default InvoiceCreate;
+export default DevisCreate;
