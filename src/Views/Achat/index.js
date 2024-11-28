@@ -6,9 +6,6 @@ import { Col, Container, Row, Card, CardHeader, CardBody } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import DeleteModal from "../../Components/Common/DeleteModal";
 
-//Import actions
-import { getEmployees as onGetEmployees, getCollaborateurs as onGetCollaborateurs } from "../../slices/thunks";
-
 //redux
 import { useSelector, useDispatch } from "react-redux";
 import TableContainer from "../../Components/Common/TableContainer";
@@ -22,15 +19,13 @@ import { customFormatNumber } from "../../utils/function";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import { deleteAchat, getAchat } from "../../services/achat";
+import { EmployeeService, GestionService, transactionBankService } from "../../services";
 
 const Achats = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { transactions, collaborateurs } = useSelector((state) => ({
-    collaborateurs: state.Gestion.collaborateurs,
-    transactions: state.TransactionBank.transactionsBank
-  }));
 
+  const [transactions, setTransactions] = useState(null);
+  const [collaborateurs, setCollaborateurs] = useState(null);
   const [achats, setAchats] = useState(null);
   const [achat, setAchat] = useState({});
 
@@ -325,12 +320,19 @@ const Achats = () => {
   );
 
   useEffect(() => {
-    dispatch(onGetEmployees());
+    // EmployeeService.getEmployees().then((response) => {
+    //   // setEmployee;
+    // });
     getAchat().then((response) => {
       setAchats(response);
     });
-    dispatch(onGetCollaborateurs());
-  }, [dispatch]);
+    GestionService.getCollaborateurs().then((response) => {
+      setCollaborateurs(response);
+    });
+    transactionBankService.getTransactionBank({ dateDebut: null, dateFin: null }).then((response) => {
+      setTransactions(response);
+    });
+  }, []);
 
   useEffect(() => {
     if (!isEmpty(achats)) {

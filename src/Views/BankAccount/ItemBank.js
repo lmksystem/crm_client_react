@@ -1,20 +1,15 @@
 import React, { useState } from "react";
 import { Col, Row, ListGroupItem } from "reactstrap";
-
-//Import actions
-import { insertBankAccount as onInsertBankAccount, insertAccountLinkToBank as onInsertAccountLinkToBank, getAccountBank as onGetAccountBank } from "../../slices/thunks";
 //redux
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
 import { customFormatNumber } from "../../utils/function";
 import { SketchPicker } from "react-color";
 import DeleteModal from "../../Components/Common/DeleteModal";
-import axios from "axios";
+import { BankAccountService } from "../../services";
 
-const ItemBank = ({ item, remove }) => {
-  const dispatch = useDispatch();
-
+const ItemBank = ({ item, remove, refresh }) => {
   const { devise } = useSelector((state) => ({
     devise: state?.Company?.devise
   }));
@@ -39,7 +34,6 @@ const ItemBank = ({ item, remove }) => {
         show={showModalDelete}
         onCloseClick={() => setShowModalDelete(false)}
         onDeleteClick={() => {
-        
           remove(item.bua_id);
         }}
         text="êtes-vous sûr de vouloir supprimer ce compte ?"
@@ -118,14 +112,14 @@ const ItemBank = ({ item, remove }) => {
               <div className="input-group-append">
                 <button
                   onClick={() => {
-                    dispatch(
-                      onInsertAccountLinkToBank({
-                        bua_color: colorCust,
-                        bua_account_id: item.bua_account_id,
-                        bua_libelle: libelle
-                      })
-                    );
-                    handleCust();
+                    BankAccountService.insertAccountLinkToBank({
+                      bua_color: colorCust,
+                      bua_account_id: item.bua_account_id,
+                      bua_libelle: libelle
+                    }).then(() => {
+                      handleCust();
+                      refresh();
+                    });
                   }}
                   className="btn btn-outline-success"
                   type="button">
@@ -180,7 +174,9 @@ const ItemBank = ({ item, remove }) => {
             type="button"
             class={`mb-1 btn ${item.bua_account_id?.length > 0 ? " btn-outline-primary" : "btn-outline-danger"}`}
             onClick={() => {
-              dispatch(onGetAccountBank("insert"));
+              BankAccountService.getAccountBank("insert").then(() => {
+                refresh();
+              });
             }}>
             Charger mes transactions
           </button>
@@ -188,14 +184,14 @@ const ItemBank = ({ item, remove }) => {
             type="button"
             class={`btn ${item.bua_account_id?.length > 0 ? " btn-outline-primary" : "btn-outline-danger"}`}
             onClick={() => {
-              dispatch(
-                onInsertBankAccount({
-                  bac_instit_id: item.bac_instit_id,
-                  bac_logo: item.bac_logo,
-                  bac_name: item.bac_name,
-                  oldLinkId: item.bac_id
-                })
-              );
+              BankAccountService.insertBankAccount({
+                bac_instit_id: item.bac_instit_id,
+                bac_logo: item.bac_logo,
+                bac_name: item.bac_name,
+                oldLinkId: item.bac_id
+              }).then(() => {
+                handleToggleRefresh();
+              });
             }}>
             Renouveler l’autorisation
           </button>

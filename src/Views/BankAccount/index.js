@@ -1,40 +1,35 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Col, Container, Row, Card, CardHeader, CardBody, Modal, ModalHeader, ModalBody, ListGroup, ListGroupItem, Input } from "reactstrap";
-
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import paysData from "../../Components/constants/paysPhone.json";
-//Import actions
-import { getListBank as onGetListBank, insertBankAccount as onInsertBankAccount, getBankUserAccount, removeBankAccountApi } from "../../slices/thunks";
-//redux
-import { useSelector, useDispatch } from "react-redux";
 import Loader from "../../Components/Common/Loader";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SimpleBar from "simplebar-react";
 import ItemBank from "./ItemBank";
-import axios from "axios";
+import { BankAccountService } from "../../services";
 
 const BankAccount = () => {
-  const dispatch = useDispatch();
-  const { isBankAccountSuccess, error, listBank, listAccountsBank } = useSelector((state) => ({
-    isBankAccountSuccess: state.BankAccount.isBankAccountSuccess,
-    error: state.BankAccount.error,
-    listBank: state.BankAccount.listBank,
-    listAccountsBank: state.BankAccount.listAccountsBank
-  }));
   const [listAccountsBankState, setListAccountsBankState] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [modal, setModal] = useState(false);
   const [pays, setPays] = useState("");
-
+  const [listBank, setListBank] = useState("");
+  const [toggleRefresh, setToggleRefresh] = useState(false);
   const [bankFilter, setBankFilter] = useState({
     data: [],
     searchTerm: ""
   });
+
+  const handleToggleRefresh = () => {
+    setToggleRefresh(!toggleRefresh);
+  };
+
   const handleSearchChange = (e) => {
     const { value } = e.target;
     setBankFilter({ ...bankFilter, searchTerm: value });
   };
+
   const filterData = (arrayBank) => {
     return arrayBank?.data?.filter((item) => {
       const searchFields = [item?.name];
@@ -45,14 +40,13 @@ const BankAccount = () => {
   const filteredData = filterData(bankFilter);
 
   const removeBankAccount = (id) => {
-    removeBankAccountApi(id).then(() => {
+    BankAccountService.removeBankAccountApi(id).then(() => {
       setListAccountsBankState(listAccountsBankState.filter((e) => e.bua_id != id));
     });
   };
 
   useEffect(() => {
-    // dispatch(onGetAccountBank("null"));
-    getBankUserAccount()
+    BankAccountService.getBankUserAccount()
       .then((res) => {
         setListAccountsBankState(res);
       })
@@ -68,14 +62,16 @@ const BankAccount = () => {
         data: [],
         searchTerm: ""
       });
-      dispatch(onGetListBank(pays));
+      BankAccountService.getListBank(pays).then((response) => {
+        setListBank(response);
+      });
     } else {
       setBankFilter({
         data: [],
         searchTerm: ""
       });
     }
-  }, [dispatch, pays]);
+  }, [pays]);
 
   useEffect(() => {
     if (listBank && pays?.length > 0) {
@@ -170,13 +166,13 @@ const BankAccount = () => {
                               className={"list-group-item-action"}
                               onClick={() => {
                                 setIsLoading(true);
-                                dispatch(
-                                  onInsertBankAccount({
-                                    bac_instit_id: bankItem.id,
-                                    bac_logo: bankItem.logo,
-                                    bac_name: bankItem.name
-                                  })
-                                );
+                                BankAccountService.insertBankAccount({
+                                  bac_instit_id: bankItem.id,
+                                  bac_logo: bankItem.logo,
+                                  bac_name: bankItem.name
+                                }).then(() => {
+                                  handleToggleRefresh();
+                                });
                               }}>
                               <div className="d-flex flex-row align-items-center justify-content-between">
                                 <div className="d-flex flex-row align-items-center">
@@ -231,6 +227,7 @@ const BankAccount = () => {
                               console.log("acc");
                               return (
                                 <ItemBank
+                                  refresh={handleToggleRefresh}
                                   remove={removeBankAccount}
                                   item={acc}
                                   key={i}

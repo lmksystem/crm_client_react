@@ -5,10 +5,9 @@ import * as moment from "moment";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import TableContainer from "../../Components/Common/TableContainer";
 //Import actions
-import { getCollaborateurs as onGetCollaborateurs, getTransactionList as onGetTransactionList, addNewTransaction as onAddNewTransaction, deleteTransaction as onDeleteTransaction } from "../../slices/thunks";
 import { getInvoices } from "../../services/invoice";
 //redux
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 import Loader from "../../Components/Common/Loader";
 import { ToastContainer } from "react-toastify";
@@ -21,25 +20,21 @@ import TransactionCharts from "./TransactionCharts";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Select from "react-select";
-import { getTransaction, getTransactionList } from "../../services/transaction";
+import { getTransactionList } from "../../services/transaction";
 import { getCollaborateurs } from "../../services/gestion";
+import { TransactionService } from "../../services";
 
 moment.locale("fr");
 
 const TransactionList = () => {
-  document.title = "Encaissements | Countano";
+  document.title = "Encaissements | CRM LMK";
 
-  const dispatch = useDispatch();
-
-  const { error, devise } = useSelector((state) => ({
-    transactions: state.Transaction.transactions,
-    error: state.Transaction.error,
-    collaborateurs: state.Gestion.collaborateurs,
+  const { devise } = useSelector((state) => ({
     devise: state.Company.devise
   }));
 
   const [collaborateurs, setCollaborateurs] = useState(null);
-  const [transactionsList, setTransactionsList] = useState([]);
+  const [transactionsList, setTransactionsList] = useState(null);
 
   const [invoices, setInvoices] = useState([]);
   const [chartData, setChartData] = useState([]);
@@ -49,22 +44,15 @@ const TransactionList = () => {
   const [encaissement, setEncaissement] = useState({});
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteModalMulti, setDeleteModalMulti] = useState(false);
+  const [toggleRefresh, setToggleRefresh] = useState(false);
 
   const toggle = () => {
     setModal(!modal);
   };
 
-  useEffect(() => {
-    getInvoices().then((res) => {
-      setInvoices(res);
-    });
-    getTransactionList().then((response) => {
-      setTransactionsList(response);
-    });
-    getCollaborateurs().then((response) => {
-      setCollaborateurs(response);
-    });
-  }, []);
+  const handleToogleRefresh = () => {
+    setToggleRefresh(!toggleRefresh);
+  };
 
   // validation
   const validation = useFormik({
@@ -88,9 +76,11 @@ const TransactionList = () => {
     }),
 
     onSubmit: (values) => {
-      dispatch(onAddNewTransaction(values));
-      validation.resetForm();
-      toggle();
+      TransactionService.addNewTransaction(values).then(() => {
+        validation.resetForm();
+        handleToogleRefresh();
+        toggle();
+      });
     }
   });
 
@@ -102,7 +92,7 @@ const TransactionList = () => {
   const deleteMultiple = () => {
     const checkall = document.getElementById("checkBoxAll");
     selectedCheckBoxDelete.forEach((element) => {
-      dispatch(onDeleteTransaction(element.value));
+      TransactionService.deleteTransaction(element.value);
       setTimeout(() => {
         toast.clearWaitingQueue();
       }, 3000);
@@ -113,8 +103,9 @@ const TransactionList = () => {
 
   const handleDeleteEncaiss = () => {
     if (encaissement) {
-      dispatch(onDeleteTransaction(encaissement?.tra_id));
+      TransactionService.deleteTransaction(encaissement.tra_id);
       setDeleteModal(false);
+      handleToogleRefresh();
     }
   };
 
@@ -263,7 +254,7 @@ const TransactionList = () => {
   }, [checkedAll]);
 
   useEffect(() => {
-    if (transactionsList.length) {
+    if (transactionsList) {
       // let sortingByDateTransaction = [...transactions].sort((a, b) => new Date(b.tra_date) - new Date(a.tra_date))
       let transactionByMount = Array(12).fill(0);
       transactionsList
@@ -277,6 +268,18 @@ const TransactionList = () => {
     }
   }, [transactionsList]);
 
+  useEffect(() => {
+    getInvoices().then((res) => {
+      setInvoices(res);
+    });
+    getTransactionList().then((response) => {
+      setTransactionsList(response);
+    });
+    getCollaborateurs().then((response) => {
+      setCollaborateurs(response);
+    });
+  }, [toggleRefresh]);
+  
   return (
     <React.Fragment>
       <div className="page-content">
@@ -290,6 +293,7 @@ const TransactionList = () => {
           show={deleteModalMulti}
           onDeleteClick={() => {
             deleteMultiple();
+            handleToogleRefresh();
             setDeleteModalMulti(false);
           }}
           onCloseClick={() => setDeleteModalMulti(false)}
@@ -339,7 +343,7 @@ const TransactionList = () => {
 
                 <CardBody className="pt-0">
                   <div>
-                    {transactionsList.length > 0 ? (
+                    {transactionsList ? (
                       <TableContainer
                         columns={columns}
                         data={transactionsList || []}
@@ -355,7 +359,7 @@ const TransactionList = () => {
                         initialSortField={"tra_date"}
                       />
                     ) : (
-                      <Loader error={error} />
+                      <Loader error={transactionsList} />
                     )}
                   </div>
                   <ToastContainer

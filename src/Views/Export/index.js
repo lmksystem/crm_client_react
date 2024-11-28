@@ -1,8 +1,6 @@
 import React, { useEffect, useId, useState } from "react";
-import { Button, Col, Container, Row, UncontrolledTooltip } from "reactstrap";
+import { Col, Container, Row, UncontrolledTooltip } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
-import { useDispatch, useSelector } from "react-redux";
-import Section from "../DashboardMain/Section";
 import moment from "moment";
 import Flatpickr from "react-flatpickr";
 import { getInvoices } from "../../services/invoice";
@@ -10,14 +8,11 @@ import { getInvoices } from "../../services/invoice";
 import axios from "axios";
 import InvoiceChart from "./InvoiceChart";
 import { getInvoiceForExport } from "../../helpers/backend_helper";
-import { Tooltip } from "chart.js";
 
 moment.updateLocale("en");
 
 const Export = () => {
-  document.title = "Export | Countano";
-
-  const dispatch = useDispatch();
+  document.title = "Export | CRM LMK";
 
   const [selectedInvoice, setSelectedInvoice] = useState([]);
   const [invoices, setInvoices] = useState([]);
@@ -68,7 +63,7 @@ const Export = () => {
     getInvoices().then((res) => {
       setInvoices(res);
     });
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     setSelectedInvoice(invoices.filter((i) => moment(i.header.fen_date_expired).isBetween(moment(periodeCalendar.start).format("YYYY-MM-DD"), moment(periodeCalendar.end).format("YYYY-MM-DD"))));

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Button, Card, CardBody, Col, Container, Form, FormFeedback, Input, Label, ListGroup, ListGroupItem, Row } from "reactstrap";
-import BreadCrumb from "../../Components/Common/BreadCrumb";
+import { Button, Col, Form, FormFeedback, Input, Label, ListGroup, ListGroupItem, Row } from "reactstrap";
 import { ToastContainer, toast } from "react-toastify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -8,18 +7,13 @@ import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
 import axios from "axios";
 import SimpleBar from "simplebar-react";
-import { getAccountsBankUser, getCollaborateurs } from "../../helpers/backend_helper";
-
 import moment from "moment";
 import { useSelector } from "react-redux";
-import { getAchat } from "../../slices/thunks";
 import ConfirmModal from "../../Components/Common/ConfirmModal";
-import { useNavigate } from "react-router-dom";
 import { getCategorieAchat } from "../../services/achat";
+import { GestionService } from "../../services";
 
 function FormAchat({ data, handleOneValidate }) {
-  const navigate = useNavigate();
-
   const { devise } = useSelector((state) => ({
     devise: state.Company.devise
   }));
@@ -223,7 +217,7 @@ function FormAchat({ data, handleOneValidate }) {
   }, [data]);
 
   useEffect(() => {
-    getCollaborateurs().then((res) => {
+    GestionService.getCollaborateurs().then((res) => {
       setCollaborateurs(res.data);
     });
     getTransaction().then((transactions) => {

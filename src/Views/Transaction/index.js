@@ -9,26 +9,18 @@ import BreadCrumb from "../../Components/Common/BreadCrumb";
 //Import actions
 import { getCollaborateurs as onGetCollaborateur, getAchatLinkTransaction as onGetAchatLinkTransaction, updateJustifyTransactionBank as onUpdateJustifyTransactionBank, linkTransToAchat as onLinkTransToAchat, updateMatchAmount as onUpdateMatchAmount, getBankUserAccount } from "../../slices/thunks";
 //redux
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import TableContainer from "../../Components/Common/TableContainer";
-
-// Formik
-import * as Yup from "yup";
-import { useFormik } from "formik";
-
 import Loader from "../../Components/Common/Loader";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SimpleBar from "simplebar-react";
-import { getLoggedinUser } from "../../helpers/api_helper";
 import { customFormatNumber } from "../../utils/function";
 import axios from "axios";
-import { getAccountsBankUser, getTransactionBank } from "../../helpers/backend_helper";
 import { getCollaborateurs } from "../../services/gestion";
+import { transactionBankService } from "../../services";
 
 const TransactionBank = () => {
-  const dispatch = useDispatch();
-
   const { devise } = useSelector((state) => ({
     devise: state.Company.devise
   }));
@@ -354,12 +346,14 @@ const TransactionBank = () => {
   }, [show]);
 
   useEffect(() => {
-    getTransactionBank({
-      dateDebut: perdiodeCalendar.start ? moment(perdiodeCalendar.start).format("YYYY-MM-DD") : null,
-      dateFin: perdiodeCalendar.end ? moment(perdiodeCalendar.end).format("YYYY-MM-DD") : null
-    }).then((res) => {
-      setTransactions(res.data);
-    });
+    transactionBankService
+      .getTransactionBank({
+        dateDebut: perdiodeCalendar.start ? moment(perdiodeCalendar.start).format("YYYY-MM-DD") : null,
+        dateFin: perdiodeCalendar.end ? moment(perdiodeCalendar.end).format("YYYY-MM-DD") : null
+      })
+      .then((res) => {
+        setTransactions(res);
+      });
 
     getCollaborateurs().then((response) => {
       setCollaborateurs(response);
@@ -396,6 +390,7 @@ const TransactionBank = () => {
   }, []);
 
   document.title = "Transactions bancaires | Countano";
+  console.log(transactions);
 
   return (
     <React.Fragment>
@@ -453,7 +448,7 @@ const TransactionBank = () => {
               <Card id="contactList">
                 <CardBody className="pt-0">
                   <div>
-                    {transactions != null ? (
+                    {transactions ? (
                       <TableContainer
                         columns={columns}
                         data={transactions.filter((a) => (isFilterBy != "null" ? a.tba_bua_fk == isFilterBy : true)) || []}
@@ -478,7 +473,7 @@ const TransactionBank = () => {
                         initialSortField={"tba_val_date"}
                       />
                     ) : (
-                      <Loader error={error} />
+                      <Loader error={transactions} />
                     )}
                   </div>
                   <ToastContainer
@@ -523,18 +518,20 @@ const TransactionBank = () => {
                                   checked={transaction?.tba_justify == 0}
                                   onChange={() => {
                                     let isJustify = transaction?.tba_justify == 0 ? 1 : 0;
-                                    dispatch(
-                                      onUpdateJustifyTransactionBank({
-                                        tba_id: transaction?.tba_id,
-                                        tba_justify: isJustify
-                                      })
-                                    );
+
                                     setTransaction({
                                       ...transaction,
                                       tba_justify: isJustify
                                     });
 
-                                    setTransactions(transactions.map((tra) => (tra.tba_id == transaction.tba_id ? { ...tra, tba_justify: isJustify } : tra)));
+                                    transactionBankService
+                                      .updateJustifyTransactionBank({
+                                        tba_id: transaction?.tba_id,
+                                        tba_justify: isJustify
+                                      })
+                                      .then(() => {
+                                        setTransactions(transactions.map((tra) => (tra.tba_id == transaction.tba_id ? { ...tra, tba_justify: isJustify } : tra)));
+                                      });
                                   }}
                                 />
                                 <Label

@@ -6,11 +6,8 @@ import BreadCrumb from "../../Components/Common/BreadCrumb";
 import TableContainer from "../../Components/Common/TableContainer";
 import DeleteModal from "../../Components/Common/DeleteModal";
 
-//Import actions
-import { getDevis as onGetDevis, deleteDevis as onDeleteDevis, getDevisWidgets as onGetDevisWidgets, getEtatDevis as onGetEtatDevis } from "../../slices/thunks";
-
 //redux
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 import Loader from "../../Components/Common/Loader";
 import { toast, ToastContainer } from "react-toastify";
@@ -28,14 +25,7 @@ moment.locale("fr");
 const DevisList = () => {
   document.title = "Liste devis  | Countano";
 
-  const dispatch = useDispatch();
-
-  const { devisRedux, devise } = useSelector((state) => ({
-    devisRedux: state.Devis.devisList,
-    isDevisSuccess: state.Devis.isDevisSuccess,
-    error: state.Devis.error,
-    devisWidgets: state.Devis.widgets,
-    etatDevis: state.Devis.etatDevis,
+  const { devise } = useSelector((state) => ({
     devise: state.Company.devise
   }));
 
@@ -48,7 +38,6 @@ const DevisList = () => {
   const [devisList, setDevisList] = useState(null);
   const [devisWidgets, setDevisWidgets] = useState([]);
   const [etatDevis, setEtatDevis] = useState([]);
-  const [devis, setDevis] = useState([]);
 
   const handleDeleteDevis = (id) => {
     if (id) {
@@ -218,7 +207,7 @@ const DevisList = () => {
         }
       }
     ],
-    [checkedAll, dispatch, etatDevis, devisList]
+    [checkedAll, etatDevis, devisList]
   );
 
   useEffect(() => {
@@ -231,7 +220,7 @@ const DevisList = () => {
     DevisService.getEtatDevis().then((response) => {
       setEtatDevis(response);
     });
-  }, [dispatch]);
+  }, []);
 
   return (
     <React.Fragment>
@@ -303,7 +292,7 @@ const DevisList = () => {
                 <CardBody className="pt-0">
                   <div>
                     <DevisListGlobalSearch
-                      origneData={devisList}
+                      origneData={devisList || []}
                       data={customFiltered}
                       setData={setCustomFiltered}
                     />
