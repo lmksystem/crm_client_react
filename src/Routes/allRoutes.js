@@ -45,6 +45,7 @@ import EntrepriseAdmin from "../Views/Admin/company";
 import FormCompany from "../Views/Admin/company/FormCompany";
 import FormAchat from "../Views/Achat/FormAchat";
 import CreateOrEditAchat from "../Views/Achat/CreateOrEditAchat";
+import RecurrenceOfEntity from "../Views/Recurrence/RecurrenceOfEntity";
 
 // import PdfPreview from "../Views/Pdf";
 
@@ -69,6 +70,7 @@ const userRoute = [
   { id: 13, path: "/devis/edition/:id", component: <DevisCreate />, rank: 0 },
   // Recurrence
   { id: 14, path: "/recurrence", component: <Recurrence />, rank: 0 },
+  { id: 14, path: "/recurrence/entity/:id", component: <RecurrenceOfEntity />, rank: 0 },
 
   // Réglement - Transaction
   { id: 15, path: "/transaction/liste", component: <TransactionList />, rank: 0 },

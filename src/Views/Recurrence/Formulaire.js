@@ -6,18 +6,22 @@ import { useFormik } from "formik";
 import moment from "moment";
 import ModalProducts from "../Product/ModalProducts";
 import { useSelector } from "react-redux";
+import ModalCollabos from "../Collaborateurs/ModalCollabos";
 
 function Formulaire({ onClose = () => {} }) {
   const { devise } = useSelector((state) => ({
-    devise: state.Company.devise
+    devise: state.Company.devise,
   }));
 
   const [modalProduct, setModalProduct] = useState(false);
+  const [modalClient, setModalClient] = useState(false);
 
   const daysOptions = [
     {
-      options: new Array(30).fill(0).map((v, i) => ({ value: i + 1, label: i + 1 + " jours" }))
-    }
+      options: new Array(30)
+        .fill(0)
+        .map((v, i) => ({ value: i + 1, label: i + 1 + " jours" })),
+    },
   ];
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
@@ -33,17 +37,19 @@ function Formulaire({ onClose = () => {} }) {
         rec_quand: 0,
         rec_repetition: 1,
         rec_date_create: "",
-        rec_delai_echeance: ""
-      }
+        rec_delai_echeance: "",
+      },
     },
     validationSchema: Yup.object({
       recurrence_data: Yup.object({
         rec_ent_fk: Yup.number().required("Veuillez entrer un client"),
         rec_nb: Yup.number().required("Champs obligatoire"),
-        rec_quand: Yup.number().min(1, "Veuillez sélectionnez une répétition").required("Champs obligatoire"),
-        rec_repetition: Yup.string().required("Champs obligatoire")
+        rec_quand: Yup.number()
+          .min(1, "Veuillez sélectionnez une répétition")
+          .required("Champs obligatoire"),
+        rec_repetition: Yup.string().required("Champs obligatoire"),
       }),
-      products: Yup.array().min(1, "Ajouter au moins un produit")
+      products: Yup.array().min(1, "Ajouter au moins un produit"),
     }),
     onSubmit: (values) => {
       // for (let index = 0; index < values.products.length; index++) {
@@ -55,11 +61,15 @@ function Formulaire({ onClose = () => {} }) {
       // setOpenCreate(false);
       // setShow(false);
       // validation.resetForm();
-    }
+    },
   });
 
   function toggleModalProduct() {
     setModalProduct((res) => !res);
+  }
+
+  function toggleModalClient() {
+    setModalClient((res) => !res);
   }
 
   return (
@@ -77,7 +87,12 @@ function Formulaire({ onClose = () => {} }) {
               value={validation.values.clients.ent_name || ""}
               disabled
               required
-              invalid={validation.errors?.recurrence_data?.rec_ent_fk && validation.touched?.recurrence_data?.rec_ent_fk ? true : false}
+              invalid={
+                validation.errors?.recurrence_data?.rec_ent_fk &&
+                validation.touched?.recurrence_data?.rec_ent_fk
+                  ? true
+                  : false
+              }
             />
             <button
               onClick={() => {
@@ -85,10 +100,16 @@ function Formulaire({ onClose = () => {} }) {
               }}
               className="btn btn-secondary"
               type="button"
-              id="button-addon2">
+              id="button-addon2"
+            >
               +
             </button>
-            {validation.errors?.recurrence_data?.rec_ent_fk && validation.touched?.recurrence_data?.rec_ent_fk ? <FormFeedback type="invalid">{validation.errors?.recurrence_data?.rec_ent_fk}</FormFeedback> : null}
+            {validation.errors?.recurrence_data?.rec_ent_fk &&
+            validation.touched?.recurrence_data?.rec_ent_fk ? (
+              <FormFeedback type="invalid">
+                {validation.errors?.recurrence_data?.rec_ent_fk}
+              </FormFeedback>
+            ) : null}
           </div>
         </Col>
 
@@ -119,9 +140,19 @@ function Formulaire({ onClose = () => {} }) {
               placeholder="Selectionnez une date"
               onBlur={validation.handleBlur}
               onChange={validation.handleChange}
-              invalid={validation.errors?.recurrence_data?.rec_date_create && validation.touched?.recurrence_data?.rec_date_create ? true : false}
+              invalid={
+                validation.errors?.recurrence_data?.rec_date_create &&
+                validation.touched?.recurrence_data?.rec_date_create
+                  ? true
+                  : false
+              }
             />
-            {validation.errors?.recurrence_data?.rec_date_create && validation.touched?.recurrence_data?.rec_date_create ? <FormFeedback type="invalid">{validation.errors?.recurrence_data?.rec_date_create}</FormFeedback> : null}
+            {validation.errors?.recurrence_data?.rec_date_create &&
+            validation.touched?.recurrence_data?.rec_date_create ? (
+              <FormFeedback type="invalid">
+                {validation.errors?.recurrence_data?.rec_date_create}
+              </FormFeedback>
+            ) : null}
           </div>
         </Col>
         <Col lg={12}>
@@ -130,25 +161,35 @@ function Formulaire({ onClose = () => {} }) {
             <Select
               options={daysOptions}
               onChange={(e) => {
-                validation.setValues({ ...validation.values, recurrence_data: { ...validation.values.recurrence_data, ...validation.values.recurrence_data.rec_delai_echeance, rec_delai_echeance: e.value } });
+                validation.setValues({
+                  ...validation.values,
+                  recurrence_data: {
+                    ...validation.values.recurrence_data,
+                    ...validation.values.recurrence_data.rec_delai_echeance,
+                    rec_delai_echeance: e.value,
+                  },
+                });
               }}
               name="choices-single-default"
               styles={{
                 container: (styles) => ({
                   ...styles,
-                  zIndex: 25
-                })
+                  zIndex: 25,
+                }),
               }}
               id="idStatus"
             />
-            {validation.errors?.recurrence_data?.rec_delai_echeance && validation.touched?.recurrence_data?.rec_delai_echeance ? <FormFeedback type="invalid">{validation.errors?.recurrence_data?.rec_delai_echeance}</FormFeedback> : null}
+            {validation.errors?.recurrence_data?.rec_delai_echeance &&
+            validation.touched?.recurrence_data?.rec_delai_echeance ? (
+              <FormFeedback type="invalid">
+                {validation.errors?.recurrence_data?.rec_delai_echeance}
+              </FormFeedback>
+            ) : null}
           </div>
         </Col>
 
         <Label for="date-field">Créer la facture toute les</Label>
-        <Col
-          lg={12}
-          className="d-flex">
+        <Col lg={12} className="d-flex">
           <div className="mb-2 input-group position-relative">
             <Input
               type="number"
@@ -159,7 +200,12 @@ function Formulaire({ onClose = () => {} }) {
               onBlur={validation.handleBlur}
               onChange={validation.handleChange}
               value={validation.values.recurrence_data.rec_repetition}
-              invalid={validation.errors?.recurrence_data?.rec_repetition && validation.touched?.recurrence_data?.rec_repetition ? true : false}
+              invalid={
+                validation.errors?.recurrence_data?.rec_repetition &&
+                validation.touched?.recurrence_data?.rec_repetition
+                  ? true
+                  : false
+              }
             />
             <Input
               type="select"
@@ -170,7 +216,13 @@ function Formulaire({ onClose = () => {} }) {
               onBlur={validation.handleBlur}
               onChange={validation.handleChange}
               value={validation.values.recurrence_data.rec_quand}
-              invalid={validation.errors?.recurrence_data?.rec_quand && validation.touched?.recurrence_data?.rec_quand ? true : false}>
+              invalid={
+                validation.errors?.recurrence_data?.rec_quand &&
+                validation.touched?.recurrence_data?.rec_quand
+                  ? true
+                  : false
+              }
+            >
               <option>Sélectionnez une répétition...</option>
               <option value={1}>Jours</option>
               <option value={2}>Semaines</option>
@@ -190,23 +242,35 @@ function Formulaire({ onClose = () => {} }) {
                 onBlur={validation.handleBlur}
                 onChange={validation.handleChange}
                 value={validation.values.recurrence_data.rec_nb}
-                invalid={validation.errors?.recurrence_data?.rec_nb && validation.touched?.recurrence_data?.rec_nb ? true : false}
+                invalid={
+                  validation.errors?.recurrence_data?.rec_nb &&
+                  validation.touched?.recurrence_data?.rec_nb
+                    ? true
+                    : false
+                }
               />
             </div>
           ) : (
             ""
           )}
         </Col>
-        {validation.errors?.recurrence_data?.rec_quand && validation.touched?.recurrence_data?.rec_quand ? (
-          <FormFeedback
-            className="d-block"
-            type="invalid">
+        {validation.errors?.recurrence_data?.rec_quand &&
+        validation.touched?.recurrence_data?.rec_quand ? (
+          <FormFeedback className="d-block" type="invalid">
             {validation.errors?.recurrence_data?.rec_quand}
           </FormFeedback>
         ) : null}
         <Col xl={12}>
           <Input
-            onChange={(e) => validation.setValues({ ...validation.values, recurrence_data: { ...validation.values.recurrence_data, rec_nb: e.target.checked ? 0 : 1 } })}
+            onChange={(e) =>
+              validation.setValues({
+                ...validation.values,
+                recurrence_data: {
+                  ...validation.values.recurrence_data,
+                  rec_nb: e.target.checked ? 0 : 1,
+                },
+              })
+            }
             type="checkbox"
           />
           <Label>ne pas définir un nombre de répétition</Label>
@@ -214,16 +278,15 @@ function Formulaire({ onClose = () => {} }) {
 
         <Col lg={6}>
           <div>
-            <Label
-              htmlFor="pro_name-field"
-              className="form-label">
+            <Label htmlFor="pro_name-field" className="form-label">
               <button
                 onClick={() => {
                   toggleModalProduct();
                 }}
                 className="btn btn-secondary"
                 type="button"
-                id="button-addon2">
+                id="button-addon2"
+              >
                 + Ajouter des produits
               </button>
             </Label>
@@ -243,9 +306,7 @@ function Formulaire({ onClose = () => {} }) {
           </div>
           {validation.values.products.length ? (
             validation?.values?.products?.map((product, i) => (
-              <div
-                key={i}
-                className="d-flex">
+              <div key={i} className="d-flex">
                 <div className="w-75 d-flex input-group mb-2 position-relative">
                   <Input
                     style={{ flex: 1 }}
@@ -262,9 +323,17 @@ function Formulaire({ onClose = () => {} }) {
                       className="minus"
                       onClick={(e) => {
                         if (product.rec_pro_qty > 1) {
-                          validation.setValues({ ...validation.values, products: validation.values.products?.map((e) => (e.pro_id == product.pro_id ? { ...e, rec_pro_qty: e.rec_pro_qty - 1 } : e)) });
+                          validation.setValues({
+                            ...validation.values,
+                            products: validation.values.products?.map((e) =>
+                              e.pro_id == product.pro_id
+                                ? { ...e, rec_pro_qty: e.rec_pro_qty - 1 }
+                                : e
+                            ),
+                          });
                         }
-                      }}>
+                      }}
+                    >
                       –
                     </button>
                     <Input
@@ -281,15 +350,24 @@ function Formulaire({ onClose = () => {} }) {
                       type="button"
                       className="plus"
                       onClick={(e) => {
-                        validation.setValues({ ...validation.values, products: validation.values.products?.map((e) => (e.pro_id == product.pro_id ? { ...e, rec_pro_qty: e.rec_pro_qty + 1 } : e)) });
-                      }}>
+                        validation.setValues({
+                          ...validation.values,
+                          products: validation.values.products?.map((e) =>
+                            e.pro_id == product.pro_id
+                              ? { ...e, rec_pro_qty: e.rec_pro_qty + 1 }
+                              : e
+                          ),
+                        });
+                      }}
+                    >
                       +
                     </button>
                   </div>
                 </div>
                 <div
                   style={{ width: "30%", display: "flex" }}
-                  className="input-group mb-2 ms-2">
+                  className="input-group mb-2 ms-2"
+                >
                   <Input
                     name={`products[${i}].rec_montant`}
                     type="number"
@@ -301,7 +379,9 @@ function Formulaire({ onClose = () => {} }) {
                     min={1}
                   />
 
-                  <label className="btn btn-secondary btn-input-group form-label">{devise}</label>
+                  <label className="btn btn-secondary btn-input-group form-label">
+                    {devise}
+                  </label>
                 </div>
               </div>
             ))
@@ -316,27 +396,24 @@ function Formulaire({ onClose = () => {} }) {
                 marginTop: "0.25rem",
                 fontSize: "0.875em",
                 color: "#fa896b",
-                backgroundImage: 'url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 12 12%27 width=%2712%27 height=%2712%27 fill=%27none%27 stroke=%27%23fa896b%27%3e%3ccircle cx=%276%27 cy=%276%27 r=%274.5%27/%3e%3cpath stroke-linejoin=%27round%27 d=%27M5.8 3.6h.4L6 6.5z%27/%3e%3ccircle cx=%276%27 cy=%278.2%27 r=%27.6%27 fill=%27%23fa896b%27 stroke=%27none%27/%3e%3c/svg%3e")',
+                backgroundImage:
+                  'url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 12 12%27 width=%2712%27 height=%2712%27 fill=%27none%27 stroke=%27%23fa896b%27%3e%3ccircle cx=%276%27 cy=%276%27 r=%274.5%27/%3e%3cpath stroke-linejoin=%27round%27 d=%27M5.8 3.6h.4L6 6.5z%27/%3e%3ccircle cx=%276%27 cy=%278.2%27 r=%27.6%27 fill=%27%23fa896b%27 stroke=%27none%27/%3e%3c/svg%3e")',
                 backgroundRepeat: "no-repeat",
                 backgroundSize: "contain",
                 backgroundPositionX: "0",
-                paddingLeft: "20px"
-              }}>
+                paddingLeft: "20px",
+              }}
+            >
               {validation.errors?.products}
             </div>
           ) : null}
         </Col>
       </Row>
       <div className="d-flex m-0 p-2 border-top border-light align-items-center justify-content-end gap-2">
-        <Button
-          className=""
-          color="light"
-          onClick={onClose}>
+        <Button className="" color="light" onClick={onClose}>
           Fermer
         </Button>
-        <Button
-          color="success"
-          onClick={validation.handleSubmit}>
+        <Button color="success" onClick={validation.handleSubmit}>
           Enregister
         </Button>
       </div>
@@ -353,7 +430,7 @@ function Formulaire({ onClose = () => {} }) {
                   rec_pro_name: item.pro_name,
                   rec_pro_qty: 1,
                   rec_montant: item.pro_prix,
-                  rec_tva: item.pro_tva
+                  rec_tva: item.pro_tva,
                 };
               } else {
                 return item;
@@ -362,6 +439,20 @@ function Formulaire({ onClose = () => {} }) {
           );
         }}
         selected={validation.values.products}
+      />
+      <ModalCollabos
+        modalClient={modalClient}
+        toggleModalClient={toggleModalClient}
+        onUpdate={(client) => {
+          validation.setValues({
+            ...validation.values,
+            recurrence_data: {
+              ...validation.values.recurrence_data,
+              rec_ent_fk: client.ent_id,
+            },
+            clients: client,
+          });
+        }}
       />
     </>
   );

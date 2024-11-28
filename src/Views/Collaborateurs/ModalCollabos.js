@@ -8,8 +8,13 @@ import {
   Row,
 } from "reactstrap";
 import SimpleBar from "simplebar-react";
+import { GestionService } from "../../services";
 
-function ModalCollabos({ modalClient, toggleModalClient }) {
+function ModalCollabos({
+  modalClient = true,
+  toggleModalClient = () => {},
+  onUpdate = () => {},
+}) {
   const [searchValueClient, setSearchValueClient] = useState("");
   const [collaborateurs, setCollaborateurs] = useState([]);
 
@@ -29,10 +34,16 @@ function ModalCollabos({ modalClient, toggleModalClient }) {
     }
 
     return data;
-  }, [searchValueClient]);
+  }, [searchValueClient, collaborateurs]);
 
   useEffect(() => {
-    return () => {};
+    setSearchValueClient("");
+  }, [modalClient]);
+
+  useEffect(() => {
+    GestionService.getCollaborateurs().then((res) => {
+      setCollaborateurs(res);
+    });
   }, []);
 
   return (
@@ -103,15 +114,8 @@ function ModalCollabos({ modalClient, toggleModalClient }) {
                       width: "100%",
                     }}
                     onClick={() => {
+                      onUpdate(c);
                       toggleModalClient();
-                      validation.setValues({
-                        ...validation.values,
-                        recurrence_data: {
-                          ...validation.values.recurrence_data,
-                          rec_ent_fk: c.ent_id,
-                        },
-                        clients: c,
-                      });
                     }}
                     key={i}
                   >

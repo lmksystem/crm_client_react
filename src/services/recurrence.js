@@ -4,7 +4,7 @@ import * as url from "../helpers/url_helper";
 
 const api = new APIClient();
 
-export const getRecurrences = (data) => {
+export const getRecurrences = () => {
   return new Promise((resolve, reject) => {
     try {
       api.get(url.RECURRENCE).then((response) => {
