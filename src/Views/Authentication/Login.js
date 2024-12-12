@@ -50,27 +50,10 @@ const Login = (props) => {
     errorFlag: state.Login.errorFlag
   }));
 
-  useEffect(() => {
-    if (errorFlag) {
-      setTimeout(() => {
-        dispatch(resetLoginFlag());
-      }, 3000);
-    }
-  }, [dispatch, errorFlag]);
-
-  // useEffect(() => {
-  //   if () {
-  //     navigate("/dashboard");
-  //   }
-  // }, []);
 
   useEffect(() => {
     if (user && token) {
-      if (user.use_rank == 1) {
-        navigate("/admin");
-      } else {
-        navigate("/dashboard");
-      }
+      navigate("/dashboard");
     }
   }, [user]);
 
