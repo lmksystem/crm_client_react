@@ -39,6 +39,15 @@ export const resetLoginFlag = () => async (dispatch) => {
   }
 };
 
+export const resetLoginFlagClient = () => async (dispatch) => {
+  try {
+    const response = dispatch(reset_login_flag());
+    return response;
+  } catch (error) {
+    dispatch(apiError(error));
+  }
+};
+
 export const getCompanyAndModule = async (com_id) => {
   let res = await axios.get("/v1/admin/company/" + com_id);
   return res;

@@ -165,7 +165,7 @@ export const deleteLicense = (id) => api.delete("/v1/user/license/" + id);
 /*************************/
 
 //  Method
-export const postLogin = (data) => api.create(url.POST_LOGIN, data);
+export const postLogin = (data) => api.create("/v1/e", data);
 
 /*************************/
 /*        Product        */

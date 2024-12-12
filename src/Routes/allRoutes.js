@@ -18,7 +18,6 @@ import DevisDetails from "../Views/Devis/DevisDetails";
 import Login from "../Views/Authentication/Login";
 import Logout from "../Views/Authentication/Logout";
 import ForgetPasswordPage from "../Views/Authentication/ForgetPassword";
-
 import FinalisationAccount from "../Views/FinalisationAccount/FinalisationAccount";
 import Basic404 from "../Views/AuthenticationInner/Errors/Basic404";
 import CreateAccount from "../Views/AuthenticationInner/Register/CreateAccount";
