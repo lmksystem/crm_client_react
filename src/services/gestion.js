@@ -94,20 +94,6 @@ export const getDetailsCollabo = (item) => {
   });
 };
 
-export const addNewCollaborateur = (data) => {
-  return new Promise((resolve, reject) => {
-    try {
-      api.create(url.ADD_NEW_COLLABORATEUR, data).then((response) => {
-        toast.success("Nouveau client/fournisseur ajouté", { autoClose: 3000 });
-        resolve(response.data);
-      });
-    } catch (error) {
-      toast.error("Erreur d'ajout de contact", { autoClose: 3000 });
-      reject(error);
-    }
-  });
-};
-
 export const updateCollaborateur = (data) => {
   return new Promise((resolve, reject) => {
     try {
@@ -122,161 +108,14 @@ export const updateCollaborateur = (data) => {
   });
 };
 
-export const deleteCollaborateurs = (id) => {
+export const getCollaborateurById = (id) => {
   return new Promise((resolve, reject) => {
     try {
-      api.delete(url.DELETE_COLLABORATEUR + "/" + id).then((response) => {
-        toast.success("Client/fournisseur supprimé", { autoClose: 3000 });
+      api.get("v1/entity/" + id).then((response) => {
         resolve(response.data);
       });
     } catch (error) {
-      toast.error("Erreur suppression client/fournisseur", { autoClose: 3000 });
-      reject(error);
-    }
-  });
-};
-
-// parametre
-
-export const getTva = () => {
-  return new Promise((resolve, reject) => {
-    try {
-      api.get(url.GET_TVA).then((response) => {
-        resolve(response.data);
-      });
-    } catch (error) {
-      toast.error("Erreur récupération tva", { autoClose: 3000 });
-      reject(error);
-    }
-  });
-};
-
-export const addNewTva = (data) => {
-  return new Promise((resolve, reject) => {
-    try {
-      api.create(url.ADD_NEW_TVA, data).then((response) => {
-        toast.success("TVA bien ajouté", { autoClose: 3000 });
-        resolve(response.data);
-      });
-    } catch (error) {
-      toast.error("Erreur ajout TVA", { autoClose: 3000 });
-      reject(error);
-    }
-  });
-};
-
-export const updateTva = (data) => {
-  return new Promise((resolve, reject) => {
-    try {
-      api.update(url.UPDATE_TVA + "/" + data.tva_id, data).then((response) => {
-        toast.success("TVA bien msie à jour", { autoClose: 3000 });
-        resolve(response.data);
-      });
-    } catch (error) {
-      toast.error("Erreur mise à jour de TVA", { autoClose: 3000 });
-      reject(error);
-    }
-  });
-};
-
-export const deleteTva = (id) => {
-  return new Promise((resolve, reject) => {
-    try {
-      api.delete(url.DELETE_TVA + "/" + id).then((response) => {
-        toast.success("TVA supprimée", { autoClose: 3000 });
-        resolve(response.data);
-      });
-    } catch (error) {
-      toast.error("Erreur suppression TVA", { autoClose: 3000 });
-      reject(error);
-    }
-  });
-};
-
-//Constantes
-
-export const getConstantes = () => {
-  return new Promise((resolve, reject) => {
-    try {
-      api.get(url.CONSTANTES).then((response) => {
-        resolve(response.data);
-      });
-    } catch (error) {
-      toast.error("Erreur récupération", { autoClose: 3000 });
-      reject(error);
-    }
-  });
-};
-
-export const handleConstantes = (constantes) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      let arrayResponse = [];
-      for (let index = 0; index < constantes.length; index++) {
-        const newConst = constantes[index];
-        let reponse = await api.create(url.CONSTANTES, newConst);
-        arrayResponse.push(reponse.data);
-      }
-      toast.success("Enregistrer !", { autoClose: 3000 });
-      resolve(arrayResponse);
-    } catch (error) {
-      toast.error("Echec !", { autoClose: 3000 });
-      return error;
-    }
-  });
-};
-
-export const getEntityPeriodCount = (data) => {
-  return new Promise((resolve, reject) => {
-    try {
-      api.get(url.ENTITY + "/entity_periode/" + data.dateDebut + "/" + data.dateFin).then((response) => {
-        resolve(response.data);
-      });
-    } catch (error) {
-      toast.error("Une erreur s'est produite sur la récupération des fournisseurs", { autoClose: 3000 });
-      reject(error);
-    }
-  });
-};
-
-export const handleAlert = (data) => {
-  return new Promise((resolve, reject) => {
-    try {
-      api.create(url.ALERT, data).then((response) => {
-        toast.success("Enregistrer !", { autoClose: 3000 });
-        resolve(response.data);
-      });
-    } catch (error) {
-      toast.error("Une erreur s'est produite à la création du rappel", {
-        autoClose: 3000
-      });
-      reject(error);
-    }
-  });
-};
-
-export const getAlert = () => {
-  return new Promise((resolve, reject) => {
-    try {
-      api.get(url.ALERT).then((response) => {
-        resolve(response.data);
-      });
-    } catch (error) {
-      toast.error("Une erreur s'est produite lors de la récupération des rappels", { autoClose: 3000 });
-      reject(error);
-    }
-  });
-};
-
-export const deleteAlert = (id) => {
-  return new Promise((resolve, reject) => {
-    try {
-      api.delete(url.ALERT + "/" + id).then((response) => {
-        toast.success("Suppression !", { autoClose: 3000 });
-        resolve(response.data);
-      });
-    } catch (error) {
-      toast.error("Une erreur s'est produite lors de la suppression du rappels", { autoClose: 3000 });
+      toast.error("Une erreur s'est produite lors dela récuperation du collaborateur", { autoClose: 3000 });
       reject(error);
     }
   });

@@ -248,23 +248,7 @@ const DevisList = () => {
             title="Devis"
             pageTitle="Facturation"
           />
-          <h3>Statistiques de l'année</h3>
-          <Row>
-            {devisWidgets?.map((widget, i) => {
-              let data = { ...widget };
-              if (data.id != 3) {
-                data.name = widget.name + "s";
-              }
-
-              return (
-                <WidgetCountUp
-                  key={i}
-                  data={data}
-                  type={"Devis"}
-                />
-              );
-            })}
-          </Row>
+         
 
           <Row>
             <Col lg={12}>

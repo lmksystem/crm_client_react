@@ -15,32 +15,13 @@ const Index = () => {
   const { user } = useSelector((state) => ({
     user: state.Login.user
   }));
-
+  console.log("userProfile", user);
   return (
     <React.Fragment>
       <Routes>
         <Route>
-          {user &&
-            user.use_rank == 1 &&
-            adminRoute.map((route, idx) => (
-              <Route
-                path={route.path}
-                element={
-                  <AdminProtected
-                    rank={route.rank}
-                    adminRouteIndex={adminRoute[idx]}>
-                    <VerticalLayout>{route.component}</VerticalLayout>
-                  </AdminProtected>
-                }
-                key={idx}
-                exact={true}
-              />
-            ))}
-        </Route>
-        <Route>
           {/* rank utilisateur */}
           {user &&
-            (user.use_rank == 0 || user.use_rank == 3) &&
             userRoute.map((route, idx) => {
               return (
                 <Route

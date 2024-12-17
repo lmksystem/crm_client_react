@@ -15,7 +15,7 @@ const useProfile = () => {
   }, []);
 
 
-  // console.log("userProfile",userProfile);
+
 
   return { userProfile, loading, token };
 };

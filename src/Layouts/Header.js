@@ -1,36 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Badge, Dropdown, DropdownMenu, DropdownToggle, Form } from "reactstrap";
-
-//import images
-
 import logoDark from "../assets/images/logo_lmk.png";
 import logoLight from "../assets/images/logo_lmk.png";
-
-//import Components
-import SearchOption from "../Components/Common/SearchOption";
-
 import FullScreenDropdown from "../Components/Common/FullScreenDropdown";
 import ProfileDropdown from "../Components/Common/ProfileDropdown";
 import LightDark from "../Components/Common/LightDark";
-
-import { changeSidebarVisibility, getCompanyListAction } from "../slices/thunks";
+import { changeSidebarVisibility } from "../slices/thunks";
 import { useSelector, useDispatch } from "react-redux";
-import { useProfile } from "../Components/Hooks/UserHooks";
-import { getLoggedinUser } from "../helpers/api_helper";
-import { useExpanded } from "react-table";
-import CompanyDropdown from "../Components/Common/CompanyDropdown";
 
 const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
   const dispatch = useDispatch();
-  const userProfile = getLoggedinUser();
 
   const { sidebarVisibilitytype } = useSelector((state) => ({
     sidebarVisibilitytype: state.Layout.sidebarVisibilitytype
   }));
 
   const [search, setSearch] = useState(false);
-  const [companyList, setCompanyList] = useState([]);
 
   const toogleSearch = () => {
     setSearch(!search);
@@ -67,11 +53,11 @@ const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
     }
   };
 
-  useEffect(() => {
-    getCompanyListAction().then((res) => {
-      setCompanyList(res);
-    });
-  }, []);
+  // useEffect(() => {
+  //   getCompanyListAction().then((res) => {
+  //     setCompanyList(res);
+  //   });
+  // }, []);
 
   return (
     <React.Fragment>
@@ -118,8 +104,6 @@ const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
                   <span></span>
                 </span>
               </button>
-
-              {userProfile?.use_rank === 0 && <SearchOption />}
             </div>
 
             <div className="d-flex align-items-center">
@@ -155,7 +139,7 @@ const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
               </Dropdown>
 
               {/* CompanyDropdown */}
-              <CompanyDropdown companyList={companyList} />
+              {/* <CompanyDropdown companyList={companyList} /> */}
 
               {/* FullScreenDropdown */}
               <FullScreenDropdown />

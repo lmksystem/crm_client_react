@@ -13,9 +13,6 @@ moment.locale("fr");
 
 const Widgets = ({ perdiodeCalendar }) => {
   const { devise } = useSelector((state) => ({
-    transactionsPeriodPrice: state.Transaction.transactionsPeriodPrice,
-    devisCountPeriod: state.Devis.devisCountPeriod,
-    entityCountPeriod: state.Gestion.entityCountPeriod,
     devise: state.Company.devise
   }));
 

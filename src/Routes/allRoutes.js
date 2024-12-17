@@ -6,12 +6,10 @@ import DashboardMain from "../Views/DashboardMain";
 
 //Invoices
 import InvoiceList from "../Views/Invoices/InvoiceList";
-import InvoiceCreate from "../Views/Invoices/InvoiceCreate";
 import InvoiceDetails from "../Views/Invoices/InvoiceDetails";
 
 //Devis
 import DevisList from "../Views/Devis/DevisList";
-import DevisCreate from "../Views/Devis/DevisCreate";
 import DevisDetails from "../Views/Devis/DevisDetails";
 
 //AUTHENTIFICATION
@@ -22,6 +20,7 @@ import FinalisationAccount from "../Views/FinalisationAccount/FinalisationAccoun
 import Basic404 from "../Views/AuthenticationInner/Errors/Basic404";
 import CreateAccount from "../Views/AuthenticationInner/Register/CreateAccount";
 import ResertPassword from "../Views/Authentication/ResertPassword";
+import TransactionList from "../Views/Reglements/TransactionList";
 
 // import PdfPreview from "../Views/Pdf";
 
@@ -33,30 +32,12 @@ const userRoute = [
   // Facture
   { id: 7, path: "/factures/liste", component: <InvoiceList />, rank: 0 },
   { id: 8, path: "/factures/detail/:id", component: <InvoiceDetails />, rank: 0 },
-  { id: 9, path: "/factures/creation", component: <InvoiceCreate />, rank: 0 },
 
   // Devis
   { id: 10, path: "/devis/liste", component: <DevisList />, rank: 0 },
   { id: 11, path: "/devis/detail/:id", component: <DevisDetails />, rank: 0 },
-  { id: 12, path: "/devis/creation", component: <DevisCreate />, rank: 0 },
-  { id: 13, path: "/devis/edition/:id", component: <DevisCreate />, rank: 0 }
-];
 
-// const testArrayOffert = "['/contacts', '/client-fournisseur', '/client-fournisseur/detail', '/gestion/parametre', '/produits', '/dashboard', '/factures/liste', '/factures/detail/:id', '/factures/creation', '/devis/liste', '/devis/detail/:id', '/devis/creation', '/devis/edition/:id', '/recurrence', '/transaction/liste', '/employees', '/salary', '/transaction/bank', '/achat', '/bankaccount', '/rapports', '/export', '/company/profile', '/']";
-
-const adminRoute = [
-  // { path: "/admin", component: <DashboardAdmin />, rank: 1 },
-  // { path: "/admin/users", component: <UserAdmin />, rank: 1 },
-  // { path: "/admin/user/", component: <FormUser />, rank: 1 },
-  // { path: "/profile", component: <Profile />, rank: 1 },
-  // { path: "/admin/entreprises", component: <EntrepriseAdmin />, rank: 1 },
-  // { path: "/admin/entreprise/:id", component: <FormCompany />, rank: 1 },
-  // {
-  //   path: "/",
-  //   exact: true,
-  //   component: <Navigate to="/admin" />,
-  //   rank: 1
-  // }
+  { id: 13, path: "/transaction/liste", component: <TransactionList />, rank: 0 }
 ];
 
 const publicRoutes = [
@@ -71,4 +52,4 @@ const publicRoutes = [
   { path: "*", component: <Basic404 /> }
 ];
 
-export { userRoute, adminRoute, publicRoutes };
+export { userRoute, publicRoutes };

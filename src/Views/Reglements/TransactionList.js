@@ -279,7 +279,7 @@ const TransactionList = () => {
       setCollaborateurs(response);
     });
   }, [toggleRefresh]);
-  
+
   return (
     <React.Fragment>
       <div className="page-content">
@@ -303,12 +303,6 @@ const TransactionList = () => {
             title="Encaissements"
             pageTitle="Facturation"
           />
-          <h3>Statistiques de l'année</h3>
-          <Row>
-            <div xl={12}>
-              <TransactionCharts chartData={chartData} />
-            </div>
-          </Row>
 
           <Row>
             <Col lg={12}>

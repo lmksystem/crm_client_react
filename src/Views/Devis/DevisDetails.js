@@ -4,10 +4,9 @@ import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
-
 import { customFormatNumber, rounded } from "../../utils/function";
 import DeleteModal from "../../Components/Common/DeleteModal";
-import { deleteDevis as onDeleteDevis, SendDevisByEmail as onSendDevisByEmail, getCompany as onGetCompany, updateDevis as onUpdateDevis } from "../../slices/thunks";
+import { getCompany as onGetCompany } from "../../slices/thunks";
 import ConfirmModal from "../../Components/Common/ConfirmModal";
 import axios from "axios";
 import FeatherIcon from "feather-icons-react/build/FeatherIcon";
@@ -74,10 +73,6 @@ const DevisDetails = () => {
       });
   };
 
-  useEffect(() => {
-    dispatch(onGetCompany());
-  }, []);
-
   const handleDeleteDevis = (id) => {
     if (id) {
       DevisService.deleteDevis(id);
@@ -124,6 +119,10 @@ const DevisDetails = () => {
         setEtatDevis(response);
       });
     });
+  }, []);
+
+  useEffect(() => {
+    dispatch(onGetCompany());
   }, []);
 
   useEffect(() => {

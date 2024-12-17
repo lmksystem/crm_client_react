@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardBody, Col, Container, Input, Label, Row, Button, Form, FormFeedback, Alert, Spinner } from 'reactstrap';
-
-//redux
-import { useSelector, useDispatch } from "react-redux";
-
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
 // Formik validation
 import * as Yup from "yup";
 import { useFormik } from "formik";

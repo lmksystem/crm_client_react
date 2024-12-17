@@ -4,50 +4,35 @@ import { Link, useNavigate } from "react-router-dom";
 import * as moment from "moment";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import TableContainer from "../../Components/Common/TableContainer";
-
-//Import actions
-import { getTransaction as onGetTransaction } from "../../slices/thunks";
-//redux
-import { useSelector, useDispatch } from "react-redux";
-import { getLoggedinUser } from "../../helpers/api_helper";
-
+import { useSelector } from "react-redux";
 import Loader from "../../Components/Common/Loader";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import "moment/locale/fr"; // without this line it didn't work
 import { InvoiceListGlobalSearch } from "../../Components/Common/GlobalSearchFilter";
 import { customFormatNumber, rounded } from "../../utils/function";
-
-import WidgetCountUp from "../../Components/Common/WidgetCountUp";
 import { invoiceEtatColor } from "../../common/data/invoiceList";
 import { getInvoices, getWidgetInvoices } from "../../services/invoice";
+
 moment.locale("fr");
 
 const InvoiceList = () => {
-  document.title = "Liste facture  | Countano";
+  document.title = "Liste facture  | CRM LMK";
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { transactions, error, devise } = useSelector((state) => ({
-    transactions: state.Transaction.transactions,
+  const { devise } = useSelector((state) => ({
     devise: state.Company.devise
   }));
 
-  const [invoices, setInvoices] = useState([]);
-  const [invoiceWidgets, setInvoiceWidgets] = useState(null);
+  const [invoices, setInvoices] = useState(null);
   const [customFiltered, setCustomFiltered] = useState(null);
 
   useEffect(() => {
-    getWidgetInvoices().then((response) => {
-      setInvoiceWidgets(response);
-    });
     getInvoices().then((response) => {
       setInvoices(response);
     });
-    dispatch(onGetTransaction());
-  }, [dispatch]);
+  }, []);
 
   // Invoice Column
   const columns = useMemo(
@@ -129,16 +114,10 @@ const InvoiceList = () => {
         accessor: "",
         filterable: false,
         Cell: (invoice) => {
-          let transactionOfFac = transactions.filter((t) => t.tra_fen_fk == invoice.row.original.header.fen_id);
           return (
             <>
               <div className="fw-semibold ff-secondary">
-                {customFormatNumber(
-                  rounded(
-                    transactionOfFac.reduce((previousValue, currentValue) => parseFloat(previousValue) - parseFloat(currentValue.tra_value), parseFloat(invoice.row.original.header.fen_total_ttc)),
-                    2
-                  )
-                )}
+                {customFormatNumber(invoice.row.original.header.solde_du)}
                 {devise}
               </div>
             </>
@@ -156,7 +135,6 @@ const InvoiceList = () => {
     ],
     [invoices]
   );
-  console.log(invoices);
 
   return (
     <React.Fragment>
@@ -166,22 +144,6 @@ const InvoiceList = () => {
             title="Factures"
             pageTitle="Facturation"
           />
-          <h3>Statistiques de l'année</h3>
-          <Row className="d-flex  justify-content-around ">
-            {invoiceWidgets
-              ?.filter((e) => e.icon != "none")
-              ?.map((widget, i) => {
-                let data = { ...widget };
-                data.name = widget.name + "s";
-                return (
-                  <WidgetCountUp
-                    key={i}
-                    data={data}
-                    type={"Factures"}
-                  />
-                );
-              })}
-          </Row>
 
           <Row>
             <Col lg={12}>
@@ -206,11 +168,11 @@ const InvoiceList = () => {
                 <CardBody className="pt-0">
                   <div>
                     <InvoiceListGlobalSearch
-                      origneData={invoices}
+                      origneData={invoices || []}
                       data={customFiltered}
                       setData={setCustomFiltered}
                     />
-                    {invoices.length ? (
+                    {invoices ? (
                       <TableContainer
                         columns={columns}
                         data={customFiltered || invoices || []}
@@ -229,7 +191,7 @@ const InvoiceList = () => {
                         }}
                       />
                     ) : (
-                      <Loader error={error} />
+                      <Loader error={invoices} />
                     )}
                   </div>
                   <ToastContainer

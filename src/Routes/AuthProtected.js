@@ -7,11 +7,9 @@ import { useProfile } from "../Components/Hooks/UserHooks";
 
 import { logoutUser } from "../slices/auth/login/thunk";
 
-
 const AuthProtected = (props) => {
   const dispatch = useDispatch();
   const { userProfile, loading, token } = useProfile();
-  const [hasRank, setHasRank] = useState(null)
 
   useEffect(() => {
     if (userProfile && !loading && token) {
@@ -21,34 +19,14 @@ const AuthProtected = (props) => {
     }
   }, [token, userProfile, loading, dispatch]);
 
-  useEffect(() => {
-    if (userProfile) {
-      setHasRank(userProfile.use_rank == props.rank ? true : false);
-    }
-  }, [])
-
   /*
     Navigate is un-auth access protected routes via url
-    */
+  */
   if (!userProfile && loading && !token) {
-    return (
-      <Navigate to={{ pathname: "/login", state: { from: props.location } }} />
-    );
+    return <Navigate to={{ pathname: "/login", state: { from: props.location } }} />;
   }
 
-/*
-    Navigate is un-auth access protected routes via url
-    */
-    if (userProfile.use_rank == 1) {
-      return (
-        <Navigate to={{ pathname: "/admin", state: { from: props.location } }} />
-      );
-    }
-
   return <>{props.children}</>;
-
 };
-
-
 
 export { AuthProtected };

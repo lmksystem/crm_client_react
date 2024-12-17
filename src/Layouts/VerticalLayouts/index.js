@@ -17,11 +17,10 @@ const VerticalLayout = (props) => {
   /*
  layout settings
  */
-  const { leftsidbarSizeType, sidebarVisibilitytype, layoutType, user } = useSelector((state) => ({
+  const { leftsidbarSizeType, sidebarVisibilitytype, layoutType } = useSelector((state) => ({
     leftsidbarSizeType: state.Layout.leftsidbarSizeType,
     sidebarVisibilitytype: state.Layout.sidebarVisibilitytype,
     layoutType: state.Layout.layoutType,
-    user: state.Login.user
   }));
 
   //vertical and semibox resize events
