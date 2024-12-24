@@ -12,7 +12,8 @@ import "moment/locale/fr"; // without this line it didn't work
 import { InvoiceListGlobalSearch } from "../../Components/Common/GlobalSearchFilter";
 import { customFormatNumber, rounded } from "../../utils/function";
 import { invoiceEtatColor } from "../../common/data/invoiceList";
-import { getInvoices, getWidgetInvoices } from "../../services/invoice";
+import { getInvoiceByEntId, getInvoices } from "../../services/invoice";
+import { useProfile } from "../../Components/Hooks/UserHooks";
 
 moment.locale("fr");
 
@@ -20,6 +21,7 @@ const InvoiceList = () => {
   document.title = "Liste facture  | CRM LMK";
 
   const navigate = useNavigate();
+  const { userProfile } = useProfile();
 
   const { devise } = useSelector((state) => ({
     devise: state.Company.devise
@@ -29,7 +31,7 @@ const InvoiceList = () => {
   const [customFiltered, setCustomFiltered] = useState(null);
 
   useEffect(() => {
-    getInvoices().then((response) => {
+    getInvoiceByEntId(userProfile.ent_id).then((response) => {
       setInvoices(response);
     });
   }, []);
@@ -151,17 +153,7 @@ const InvoiceList = () => {
                 <CardHeader className="border-0">
                   <div className="d-flex align-items-center">
                     {/* <h5 className="card-title mb-0 flex-grow-1">Factures</h5> */}
-                    <div className="flex-shrink-0">
-                      <div className="d-flex gap-2 flex-wrap">
-                        <button
-                          onClick={() => {
-                            navigate("/factures/creation");
-                          }}
-                          className="btn btn-secondary me-1">
-                          <i className="ri-add-line align-bottom me-1"></i> Créer une facture
-                        </button>
-                      </div>
-                    </div>
+                    <div className="flex-shrink-0"></div>
                   </div>
                 </CardHeader>
 
@@ -185,7 +177,7 @@ const InvoiceList = () => {
                         isInvoiceListFilter={true}
                         SearchPlaceholder=""
                         // pathToDetail={`/factures/detail/`}
-                        // initialSortField={"fen_date_create"}
+                        initialSortField={"fen_date_create"}
                         actionItem={(row) => {
                           navigate("/factures/detail/" + row.original.header.fen_id, { state: row.original });
                         }}

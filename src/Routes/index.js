@@ -12,30 +12,25 @@ import { AdminProtected } from "./AdminProtected";
 import { useSelector } from "react-redux";
 
 const Index = () => {
-  const { user } = useSelector((state) => ({
-    user: state.Login.user
-  }));
-  console.log("userProfile", user);
   return (
     <React.Fragment>
       <Routes>
         <Route>
           {/* rank utilisateur */}
-          {user &&
-            userRoute.map((route, idx) => {
-              return (
-                <Route
-                  path={route.path}
-                  element={
-                    <AuthProtected rank={route.rank}>
-                      <VerticalLayout>{route.component}</VerticalLayout>
-                    </AuthProtected>
-                  }
-                  key={idx}
-                  exact={true}
-                />
-              );
-            })}
+          {userRoute.map((route, idx) => {
+            return (
+              <Route
+                path={route.path}
+                element={
+                  <AuthProtected rank={route.rank}>
+                    <VerticalLayout>{route.component}</VerticalLayout>
+                  </AuthProtected>
+                }
+                key={idx}
+                exact={true}
+              />
+            );
+          })}
         </Route>
 
         <Route>

@@ -23,7 +23,7 @@ import { addNewTransaction, deleteTransaction, getTransactionList, sendInvocieBy
 // const axios = new APIClient();
 
 const InvoiceDetails = ({ route }) => {
-  document.title = "Détail facture | Countano";
+  document.title = "Détail facture | CRM LMK ";
 
   let { id } = useParams();
 
@@ -181,25 +181,15 @@ const InvoiceDetails = ({ route }) => {
   }, [company]);
 
   useEffect(() => {
-    if (invoice && etat) {
-    }
-  }, [invoice, etat]);
-
-  useEffect(() => {
     getInvoiceById(id).then((response) => {
       setInvoice(response);
       setValueSubject(response?.header.fen_sujet);
-      getEtatInvoice().then((etatData) => {
-        setSelectedEtat(etatData?.find((d) => d.fet_id == response?.header.fen_etat)?.fet_name);
-        setEtat(etatData);
-      });
     });
   }, []);
 
   if (!invoice) {
     return null;
   }
-  console.log(invoice.transactions);
 
   return (
     <div className="page-content">
@@ -284,46 +274,7 @@ const InvoiceDetails = ({ route }) => {
                         md={6}
                         lg={4}
                         className="col-6 d-flex flex-column">
-                        {!subjectChange ? (
-                          <h6 className="text-muted text-uppercase fw-semibold mb-3">
-                            {valueSubject}
-                            <FeatherIcon
-                              onClick={() => {
-                                setSubjectChange(() => !subjectChange);
-                              }}
-                              className={"d-print-none mx-2 cursor-pointer"}
-                              size={13}
-                              icon={"edit-2"}></FeatherIcon>
-                          </h6>
-                        ) : (
-                          <div class="input-group">
-                            <input
-                              placeholder="Sujet"
-                              type="text"
-                              defaultValue={invoice.header.fen_sujet}
-                              class="form-control form-control"
-                            />
-                            <button
-                              onClick={(e) => {
-                                if (e.target?.previousSibling?.value?.trim()?.length > 0) {
-                                  updateInvoice({
-                                    fen_id: invoice.header.fen_id,
-                                    fen_sujet: e.target.previousSibling.value
-                                  });
-                                  setValueSubject(e.target.previousSibling.value);
-                                  setSubjectChange(() => false);
-                                } else {
-                                  toast.error("Veuillez entrer un sujet", {
-                                    autoClose: 3000
-                                  });
-                                }
-                              }}
-                              class="btn btn-primary"
-                              type="button">
-                              Valider
-                            </button>
-                          </div>
-                        )}
+                        <h6 className="text-muted text-uppercase fw-semibold mb-3">{invoice?.header.fen_sujet}</h6>
                       </Col>
                       <Col
                         xs={12}
@@ -394,50 +345,13 @@ const InvoiceDetails = ({ route }) => {
                       <Col
                         lg={3}
                         className="col-6">
-                        <p className="text-muted mb-2 text-uppercase fw-semibold">
-                          état paiement
-                          <FeatherIcon
-                            onClick={() => {
-                              setActiveChange(() => !activeChange);
-                            }}
-                            className={"d-print-none mx-2 cursor-pointer"}
-                            size={13}
-                            icon={"edit-2"}></FeatherIcon>
-                        </p>
-                        {activeChange ? (
-                          <select
-                            defaultValue={invoice.header.fen_etat}
-                            onChange={(e) => {
-                              toggleTransaction(e);
-                              setSelectedEtat(etat?.find((d) => d.fet_id == e.target.value)?.fet_name);
-                              setActiveChange(() => false);
-                              updateInvoice({
-                                fen_id: invoice.header.fen_id,
-                                fen_etat: e.target.value,
-                                fen_solde_du: invoice.header.fen_total_ttc
-                              });
-                              setInvoice({
-                                ...invoice,
-                                header: {
-                                  ...invoice.header,
-                                  fen_etat: e.target.value,
-                                  fen_solde_du: invoice.header.fen_total_ttc
-                                },
-                                transactions: []
-                              });
-                            }}
-                            className="form-select">
-                            {etat.map((e) => {
-                              return <option value={e.fet_id}>{e.fet_name}</option>;
-                            })}
-                          </select>
-                        ) : (
-                          <span
-                            className={"badge fs-11 badge-soft-" + invoiceEtatColor[invoice.header.fen_etat - 1]}
-                            id="payment-status">
-                            {selectedEtat}
-                          </span>
-                        )}
+                        <p className="text-muted mb-2 text-uppercase fw-semibold">état paiement</p>
+
+                        <span
+                          className={"badge fs-11 badge-soft-" + invoiceEtatColor[invoice.header.fen_etat - 1]}
+                          id="payment-status">
+                          {invoice.header.fet_name}
+                        </span>
                       </Col>
                       <Col
                         lg={3}
@@ -570,15 +484,6 @@ const InvoiceDetails = ({ route }) => {
                                 className="text-end">
                                 Montant
                               </th>
-                              <th className="text-end">
-                                <button
-                                  disabled={invoice?.header.fen_etat == 1 ? true : false}
-                                  onClick={() => setAddActifView(() => true)}
-                                  className="d-print-none btn btn-secondary btn-icon "
-                                  style={{ width: "25px", height: "25px" }}>
-                                  +
-                                </button>
-                              </th>
                             </tr>
                           </thead>
                           <tbody className="border-bottom border-bottom-dashed fs-15">
@@ -593,27 +498,6 @@ const InvoiceDetails = ({ route }) => {
                                     <td className="text-end">
                                       {customFormatNumber(element.tra_value)}
                                       {devise}
-                                    </td>
-                                    <td width={40}>
-                                      <button
-                                        disabled={invoice?.header.fen_etat == 1 ? true : false}
-                                        onClick={() => {
-                                          setShowModalDelete(() => true);
-                                          setSelectedId(element.tra_id);
-                                        }}
-                                        className="btn btn-danger btn-icon"
-                                        style={{
-                                          width: "25px",
-                                          height: "25px"
-                                        }}>
-                                        <div
-                                          style={{
-                                            position: "absolute",
-                                            transform: "rotate(45deg)"
-                                          }}>
-                                          +
-                                        </div>
-                                      </button>
                                     </td>
                                   </tr>
                                 );
@@ -643,84 +527,6 @@ const InvoiceDetails = ({ route }) => {
                             <i>Aucune Transaction</i>
                           </Col>
                         )}
-
-                        {addActifView ? (
-                          <Form
-                            className="d-print-none "
-                            onSubmit={(e) => {
-                              e.preventDefault();
-                              validation.handleSubmit();
-                              return false;
-                            }}>
-                            <Row className="my-4 mx-0 p-0 ">
-                              <Col lg={3}>
-                                <Input
-                                  type="date"
-                                  className="form-control border-1 mb-2"
-                                  id="fco_name"
-                                  name="tra_date"
-                                  value={validation.values.tra_date || ""}
-                                  onBlur={validation.handleBlur}
-                                  onChange={validation.handleChange}
-                                  invalid={validation.errors?.tra_date && validation.touched?.tra_date ? true : false}
-                                />
-                                {validation.errors?.tra_date && validation.touched?.tra_date ? <FormFeedback type="invalid">{validation.errors?.tra_date}</FormFeedback> : null}
-                              </Col>
-                              <Col lg={3}>
-                                <Input
-                                  type="text"
-                                  className="form-control border-1 mb-2"
-                                  id="fco_name"
-                                  name="tra_desc"
-                                  value={validation.values.tra_desc || ""}
-                                  onBlur={validation.handleBlur}
-                                  onChange={validation.handleChange}
-                                  placeholder="Description"
-                                  invalid={validation.errors?.tra_desc && validation.touched?.tra_desc ? true : false}
-                                />
-                                {validation.errors?.tra_desc && validation.touched?.tra_desc ? <FormFeedback type="invalid">{validation.errors?.tra_desc}</FormFeedback> : null}
-                              </Col>
-                              <Col lg={2}>
-                                <Input
-                                  type="number"
-                                  className="form-control border-1 mb-2"
-                                  id="tra_value"
-                                  name="tra_value"
-                                  value={validation.values.tra_value || ""}
-                                  onBlur={validation.handleBlur}
-                                  onChange={validation.handleChange}
-                                  placeholder="Montant"
-                                  invalid={validation.errors?.tra_value && validation.touched?.tra_value ? true : false}
-                                />
-                                {validation.errors?.tra_value && validation.touched?.tra_value ? <FormFeedback type="invalid">{validation.errors?.tra_value}</FormFeedback> : null}
-                              </Col>
-                              <Col
-                                lg={4}
-                                className="d-flex">
-                                <div className="w-50 pr-1">
-                                  <button
-                                    type="submit"
-                                    className=" px-2 btn btn-secondary w-100">
-                                    Enregistrer
-                                  </button>
-                                </div>
-                                <div className="w-50 ps-1">
-                                  <button
-                                    type="button"
-                                    onClick={(e) => {
-                                      e.preventDefault();
-                                      setAddActifView(() => false);
-                                    }}
-                                    className="btn btn-danger w-100">
-                                    Annuler
-                                  </button>
-                                </div>
-                              </Col>
-                            </Row>
-                          </Form>
-                        ) : (
-                          ""
-                        )}
                       </SimpleBar>
                     </div>
 
@@ -731,11 +537,7 @@ const InvoiceDetails = ({ route }) => {
                         className="btn btn-success">
                         <i className="ri-printer-line align-bottom me-1"></i> Imprimer
                       </button>
-                      <button
-                        onClick={() => setShowConfirmModal(true)}
-                        className="btn btn-success">
-                        <i className="ri-send-plane-fill align-bottom me-1"></i> Envoyer
-                      </button>
+
                       <button
                         onClick={() => downloadPdf()}
                         className="btn btn-secondary">

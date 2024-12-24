@@ -17,47 +17,6 @@ export const getDevis = () => {
   });
 };
 
-export const addNewDevis = (data) => {
-  return new Promise((resolve, reject) => {
-    try {
-      api.create(url.DEVIS, data).then((response) => {
-        resolve(response.data);
-      });
-    } catch (error) {
-      toast.error("Erreur d'ajout de devis", { autoClose: 3000 });
-      reject(error);
-    }
-  });
-};
-
-export const updateDevis = (data) => {
-  return new Promise((resolve, reject) => {
-    try {
-      api.update(url.DEVIS + "/" + data.den_id, data).then((response) => {
-        toast.success("Devis mis à jour", { autoClose: 3000 });
-        resolve(response.data);
-      });
-    } catch (error) {
-      toast.error("Erreur mise à jour de devis", { autoClose: 3000 });
-      reject(error);
-    }
-  });
-};
-
-export const deleteDevis = (id) => {
-  return new Promise((resolve, reject) => {
-    try {
-      api.delete(url.DEVIS + "/" + id).then((response) => {
-        toast.success("Devis supprimé", { autoClose: 3000 });
-        resolve(response.data);
-      });
-    } catch (error) {
-      toast.error("Erreur de suppression de devis", { autoClose: 3000 });
-      reject(error);
-    }
-  });
-};
-
 export const getDevisById = (id) => {
   return new Promise((resolve, reject) => {
     try {
@@ -159,6 +118,19 @@ export const getDevisByMonth = (data) => {
   return new Promise((resolve, reject) => {
     try {
       api.get(url.DEVIS + "/byMonth/" + data.year).then((response) => {
+        resolve(response.data);
+      });
+    } catch (error) {
+      toast.error("Erreur de lecture des devis", { autoClose: 3000 });
+      reject(error);
+    }
+  });
+};
+
+export const getEtatDevisByEntId = (id) => {
+  return new Promise((resolve, reject) => {
+    try {
+      api.get("/v1/devis/entity/" + id).then((response) => {
         resolve(response.data);
       });
     } catch (error) {

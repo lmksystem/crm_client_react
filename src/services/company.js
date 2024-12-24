@@ -8,7 +8,7 @@ export const getCompany = () => {
   return new Promise((resolve, reject) => {
     try {
       api.get(url.COMPANY).then((response) => {
-        resolve(response.data);
+        resolve(response.data[0]);
       });
     } catch (error) {
       reject(error);
@@ -71,17 +71,5 @@ export const deleteLicense = (id) => {
     } catch (error) {
       reject(error);
     }
-  });
-};
-
-export const getCompanyListAction = async () => {
-  return new Promise((resolve, reject) => {
-    getCompanyListApi()
-      .then((res) => {
-        resolve(res.data);
-      })
-      .catch((e) => {
-        reject(e);
-      });
   });
 };

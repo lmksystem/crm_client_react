@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 //redux
-import {
-    changeSidebarTheme} from "../../slices/thunks";
+import { changeSidebarTheme } from "../../slices/thunks";
 import { useSelector, useDispatch } from "react-redux";
 
 //import Constant
@@ -12,105 +11,96 @@ import { useSelector, useDispatch } from "react-redux";
 //import Images
 
 const RightSidebar = () => {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-    const [show, setShow] = useState(false);
-    function tog_show() {
-        setShow(!show);
-        dispatch(changeSidebarTheme("gradient"));
+  const [show, setShow] = useState(false);
+  function tog_show() {
+    setShow(!show);
+    dispatch(changeSidebarTheme("gradient"));
+  }
+
+  useEffect(() => {
+    if (show && document.getElementById("sidebar-color-dark") && document.getElementById("sidebar-color-light")) {
+      document.getElementById("sidebar-color-dark").checked = false;
+      document.getElementById("sidebar-color-light").checked = false;
     }
+  });
+  const { layoutType, leftSidebarType, layoutModeType, layoutWidthType, layoutPositionType, topbarThemeType, leftsidbarSizeType, leftSidebarViewType, leftSidebarImageType, preloader, sidebarVisibilitytype } = useSelector((state) => ({
+    layoutType: state.Layout.layoutType,
+    leftSidebarType: state.Layout.leftSidebarType,
+    layoutModeType: state.Layout.layoutModeType,
+    layoutWidthType: state.Layout.layoutWidthType,
+    layoutPositionType: state.Layout.layoutPositionType,
+    topbarThemeType: state.Layout.topbarThemeType,
+    leftsidbarSizeType: state.Layout.leftsidbarSizeType,
+    leftSidebarViewType: state.Layout.leftSidebarViewType,
+    leftSidebarImageType: state.Layout.leftSidebarImageType,
+    preloader: state.Layout.preloader,
+    sidebarVisibilitytype: state.Layout.sidebarVisibilitytype
+  }));
 
-    useEffect(() => {
-        if (show && document.getElementById("sidebar-color-dark") && document.getElementById("sidebar-color-light")) {
-            document.getElementById("sidebar-color-dark").checked = false;
-            document.getElementById("sidebar-color-light").checked = false;
-        }
-    });
-    const {
-        layoutType,
-        leftSidebarType,
-        layoutModeType,
-        layoutWidthType,
-        layoutPositionType,
-        topbarThemeType,
-        leftsidbarSizeType,
-        leftSidebarViewType,
-        leftSidebarImageType,
-        preloader,
-        sidebarVisibilitytype
-    } = useSelector(state => ({
-        layoutType: state.Layout.layoutType,
-        leftSidebarType: state.Layout.leftSidebarType,
-        layoutModeType: state.Layout.layoutModeType,
-        layoutWidthType: state.Layout.layoutWidthType,
-        layoutPositionType: state.Layout.layoutPositionType,
-        topbarThemeType: state.Layout.topbarThemeType,
-        leftsidbarSizeType: state.Layout.leftsidbarSizeType,
-        leftSidebarViewType: state.Layout.leftSidebarViewType,
-        leftSidebarImageType: state.Layout.leftSidebarImageType,
-        preloader: state.Layout.preloader,
-        sidebarVisibilitytype: state.Layout.sidebarVisibilitytype
-    }));
+  // open offcanvas
+  const [open, setOpen] = useState(true);
+  const toggleLeftCanvas = () => {
+    setOpen(!open);
+  };
 
-    // open offcanvas
-    const [open, setOpen] = useState(true);
-    const toggleLeftCanvas = () => {
-        setOpen(!open);
-    };
+  window.onscroll = function () {
+    scrollFunction();
+  };
 
-    window.onscroll = function () {
-        scrollFunction();
-    };
+  const scrollFunction = () => {
+    const element = document.getElementById("back-to-top");
+    if (element) {
+      if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+        element.style.display = "block";
+      } else {
+        element.style.display = "none";
+      }
+    }
+  };
 
-    const scrollFunction = () => {
-        const element = document.getElementById("back-to-top");
-        if (element) {
-            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
-                element.style.display = "block";
-            } else {
-                element.style.display = "none";
-            }
-        }
-    };
+  const toTop = () => {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  };
 
-    const toTop = () => {
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
-    };
+  const pathName = window.location.pathname;
 
-    const pathName = window.location.pathname;
+  useEffect(() => {
+    const preloader = document.getElementById("preloader");
+    if (preloader) {
+      document.getElementById("preloader").style.opacity = "1";
+      document.getElementById("preloader").style.visibility = "visible";
+      setTimeout(function () {
+        document.getElementById("preloader").style.opacity = "0";
+        document.getElementById("preloader").style.visibility = "hidden";
+      }, 1000);
+    }
+  }, [preloader, pathName]);
 
-    useEffect(() => {
-        const preloader = document.getElementById("preloader");
-        if (preloader) {
-            document.getElementById("preloader").style.opacity = "1";
-            document.getElementById("preloader").style.visibility = "visible";
-            setTimeout(function () {
-                document.getElementById("preloader").style.opacity = "0";
-                document.getElementById("preloader").style.visibility = "hidden";
-            }, 1000);
-        }
-    }, [preloader, pathName]);
+  return (
+    <React.Fragment>
+      <button
+        onClick={() => toTop()}
+        className="btn btn-danger btn-icon"
+        id="back-to-top">
+        <i className="ri-arrow-up-line"></i>
+      </button>
 
-    return (
-        <React.Fragment>
-            <button
-                onClick={() => toTop()}
-                className="btn btn-danger btn-icon" id="back-to-top">
-                <i className="ri-arrow-up-line"></i>
-            </button>
-
-            {preloader === "enable" && <div id="preloader">
-                <div id="status">
-                    <div className="spinner-border text-primary avatar-sm" role="status">
-                        <span className="visually-hidden">Loading...</span>
-                    </div>
-                </div>
-            </div>}
-
-           
-        </React.Fragment>
-    );
+      {preloader === "enable" && (
+        <div id="preloader">
+          <div id="status">
+            <div
+              className="spinner-border text-primary avatar-sm"
+              role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+      )}
+    </React.Fragment>
+  );
 };
 
 export default RightSidebar;

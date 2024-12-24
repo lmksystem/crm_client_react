@@ -99,3 +99,16 @@ export const getTransactionByMonth = (data) => {
     }
   });
 };
+
+export const getTransactionListByEntId = () => {
+  return new Promise((resolve, reject) => {
+    try {
+      api.get("/v1/transaction/entity").then((response) => {
+        resolve(response.data);
+      });
+    } catch (error) {
+      toast.error("Erreur récupération des transactions ", { autoClose: 3000 });
+      reject(error);
+    }
+  });
+};

@@ -24,7 +24,7 @@ import ParticlesAuth from "../AuthenticationInner/ParticlesAuth";
 import { ToastContainer } from "react-toastify";
 
 const ForgetPasswordPage = props => {
-  document.title = "Mot de passe oublié | Countano";
+  document.title = "Mot de passe oublié | CRM LMK";
 
   const dispatch = useDispatch();
 

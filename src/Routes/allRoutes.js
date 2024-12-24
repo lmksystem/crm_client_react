@@ -18,7 +18,7 @@ import Logout from "../Views/Authentication/Logout";
 import ForgetPasswordPage from "../Views/Authentication/ForgetPassword";
 import FinalisationAccount from "../Views/FinalisationAccount/FinalisationAccount";
 import Basic404 from "../Views/AuthenticationInner/Errors/Basic404";
-import CreateAccount from "../Views/AuthenticationInner/Register/CreateAccount";
+
 import ResertPassword from "../Views/Authentication/ResertPassword";
 import TransactionList from "../Views/Reglements/TransactionList";
 
@@ -47,7 +47,6 @@ const publicRoutes = [
   { path: "/", component: <Login /> },
   { path: "/forgot-password", component: <ForgetPasswordPage /> },
   { path: "/reset-password/:token", component: <ResertPassword /> },
-  { path: "/inscription", component: <CreateAccount /> },
   { path: "/finalisation-compte", component: <FinalisationAccount /> },
   { path: "*", component: <Basic404 /> }
 ];

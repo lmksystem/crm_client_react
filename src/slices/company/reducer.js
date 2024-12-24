@@ -27,7 +27,7 @@ const companySlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(getCompany.fulfilled, (state, action) => {
       state.company = action.payload.data;
-      state.devise = paysData.find((p) => p.name == action.payload.data[0].com_pays)?.symbole;
+      state.devise = "€";
       state.isCompanyCreated = false;
       state.isCompanySuccess = true;
     });

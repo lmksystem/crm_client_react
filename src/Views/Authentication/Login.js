@@ -57,7 +57,7 @@ const Login = (props) => {
     }
   }, [user]);
 
-  document.title = "Connexion | Countano";
+  document.title = "Connexion | CRM LMK";
   return (
     <React.Fragment>
       <ParticlesAuth>
@@ -91,7 +91,7 @@ const Login = (props) => {
                   <CardBody className="p-4">
                     <div className="text-center mt-2">
                       <h5 className="text-primary">Bienvenue !</h5>
-                      <p className="text-muted">Connectez-vous pour continuer sur Countano.</p>
+                      <p className="text-muted">Connectez-vous pour continuer sur CRM LMK.</p>
                     </div>
                     {error && error ? <Alert color="danger"> {error} </Alert> : null}
                     <div className="p-2 mt-4">

@@ -2,15 +2,13 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import SimpleBar from "simplebar-react";
 //import logo
-import logoSm from "../assets/images/icone_countano.png";
+
 import logoDark from "../assets/images/logo_lmk.png";
 import logoLight from "../assets/images/logo_lmk.png";
 
 //Import Components
 import VerticalLayout from "./VerticalLayouts";
 import { Container } from "reactstrap";
-;
-
 const Sidebar = ({ layoutType, leftSidebarType }) => {
   useEffect(() => {
     var verticalOverlay = document.getElementsByClassName("vertical-overlay");
@@ -40,11 +38,11 @@ const Sidebar = ({ layoutType, leftSidebarType }) => {
               to="/"
               className="logo logo-dark">
               <span className="logo-sm">
-                <img
+                {/* <img
                   src={logoSm}
                   alt=""
                   height="22"
-                />
+                /> */}
               </span>
               <span className="logo-lg">
                 <img
@@ -59,11 +57,11 @@ const Sidebar = ({ layoutType, leftSidebarType }) => {
               to="/"
               className="logo logo-light">
               <span className="logo-sm">
-                <img
+                {/* <img
                   src={logoSm}
                   alt=""
                   height="22"
-                />
+                /> */}
               </span>
               <span className="logo-lg">
                 <img

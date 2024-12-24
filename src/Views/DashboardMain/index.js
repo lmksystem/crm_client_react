@@ -11,7 +11,7 @@ import moment from "moment";
 moment.locale("fr");
 
 const DashboardMain = () => {
-  document.title = "Accueil | Countano";
+  document.title = "Accueil | CRM LMK";
 
   // const dispatch = useDispatch();
 
@@ -30,7 +30,7 @@ const DashboardMain = () => {
         <Container fluid>
           <BreadCrumb
             title="Tableau de bord"
-            pageTitle="Countano"
+            pageTitle="CRM LMK"
           />
           <Row>
             <Col>

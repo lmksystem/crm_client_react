@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { CardBody, Row, Col, Card, Container, CardHeader } from "reactstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import * as moment from "moment";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import TableContainer from "../../Components/Common/TableContainer";
@@ -20,11 +20,13 @@ import { customFormatNumber, rounded } from "../../utils/function";
 import WidgetCountUp from "../../Components/Common/WidgetCountUp";
 import { devisEtatColor } from "../../common/data/devisList";
 import { DevisService } from "../../services";
+import { useProfile } from "../../Components/Hooks/UserHooks";
 moment.locale("fr");
 
 const DevisList = () => {
-  document.title = "Liste devis  | Countano";
-
+  document.title = "Liste devis  | CRM LMK";
+  const { userProfile } = useProfile();
+  const navigate = useNavigate();
   const { devise } = useSelector((state) => ({
     devise: state.Company.devise
   }));
@@ -38,13 +40,6 @@ const DevisList = () => {
   const [devisList, setDevisList] = useState(null);
   const [devisWidgets, setDevisWidgets] = useState([]);
   const [etatDevis, setEtatDevis] = useState([]);
-
-  const handleDeleteDevis = (id) => {
-    if (id) {
-      DevisService.deleteDevis(id);
-      setDeleteModal(false);
-    }
-  };
 
   // Checked All
   const checkedAll = useCallback(() => {
@@ -63,29 +58,6 @@ const DevisList = () => {
 
     deleteCheckbox();
   }, []);
-
-  // Delete Multiple
-  const [selectedCheckBoxDelete, setSelectedCheckBoxDelete] = useState([]);
-  const [isMultiDeleteButton, setIsMultiDeleteButton] = useState(false);
-
-  const deleteMultiple = () => {
-    const checkall = document.getElementById("checkBoxAll");
-    selectedCheckBoxDelete.forEach((element) => {
-      setTimeout(() => {
-        toast.clearWaitingQueue();
-      }, 3000);
-      handleDeleteDevis(element.value);
-    });
-
-    setIsMultiDeleteButton(false);
-    checkall.checked = false;
-  };
-
-  const deleteCheckbox = () => {
-    const ele = document.querySelectorAll(".invoiceCheckBox:checked");
-    ele.length > 0 ? setIsMultiDeleteButton(true) : setIsMultiDeleteButton(false);
-    setSelectedCheckBoxDelete(ele);
-  };
 
   // devis Column
   const columns = useMemo(
@@ -143,35 +115,12 @@ const DevisList = () => {
       },
       {
         Header: "Client",
-        accessor: "contact.dco_cus_name",
-        Cell: (devis) => {
-          return (
-            devis.row.original?.den_ent_fk != null && (
-              <>
-                <div className="d-flex align-items-center">
-                  {devis.row.original.img ? (
-                    <img
-                      src={process.env.REACT_APP_API_URL + "/images/users/" + devis.row.original.img}
-                      alt=""
-                      className="avatar-xs rounded-circle me-2"
-                    />
-                  ) : (
-                    <div className="flex-shrink-0 avatar-xs me-2">
-                      <div className="avatar-title bg-soft-success text-success rounded-circle fs-13">{(devis.row.original?.contact?.dco_cus_name && devis.row.original?.contact?.dco_cus_name.charAt(0)) || ""}</div>
-                    </div>
-                  )}
-                  {devis.row.original.contact?.dco_cus_name}
-                </div>
-              </>
-            )
-          );
-        }
+        accessor: "contact.dco_cus_name"
       },
 
       {
         Header: "EMAIL",
-        accessor: "contact.dco_cus_email",
-        filterable: false
+        accessor: "contact.dco_cus_email"
       },
       {
         Header: "Sujet",
@@ -181,12 +130,7 @@ const DevisList = () => {
       {
         Header: "DATE",
         accessor: "header.den_date_create",
-        Cell: (devis) => (
-          <>
-            {moment(new Date(devis.row.original.header.den_date_create)).format("DD MMMM Y")}
-            {/* <small className="text-muted">{handleValidTime(devis.row.original.header.den_date_create)}</small> */}
-          </>
-        )
+        Cell: (devis) => <>{moment(devis.row.original.header.den_date_create).format("DD MMMM Y")}</>
       },
       {
         Header: "Montant",
@@ -213,14 +157,11 @@ const DevisList = () => {
   );
 
   useEffect(() => {
-    DevisService.getDevisWidgets().then((response) => {
-      setDevisWidgets(response);
-    });
-    DevisService.getDevis().then((response) => {
-      setDevisList(response);
-    });
     DevisService.getEtatDevis().then((response) => {
       setEtatDevis(response);
+    });
+    DevisService.getEtatDevisByEntId(userProfile.ent_id).then((response) => {
+      setDevisList(response);
     });
   }, []);
 
@@ -248,31 +189,12 @@ const DevisList = () => {
             title="Devis"
             pageTitle="Facturation"
           />
-         
 
           <Row>
             <Col lg={12}>
               <Card id="invoiceList">
                 <CardHeader className="border-0">
-                  <div className="d-flex align-items-center">
-                    {/* <h5 className="card-title mb-0 flex-grow-1">Devis</h5> */}
-                    <div className="flex-shrink-0">
-                      <div className="d-flex gap-2 flex-wrap">
-                        <Link
-                          to={"/devis/creation"}
-                          className="btn btn-secondary me-1">
-                          <i className="ri-add-line align-bottom me-1"></i> Créer un devis
-                        </Link>
-                        {isMultiDeleteButton && (
-                          <button
-                            className="btn btn-danger"
-                            onClick={() => setDeleteModalMulti(true)}>
-                            <i className="ri-delete-bin-2-line"></i>
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+                  <div className="d-flex align-items-center"></div>
                 </CardHeader>
 
                 <CardBody className="pt-0">
@@ -294,7 +216,7 @@ const DevisList = () => {
                         className="custom-header-css"
                         theadClass="text-muted text-uppercase"
                         SearchPlaceholder=""
-                        pathToDetail="/devis/detail/"
+                        actionItem={(row) => navigate("/devis/detail/" + row.original.header.den_id)}
                       />
                     ) : (
                       <Loader error={devisList} />

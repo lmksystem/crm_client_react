@@ -192,8 +192,6 @@ export const updateDevis = (devis) => api.update(url.DEVIS + "/" + devis.den_id,
 
 export const deleteDevis = (devis) => api.delete(url.DEVIS + "/" + devis);
 
-export const getDevisById = (devis) => api.get(url.DEVIS + "/" + devis);
-
 export const getDevisForEdit = (id) => api.get(url.DEVIS + "/edit/" + id);
 
 export const getDevisWidgets = () => api.get(url.DEVIS + "/widgets");

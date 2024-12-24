@@ -24,7 +24,7 @@ const ParticlesAuth = ({ children }) => {
                         <div className="row">
                             <div className="col-lg-12">
                                 <div className="text-center">
-                                    <p className="mb-0 text-muted">&copy; {new Date().getFullYear()} Countano. developed by LMK System</p>
+                                    <p className="mb-0 text-muted">&copy; {new Date().getFullYear()} CRM LMK. developed by LMK System</p>
                                 </div>
                             </div>
                         </div>

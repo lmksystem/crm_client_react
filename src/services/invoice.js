@@ -132,3 +132,16 @@ export const getInvoicesPaid = (data) => {
     }
   });
 };
+
+export const getInvoiceByEntId = () => {
+  return new Promise((resolve, reject) => {
+    try {
+      api.get("/v1/invoice/entity").then((response) => {
+        resolve(response.data);
+      });
+    } catch (error) {
+      toast.error("Erreur lecture des factures", { autoClose: 3000 });
+      reject(error);
+    }
+  });
+};

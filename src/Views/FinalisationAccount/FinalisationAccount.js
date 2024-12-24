@@ -10,7 +10,7 @@ import CompanyStep from "./step/CompanyStep";
 import ValideStep from "./step/ValideStep";
 
 const FinalisationAccount = (props) => {
-  document.title = "Finaliser création de compte | Countano";
+  document.title = "Finaliser création de compte | CRM LMK";
   const navigate = useNavigate();
 
   const [searchParams, setSearchParams] = useSearchParams();
