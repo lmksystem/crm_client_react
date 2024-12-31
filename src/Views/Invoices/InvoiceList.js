@@ -29,6 +29,7 @@ const InvoiceList = () => {
 
   const [invoices, setInvoices] = useState(null);
   const [customFiltered, setCustomFiltered] = useState(null);
+  console.log(invoices);
 
   useEffect(() => {
     getInvoiceByEntId(userProfile.ent_id).then((response) => {

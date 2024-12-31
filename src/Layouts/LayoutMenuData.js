@@ -103,6 +103,12 @@ const Navdata = () => {
           parentId: "facturation"
         }
       ]
+    },
+    {
+      id: "domaines",
+      label: "Domaines",
+      icon: "las la-tachometer-alt",
+      link: "/domaine/liste"
     }
   ];
 

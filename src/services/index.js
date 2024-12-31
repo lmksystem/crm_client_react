@@ -29,3 +29,5 @@ export * as SalaryService from "./salary";
 export * as TransactionService from "./transaction";
 
 export * as transactionBankService from "./transactionBank";
+
+export * as DomaineService from "./domaine";

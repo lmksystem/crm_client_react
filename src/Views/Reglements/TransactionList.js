@@ -77,15 +77,17 @@ const TransactionList = () => {
         )
       },
       {
-        Header: "Liaison facture",
+        Header: "Facture",
         accessor: "fen_num_fac",
         Cell: (cell) => {
+          console.log(cell.row.original);
+
           return (
             (cell.row.original.tra_fen_fk && (
               <Link
                 to={`/factures/detail/${cell.row.original.tra_fen_fk}`}
                 className="fw-medium link-primary">
-                Voir la facture ( ID : {cell.row.original.fen_num_fac} ){" "}
+                Voir la facture
               </Link>
             )) ||
             ""
