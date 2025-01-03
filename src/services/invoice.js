@@ -55,6 +55,8 @@ export const addNewInvoice = (data) => {
 };
 
 export const updateInvoice = (data) => {
+  console.log("------",data);
+  
   return new Promise((resolve, reject) => {
     try {
       api.update(url.INVOICES + "/" + data.fen_id, data).then((response) => {

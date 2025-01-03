@@ -22,6 +22,8 @@ import Basic404 from "../Views/AuthenticationInner/Errors/Basic404";
 import ResertPassword from "../Views/Authentication/ResertPassword";
 import TransactionList from "../Views/Reglements/TransactionList";
 import Domaines from "../Views/Domaine/domaine";
+import CheckoutForm from "../Views/Invoices/CheckoutForm";
+import CompletePage from "../Views/Invoices/CompletePage";
 
 // import PdfPreview from "../Views/Pdf";
 
@@ -33,14 +35,18 @@ const userRoute = [
   // Facture
   { id: 7, path: "/factures/liste", component: <InvoiceList />, rank: 0 },
   { id: 8, path: "/factures/detail/:id", component: <InvoiceDetails />, rank: 0 },
+  { id: 15, path: "/facture/paiement", component: <CheckoutForm />, rank: 0 },
 
   // Devis
   { id: 10, path: "/devis/liste", component: <DevisList />, rank: 0 },
   { id: 11, path: "/devis/detail/:id", component: <DevisDetails />, rank: 0 },
 
   { id: 13, path: "/transaction/liste", component: <TransactionList />, rank: 0 },
-  { id: 14, path: "/domaine/liste", component: <Domaines />, rank: 0 }
+  { id: 14, path: "/domaine/liste", component: <Domaines />, rank: 0 },
+  { id: 14, path: "/complete", component: <CompletePage />, rank: 0 }
 ];
+
+const stripeRoute = [];
 
 const publicRoutes = [
   // Authentication Page

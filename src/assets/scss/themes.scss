@@ -4,6 +4,7 @@
 @import "../scss/config/modern/custom.scss";
 @import "./shepherd.css";
 @import "./mermaid.min.css";
+@import "./components/stripe";
 
 //RTL
 // @import "../scss/rtl/components-rtl";
@@ -318,15 +319,13 @@ iframe img {
   display: flex;
   flex-direction: row;
   .input-group-text {
- 
   }
 
   width: 80px;
 }
 
-
 .showing-anime {
-  height: 100px!important;
+  height: 100px !important;
   transition: height 1s;
 }
 

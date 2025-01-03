@@ -31,3 +31,5 @@ export * as TransactionService from "./transaction";
 export * as transactionBankService from "./transactionBank";
 
 export * as DomaineService from "./domaine";
+
+export * as StripeService from "./stripe";

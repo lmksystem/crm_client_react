@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { CardBody, Row, Col, Card, Table, CardHeader, Container, Input, FormFeedback, Form } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
-import { useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { useFormik } from "formik";
@@ -543,6 +543,15 @@ const InvoiceDetails = ({ route }) => {
                         className="btn btn-secondary">
                         <i className="ri-download-2-line align-bottom me-1"></i> Télécharger
                       </button>
+                      {invoice.header.fen_etat == 2 ||
+                        (invoice.header.fen_etat == 5 && (
+                          <Link
+                            state={{ invoice: invoice }}
+                            className="btn btn-secondary"
+                            to={"/facture/paiement"}>
+                            Payer
+                          </Link>
+                        ))}
                     </div>
                   </CardBody>
                 </Col>
