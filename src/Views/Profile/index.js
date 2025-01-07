@@ -128,6 +128,7 @@ export const Profile = () => {
   const fetchCollaborateur = async () => {
     try {
       const response = await GestionService.getCollaborateurById(userProfile.ent_id);
+      setIsMandated(response.ent_gocardless_cus_id ? true : false);
       setCollaborateur(response);
     } catch (error) {
       console.error("Erreur lors de la récupération du collaborateur", error);
@@ -163,6 +164,7 @@ export const Profile = () => {
                         <Input
                           type="switch"
                           checked={isMandated}
+                          disabled={isMandated && !collaborateur.ent_mandat_id}
                           onClick={() => {
                             GoCardLessService.createMandate().then((response) => {
                               if (response.authorisation_url) {
