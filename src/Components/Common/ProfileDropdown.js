@@ -71,18 +71,12 @@ const ProfileDropdown = () => {
           <h6 className="dropdown-header">Bienvenue {userProfile?.use_firstname} !</h6>
           {userProfile.use_rank != 2 && (
             <DropdownItem className="p-0">
-              <span
-                onClick={() => {
-                  if (userProfile.use_rank == 0) {
-                    navigate("/company/profile");
-                  } else if (userProfile.use_rank == 1) {
-                    navigate("/profile");
-                  }
-                }}
+              <Link
+                to={"/profil"}
                 className="dropdown-item">
                 <i className="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
                 <span className="align-middle">Profil</span>
-              </span>
+              </Link>
             </DropdownItem>
           )}
           {/*          

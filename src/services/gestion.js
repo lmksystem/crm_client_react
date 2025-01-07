@@ -98,7 +98,7 @@ export const updateCollaborateur = (data) => {
   return new Promise((resolve, reject) => {
     try {
       api.update(url.UPDATE_COLLABORATEUR + "/" + data.ent_id, data).then((response) => {
-        toast.success("Client/fournisseur mis à jour", { autoClose: 3000 });
+        toast.success("Profile mis à jour", { autoClose: 3000 });
         resolve(response.data);
       });
     } catch (error) {

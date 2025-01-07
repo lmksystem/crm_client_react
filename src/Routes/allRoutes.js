@@ -24,6 +24,7 @@ import TransactionList from "../Views/Reglements/TransactionList";
 import Domaines from "../Views/Domaine/domaine";
 import CheckoutForm from "../Views/Invoices/CheckoutForm";
 import CompletePage from "../Views/Invoices/CompletePage";
+import { Profile } from "../Views/Profile";
 
 // import PdfPreview from "../Views/Pdf";
 
@@ -43,7 +44,8 @@ const userRoute = [
 
   { id: 13, path: "/transaction/liste", component: <TransactionList />, rank: 0 },
   { id: 14, path: "/domaine/liste", component: <Domaines />, rank: 0 },
-  { id: 14, path: "/complete", component: <CompletePage />, rank: 0 }
+  { id: 14, path: "/complete", component: <CompletePage />, rank: 0 },
+  { id: 14, path: "/profil", component: <Profile />, rank: 0 }
 ];
 
 const stripeRoute = [];
