@@ -27,7 +27,6 @@ export default function CheckoutForm() {
       }
 
       setIsLoading(true);
-      console.log(clientSecret);
 
       const { error } = await stripe.confirmPayment({
         elements,
@@ -39,7 +38,7 @@ export default function CheckoutForm() {
         },
         confirmParams: {
           // Make sure to change this to your payment completion page
-          return_url: "http://localhost:3001/complete?invoice_id=" + invoice.header.fen_id,
+          return_url: process.env.REACT_APP_URL + "/complete?invoice_id=" + invoice.header.fen_id,
           receipt_email: userProfile.ent_email
         }
       });
