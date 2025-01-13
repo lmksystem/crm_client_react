@@ -164,13 +164,19 @@ export const Profile = () => {
                         <Input
                           type="switch"
                           checked={isMandated}
-                          disabled={isMandated}
                           onClick={() => {
-                            GoCardLessService.createMandate().then((response) => {
-                              if (response.authorisation_url) {
-                                window.location.replace(response.authorisation_url);
-                              }
-                            });
+                            if (isMandated) {
+                              //alert pour confirmer 
+                              
+                              // remove le mandat
+                            } else {
+                              GoCardLessService.createMandate().then((response) => {
+                                if (response.authorisation_url) {
+                                  window.location.replace(response.authorisation_url);
+                                }
+                              });
+                            }
+
                           }}
                         />
                       </FormGroup>
